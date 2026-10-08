@@ -1,0 +1,127 @@
+{
+  "resource": "https://vet402.com/api/v1/rwa/paid/facts/0xE9B08727131E34010b34006c660D4c1B436EC25f",
+  "status": 402,
+  "payment_required": {
+    "x402Version": 2,
+    "error": "PAYMENT-SIGNATURE header is required",
+    "resource": {
+      "url": "https://vet402.com/api/v1/rwa/paid/facts/0xE9B08727131E34010b34006c660D4c1B436EC25f",
+      "description": "vet402 /rwa facts JSON for one wallet on Robinhood Chain (same JSON as the free route; 60 requests/min/IP instead of 10; reconstructions are not prioritised)",
+      "mimeType": "application/json"
+    },
+    "accepts": [
+      {
+        "scheme": "exact",
+        "network": "eip155:4663",
+        "amount": "10000",
+        "asset": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+        "payTo": "0x973cD8a91A771C2C04C6036888F8175D6b4F6227",
+        "maxTimeoutSeconds": 120,
+        "extra": {
+          "name": "Global Dollar",
+          "version": "1",
+          "assetTransferMethod": "permit2"
+        }
+      }
+    ]
+  },
+  "accepted": {
+    "scheme": "exact",
+    "network": "eip155:4663",
+    "amount": "10000",
+    "asset": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+    "payTo": "0x973cD8a91A771C2C04C6036888F8175D6b4F6227",
+    "maxTimeoutSeconds": 120,
+    "extra": {
+      "name": "Global Dollar",
+      "version": "1",
+      "assetTransferMethod": "permit2"
+    }
+  },
+  "payer": "0xc380D9F41D90765A4820429B9Da151889E8bED94",
+  "usdg_balance_atomic": "10000",
+  "permit2_allowance_atomic": "0",
+  "chain_spent_atomic": "0",
+  "spent_before_atomic": "0",
+  "cap_atomic": "1000000",
+  "permit2_typed_data": {
+    "domain": {
+      "name": "Permit2",
+      "chainId": 4663,
+      "verifyingContract": "0x000000000022D473030F116dDEE9F6B43aC78BA3"
+    },
+    "types": {
+      "PermitWitnessTransferFrom": [
+        {
+          "name": "permitted",
+          "type": "TokenPermissions"
+        },
+        {
+          "name": "spender",
+          "type": "address"
+        },
+        {
+          "name": "nonce",
+          "type": "uint256"
+        },
+        {
+          "name": "deadline",
+          "type": "uint256"
+        },
+        {
+          "name": "witness",
+          "type": "Witness"
+        }
+      ],
+      "TokenPermissions": [
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "Witness": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "validAfter",
+          "type": "uint256"
+        }
+      ]
+    },
+    "primaryType": "PermitWitnessTransferFrom",
+    "message": {
+      "permitted": {
+        "token": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+        "amount": "10000"
+      },
+      "spender": "0x402085c248EeA27D92E8b30b2C58ed07f9E20001",
+      "nonce": "65326919358528538324281889411068248280515652594021264953918255897608152245361",
+      "deadline": "1791498310",
+      "witness": {
+        "to": "0x973cD8a91A771C2C04C6036888F8175D6b4F6227",
+        "validAfter": "1791498130"
+      }
+    }
+  },
+  "permit2_digest": "0xf9eb07f9aa32267013e8c2e76f8add589d41236893e2913cef5a8db66bc72f38",
+  "signed": true,
+  "http_status": 200,
+  "x_payment_status": "settled",
+  "settlement": {
+    "success": true,
+    "transaction": "0x65c314bd758a59dfc79c78d8da76e557450fa1144726ddc4bfc77e183287af61",
+    "network": "eip155:4663",
+    "payer": "0xc380D9F41D90765A4820429B9Da151889E8bED94",
+    "extensions": {
+      "dexter-timing": {
+        "settleDurationMs": 1468
+      }
+    }
+  }
+}

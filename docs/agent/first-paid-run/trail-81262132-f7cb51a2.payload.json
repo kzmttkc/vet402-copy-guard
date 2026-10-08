@@ -1,0 +1,217 @@
+{
+  "trail": {
+    "trail_version": 1,
+    "rules": {
+      "id": "copy-guard",
+      "version": 1,
+      "source_keccak": "0x2abeff7f6a488b520e458445381413f81507fc545c1dc466fe27d54250e93b12"
+    },
+    "decided_at": "2026-10-08T22:25:10.786Z",
+    "purchase": {
+      "mode": "paid",
+      "resource": "https://vet402.com/api/v1/rwa/paid/facts/0xE9B08727131E34010b34006c660D4c1B436EC25f",
+      "payer": "0xc380D9F41D90765A4820429B9Da151889E8bED94",
+      "payment_tx": "0x65c314bd758a59dfc79c78d8da76e557450fa1144726ddc4bfc77e183287af61",
+      "settlement": "settled",
+      "spent_before_atomic": "0",
+      "cap_atomic": "1000000",
+      "permit2_digest": "0xf9eb07f9aa32267013e8c2e76f8add589d41236893e2913cef5a8db66bc72f38"
+    },
+    "inputs": {
+      "wallet": "0xe9b08727131e34010b34006c660d4c1b436ec25f",
+      "movement": {
+        "chain_id": 4663,
+        "tx": "0xf7cb51a25f62bfbe63760404055b36d380eed0d47c68f99cdccaa17e9c478717",
+        "block": 81262132,
+        "transfers": [
+          {
+            "token": "0xe7391e4047c7e5d48f31cd2b87004c10e875f288",
+            "from": "0xe9b08727131e34010b34006c660d4c1b436ec25f",
+            "to": "0xf20f825b81de6b22336529fe35a78cd5006a2a03",
+            "amount_raw": "20000000000",
+            "direction": "out"
+          }
+        ]
+      },
+      "terms": {
+        "scheme": "exact",
+        "network": "eip155:4663",
+        "asset": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+        "amount": "10000",
+        "payTo": "0x973cD8a91A771C2C04C6036888F8175D6b4F6227",
+        "assetTransferMethod": "permit2"
+      },
+      "record": {
+        "source_url": "https://vet402.com/api/v1/rwa/paid/facts/0xE9B08727131E34010b34006c660D4c1B436EC25f",
+        "x_facts_hash": "0x13271095a747ef27d05c86a5d781a6961b4a35e7fd365708b24612f7b40d6adc",
+        "recomputed_facts_hash": "0x13271095a747ef27d05c86a5d781a6961b4a35e7fd365708b24612f7b40d6adc",
+        "address": "0xe9b08727131e34010b34006c660d4c1b436ec25f",
+        "chain_id": 4663,
+        "as_of": "2026-10-08T22:23:14.000Z",
+        "as_of_block": 83662580,
+        "method_version": "rwa-recon-0.3",
+        "r1_status": "partial",
+        "realized_usd": "-273.01",
+        "tokens": [
+          {
+            "token": "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68",
+            "symbol": "QQQ",
+            "canonical": true,
+            "usd": "70462.13",
+            "shares_ui": "94.24670154"
+          },
+          {
+            "token": "0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec",
+            "symbol": "NVDA",
+            "canonical": true,
+            "usd": "9471.27",
+            "shares_ui": "41.04453377"
+          },
+          {
+            "token": "0x117cc2133c37b721f49de2a7a74833232b3b4c0c",
+            "symbol": "SPY",
+            "canonical": true,
+            "usd": "0.00",
+            "shares_ui": "0.00000000"
+          }
+        ],
+        "lookalikes": [
+          {
+            "token": "0x4190ee598c2a69d35bef53c83d152ae0f25ea416",
+            "imitates": "USDG",
+            "counted": false,
+            "needs_review": false
+          },
+          {
+            "token": "0x5dd716fe12275b69f04b26beeca343843c8e3539",
+            "imitates": "NVDA",
+            "counted": false,
+            "needs_review": false
+          },
+          {
+            "token": "0xe7391e4047c7e5d48f31cd2b87004c10e875f288",
+            "imitates": "USDG",
+            "counted": false,
+            "needs_review": false
+          }
+        ]
+      },
+      "cre": {
+        "workflow": "vet402-rwa-verify",
+        "anchor_tx": "0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f",
+        "anchor_record_url": "https://raw.githubusercontent.com/kzmttkc/vet402/main/fixtures/rwa/anchors/rwa-recon-0.3-76177721.json",
+        "verdict": "MATCH",
+        "reason_bits": 0,
+        "recomputed_facts_hash": "0x9d0e83d968786570beebf0d322b36e0836dc81ebe896bd186304405ba8f721ee",
+        "anchored_facts_hash": "0x9d0e83d968786570beebf0d322b36e0836dc81ebe896bd186304405ba8f721ee",
+        "receiver": "0x8bf4d455d38301e9d330B12144AdE02F16BC2Cb3",
+        "mode": "broadcast",
+        "verdict_tx": "0xc90411c03d66f5c5aa4f2bde8eba68d135822ac5fceffca76b205b08914b6cbb"
+      }
+    },
+    "decision": {
+      "rule_results": [
+        {
+          "id": "A1",
+          "group": "A",
+          "ok": true,
+          "rule": "the record was offered under the published x402 terms (exact, eip155:4663, USDG, at most 0.01, paid to the vet402 anchor wallet)",
+          "detail": "exact eip155:4663 0x5fc5360d0400a0fd4f2af552add042d716f1d168 amount 10000 payTo 0x973cd8a91a771c2c04c6036888f8175d6b4f6227 permit2"
+        },
+        {
+          "id": "A2",
+          "group": "A",
+          "ok": true,
+          "rule": "X-Facts-Hash sent with the record equals the hash recomputed from its body",
+          "detail": "header 0x13271095a747ef27d05c86a5d781a6961b4a35e7fd365708b24612f7b40d6adc recomputed 0x13271095a747ef27d05c86a5d781a6961b4a35e7fd365708b24612f7b40d6adc"
+        },
+        {
+          "id": "A3",
+          "group": "A",
+          "ok": true,
+          "rule": "the record is about the watched wallet on Robinhood Chain 4663",
+          "detail": "record 0xe9b08727131e34010b34006c660d4c1b436ec25f chain 4663 rwa-recon-0.3"
+        },
+        {
+          "id": "A4",
+          "group": "A",
+          "ok": true,
+          "rule": "the CRE workflow re-verified the wallet's newest vet402 anchor: MATCH",
+          "detail": "MATCH reasons 0 anchor tx 0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f"
+        },
+        {
+          "id": "A5",
+          "group": "A",
+          "ok": true,
+          "rule": "the record replays to the balances it reports (r1_status is not unverified)",
+          "detail": "r1_status partial"
+        },
+        {
+          "id": "A6",
+          "group": "A",
+          "ok": true,
+          "rule": "every look-alike token is left out of the figures and none waits for review",
+          "detail": "3 look-alikes, 0 counted or needing review"
+        },
+        {
+          "id": "B1",
+          "group": "B",
+          "ok": true,
+          "rule": "the record was built at or after the block of the movement",
+          "detail": "record block 83662580, movement block 81262132"
+        },
+        {
+          "id": "B2",
+          "group": "B",
+          "ok": true,
+          "rule": "the record says what every moved token is (Stock Token, USDG or named look-alike)",
+          "detail": "0xe7391e4047c7e5d48f31cd2b87004c10e875f288 fake"
+        },
+        {
+          "id": "C1",
+          "group": "C",
+          "ok": false,
+          "rule": "no token in the movement is a look-alike the record names as fake",
+          "detail": "fake: 0xe7391e4047c7e5d48f31cd2b87004c10e875f288 imitating USDG"
+        },
+        {
+          "id": "C2",
+          "group": "C",
+          "ok": false,
+          "rule": "the movement moves a Robinhood Stock Token",
+          "detail": "no Stock Token moved"
+        },
+        {
+          "id": "C3",
+          "group": "C",
+          "ok": false,
+          "rule": "the wallet's track record is complete (r1_status reconstructed)",
+          "detail": "r1_status partial"
+        },
+        {
+          "id": "C4",
+          "group": "C",
+          "ok": false,
+          "rule": "the wallet has a realized profit (realized_usd above zero)",
+          "detail": "realized_usd -273.01"
+        },
+        {
+          "id": "C5",
+          "group": "C",
+          "ok": false,
+          "rule": "the moved Stock Token has a USD price in the record, so a paper trade can be sized",
+          "detail": "no priced Stock Token leg"
+        }
+      ],
+      "conclusion": "DO_NOT_COPY",
+      "decisive": [
+        "C1",
+        "C2",
+        "C3",
+        "C4",
+        "C5"
+      ],
+      "paper_trade": null
+    }
+  }
+}
