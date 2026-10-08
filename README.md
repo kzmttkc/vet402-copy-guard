@@ -71,24 +71,31 @@ bun scripts/local-check.ts rwa-verify/payloads/mismatch-one-char.json
 
 ## Output
 
-`scripts/simulate.sh` writes `docs/simulate-match.txt` and `docs/simulate-mismatch-one-char.txt`. The local runner gives the same rows (`docs/local-run-*.txt`):
+`cre workflow simulate` on 2026-10-08 with CRE CLI v1.37.0. Full logs: [`docs/simulate-match.txt`](docs/simulate-match.txt) and [`docs/simulate-mismatch-one-char.txt`](docs/simulate-mismatch-one-char.txt).
+
+The anchored record:
 
 ```
-  OK    tx status          success in block 76177721
-  OK    contract           Anchored log from 0x1955137e7773f2459eb75fb88842026c6517c22d (RwaAnchor)
-  OK    contract code      runtime equals the build of RwaAnchor.sol: no owner, no upgrade path
-  OK    anchoredBy         0x973cd8a91a771c2c04c6036888f8175d6b4f6227
-  OK    subject            0xa158baaf…d3bfc5 = keccak(0xe9b08727131e34010b34006c660d4c1b436ec25f)
-  OK    factsHash          0x9d0e83d9…f721ee = recomputed 0x9d0e83d9…f721ee (material v2, binds the whole JSON)
-RESULT: MATCH. The JSON is the record that was anchored.
+[USER LOG] live /rwa record: HTTP 200, as_of 2026-10-08T11:37:31.000Z, X-Facts-Hash matches the body
+[USER LOG] OK    tx status          success in block 76177721
+[USER LOG] OK    contract           Anchored log from 0x1955137e7773f2459eb75fb88842026c6517c22d (RwaAnchor)
+[USER LOG] OK    contract code      runtime equals the build of RwaAnchor.sol: no owner, no upgrade path
+[USER LOG] OK    anchoredBy         0x973cd8a91a771c2c04c6036888f8175d6b4f6227
+[USER LOG] OK    factsHash          0x9d0e83d9…f721ee = recomputed 0x9d0e83d9…f721ee (material v2, binds the whole JSON)
+[USER LOG] RESULT: MATCH. The JSON is the record that was anchored.
+[USER LOG] verdict written to 0x000000000000000000000000000000000000dEaD on robinhood-testnet, tx 0x0000000000000000000000000000000000000000000000000000000000000000
+✓ Workflow Simulation Result: "{\"verdict\":\"MATCH\",\"reasons\":[],\"reasonBits\":0, ...}"
 ```
 
-With one character changed:
+The same record with one character changed:
 
 ```
-  FAIL  factsHash          0x9d0e83d9…f721ee != recomputed 0x29175278…0e0d99 (material v2, binds the whole JSON)
-  FAIL  record facts_hash  record says 0x9d0e83d9…f721ee
-RESULT: MISMATCH. record hash differs from the anchored factsHash; facts_hash written in the record differs from its own content.
+[USER LOG] FAIL  factsHash          0x9d0e83d9…f721ee != recomputed 0x29175278…0e0d99 (material v2, binds the whole JSON)
+[USER LOG] FAIL  record facts_hash  record says 0x9d0e83d9…f721ee
+[USER LOG] RESULT: MISMATCH. record hash differs from the anchored factsHash; facts_hash written in the record differs from its own content.
+✓ Workflow Simulation Result: "{\"verdict\":\"MISMATCH\", ... \"reasonBits\":288, ...}"
 ```
+
+The write step is a dry run: nothing is broadcast, so the tx hash is all zeros. `RwaVerdictReceiver` is not deployed yet and the config points at a placeholder address (`0x…dEaD`). CRE's `MockKeystoneForwarder` does not revert for an address without code, so the dry run reports success without running the receiver. The fork test above delivers the same MATCH report to a real `RwaVerdictReceiver` through that forwarder. `scripts/local-check.ts` prints the same rows without CRE (`docs/local-run-*.txt`).
 
 vet402 /rwa reports what public chain data shows. It does not give legal or investment advice.

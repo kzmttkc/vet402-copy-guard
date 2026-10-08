@@ -11,8 +11,8 @@ for case in match mismatch-one-char; do
   out="docs/simulate-${case}.txt"
   {
     echo "\$ cre version"; "$CRE" version
-    echo "\$ cre workflow simulate rwa-verify --target local-simulation --non-interactive --trigger-index 0 --http-payload @rwa-verify/payloads/${case}.json"
+    echo "\$ cre workflow simulate rwa-verify --target local-simulation --non-interactive --trigger-index 0 --http-payload rwa-verify/payloads/${case}.json"
     "$CRE" workflow simulate rwa-verify --target local-simulation --non-interactive --trigger-index 0 \
-      --http-payload "@rwa-verify/payloads/${case}.json" 2>&1
+      --http-payload "rwa-verify/payloads/${case}.json" 2>&1
   } | tee "$out"
 done
