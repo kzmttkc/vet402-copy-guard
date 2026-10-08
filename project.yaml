@@ -1,0 +1,7 @@
+# CRE project settings. Only public RPCs, no keys.
+# The verdict is written (dry run, nothing is broadcast) on Robinhood Testnet.
+# RwaAnchor on Robinhood Chain mainnet is read over the HTTP capability, see rwa-verify/workflow.ts.
+local-simulation:
+  rpcs:
+    - chain-name: robinhood-testnet
+      url: https://rpc.testnet.chain.robinhood.com

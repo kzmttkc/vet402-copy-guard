@@ -1,0 +1,21 @@
+$ bun scripts/local-check.ts rwa-verify/payloads/mismatch-one-char.json
+live /rwa record: HTTP 200, as_of 2026-10-08T11:25:04.000Z, X-Facts-Hash matches the body
+vet402 /rwa record check (Robinhood Chain 4663, no key)
+  record    record passed in the trigger payload
+  wallet    0xe9b08727131e34010b34006c660d4c1b436ec25f  rwa-recon-0.3  as_of 2026-09-30T03:00:07.000Z
+  tx        0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f
+
+  OK    chain              chain id 4663
+  OK    tx status          success in block 76177721
+  OK    contract           Anchored log from 0x1955137e7773f2459eb75fb88842026c6517c22d (RwaAnchor)
+  OK    contract code      runtime equals the build of RwaAnchor.sol: no owner, no upgrade path
+  OK    anchoredBy         0x973cd8a91a771c2c04c6036888f8175d6b4f6227
+  OK    subject            0xa158baaf…d3bfc5 = keccak(0xe9b08727131e34010b34006c660d4c1b436ec25f)
+  FAIL  factsHash          0x9d0e83d9…f721ee != recomputed 0x29175278…0e0d99 (material v2, binds the whole JSON)
+  FAIL  record facts_hash  record says 0x9d0e83d9…f721ee
+  OK    methodVersion      3 = rwa-recon-0.3
+  OK    asOf               1790737207 = 2026-09-30T03:00:07.000Z
+
+RESULT: MISMATCH. record hash differs from the anchored factsHash; facts_hash written in the record differs from its own content.
+reason bits 288 (record hash differs from the anchored factsHash; facts_hash written in the record differs from its own content)
+exit 1

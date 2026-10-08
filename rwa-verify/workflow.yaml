@@ -1,0 +1,8 @@
+# CRE workflow settings. `cre workflow simulate rwa-verify --target local-simulation`
+local-simulation:
+  user-workflow:
+    workflow-name: "vet402-rwa-verify"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.json"
+    secrets-path: ""

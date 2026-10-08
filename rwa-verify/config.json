@@ -1,0 +1,11 @@
+{
+  "wallet": "0xE9B08727131E34010b34006c660D4c1B436EC25f",
+  "factsApi": "https://vet402.com/api/v1/rwa/facts/<address>?chain=4663",
+  "recordUrl": "https://raw.githubusercontent.com/kzmttkc/vet402/9506ffb13d94b13e29c10a290d613be85f82720a/fixtures/rwa/anchors/rwa-recon-0.3-76177721.json",
+  "anchorTx": "0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f",
+  "operator": "0x973cD8a91A771C2C04C6036888F8175D6b4F6227",
+  "robinhoodRpc": "https://rpc.mainnet.chain.robinhood.com",
+  "chainSelectorName": "robinhood-testnet",
+  "receiverAddress": "0x000000000000000000000000000000000000dEaD",
+  "gasLimit": "300000"
+}

@@ -1,0 +1,9 @@
+node_modules/
+.env
+*.wasm
+rwa-verify/dist/
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+contracts/lib/
+.cre_build_tmp.*
