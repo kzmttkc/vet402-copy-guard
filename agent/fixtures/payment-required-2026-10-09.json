@@ -1,0 +1,30 @@
+{
+  "fetched": "2026-10-09",
+  "url": "https://vet402.com/api/v1/rwa/paid/facts/0xE9B08727131E34010b34006c660D4c1B436EC25f",
+  "status": 402,
+  "payment_required_header": "eyJ4NDAyVmVyc2lvbiI6MiwiZXJyb3IiOiJQQVlNRU5ULVNJR05BVFVSRSBoZWFkZXIgaXMgcmVxdWlyZWQiLCJyZXNvdXJjZSI6eyJ1cmwiOiJodHRwczovL3ZldDQwMi5jb20vYXBpL3YxL3J3YS9wYWlkL2ZhY3RzLzB4RTlCMDg3MjcxMzFFMzQwMTBiMzQwMDZjNjYwRDRjMUI0MzZFQzI1ZiIsImRlc2NyaXB0aW9uIjoidmV0NDAyIC9yd2EgZmFjdHMgSlNPTiBmb3Igb25lIHdhbGxldCBvbiBSb2Jpbmhvb2QgQ2hhaW4gKHNhbWUgSlNPTiBhcyB0aGUgZnJlZSByb3V0ZTsgNjAgcmVxdWVzdHMvbWluL0lQIGluc3RlYWQgb2YgMTA7IHJlY29uc3RydWN0aW9ucyBhcmUgbm90IHByaW9yaXRpc2VkKSIsIm1pbWVUeXBlIjoiYXBwbGljYXRpb24vanNvbiJ9LCJhY2NlcHRzIjpbeyJzY2hlbWUiOiJleGFjdCIsIm5ldHdvcmsiOiJlaXAxNTU6NDY2MyIsImFtb3VudCI6IjEwMDAwIiwiYXNzZXQiOiIweDVmYzUzNjBEMDQwMGEwRmQ0ZjJhZjU1MkFERDA0MkQ3MTZGMWQxNjgiLCJwYXlUbyI6IjB4OTczY0Q4YTkxQTc3MUMyQzA0QzYwMzY4ODhGODE3NUQ2YjRGNjIyNyIsIm1heFRpbWVvdXRTZWNvbmRzIjoxMjAsImV4dHJhIjp7Im5hbWUiOiJHbG9iYWwgRG9sbGFyIiwidmVyc2lvbiI6IjEiLCJhc3NldFRyYW5zZmVyTWV0aG9kIjoicGVybWl0MiJ9fV19",
+  "decoded": {
+    "x402Version": 2,
+    "error": "PAYMENT-SIGNATURE header is required",
+    "resource": {
+      "url": "https://vet402.com/api/v1/rwa/paid/facts/0xE9B08727131E34010b34006c660D4c1B436EC25f",
+      "description": "vet402 /rwa facts JSON for one wallet on Robinhood Chain (same JSON as the free route; 60 requests/min/IP instead of 10; reconstructions are not prioritised)",
+      "mimeType": "application/json"
+    },
+    "accepts": [
+      {
+        "scheme": "exact",
+        "network": "eip155:4663",
+        "amount": "10000",
+        "asset": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+        "payTo": "0x973cD8a91A771C2C04C6036888F8175D6b4F6227",
+        "maxTimeoutSeconds": 120,
+        "extra": {
+          "name": "Global Dollar",
+          "version": "1",
+          "assetTransferMethod": "permit2"
+        }
+      }
+    ]
+  }
+}

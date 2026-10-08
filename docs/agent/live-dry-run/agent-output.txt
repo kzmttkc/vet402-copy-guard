@@ -1,0 +1,4 @@
+copy-guard copy-guard v1  DRY RUN + testnet broadcast
+  watching    0xE9B08727131E34010b34006c660D4c1B436EC25f on Robinhood Chain 4663, blocks 83620573..83650572
+  movements   0
+  nothing to decide

@@ -1,0 +1,72 @@
+copy-guard copy-guard v1  DRY RUN + testnet broadcast
+  watching    0xE9B08727131E34010b34006c660D4c1B436EC25f on Robinhood Chain 4663, replay of blocks 68837431, 73953009, 81262132
+  movements   3
+  402 terms   exact eip155:4663 10000 USDG atomic to 0x973cD8a91A771C2C04C6036888F8175D6b4F6227 (permit2)
+  payer       0xc380D9F41D90765A4820429B9Da151889E8bED94  USDG 0 atomic, Permit2 allowance 0, spent 0 of cap 1000000
+  permit2     digest 0x8523f9670a157b5aeb6fbff18a0b04435a8befa61793a04058b7eba89967e862 (spender 0x402085c248EeA27D92E8b30b2C58ed07f9E20001, witness.to 0x973cD8a91A771C2C04C6036888F8175D6b4F6227)
+  DRY RUN     nothing signed, nothing sent; record read from the free route (same JSON)
+  record      rwa-recon-0.3 as_of 2026-10-08T21:59:21.000Z block 83648629, factsHash 0x0aaa3ffd1c8db0acee90fe089a1d694f168552a4ef69f73d5c644f715398ca28
+  anchor      rwa-recon-0.3 tx 0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f block 76177721
+  CRE verify  MATCH reasons 0, RecordChecked tx 0x6b85468c2549ae1ff225c506b71c028711dcc4b594a420eb99d2680d84d39e47
+
+  movement    0x0eac7685c6c57c3929d053bea9b5fa4b9879e2afc798848ee2b8ccf0e56a13f8 block 68837431
+              in  0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 4459472133035912033
+              out 0x5fc5360d0400a0fd4f2af552add042d716f1d168 3250000000
+              out 0x5fc5360d0400a0fd4f2af552add042d716f1d168 1750000000
+              in  0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 2400847895329641894
+    OK   A1 exact eip155:4663 0x5fc5360d0400a0fd4f2af552add042d716f1d168 amount 10000 payTo 0x973cd8a91a771c2c04c6036888f8175d6b4f6227 permit2
+    OK   A2 header 0x0aaa3ffd1c8db0acee90fe089a1d694f168552a4ef69f73d5c644f715398ca28 recomputed 0x0aaa3ffd1c8db0acee90fe089a1d694f168552a4ef69f73d5c644f715398ca28
+    OK   A3 record 0xe9b08727131e34010b34006c660d4c1b436ec25f chain 4663 rwa-recon-0.3
+    OK   A4 MATCH reasons 0 anchor tx 0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f
+    OK   A5 r1_status partial
+    OK   A6 3 look-alikes, 0 counted or needing review
+    OK   B1 record block 83648629, movement block 68837431
+    OK   B2 0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 stock, 0x5fc5360d0400a0fd4f2af552add042d716f1d168 usdg, 0x5fc5360d0400a0fd4f2af552add042d716f1d168 usdg, 0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 stock
+    OK   C1 none
+    OK   C2 0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 in
+    FAIL C3 r1_status partial
+    FAIL C4 realized_usd -273.01
+    OK   C5 QQQ 747.6350 USD
+  DECISION    DO_NOT_COPY (C3, C4)
+  trail hash  0xc3edd1efa8d1e042cf614d9dd553bff8017d89c9634428f16fe3463333184fcd
+  CRE trail   rules re-run, movement checked, DecisionRecorded tx 0x418235176be8d19d4619fd054a1e98d44d282b5facb0a40041e7cc2f1e2a46e1
+
+  movement    0x1b838f40a43d54b7ce3364f08f723516170be2d03fdbcd6ab801c79f7f77b51b block 73953009
+              in  0x5dd716fe12275b69f04b26beeca343843c8e3539 25000000000000000000
+    OK   A1 exact eip155:4663 0x5fc5360d0400a0fd4f2af552add042d716f1d168 amount 10000 payTo 0x973cd8a91a771c2c04c6036888f8175d6b4f6227 permit2
+    OK   A2 header 0x0aaa3ffd1c8db0acee90fe089a1d694f168552a4ef69f73d5c644f715398ca28 recomputed 0x0aaa3ffd1c8db0acee90fe089a1d694f168552a4ef69f73d5c644f715398ca28
+    OK   A3 record 0xe9b08727131e34010b34006c660d4c1b436ec25f chain 4663 rwa-recon-0.3
+    OK   A4 MATCH reasons 0 anchor tx 0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f
+    OK   A5 r1_status partial
+    OK   A6 3 look-alikes, 0 counted or needing review
+    OK   B1 record block 83648629, movement block 73953009
+    OK   B2 0x5dd716fe12275b69f04b26beeca343843c8e3539 fake
+    FAIL C1 fake: 0x5dd716fe12275b69f04b26beeca343843c8e3539 imitating NVDA
+    FAIL C2 no Stock Token moved
+    FAIL C3 r1_status partial
+    FAIL C4 realized_usd -273.01
+    FAIL C5 no priced Stock Token leg
+  DECISION    DO_NOT_COPY (C1, C2, C3, C4, C5)
+  trail hash  0xe2e6c1657c1650ed2fc9b68a71ec02844883ca7b761410c437716d528647451b
+  CRE trail   rules re-run, movement checked, DecisionRecorded tx 0xa4bc09a5f80028057f6a0934f015b5d8a6c6d058435edc11e0d61232c770452f
+
+  movement    0xf7cb51a25f62bfbe63760404055b36d380eed0d47c68f99cdccaa17e9c478717 block 81262132
+              out 0xe7391e4047c7e5d48f31cd2b87004c10e875f288 20000000000
+    OK   A1 exact eip155:4663 0x5fc5360d0400a0fd4f2af552add042d716f1d168 amount 10000 payTo 0x973cd8a91a771c2c04c6036888f8175d6b4f6227 permit2
+    OK   A2 header 0x0aaa3ffd1c8db0acee90fe089a1d694f168552a4ef69f73d5c644f715398ca28 recomputed 0x0aaa3ffd1c8db0acee90fe089a1d694f168552a4ef69f73d5c644f715398ca28
+    OK   A3 record 0xe9b08727131e34010b34006c660d4c1b436ec25f chain 4663 rwa-recon-0.3
+    OK   A4 MATCH reasons 0 anchor tx 0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f
+    OK   A5 r1_status partial
+    OK   A6 3 look-alikes, 0 counted or needing review
+    OK   B1 record block 83648629, movement block 81262132
+    OK   B2 0xe7391e4047c7e5d48f31cd2b87004c10e875f288 fake
+    FAIL C1 fake: 0xe7391e4047c7e5d48f31cd2b87004c10e875f288 imitating USDG
+    FAIL C2 no Stock Token moved
+    FAIL C3 r1_status partial
+    FAIL C4 realized_usd -273.01
+    FAIL C5 no priced Stock Token leg
+  DECISION    DO_NOT_COPY (C1, C2, C3, C4, C5)
+  trail hash  0xeab4fbd8f93365915c94185e3adb93994c72074d4c3f680ea1de1792613086b6
+  CRE trail   rules re-run, movement checked, DecisionRecorded tx 0x339123b04782cc88216fb456ee253d148b173ec1472ea4c750047b40627e8cc5
+
+  saved       docs/agent/replay-dry-run/

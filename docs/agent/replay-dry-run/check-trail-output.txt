@@ -1,0 +1,39 @@
+$ bun agent/check-trail.ts docs/agent/replay-dry-run/trail-68837431-0eac7685.json --record docs/agent/replay-dry-run/record.json --onchain
+copy-guard trail check (no key)  docs/agent/replay-dry-run/trail-68837431-0eac7685.json
+  movement  0x0eac7685c6c57c3929d053bea9b5fa4b9879e2afc798848ee2b8ccf0e56a13f8  conclusion DO_NOT_COPY
+  OK    trail hash     0xc3edd1efa8d1e042cf614d9dd553bff8017d89c9634428f16fe3463333184fcd
+  OK    rules          copy-guard v1 give DO_NOT_COPY (11/13 rows pass), same as the trail
+  OK    record         saved record gives factsHash 0x0aaa3ffd1c8db0acee90fe089a1d694f168552a4ef69f73d5c644f715398ca28 and the same fields
+  OK    movement       0x0eac7685c6c57c3929d053bea9b5fa4b9879e2afc798848ee2b8ccf0e56a13f8 on 4663: transfers as listed
+  OK    payment        dry run, nothing was paid (the trail says so)
+  OK    CRE verdict    0x6b85468c2549ae1ff225c506b71c028711dcc4b594a420eb99d2680d84d39e47 on 46630: RecordChecked MATCH for anchor 0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f
+  OK    trail onchain  0x418235176be8d19d4619fd054a1e98d44d282b5facb0a40041e7cc2f1e2a46e1 on 46630: DecisionRecorded 0xc3edd1efa8d1e042cf614d9dd553bff8017d89c9634428f16fe3463333184fcd DO_NOT_COPY
+RESULT: the trail holds. DO_NOT_COPY follows from its inputs.
+exit 0
+
+$ bun agent/check-trail.ts docs/agent/replay-dry-run/trail-73953009-1b838f40.json --record docs/agent/replay-dry-run/record.json --onchain
+copy-guard trail check (no key)  docs/agent/replay-dry-run/trail-73953009-1b838f40.json
+  movement  0x1b838f40a43d54b7ce3364f08f723516170be2d03fdbcd6ab801c79f7f77b51b  conclusion DO_NOT_COPY
+  OK    trail hash     0xe2e6c1657c1650ed2fc9b68a71ec02844883ca7b761410c437716d528647451b
+  OK    rules          copy-guard v1 give DO_NOT_COPY (8/13 rows pass), same as the trail
+  OK    record         saved record gives factsHash 0x0aaa3ffd1c8db0acee90fe089a1d694f168552a4ef69f73d5c644f715398ca28 and the same fields
+  OK    movement       0x1b838f40a43d54b7ce3364f08f723516170be2d03fdbcd6ab801c79f7f77b51b on 4663: transfers as listed
+  OK    payment        dry run, nothing was paid (the trail says so)
+  OK    CRE verdict    0x6b85468c2549ae1ff225c506b71c028711dcc4b594a420eb99d2680d84d39e47 on 46630: RecordChecked MATCH for anchor 0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f
+  OK    trail onchain  0xa4bc09a5f80028057f6a0934f015b5d8a6c6d058435edc11e0d61232c770452f on 46630: DecisionRecorded 0xe2e6c1657c1650ed2fc9b68a71ec02844883ca7b761410c437716d528647451b DO_NOT_COPY
+RESULT: the trail holds. DO_NOT_COPY follows from its inputs.
+exit 0
+
+$ bun agent/check-trail.ts docs/agent/replay-dry-run/trail-81262132-f7cb51a2.json --record docs/agent/replay-dry-run/record.json --onchain
+copy-guard trail check (no key)  docs/agent/replay-dry-run/trail-81262132-f7cb51a2.json
+  movement  0xf7cb51a25f62bfbe63760404055b36d380eed0d47c68f99cdccaa17e9c478717  conclusion DO_NOT_COPY
+  OK    trail hash     0xeab4fbd8f93365915c94185e3adb93994c72074d4c3f680ea1de1792613086b6
+  OK    rules          copy-guard v1 give DO_NOT_COPY (8/13 rows pass), same as the trail
+  OK    record         saved record gives factsHash 0x0aaa3ffd1c8db0acee90fe089a1d694f168552a4ef69f73d5c644f715398ca28 and the same fields
+  OK    movement       0xf7cb51a25f62bfbe63760404055b36d380eed0d47c68f99cdccaa17e9c478717 on 4663: transfers as listed
+  OK    payment        dry run, nothing was paid (the trail says so)
+  OK    CRE verdict    0x6b85468c2549ae1ff225c506b71c028711dcc4b594a420eb99d2680d84d39e47 on 46630: RecordChecked MATCH for anchor 0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f
+  OK    trail onchain  0x339123b04782cc88216fb456ee253d148b173ec1472ea4c750047b40627e8cc5 on 46630: DecisionRecorded 0xeab4fbd8f93365915c94185e3adb93994c72074d4c3f680ea1de1792613086b6 DO_NOT_COPY
+RESULT: the trail holds. DO_NOT_COPY follows from its inputs.
+exit 0
+

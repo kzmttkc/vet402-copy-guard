@@ -8,3 +8,4 @@ contracts/broadcast/
 contracts/lib/
 .cre_build_tmp.*
 *.key
+agent/state/
