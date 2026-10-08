@@ -10,7 +10,7 @@
 // Default is a dry run: read the 402, check the terms, build the exact typed
 // data that would be signed, and stop. Nothing is signed or sent. Only `--pay`
 // signs, and never past the spend cap below.
-import { existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { getAddress, hashTypedData, type Hex } from 'viem'
 import { MAX_PRICE_ATOMIC, PAY_TO, type Terms, USDG, X402_NETWORK } from './rules'
 
@@ -89,8 +89,16 @@ export const PERMIT2_TYPES = {
 	],
 } as const
 
+/** A signature is never valid for longer than this, whatever the 402 asks for. */
+export const MAX_VALIDITY_SECONDS = 120
+
+export function validitySeconds(a: Accept): number {
+	const asked = Number(a.maxTimeoutSeconds)
+	return Number.isFinite(asked) && asked > 0 ? Math.min(Math.floor(asked), MAX_VALIDITY_SECONDS) : MAX_VALIDITY_SECONDS
+}
+
 export function permit2TypedData(a: Accept, from: string, nowSec: number, nonce: bigint) {
-	const deadline = BigInt(nowSec + Number(a.maxTimeoutSeconds ?? 120))
+	const deadline = BigInt(nowSec + validitySeconds(a))
 	const validAfter = BigInt(nowSec - 60)
 	const message = {
 		permitted: { token: getAddress(a.asset), amount: BigInt(a.amount) },
@@ -138,12 +146,6 @@ export function loadLedger(path: string, payer: string): Ledger {
 	const l = JSON.parse(readFileSync(path, 'utf8')) as Ledger
 	if (l.payer.toLowerCase() !== payer.toLowerCase()) throw new Error(`spend ledger ${path} belongs to ${l.payer}`)
 	return l
-}
-
-export function saveLedger(path: string, l: Ledger) {
-	const tmp = `${path}.tmp`
-	writeFileSync(tmp, `${JSON.stringify(l, null, 2)}\n`, { mode: 0o600 })
-	renameSync(tmp, path)
 }
 
 /** Everything that may have left the wallet. Only a clean `failed` is not counted. */

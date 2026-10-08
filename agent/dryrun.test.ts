@@ -1,7 +1,7 @@
 // The dry-run path end to end, with the network replaced by the real responses
 // saved in fixtures: the 402 from vet402, the free record, and the RPC reads.
 import { afterAll, beforeAll, describe, expect, test } from 'bun:test'
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import liveHeaders from '../rwa-verify/fixtures/live-facts-2026-10-08.headers.json'
@@ -16,6 +16,9 @@ process.env.BLI_AGENT_KEY_FILE = join(dir, 'no-such.key')
 process.env.BLI_AGENT_LEDGER = LEDGER
 
 type Seen = { url: string; headers: Record<string, string>; body?: string }
+/** USDG logs the mocked chain returns for the payer: none unless a test sets them. */
+let payerTransfers: { data: string }[] = []
+const chainLogs = (f: any) => (f.topics?.[0] === '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef' ? payerTransfers : [])
 const seen: Seen[] = []
 const realFetch = globalThis.fetch
 
@@ -36,7 +39,16 @@ beforeAll(() => {
 		}
 		if (url === 'https://rpc.mainnet.chain.robinhood.com') {
 			const call = JSON.parse(init.body)
-			const result = call.method === 'eth_getCode' ? '0x6080' : call.method === 'eth_call' ? `0x${'0'.repeat(64)}` : null
+			const result =
+				call.method === 'eth_getCode'
+					? '0x6080'
+					: call.method === 'eth_call'
+						? `0x${'0'.repeat(64)}`
+						: call.method === 'eth_blockNumber'
+							? '0x4fc5a00'
+							: call.method === 'eth_getLogs'
+								? chainLogs(call.params[0])
+								: null
 			return new Response(JSON.stringify({ jsonrpc: '2.0', id: call.id, result }), { status: 200 })
 		}
 		return new Response('not mocked', { status: 599 })
@@ -75,6 +87,19 @@ describe('dry run', () => {
 		const out = mkdtempSync(join(tmpdir(), 'out-'))
 		await expect(buyRecord('0xE9B08727131E34010b34006c660D4c1B436EC25f', { wallet: '', max: 1, pay: false, approve: false, broadcast: false }, PAYER, out)).rejects.toThrow(CapReached)
 		expect(existsSync(join(out, 'x402-dry-run.json'))).toBe(false)
+	})
+
+	test('a deleted ledger does not reset the count: USDG already sent onchain stops the run', async () => {
+		const { buyRecord } = await import('./main')
+		const { LedgerMissing } = await import('./pay')
+		rmSync(LEDGER, { force: true })
+		payerTransfers = [{ data: '0x2710' }]
+		const out = mkdtempSync(join(tmpdir(), 'out-'))
+		try {
+			await expect(buyRecord('0xE9B08727131E34010b34006c660D4c1B436EC25f', { wallet: '', max: 1, pay: false, approve: false, broadcast: false }, PAYER, out)).rejects.toThrow(LedgerMissing)
+		} finally {
+			payerTransfers = []
+		}
 	})
 
 	test('arguments: --approve needs --pay, the default is a dry run on the demo wallet', async () => {

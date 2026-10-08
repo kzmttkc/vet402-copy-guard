@@ -193,7 +193,10 @@ It hashes the trail, reruns the rules on the trail's own inputs, rebuilds the re
 ### Paying, and the cap
 
 - The default is a dry run. Only `--pay` signs a payment. `--approve` (only with `--pay`) sends `approve(Permit2, 1 USDG)` once, which is the one step that needs a little ETH on Robinhood Chain.
-- `MAX_SPEND_ATOMIC` in `agent/x402.ts` is fixed at 1 USDG. Every payment is written to a ledger (`~/.vet402/bli-agent-spend.json`) before it is sent, and the ledger is read again right before signing. A payment whose outcome is unknown counts as spent. The approval is also exactly 1 USDG, so Permit2 itself cannot pull more.
+- `MAX_SPEND_ATOMIC` in `agent/x402.ts` is fixed at 1 USDG. The paying path (`agent/pay.ts`) runs under an exclusive lock file, so two runs cannot both pass the cap. A lock left by a process that is gone, or older than ten minutes, is cleared.
+- Every payment is written to the ledger at a fixed path (`~/.vet402/bli-agent-spend.json`) before it is sent, by writing a temp file and renaming it. A payment whose outcome is unknown counts as spent.
+- The chain is a floor under the ledger. Spent is the larger of the ledger and what Robinhood Chain shows: every USDG the payer has sent, and the last approval to Permit2 minus the current allowance. If the ledger is gone while the chain shows spending, the agent stops instead of starting again from zero.
+- The approval is the cap minus what was already spent, so Permit2 itself cannot pull past 1 USDG. A signature is valid for at most 120 seconds, whatever the 402 asks for.
 - The agent refuses terms above 0.01 USDG, another payee, another chain, another token or another transfer method before anything is signed.
 - One purchase per run. Every move judged in that run reads the same bytes, and the trail names them by hash.
 - The payment wallet is `0xc380D9F41D90765A4820429B9Da151889E8bED94`. Its key lives outside this repo.

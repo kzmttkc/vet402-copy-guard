@@ -22,6 +22,7 @@ import { type AnchorRef, httpRpc, LOG_SPAN, movements, newestAnchor, RPC } from 
 import { type CreRun, REPO, simulate } from './cre'
 import { recordInputs } from './record'
 import { type CreInputs, type DecisionInputs, RULES, USDG } from './rules'
+import { effectiveSpent, ledgerPath, payOnce, readChainSpend } from './pay'
 import { buildTrail, type Purchase, type Trail, trailHash } from './trail'
 import {
 	assertUnderCap,
@@ -33,8 +34,6 @@ import {
 	paymentHeader,
 	permit2TypedData,
 	pickAccept,
-	saveLedger,
-	spentAtomic,
 	termsOf,
 	X402_PERMIT2_PROXY,
 } from './x402'
@@ -44,7 +43,8 @@ const VET402 = 'https://vet402.com'
 const VET402_REPO_RAW = 'https://raw.githubusercontent.com/kzmttkc/vet402/main'
 const KEY_FILE = process.env.BLI_AGENT_KEY_FILE ?? join(homedir(), '.vet402/bli-agent.key')
 const ADDRESS_FILE = process.env.BLI_AGENT_ADDRESS_FILE ?? join(homedir(), '.vet402/bli-agent.address')
-const LEDGER_FILE = process.env.BLI_AGENT_LEDGER ?? join(homedir(), '.vet402/bli-agent-spend.json')
+/** Fixed. Only a test run may point it elsewhere (agent/pay.ts ledgerPath). */
+const LEDGER_FILE = ledgerPath()
 const STATE_DIR = join(REPO, 'agent/state')
 
 type Args = {
@@ -121,8 +121,10 @@ export async function buyRecord(wallet: string, args: Args, payer: string, out: 
 		pub.readContract({ address: USDG as Hex, abi: erc20, functionName: 'balanceOf', args: [payer as Hex] }),
 		pub.readContract({ address: USDG as Hex, abi: erc20, functionName: 'allowance', args: [payer as Hex, PERMIT2] }),
 	])
-	const ledger = loadLedger(LEDGER_FILE, payer)
-	const spent = spentAtomic(ledger)
+	// Spent = the larger of the ledger and the chain (every USDG the payer sent, and last approval - allowance).
+	const latest = Number(await pub.getBlockNumber())
+	const onchain = await readChainSpend(httpRpc(RPC), payer, latest, allowance)
+	const spent = effectiveSpent(LEDGER_FILE, loadLedger(LEDGER_FILE, payer), onchain.spentAtomic)
 	const amount = BigInt(accept.amount)
 	// The cap is checked before a payment is even built, in a dry run too.
 	assertUnderCap(spent, amount)
@@ -137,6 +139,7 @@ export async function buyRecord(wallet: string, args: Args, payer: string, out: 
 		payer,
 		usdg_balance_atomic: balance.toString(),
 		permit2_allowance_atomic: allowance.toString(),
+		chain_spent_atomic: onchain.spentAtomic.toString(),
 		spent_before_atomic: spent.toString(),
 		cap_atomic: MAX_SPEND_ATOMIC.toString(),
 		permit2_typed_data: JSON.parse(JSON.stringify(built.typedData, (_k, v) => (typeof v === 'bigint' ? v.toString() : v))),
@@ -174,47 +177,51 @@ export async function buyRecord(wallet: string, args: Args, payer: string, out: 
 		}
 	}
 
-	// --pay. The ledger is read again right before signing, in case another run paid meanwhile.
-	const book = loadLedger(LEDGER_FILE, payer)
-	assertUnderCap(spentAtomic(book), amount)
+	// --pay. Everything from the cap check to the last ledger write runs under the ledger lock.
 	if (balance < amount) throw new Error('USDG balance is below the price; nothing sent')
 	const key = readFileSync(KEY_FILE, 'utf8').trim() as Hex
 	const account = privateKeyToAccount(key)
 	if (account.address.toLowerCase() !== payer.toLowerCase()) throw new Error('key file and address file disagree')
-	if (allowance < amount) {
-		if (!args.approve) throw new Error('Permit2 allowance is short; rerun with --pay --approve (needs a little ETH on 4663)')
-		// Approve exactly the cap, so Permit2 itself can never pull more than 1 USDG.
-		const wallet = createWalletClient({ account, chain, transport: http(RPC) })
-		const hash = await wallet.writeContract({ address: USDG as Hex, abi: erc20, functionName: 'approve', args: [PERMIT2, MAX_SPEND_ATOMIC] })
-		await pub.waitForTransactionReceipt({ hash })
-		say(`  approve     Permit2 ${MAX_SPEND_ATOMIC} USDG atomic, tx ${hash}`)
-	}
-	const signature = await account.signTypedData(built.typedData)
-	const entry = { at: new Date().toISOString(), resource: paidUrl, amount_atomic: amount.toString(), status: 'pending' as const, tx: null as string | null }
-	book.entries.push(entry)
-	saveLedger(LEDGER_FILE, book)
-	const paid = await fetch(paidUrl, { headers: { 'PAYMENT-SIGNATURE': paymentHeader(required, accept, built.authorization, signature) } })
-	const resp = paid.headers.get('PAYMENT-RESPONSE')
-	const settlement = resp ? JSON.parse(Buffer.from(resp, 'base64').toString('utf8')) : null
-	const txOk = typeof settlement?.transaction === 'string' && /^0x[0-9a-fA-F]{64}$/.test(settlement.transaction)
-	const status = paid.headers.get('X-Payment-Status')
-	const last = book.entries[book.entries.length - 1]
-	if (paid.status === 200 && txOk && settlement.success !== false) {
-		last.status = 'settled'
-		last.tx = settlement.transaction
-	} else if (paid.status === 402 && !txOk) {
-		last.status = 'failed'
-	} else {
-		last.status = 'unknown'
-		last.tx = txOk ? settlement.transaction : null
-	}
-	saveLedger(LEDGER_FILE, book)
-	writeFileSync(join(out, 'x402-paid.json'), `${JSON.stringify({ ...x402, signed: true, http_status: paid.status, x_payment_status: status, settlement }, null, 2)}\n`)
-	if (paid.status !== 200) throw new Error(`paid route answered ${paid.status} (${last.status}); see x402-paid.json`)
+	let paid: Response | null = null
+	let signedDigest = built.digest
+	const result = await payOnce({
+		ledgerFile: LEDGER_FILE,
+		payer,
+		amount,
+		resource: paidUrl,
+		chainSpentAtomic: onchain.spentAtomic,
+		allowance,
+		approve: args.approve
+			? async (remaining) => {
+					// Approve only what is left under the cap, so Permit2 itself can never pull past it.
+					const wallet = createWalletClient({ account, chain, transport: http(RPC) })
+					const hash = await wallet.writeContract({ address: USDG as Hex, abi: erc20, functionName: 'approve', args: [PERMIT2, remaining] })
+					await pub.waitForTransactionReceipt({ hash })
+					say(`  approve     Permit2 ${remaining} USDG atomic (cap ${MAX_SPEND_ATOMIC} minus spent), tx ${hash}`)
+				}
+			: undefined,
+		send: async () => {
+			// Built again here so the validity window (at most 120 s) starts at signing time.
+			const fresh = permit2TypedData(accept, payer, Math.floor(Date.now() / 1000), BigInt(`0x${randomBytes(32).toString('hex')}`))
+			signedDigest = fresh.digest
+			const signature = await account.signTypedData(fresh.typedData)
+			paid = await fetch(paidUrl, { headers: { 'PAYMENT-SIGNATURE': paymentHeader(required, accept, fresh.authorization, signature) } })
+			const resp = paid.headers.get('PAYMENT-RESPONSE')
+			return { httpStatus: paid.status, settlement: resp ? JSON.parse(Buffer.from(resp, 'base64').toString('utf8')) : null }
+		},
+	})
+	const res = paid as unknown as Response
+	const last = result.outcome
+	writeFileSync(
+		join(out, 'x402-paid.json'),
+		`${JSON.stringify({ ...x402, signed: true, permit2_digest: signedDigest, http_status: result.httpStatus, x_payment_status: res.headers.get('X-Payment-Status'), settlement: result.settlement }, null, 2)}\n`,
+	)
+	if (result.httpStatus !== 200) throw new Error(`paid route answered ${result.httpStatus} (${last.status}); see x402-paid.json`)
 	say(`  PAID        ${amount} USDG atomic, settlement ${last.status} tx ${last.tx}`)
+	const paidRes = res
 	return {
-		facts: await paid.json(),
-		xFactsHash: (paid.headers.get('x-facts-hash') ?? '').toLowerCase(),
+		facts: await paidRes.json(),
+		xFactsHash: (paidRes.headers.get('x-facts-hash') ?? '').toLowerCase(),
 		sourceUrl: paidUrl,
 		terms,
 		x402,
@@ -226,7 +233,7 @@ export async function buyRecord(wallet: string, args: Args, payer: string, out: 
 			settlement: last.status === 'settled' ? 'settled' : 'unknown',
 			spent_before_atomic: spent.toString(),
 			cap_atomic: MAX_SPEND_ATOMIC.toString(),
-			permit2_digest: built.digest,
+			permit2_digest: signedDigest,
 		},
 	}
 }
