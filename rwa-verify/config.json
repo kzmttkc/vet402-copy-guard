@@ -6,6 +6,6 @@
   "operator": "0x973cD8a91A771C2C04C6036888F8175D6b4F6227",
   "robinhoodRpc": "https://rpc.mainnet.chain.robinhood.com",
   "chainSelectorName": "robinhood-testnet",
-  "receiverAddress": "0x000000000000000000000000000000000000dEaD",
+  "receiverAddress": "0x8bf4d455d38301e9d330B12144AdE02F16BC2Cb3",
   "gasLimit": "300000"
 }

@@ -96,6 +96,21 @@ The same record with one character changed:
 ✓ Workflow Simulation Result: "{\"verdict\":\"MISMATCH\", ... \"reasonBits\":288, ...}"
 ```
 
-The write step is a dry run: nothing is broadcast, so the tx hash is all zeros. `RwaVerdictReceiver` is not deployed yet and the config points at a placeholder address (`0x…dEaD`). CRE's `MockKeystoneForwarder` does not revert for an address without code, so the dry run reports success without running the receiver. The fork test above delivers the same MATCH report to a real `RwaVerdictReceiver` through that forwarder. `scripts/local-check.ts` prints the same rows without CRE (`docs/local-run-*.txt`).
+## Onchain on Robinhood Testnet
+
+`scripts/deploy-and-broadcast.sh` deployed the receiver and ran the same two simulations with `--broadcast` on 2026-10-09. A testnet-only key paid the gas. It is kept outside this repo.
+
+| | |
+|---|---|
+| RwaVerdictReceiver (verified source) | [`0x8bf4d455d38301e9d330B12144AdE02F16BC2Cb3`](https://explorer.testnet.chain.robinhood.com/address/0x8bf4d455d38301e9d330b12144ade02f16bc2cb3) |
+| deploy tx | [`0xa471575b…32766e`](https://explorer.testnet.chain.robinhood.com/tx/0xa471575bfc69881c5e39f9157dda453a0b32933de05f6135429a64211132766e) |
+| MATCH verdict | [`0x34ca26b3…b8662d`](https://explorer.testnet.chain.robinhood.com/tx/0x34ca26b37ca844ff857fc297c9c4f9404a7f28111abe5dfa65457b1066b8662d): `isMatch=true`, `reasons=0` |
+| MISMATCH verdict | [`0x7c5fd354…ffebeb`](https://explorer.testnet.chain.robinhood.com/tx/0x7c5fd35427be3e1e2531d957f7fd2712adc1c591d6c3ec7937bfca8372ffebeb): `isMatch=false`, `reasons=288`, recomputed `0x29175278…0e0d99` against anchored `0x9d0e83d9…f721ee` |
+
+Logs and decoded `RecordChecked` events: `docs/broadcast-*.txt` and `docs/broadcast-*.receipt.txt`. In both transactions the CRE forwarder's `ReportProcessed` says the delivery succeeded.
+
+The receiver was deployed to trust CRE's simulation forwarder (`MockKeystoneForwarder` `0x0b93…3885`), because that is what `cre workflow simulate --broadcast` writes through. That forwarder is permissionless, and the simulator fills the workflow id, name and owner with fixed test values (`0x1111…`, `0xaaaa…`). A deployed workflow would use a receiver bound to the production `KeystoneForwarder` and filter on its own workflow owner.
+
+`scripts/local-check.ts` prints the same rows without CRE (`docs/local-run-*.txt`).
 
 vet402 /rwa reports what public chain data shows. It does not give legal or investment advice.
