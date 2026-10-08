@@ -122,6 +122,14 @@ describe('onHttpTrigger', () => {
 		expect(out.live.xFactsHashMatchesBody).toBe(false)
 	})
 
+	test('recordUrl in the payload is read (https only)', () => {
+		const seen = wire()
+		const { out } = run({ tx: anchored.anchor_tx, recordUrl: config.recordUrl })
+		expect(out.verdict).toBe('MATCH')
+		expect(seen.urls).toContain(config.recordUrl)
+		expect(() => run({ tx: anchored.anchor_tx, recordUrl: 'http://example.com/r.json' })).toThrow()
+	})
+
 	test('rejects payload fields it does not know', () => {
 		wire()
 		expect(() => run({ tx: anchored.anchor_tx, amount: 1 })).toThrow()

@@ -71,7 +71,12 @@ export const payloadSchema = z
 			.string()
 			.regex(/^0x[0-9a-fA-F]{64}$/)
 			.optional(),
-		recordUrl: z.string().url().optional(),
+		// zod's .url() rejected a valid https URL inside `cre workflow simulate`
+		// (2026-10-09, it passes under bun), so a plain https check is used instead.
+		recordUrl: z
+			.string()
+			.regex(/^https:\/\/[^\s/]+\/\S*$/)
+			.optional(),
 		record: z.record(z.unknown()).optional(),
 		operator: z
 			.string()
