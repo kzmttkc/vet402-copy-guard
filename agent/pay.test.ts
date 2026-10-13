@@ -1,7 +1,7 @@
 // The paying path without a network: ledger, lock, cap, chain floor, settlement.
 import { describe, expect, test } from 'bun:test'
-import { spawnSync } from 'node:child_process'
-import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { spawn, spawnSync } from 'node:child_process'
+import { existsSync, mkdtempSync, readdirSync, readFileSync, utimesSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
@@ -171,6 +171,95 @@ describe('payOnce: the lock', () => {
 		writeFileSync(`${file}.lock`, `${process.pid} ${Date.now() - LOCK_STALE_MS - 1} old`)
 		expect(await withLedgerLock(file, async () => 'ran again')).toBe('ran again')
 		expect(existsSync(`${file}.lock`)).toBe(false)
+	})
+
+	test('two runs that both read the same stale lock: one takes it, the other is refused', async () => {
+		const file = fresh()
+		const lock = `${file}.lock`
+		writeFileSync(lock, `${spawnSync('true').pid} ${Date.now()} old`)
+		let release!: () => void
+		const gate = new Promise<void>((r) => (release = r))
+		let first: Promise<string> | null = null
+		let firstRan = false
+		let secondRan = false
+		// Run B has judged the lock stale. Before B clears it, run A clears it and takes the lock.
+		const second = withLedgerLock(file, async () => ((secondRan = true), 'B'), Date.now, {
+			beforeClear: () => {
+				first ??= withLedgerLock(file, async () => ((firstRan = true), await gate, 'A'))
+			},
+		})
+		await expect(second).rejects.toThrow(LedgerLocked)
+		expect(firstRan).toBe(true)
+		expect(secondRan).toBe(false)
+		// A still holds its own lock: B did not remove it on the way out.
+		expect(readFileSync(lock, 'utf8').startsWith(`${process.pid} `)).toBe(true)
+		release()
+		expect(await (first as unknown as Promise<string>)).toBe('A')
+		expect(readdirSync(join(file, '..'))).toEqual([])
+	})
+
+	test('eight processes start on the same stale lock: exactly one runs', async () => {
+		const file = fresh()
+		writeFileSync(`${file}.lock`, `${spawnSync('true').pid} ${Date.now()} old`)
+		const startAt = Date.now() + 400
+		// The one that gets the lock holds it until the other seven have given up.
+		const child = `
+			import { existsSync } from 'node:fs'
+			import { withLedgerLock } from './pay'
+			const [file, startAt] = process.argv.slice(-2)
+			while (Date.now() < Number(startAt)) {}
+			try {
+				await withLedgerLock(file, async () => {
+					while (!existsSync(file + '.release')) await new Promise((r) => setTimeout(r, 10))
+				})
+				console.log('ran')
+			} catch (e) {
+				console.log(e.constructor.name)
+			}`
+		let closed = 0
+		const release = () => existsSync(`${file}.release`) || writeFileSync(`${file}.release`, '')
+		const giveUp = setTimeout(release, 8000)
+		const outs = await Promise.all(
+			Array.from({ length: 8 }, () => {
+				const p = spawn(process.execPath, ['-e', child, file, String(startAt)], { cwd: import.meta.dir })
+				let out = ''
+				p.stdout.on('data', (d) => (out += d))
+				p.stderr.on('data', (d) => (out += d))
+				return new Promise<string>((r) =>
+					p.on('close', () => {
+						if (++closed === 7) release()
+						r(out.trim())
+					}),
+				)
+			}),
+		)
+		clearTimeout(giveUp)
+		expect(outs.filter((o) => o === 'ran')).toHaveLength(1)
+		expect(outs.filter((o) => o === 'LedgerLocked')).toHaveLength(7)
+		expect(readdirSync(join(file, '..'))).toEqual(['spend.json.release'])
+	}, 15_000)
+
+	test('a lock file that is still empty belongs to a run that is writing it; only an old one is cleared', async () => {
+		const file = fresh()
+		const lock = `${file}.lock`
+		writeFileSync(lock, '')
+		await expect(withLedgerLock(file, async () => 1)).rejects.toThrow(LedgerLocked)
+		expect(existsSync(lock)).toBe(true)
+		const old = new Date(Date.now() - LOCK_STALE_MS - 1000)
+		utimesSync(lock, old, old)
+		expect(await withLedgerLock(file, async () => 'ran')).toBe('ran')
+		expect(existsSync(lock)).toBe(false)
+	})
+
+	test('a takeover that was cut short leaves its marker, and nobody pays until a person removes it', async () => {
+		const file = fresh()
+		writeFileSync(`${file}.lock`, `${spawnSync('true').pid} ${Date.now()} old`)
+		writeFileSync(`${file}.lock.break`, 'left behind')
+		let sent = false
+		await expect(payOnce(opts(file, { send: async () => ((sent = true), { httpStatus: 200, settlement: null }) }))).rejects.toThrow(LedgerLocked)
+		expect(sent).toBe(false)
+		expect(existsSync(file)).toBe(false)
+		expect(readFileSync(`${file}.lock.break`, 'utf8')).toBe('left behind')
 	})
 })
 

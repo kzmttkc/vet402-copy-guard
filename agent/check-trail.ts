@@ -12,6 +12,12 @@
 //    RecordChecked event for the same anchor. A paid trail's settlement tx must show
 //    the USDG payment.
 // Exit code 0 only when every check passes.
+//
+// This checker runs the agent's own code: the same rules.ts, trail.ts and record.ts
+// the agent and the CRE workflow run. The other checker, verify.mjs at the repo root,
+// shares no code with them: it has its own hash and its own writing of the rules, needs
+// no install, and also checks the anchor and the payment. verify.test.ts holds the two
+// against each other, so a difference between them fails the tests.
 import { readFileSync } from 'node:fs'
 import { canonicalJson } from '../rwa-verify/verify'
 import { httpRpc, movements } from './chain'

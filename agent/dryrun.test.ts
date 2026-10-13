@@ -1,9 +1,11 @@
 // The dry-run path end to end, with the network replaced by the real responses
 // saved in fixtures: the 402 from vet402, the free record, and the RPC reads.
 import { afterAll, beforeAll, describe, expect, test } from 'bun:test'
+import { randomBytes } from 'node:crypto'
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { privateKeyToAccount } from 'viem/accounts'
 import liveHeaders from '../rwa-verify/fixtures/live-facts-2026-10-08.headers.json'
 import { parseSimulation } from './cre'
 import { LIVE, PAYMENT_REQUIRED } from './test-helpers'
@@ -20,6 +22,10 @@ type Seen = { url: string; headers: Record<string, string>; body?: string }
 let payerTransfers: { data: string }[] = []
 const chainLogs = (f: any) => (f.topics?.[0] === '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef' ? payerTransfers : [])
 const seen: Seen[] = []
+/** What the mocked chain answers to eth_call (USDG balanceOf and allowance): zero unless a test sets it. */
+let callResult = `0x${'0'.repeat(64)}`
+/** How the mocked paid route treats a request that carries a payment: unset means it is not expected. */
+let onPaidRequest: ((init: any) => Promise<Response>) | null = null
 const realFetch = globalThis.fetch
 
 beforeAll(() => {
@@ -29,6 +35,7 @@ beforeAll(() => {
 		new Headers(init?.headers ?? {}).forEach((v, k) => (headers[k] = v))
 		seen.push({ url, headers, body: init?.body })
 		if (url.startsWith('https://vet402.com/api/v1/rwa/paid/facts/')) {
+			if (headers['payment-signature']) return onPaidRequest ? onPaidRequest(init) : new Response('a payment was sent in a test that expects none', { status: 599 })
 			return new Response(JSON.stringify(PAYMENT_REQUIRED.decoded), {
 				status: 402,
 				headers: { 'PAYMENT-REQUIRED': PAYMENT_REQUIRED.payment_required_header, 'content-type': 'application/json' },
@@ -43,7 +50,7 @@ beforeAll(() => {
 				call.method === 'eth_getCode'
 					? '0x6080'
 					: call.method === 'eth_call'
-						? `0x${'0'.repeat(64)}`
+						? callResult
 						: call.method === 'eth_blockNumber'
 							? '0x4fc5a00'
 							: call.method === 'eth_getLogs'
@@ -109,6 +116,53 @@ describe('dry run', () => {
 		expect(a.pay).toBe(false)
 		expect(a.broadcast).toBe(false)
 		expect(a.wallet).toBe('0xE9B08727131E34010b34006c660D4c1B436EC25f')
+	})
+})
+
+describe('the paid request', () => {
+	test('a paid route that never answers is given up on, and the payment counts as spent', async () => {
+		const { buyRecord } = await import('./main')
+		const { ledgerPath } = await import('./pay')
+		// Nothing here can reach a network or a real wallet: fetch is the mock above, the
+		// ledger is the temp file, and the key is random bytes made for this test.
+		expect(ledgerPath()).toBe(LEDGER)
+		rmSync(LEDGER, { force: true })
+		const keyFile = process.env.BLI_AGENT_KEY_FILE as string
+		const key = `0x${randomBytes(32).toString('hex')}` as const
+		const payer = privateKeyToAccount(key).address
+		writeFileSync(keyFile, key)
+		callResult = `0x${(10_000).toString(16).padStart(64, '0')}`
+		let aborted = false
+		onPaidRequest = (init) =>
+			new Promise((_resolve, reject) => {
+				if (!init?.signal) return reject(new Error('the paid request has no time limit'))
+				init.signal.addEventListener('abort', () => ((aborted = true), reject(init.signal.reason)))
+			})
+		const out = mkdtempSync(join(tmpdir(), 'out-'))
+		const started = Date.now()
+		try {
+			await expect(
+				buyRecord('0xE9B08727131E34010b34006c660D4c1B436EC25f', { wallet: '', max: 1, pay: true, approve: false, broadcast: false }, payer, out, { paidTimeoutMs: 50 }),
+			).rejects.toMatchObject({ name: 'TimeoutError' })
+			expect(aborted).toBe(true)
+			expect(Date.now() - started).toBeLessThan(5000)
+			const ledger = JSON.parse(readFileSync(LEDGER, 'utf8'))
+			expect(ledger.entries).toHaveLength(1)
+			expect(ledger.entries[0]).toMatchObject({ status: 'unknown', amount_atomic: '10000', tx: null })
+			expect(existsSync(`${LEDGER}.lock`)).toBe(false)
+		} finally {
+			onPaidRequest = null
+			callResult = `0x${'0'.repeat(64)}`
+			rmSync(keyFile, { force: true })
+			rmSync(LEDGER, { force: true })
+		}
+	})
+
+	test('the default time limit is one minute, under the ten minutes after which a lock may be taken over', async () => {
+		const { PAID_REQUEST_TIMEOUT_MS } = await import('./main')
+		const { LOCK_STALE_MS } = await import('./pay')
+		expect(PAID_REQUEST_TIMEOUT_MS).toBe(60_000)
+		expect(PAID_REQUEST_TIMEOUT_MS).toBeLessThan(LOCK_STALE_MS)
 	})
 })
 

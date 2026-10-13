@@ -2,13 +2,15 @@
 //
 // - The ledger lives at a fixed path. Only a test run (NODE_ENV=test) may move it.
 // - Every payment runs under an exclusive lock file (O_EXCL). A lock whose
-//   process is gone, or that is older than LOCK_STALE_MS, is cleared once.
+//   process is gone, or that is older than LOCK_STALE_MS, is taken over, and the
+//   takeover itself is exclusive: of two runs that both see the stale lock, one
+//   gets it and the other is refused.
 // - What counts as spent is the larger of the ledger and the chain: every USDG
 //   the payer ever sent, and (last approval to Permit2 - current allowance).
 // - No ledger but the chain shows spending: stop. Deleting the ledger never
 //   resets the cap.
 // - The ledger is written to a temp file and renamed over the old one.
-import { closeSync, existsSync, openSync, readFileSync, renameSync, unlinkSync, writeSync } from 'node:fs'
+import { closeSync, existsSync, openSync, readFileSync, renameSync, statSync, unlinkSync, writeSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { pad } from 'viem'
@@ -44,32 +46,88 @@ function alive(pid: number): boolean {
 	}
 }
 
-export async function withLedgerLock<T>(ledger: string, fn: () => Promise<T>, nowMs: () => number = Date.now): Promise<T> {
-	const lock = `${ledger}.lock`
-	const token = `${process.pid} ${nowMs()} ${Math.random().toString(36).slice(2)}`
-	for (let attempt = 0; ; attempt++) {
+/** Create the lock file, or throw EEXIST. O_EXCL: of any number of runs, one succeeds. */
+function createLock(lock: string, token: string) {
+	const fd = openSync(lock, 'wx', 0o600)
+	try {
+		writeSync(fd, token)
+	} finally {
+		closeSync(fd)
+	}
+}
+
+/**
+ * Is the lock left over? A lock with a holder is stale when that process is gone or the
+ * lock is older than LOCK_STALE_MS. A lock with no readable holder is one another run has
+ * created and not yet written, so it is stale only when the file itself is that old.
+ */
+function isStale(lock: string, holder: string, nowMs: () => number): boolean {
+	const [pid, at] = holder.split(' ').map(Number)
+	if (holder && Number.isFinite(pid) && Number.isFinite(at)) return !alive(pid) || nowMs() - at > LOCK_STALE_MS
+	try {
+		return nowMs() - statSync(lock).mtimeMs > LOCK_STALE_MS
+	} catch {
+		return false
+	}
+}
+
+const readOrEmpty = (path: string) => {
+	try {
+		return readFileSync(path, 'utf8')
+	} catch {
+		return ''
+	}
+}
+
+/**
+ * Take over a stale lock. Two runs can both read the same stale lock; if each then
+ * removed "the stale lock" and created its own, the second would remove the first
+ * one's fresh lock and both would pay. So the takeover has its own O_EXCL marker
+ * (`<lock>.break`): one run at a time may hold it, and under it the run reads the lock
+ * again and takes it only when it is still the stale one it saw.
+ *
+ * The marker is never cleared automatically. Left behind by a crash in the few lines
+ * below, it stops every later payment until a person deletes it.
+ */
+function takeOverStaleLock(lock: string, seen: string, token: string) {
+	const marker = `${lock}.break`
+	try {
+		closeSync(openSync(marker, 'wx', 0o600))
+	} catch (e) {
+		if ((e as NodeJS.ErrnoException).code !== 'EEXIST') throw e
+		throw new LedgerLocked(`another run is taking over a stale lock, or was cut short while doing it (${marker}); nothing paid. If no run is active, delete that file`)
+	}
+	try {
+		const now = readOrEmpty(lock)
+		if (now !== seen) throw new LedgerLocked(`the spend ledger was locked by another run in the meantime (${now || 'lock being written'}); nothing paid`)
+		unlinkSync(lock)
 		try {
-			const fd = openSync(lock, 'wx', 0o600)
-			writeSync(fd, token)
-			closeSync(fd)
-			break
+			createLock(lock, token)
 		} catch (e) {
 			if ((e as NodeJS.ErrnoException).code !== 'EEXIST') throw e
-			let holder = ''
-			try {
-				holder = readFileSync(lock, 'utf8')
-			} catch {
-				holder = ''
-			}
-			const [pid, at] = holder.split(' ').map(Number)
-			const stale = !holder || !Number.isFinite(pid) || !alive(pid) || nowMs() - at > LOCK_STALE_MS
-			if (!stale || attempt > 0) throw new LedgerLocked(`the spend ledger is locked by another run (${holder || 'unreadable lock'}); nothing paid`)
-			try {
-				unlinkSync(lock)
-			} catch {
-				// someone else cleared it first; the next attempt decides
-			}
+			throw new LedgerLocked('the spend ledger was locked by another run in the meantime; nothing paid')
 		}
+	} finally {
+		unlinkSync(marker)
+	}
+}
+
+export type LockHooks = {
+	/** Test seam: called after a lock was judged stale and before the takeover starts. */
+	beforeClear?: () => void
+}
+
+export async function withLedgerLock<T>(ledger: string, fn: () => Promise<T>, nowMs: () => number = Date.now, hooks: LockHooks = {}): Promise<T> {
+	const lock = `${ledger}.lock`
+	const token = `${process.pid} ${nowMs()} ${Math.random().toString(36).slice(2)}`
+	try {
+		createLock(lock, token)
+	} catch (e) {
+		if ((e as NodeJS.ErrnoException).code !== 'EEXIST') throw e
+		const holder = readOrEmpty(lock)
+		if (!isStale(lock, holder, nowMs)) throw new LedgerLocked(`the spend ledger is locked by another run (${holder || 'lock being written'}); nothing paid`)
+		hooks.beforeClear?.()
+		takeOverStaleLock(lock, holder, token)
 	}
 	try {
 		return await fn()

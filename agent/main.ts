@@ -46,6 +46,13 @@ const ADDRESS_FILE = process.env.BLI_AGENT_ADDRESS_FILE ?? join(homedir(), '.vet
 /** Fixed. Only a test run may point it elsewhere (agent/pay.ts ledgerPath). */
 const LEDGER_FILE = ledgerPath()
 const STATE_DIR = join(REPO, 'agent/state')
+/**
+ * How long the paid request may take. The first settlement took 1.5 s. A request with no
+ * limit could hang while it holds the ledger lock; after ten minutes another run may take
+ * that lock over. When the limit passes, the request is abandoned and the payment is
+ * written to the ledger as unknown, which counts as spent.
+ */
+export const PAID_REQUEST_TIMEOUT_MS = 60_000
 
 type Args = {
 	wallet: string
@@ -101,7 +108,8 @@ const say = (s: string) => console.log(s)
 type Bought = { facts: any; xFactsHash: string; sourceUrl: string; purchase: Purchase; terms: ReturnType<typeof termsOf>; x402: unknown }
 
 /** Step 2: buy the record (or, in a dry run, build the payment and read the same JSON from the free route). */
-export async function buyRecord(wallet: string, args: Args, payer: string, out: string): Promise<Bought> {
+export async function buyRecord(wallet: string, args: Args, payer: string, out: string, opts: { paidTimeoutMs?: number } = {}): Promise<Bought> {
+	const paidTimeoutMs = opts.paidTimeoutMs ?? PAID_REQUEST_TIMEOUT_MS
 	const pub = createPublicClient({ chain, transport: http(RPC) })
 	const paidUrl = `${VET402}/api/v1/rwa/paid/facts/${wallet}`
 	const first = await fetch(paidUrl)
@@ -205,7 +213,10 @@ export async function buyRecord(wallet: string, args: Args, payer: string, out: 
 			const fresh = permit2TypedData(accept, payer, Math.floor(Date.now() / 1000), BigInt(`0x${randomBytes(32).toString('hex')}`))
 			signedDigest = fresh.digest
 			const signature = await account.signTypedData(fresh.typedData)
-			paid = await fetch(paidUrl, { headers: { 'PAYMENT-SIGNATURE': paymentHeader(required, accept, fresh.authorization, signature) } })
+			paid = await fetch(paidUrl, {
+				headers: { 'PAYMENT-SIGNATURE': paymentHeader(required, accept, fresh.authorization, signature) },
+				signal: AbortSignal.timeout(paidTimeoutMs),
+			})
 			const resp = paid.headers.get('PAYMENT-RESPONSE')
 			return { httpStatus: paid.status, settlement: resp ? JSON.parse(Buffer.from(resp, 'base64').toString('utf8')) : null }
 		},

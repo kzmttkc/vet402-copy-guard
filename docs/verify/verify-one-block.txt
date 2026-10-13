@@ -1,0 +1,17 @@
+$ node verify.mjs 73953009
+vet402 copy-guard: recheck with no key, no account and no install
+  chains  Robinhood Chain 4663 at rpc.mainnet.chain.robinhood.com, Robinhood Testnet 46630 at rpc.testnet.chain.robinhood.com
+  OK    keccak256       the built-in hash gives the published test values
+docs/agent/first-paid-run/trail-73953009-1b838f40.json: wallet 0xe9b08727131e34010b34006c660d4c1b436ec25f, move 0x1b838f40a43d54b7ce3364f08f723516170be2d03fdbcd6ab801c79f7f77b51b in block 73953009, the trail says DO_NOT_COPY
+  OK    trail hash      the trail hashes to 0x925ab3b6…38e8aa, as the file says
+  OK    rules           13 rules rerun give DO_NOT_COPY (failed: C1 C2 C3 C4 C5), 8 pass, every row as the trail has it
+  OK    record fields   what the rules read is what docs/agent/first-paid-run/record.json holds
+  OK    move on chain   0x1b838f40…77b51b in block 73953009: 1 transfer of the wallet, as the trail lists
+  OK    trail onchain   DecisionRecorded in 0x36dead3c…7fca7b on Robinhood Testnet has this hash, DO_NOT_COPY, the same record, move and payment
+  OK    settlement tx   0x65c314bd…87af61 succeeded in block 83662617 on Robinhood Chain
+  OK    USDG moved      0.01 USDG from 0xc380…ed94 (the agent) to 0x973c…6227 (vet402), the only USDG transfer in the tx
+  OK    CRE verdict     the CRE workflow wrote MATCH for anchor 0x15f9ed8a…585c7f in 0xc90411c0…4b6cbb on Robinhood Testnet
+
+9 OK, 0 FAIL, 0 not checked
+RESULT: MATCH
+exit code 0
