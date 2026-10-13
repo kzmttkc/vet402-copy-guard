@@ -2,21 +2,22 @@
 
 A fake "NVDA" token sent to a wallet looks like a real stock purchase to anyone who copies that wallet. People lose money to a look-alike they had no way to tell apart, which makes fake tickers a consumer-harm problem before they are a technical one.
 
-In this repo an AI agent pays 0.01 USDG over x402 for a wallet's vet402 /rwa record, has a Chainlink CRE workflow re-verify that record against its onchain anchor, and then declines to copy any move that involves a fake. It writes down every rule it applied and has a second CRE workflow put the hash of that reasoning trail onchain.
+In this repo an autonomous agent pays 0.01 USDG over x402 for a wallet's vet402 /rwa record, has a Chainlink CRE workflow re-verify that record against its onchain anchor, and then declines to copy any move that involves a fake. It decides by 13 fixed rules and uses no language model, so the same inputs always give the same conclusion. It writes down every rule it applied and has a second CRE workflow put the hash of that reasoning trail onchain.
 
 Nobody has to take my word, the agent's or a server's for any of it. One command, with no key, no account and nothing to install, rechecks the payment, the record and all three decisions against two public chains.
 
 ## Verify it yourself in 60 seconds
 
-Step 1 needs Node 20 or newer and a copy of this repo. Steps 2 to 4 need only a browser.
+Step 1 needs Node 20 or newer and a copy of this repo. Steps 2 to 4 need only a browser. Every date and time in this README is UTC.
 
 **1. Run the recheck** from the root of the repo.
 
 ```bash
+git clone <REPO_URL> vet402-bli && cd vet402-bli
 node verify.mjs
 ```
 
-It recomputes every hash from the files in this repo with its own code, reruns the agent's 13 rules, and compares the results with what Robinhood Chain and Robinhood Testnet hold. It takes about four seconds. This is the output on 2026-10-14:
+It recomputes every hash from the files in this repo with its own code, reruns the agent's 13 rules, and compares the results with what Robinhood Chain and Robinhood Testnet hold. It takes about four seconds. This is the output on 2026-10-13 (UTC):
 
 ```
 vet402 copy-guard: recheck with no key, no account and no install
@@ -96,6 +97,8 @@ https://explorer.testnet.chain.robinhood.com/address/0x991311C2ECA78B83dA3593C75
 
 Look at the Logs tab. The three newest `DecisionRecorded` events carry the trail hashes that step 1 printed: `0x527e16e2…cc1801`, `0x925ab3b6…38e8aa` and `0x26fa5a0f…67b420`. Each has `conclusion` 1, which means DO_NOT_COPY, and `paymentTx` `0x65c314bd…87af61`. The Contract tab shows the verified source of `ReasoningTrailReceiver`: no owner, no storage, no upgrade path.
 
+If that page stays blank, the explorer's API returns the same six events as JSON, newest first: https://explorer.testnet.chain.robinhood.com/api/v2/addresses/0x991311C2ECA78B83dA3593C7500804af6FEEa0B3/logs
+
 **3. Open the payment** (Robinhood Chain).
 
 https://robinhoodchain.blockscout.com/tx/0x65c314bd758a59dfc79c78d8da76e557450fa1144726ddc4bfc77e183287af61
@@ -116,7 +119,7 @@ The first half of this repo is a Chainlink CRE workflow that re-checks a vet402 
 
 1. [vet402 /rwa](https://vet402.com/rwa) rebuilds a Robinhood Chain wallet's Stock Token record from public chain data, names the fake look-alike tokens and anchors the record's hash onchain in `RwaAnchor` ([`0x1955…c22d`](https://robinhoodchain.blockscout.com/address/0x1955137e7773f2459eb75fb88842026c6517c22d)).
 2. The CRE workflow takes a record, recomputes its hash the same way vet402's one-file checker [`verify-record.mjs`](https://github.com/kzmttkc/vet402/blob/main/packages/rwa/scripts/verify-record.mjs) does, and reads the anchor from Robinhood Chain over a public RPC.
-3. It writes the verdict (MATCH or MISMATCH plus one bit per failed check) to a small receiver contract, so a lawyer, an auditor or an AI agent can point to it.
+3. It writes the verdict (MATCH or MISMATCH plus one bit per failed check) to a small receiver contract, so a lawyer, an auditor or an autonomous agent can point to it.
 
 A changed character anywhere in the record gives MISMATCH. So does an anchor from another contract, another operator, another wallet or another date.
 
@@ -128,7 +131,7 @@ The second half is copy-guard, the agent that pays for a record, asks that workf
 |---|---|
 | `rwa-verify/workflow.ts` | The CRE workflow. HTTP trigger, three HTTP reads, report, EVM write |
 | `rwa-verify/verify.ts` | The check itself. Pure functions, shared by the workflow, the tests and the local runner |
-| `rwa-verify/fixtures/` | Real data saved on 2026-10-08: the anchored record, the anchor tx receipt, RwaAnchor's code, a live /rwa response |
+| `rwa-verify/fixtures/` | Real data saved on 2026-10-08 (UTC): the anchored record, the anchor tx receipt, RwaAnchor's code, a live /rwa response |
 | `rwa-verify/payloads/` | `match.json` (the anchored record) and `mismatch-one-char.json` (the same record, QQQ `realized_usd` `-170.59` changed to `-170.58`) |
 | `contracts/src/RwaVerdictReceiver.sol` | Receives the report and emits `RecordChecked`. No owner, no storage, cannot receive ETH |
 | `scripts/simulate.sh` | Runs `cre workflow simulate` for both payloads and saves the output in `docs/` |
@@ -191,7 +194,9 @@ bun scripts/local-check.ts rwa-verify/payloads/mismatch-one-char.json
 
 ## Output
 
-`cre workflow simulate` on 2026-10-08 with CRE CLI v1.37.0. Full logs: [`docs/simulate-match.txt`](docs/simulate-match.txt) and [`docs/simulate-mismatch-one-char.txt`](docs/simulate-mismatch-one-char.txt).
+`cre workflow simulate` on 2026-10-08 at 11:47 UTC with CRE CLI v1.37.0. Full logs: [`docs/simulate-match.txt`](docs/simulate-match.txt) and [`docs/simulate-mismatch-one-char.txt`](docs/simulate-mismatch-one-char.txt).
+
+A note on the saved CRE logs under `docs/`: the time at the start of each line is the local clock of the machine that ran the CLI (UTC+8 that day), and the CLI prints it with a `Z`. Those times read eight hours ahead of the block times, which are the real ones. I ran the CLI again on 2026-10-13 on a UTC+7 clock and its log was seven hours ahead.
 
 The anchored record:
 
@@ -218,7 +223,7 @@ The same record with one character changed:
 
 ## Onchain on Robinhood Testnet
 
-`scripts/deploy-and-broadcast.sh` deployed the receiver and ran the same two simulations with `--broadcast` on 2026-10-09. A testnet-only key paid the gas. It is kept outside this repo.
+`scripts/deploy-and-broadcast.sh` deployed the receiver and ran the same two simulations with `--broadcast` on 2026-10-08 between 21:27 and 21:33 UTC. A testnet-only key paid the gas. It is kept outside this repo.
 
 | | |
 |---|---|
@@ -340,6 +345,8 @@ It hashes the trail, reruns the rules on the trail's own inputs, rebuilds the re
 ### What it does not claim
 
 - The one payment so far is my own test. I own the agent's wallet and the wallet that was paid.
+- No real move has reached COPY so far. Rule A4 needs a record vet402 has anchored, and `RwaAnchor` holds two anchors, both for the demo wallet. Anyone can count its `Anchored` logs. COPY is exercised in the tests only.
+- A COPY would mean the 13 rules passed for one move. It would say nothing about whether copying that move makes money.
 - Paying does not change the verdict. The paid route returns the same JSON as the free one. The payment buys a higher rate limit and a settlement receipt that the trail can name.
 - The record the agent buys is usually newer than the newest anchor. A4 shows that vet402's anchoring for this wallet is intact and uses the same hash. A2 binds the exact bytes the agent read. The trail's hash then fixes those bytes onchain.
 - The rules are a policy, not advice. They encode one cautious way to decide, and anyone can read, rerun or disagree with every row.

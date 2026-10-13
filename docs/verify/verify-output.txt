@@ -1,3 +1,5 @@
+$ date -u +%Y-%m-%dT%H:%MZ
+2026-10-13T23:37Z
 $ node --version
 v26.3.0
 $ node verify.mjs

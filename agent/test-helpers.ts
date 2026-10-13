@@ -1,5 +1,6 @@
 // Real data for the tests: the live /rwa record saved on 2026-10-08, the real 402
-// terms saved on 2026-10-09, and the receipts of three real movements of the demo wallet.
+// terms saved on 2026-10-08 UTC (the file name carries the local date, 2026-10-09), and
+// the receipts of three real movements of the demo wallet.
 import live from '../rwa-verify/fixtures/live-facts-2026-10-08.json'
 import liveHeaders from '../rwa-verify/fixtures/live-facts-2026-10-08.headers.json'
 import r68837431 from './fixtures/receipt-68837431.json'
