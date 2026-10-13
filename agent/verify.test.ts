@@ -230,8 +230,11 @@ function world() {
 		code: anchorCode.code,
 		chainIds: { [MAIN]: '0x1237', [BACKUP]: '0x1237', [TEST]: '0xb626' } as Record<string, string>,
 		/** Per URL: how many requests fail before it starts answering, and how. */
-		broken: {} as Record<string, { left: number; how: 'throw' | number }>,
-		calls: [] as { url: string; method: string }[],
+		broken: {} as Record<string, { left: number; how: 'throw' | number; retryAfter?: string }>,
+		calls: [] as { url: string; method: string; params: string }[],
+		/** The most requests that were ever open at the same time. */
+		inFlight: 0,
+		mostInFlight: 0,
 	}
 }
 type World = ReturnType<typeof world>
@@ -239,34 +242,42 @@ type World = ReturnType<typeof world>
 function fetchFor(w: World) {
 	return async (url: string, init: any) => {
 		const call = JSON.parse(init.body)
-		w.calls.push({ url, method: call.method })
+		w.calls.push({ url, method: call.method, params: JSON.stringify(call.params) })
+		w.mostInFlight = Math.max(w.mostInFlight, ++w.inFlight)
+		await Promise.resolve()
+		w.inFlight--
 		const b = w.broken[url]
 		if (b && b.left > 0) {
 			b.left--
 			if (b.how === 'throw') throw Object.assign(new TypeError('fetch failed'), { cause: { code: 'ECONNREFUSED' } })
-			return new Response('busy', { status: b.how })
+			return new Response('busy', { status: b.how, headers: b.retryAfter ? { 'retry-after': b.retryAfter } : {} })
 		}
 		const receipts = url === TEST ? w.test : w.main
 		let result: unknown = null
 		if (call.method === 'eth_chainId') result = w.chainIds[url]
 		else if (call.method === 'eth_getTransactionReceipt') result = receipts[call.params[0].toLowerCase()] ?? null
 		else if (call.method === 'eth_getCode') result = call.params[0].toLowerCase() === RWA_ANCHOR_ADDRESS ? w.code : '0x'
-		else if (call.method === 'eth_getLogs') {
-			const f = call.params[0]
-			result = Object.values(receipts)
-				.flatMap((r) => r.logs)
-				.filter((l) => BigInt(l.blockNumber) >= BigInt(f.fromBlock) && BigInt(l.blockNumber) <= BigInt(f.toBlock))
-				.filter((l) => (f.topics as (string | null)[]).every((t, i) => t === null || l.topics[i]?.toLowerCase() === t.toLowerCase()))
-		}
 		return new Response(JSON.stringify({ jsonrpc: '2.0', id: call.id, result }), { status: 200 })
 	}
 }
 
-async function recheck(w: World, argv: string[] = []) {
+/** Runs the recheck on a clock that only moves when the code waits, so no test really sleeps. */
+async function recheck(w: World, argv: string[] = [], gapMs = 0) {
 	const lines: string[] = []
-	const code = await V.run(argv, { print: (l: string) => lines.push(l), fetchImpl: fetchFor(w), pauseMs: 0 })
+	const waits: number[] = []
+	let clock = 1_000_000
+	const code = await V.run(argv, {
+		print: (l: string) => lines.push(l),
+		fetchImpl: fetchFor(w),
+		gapMs,
+		now: () => clock,
+		sleep: async (ms: number) => {
+			waits.push(ms)
+			clock += ms
+		},
+	})
 	const rows = (mark: string) => lines.filter((l) => l.startsWith(`  ${mark}`))
-	return { code, lines, fail: rows('FAIL'), open: rows('----'), ok: rows('OK'), last: lines[lines.length - 1] }
+	return { code, lines, waits, waited: clock - 1_000_000, fail: rows('FAIL'), open: rows('----'), ok: rows('OK'), last: lines[lines.length - 1] }
 }
 
 const usdgLog = (w: World) => w.main[V.CLAIMS.paymentTx].logs.find((l) => l.address.toLowerCase() === USDG)
@@ -376,8 +387,9 @@ describe('verify.mjs: the whole recheck', () => {
 		dead.broken = { [MAIN]: { left: 1e9, how: 'throw' } }
 		const r = await recheck(dead)
 		expect(r.code).toBe(0)
-		// given up on after three tries, then not asked again
-		expect(dead.calls.filter((c) => c.url === MAIN)).toHaveLength(3)
+		// the second RPC answered each time, so nothing waited; the dead one is left out after four tries
+		expect(r.waits).toEqual([])
+		expect(dead.calls.filter((c) => c.url === MAIN)).toHaveLength(4)
 
 		const wrong = world()
 		wrong.chainIds[MAIN] = '0x1'
@@ -385,6 +397,68 @@ describe('verify.mjs: the whole recheck', () => {
 		const x = await recheck(wrong)
 		expect([x.code, x.fail.length]).toEqual([3, 0])
 		expect(x.open[0]).toContain('is chain 1, not Robinhood Chain 4663')
+	}, SLOW)
+
+	test('every RPC of a chain answers 429 twice, then answers: it waits 0.5 s and 1 s, says so, and the result is MATCH', async () => {
+		const w = world()
+		w.broken = { [MAIN]: { left: 2, how: 429 }, [BACKUP]: { left: 2, how: 429 } }
+		const r = await recheck(w)
+		expect([r.code, r.last, r.open.length, r.fail.length]).toEqual([0, 'RESULT: MATCH', 0, 0])
+		expect(r.waits).toEqual([500, 1000])
+		expect(r.lines.filter((l) => l.includes('retr'))).toEqual([expect.stringMatching(/^  OK {4}anchor tx .* \(after 2 retries\)$/)])
+		expect(r.lines[r.lines.length - 2]).toBe('26 OK, 0 FAIL, 0 not checked (an RPC was busy: asked again 2 times)')
+	}, SLOW)
+
+	test('the only RPC of a chain answers 502 three times, then answers: MATCH after 0.5, 1 and 2 s', async () => {
+		const w = world()
+		w.broken = { [TEST]: { left: 3, how: 502 } }
+		const r = await recheck(w)
+		expect([r.code, r.last]).toEqual([0, 'RESULT: MATCH'])
+		expect(r.waits).toEqual([500, 1000, 2000])
+		expect(r.lines.find((l) => l.includes('retries'))).toContain('CRE verdict')
+	}, SLOW)
+
+	test('Retry-After is respected when it asks for longer than the next step', async () => {
+		const w = world()
+		w.broken = { [TEST]: { left: 2, how: 429, retryAfter: '3' } }
+		const r = await recheck(w)
+		expect(r.code).toBe(0)
+		expect(r.waits).toEqual([3000, 3000])
+	}, SLOW)
+
+	test('an RPC that answers 429 for ever: five retries 0.5 to 8 s apart, no new retry after 45 s, then NOT CHECKED', async () => {
+		const w = world()
+		w.broken = { [MAIN]: { left: 1e9, how: 429 }, [BACKUP]: { left: 1e9, how: 429 }, [TEST]: { left: 1e9, how: 429 } }
+		const r = await recheck(w)
+		expect([r.code, r.last, r.fail.length, r.open.length]).toEqual([3, 'RESULT: NOT CHECKED', 0, 12])
+		expect(r.waits.slice(0, 5)).toEqual([500, 1000, 2000, 4000, 8000])
+		expect(r.waited).toBeLessThanOrEqual(45_000)
+		expect(r.waited).toBeGreaterThan(30_000)
+		expect(r.open[0]).toContain('HTTP 429')
+		expect(r.open[0]).toContain('(after 5 retries)')
+	}, SLOW)
+
+	test('an RPC that answers 503 for ever while the second one works: MATCH with no waiting', async () => {
+		const w = world()
+		w.broken = { [MAIN]: { left: 1e9, how: 503 } }
+		const r = await recheck(w)
+		expect([r.code, r.last, r.waits.length]).toEqual([0, 'RESULT: MATCH', 0])
+	}, SLOW)
+
+	test('requests go out one at a time, with a pause between them, and no question is asked twice', async () => {
+		const w = world()
+		const r = await recheck(w, [], 120)
+		expect(r.code).toBe(0)
+		expect(w.mostInFlight).toBe(1)
+		const asked = w.calls.map((c) => `${c.url} ${c.method} ${c.params}`)
+		expect(new Set(asked).size).toBe(asked.length)
+		// 7 questions to Robinhood Chain and 5 to the testnet, chain id included
+		expect(w.calls.filter((c) => c.url === MAIN)).toHaveLength(7)
+		expect(w.calls.filter((c) => c.url === TEST)).toHaveLength(5)
+		expect(w.calls.some((c) => c.method === 'eth_getLogs')).toBe(false)
+		// seven requests to one chain need six pauses; the test clock moves only when the code waits
+		expect(r.waits.every((ms) => ms === 120)).toBe(true)
+		expect(r.waits.length).toBeGreaterThanOrEqual(6)
 	}, SLOW)
 
 	test('one decision by block number or by file; an edited copy is MISMATCH', async () => {

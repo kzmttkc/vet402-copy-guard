@@ -59,7 +59,7 @@ vet402 copy-guard: recheck with no key, no account and no install
 RESULT: MATCH
 ```
 
-The exit code is 0 for MATCH and 1 for MISMATCH. When an RPC cannot be reached, the line starts with `----`, the last line reads `RESULT: NOT CHECKED` and the exit code is 3. An outage is never reported as a pass, and never as a failure.
+The exit code is 0 for MATCH and 1 for MISMATCH. A public RPC that is busy is asked again up to five times, 0.5 to 8 seconds apart, and the line then ends with a note such as `(after 2 retries)`. When no RPC answers even then, the line starts with `----`, the last line reads `RESULT: NOT CHECKED` and the exit code is 3. An outage is never reported as a pass, and never as a failure.
 
 To see it fail, change one digit of the record the agent bought and run it again. The third line puts the file back.
 
@@ -140,7 +140,7 @@ The second half is copy-guard, the agent that pays for a record, asks that workf
 | `scripts/deploy-trail-receiver.sh` | Deploys and verifies `ReasoningTrailReceiver` on Robinhood Testnet |
 | `docs/agent/first-paid-run/` | The paid run: the record the agent bought, the 402 exchange and settlement, three trails, the CRE logs |
 | `docs/agent/replay-dry-run/` | The dry run before it: console output, the record it read, the trails, the CRE logs, the checker's output |
-| `docs/verify/` | Saved output of `node verify.mjs` and of the test suites |
+| `docs/verify/` | Saved output of `node verify.mjs` (one run, five runs back to back, one digit changed, offline, one block) and of the test suites |
 
 ## The workflow
 

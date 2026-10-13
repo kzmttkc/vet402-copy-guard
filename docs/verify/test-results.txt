@@ -3,10 +3,10 @@ Test results, 2026-10-14. bun 1.4.2, forge Version: 1.8.3-Homebrew, node v26.3.0
 $ cd agent && bun test
 bun test v1.4.2 (744846f84)
 dryrun.test.ts:
- 86 pass
+ 92 pass
  0 fail
- 4196 expect() calls
-Ran 86 tests across 6 files. [5.84s]
+ 4221 expect() calls
+Ran 92 tests across 6 files. [5.22s]
 exit code 0
 
 $ cd agent && bun run typecheck
@@ -19,7 +19,7 @@ bun test v1.4.2 (744846f84)
  23 pass
  0 fail
  69 expect() calls
-Ran 23 tests across 2 files. [211.00ms]
+Ran 23 tests across 2 files. [202.00ms]
 exit code 0
 
 $ cd trail-anchor && bun test
@@ -28,7 +28,7 @@ bun test v1.4.2 (744846f84)
  7 pass
  0 fail
  21 expect() calls
-Ran 7 tests across 1 file. [248.00ms]
+Ran 7 tests across 1 file. [232.00ms]
 exit code 0
 
 $ cd contracts && forge test
@@ -36,17 +36,7 @@ No files changed, compilation skipped
 
 Ran 1 test for test/RwaVerdictReceiver.t.sol:RwaVerdictReceiverForkTest
 [SKIP] test_fork_mockForwarderDeliversTheMatchReport() (gas: 0)
-Suite result: ok. 0 passed; 0 failed; 1 skipped; finished in 9.71ms (2.27ms CPU time)
-
-Ran 7 tests for test/ReasoningTrailReceiver.t.sol:ReasoningTrailReceiverTest
-[PASS] test_emitsDecision() (gas: 46944)
-[PASS] test_rejectsAnyoneButTheForwarder(address) (runs: 256, μ: 38897, ~: 38897)
-[PASS] test_rejectsUnknownConclusion() (gas: 38452)
-[PASS] test_rejectsWrongLengths() (gas: 64548)
-[PASS] test_rejectsZeroForwarder() (gas: 3935)
-[PASS] test_supportsInterface() (gas: 12191)
-[PASS] test_writesNoStorageAndHoldsNoEth() (gas: 72390)
-Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 21.62ms (15.16ms CPU time)
+Suite result: ok. 0 passed; 0 failed; 1 skipped; finished in 7.30ms (1.70ms CPU time)
 
 Ran 12 tests for test/RwaVerdictReceiver.t.sol:RwaVerdictReceiverTest
 [PASS] test_cannotReceiveEth() (gas: 72955)
@@ -61,7 +51,17 @@ Ran 12 tests for test/RwaVerdictReceiver.t.sol:RwaVerdictReceiverTest
 [PASS] test_onReport_rejectsWrongReportLength() (gas: 65525)
 [PASS] test_supportsInterface() (gas: 15570)
 [PASS] test_writesNoStorage() (gas: 43770)
-Suite result: ok. 12 passed; 0 failed; 0 skipped; finished in 21.68ms (17.59ms CPU time)
+Suite result: ok. 12 passed; 0 failed; 0 skipped; finished in 15.17ms (10.10ms CPU time)
 
-Ran 3 test suites in 32.80ms (53.01ms CPU time): 19 tests passed, 0 failed, 1 skipped (20 total tests)
+Ran 7 tests for test/ReasoningTrailReceiver.t.sol:ReasoningTrailReceiverTest
+[PASS] test_emitsDecision() (gas: 46944)
+[PASS] test_rejectsAnyoneButTheForwarder(address) (runs: 256, μ: 38897, ~: 38897)
+[PASS] test_rejectsUnknownConclusion() (gas: 38452)
+[PASS] test_rejectsWrongLengths() (gas: 64548)
+[PASS] test_rejectsZeroForwarder() (gas: 3935)
+[PASS] test_supportsInterface() (gas: 12191)
+[PASS] test_writesNoStorageAndHoldsNoEth() (gas: 72390)
+Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 15.18ms (10.21ms CPU time)
+
+Ran 3 test suites in 20.61ms (37.66ms CPU time): 19 tests passed, 0 failed, 1 skipped (20 total tests)
 exit code 0

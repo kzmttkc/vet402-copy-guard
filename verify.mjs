@@ -11,8 +11,10 @@
 //   --rpc URL             another RPC for Robinhood Chain (4663)
 //   --testnet-rpc URL     another RPC for Robinhood Testnet (46630)
 //
-// Every line starts with OK, FAIL or ----. A ---- line was not checked because no RPC
-// answered, so the question stays open. It is never counted as a pass.
+// Every line starts with OK, FAIL or ----. A busy RPC (429, 5xx, no connection) is asked
+// again after 0.5, 1, 2, 4 and 8 seconds, and the line says so. A ---- line was not
+// checked because no RPC answered even then, so the question stays open. It is never
+// counted as a pass.
 //
 // Exit code   last line
 //   0         RESULT: MATCH          every check passed
@@ -414,18 +416,59 @@ export function trailProblems(trail) {
 /** The question could not be asked: no answer from any RPC. Not a failed check. */
 export class Unreachable extends Error {}
 
-const RPC_TIMEOUT_MS = 15_000
-/** A busy public RPC answers 429 or 5xx now and then. Ask up to three times before giving up on it. */
-const RPC_ATTEMPTS = 3
+const RPC_TIMEOUT_MS = 10_000
+/**
+ * A public RPC answers 429 or 5xx now and then. When no RPC of a chain gives an answer,
+ * wait and ask again: after 0.5, 1, 2, 4 and 8 seconds, or longer when the RPC sends
+ * Retry-After. Only a question that is still unanswered after that is "not checked".
+ */
+const RETRY_DELAYS_MS = [500, 1000, 2000, 4000, 8000]
+/** No new retry starts later than this after the run began, so a dead network cannot hold the run for minutes. */
+const RETRY_BUDGET_MS = 45_000
+/** Pause between two requests to the same chain. Requests are sent one at a time. */
+const GAP_MS = 120
+/** An RPC that failed to connect this many times in a row is left out for the rest of the run. */
+const DOWN_AFTER = 4
 
-/** JSON-RPC over fetch. Tries each URL in turn, and uses a URL only after it has answered with the expected chain id. */
-export function rpcClient(chain, { offline = false, fetchImpl = fetch, timeoutMs = RPC_TIMEOUT_MS, pauseMs = 700 } = {}) {
+const realSleep = (ms) => new Promise((r) => setTimeout(r, ms))
+
+/** Shared by the clients of one run: when it started, and how many times a question was asked again. */
+export function rpcSession({ sleep = realSleep, now = Date.now } = {}) {
+	return { sleep, now, deadline: now() + RETRY_BUDGET_MS, retries: 0 }
+}
+
+function retryAfterMs(res) {
+	const h = res.headers?.get?.('retry-after')
+	if (!h) return 0
+	const s = Number(h)
+	if (Number.isFinite(s)) return Math.max(0, s * 1000)
+	const at = Date.parse(h)
+	return Number.isFinite(at) ? Math.max(0, at - Date.now()) : 0
+}
+
+const looksRateLimited = (err) => err?.code === 429 || err?.code === -32005 || /rate limit|too many requests/i.test(String(err?.message ?? ''))
+
+/**
+ * JSON-RPC over fetch for one chain. One request at a time, a short pause between
+ * requests, the same question asked once. A URL is used only after it has answered with
+ * the expected chain id. When one URL fails, the next is asked at once; when all fail in
+ * a way that may pass (429, 5xx, no connection), it waits and asks again.
+ */
+export function rpcClient(chain, { offline = false, fetchImpl = fetch, timeoutMs = RPC_TIMEOUT_MS, gapMs = GAP_MS, session = rpcSession() } = {}) {
 	const good = new Set()
-	/** An RPC that did not answer at all is not asked again in this run. */
-	const down = new Map()
+	const bad = new Map() // url -> why it is left out for the rest of the run
+	const netFails = new Map() // url -> connection failures in a row
+	const answers = new Map() // question -> answer
 	let id = 0
+	let lastSentAt = -Infinity
+	let queue = Promise.resolve()
+
+	/** One request. Returns { result } or { why, again, waitMs, net }. */
 	async function once(url, method, params) {
 		const host = new URL(url).host
+		const pause = lastSentAt + gapMs - session.now()
+		if (pause > 0) await session.sleep(pause)
+		lastSentAt = session.now()
 		let res
 		try {
 			res = await fetchImpl(url, {
@@ -436,49 +479,80 @@ export function rpcClient(chain, { offline = false, fetchImpl = fetch, timeoutMs
 			})
 		} catch (e) {
 			const why = e?.name === 'TimeoutError' ? `no answer in ${timeoutMs / 1000} s` : (e?.cause?.code ?? e?.cause?.errors?.[0]?.code ?? e?.cause?.message ?? e?.message ?? 'network error')
-			throw Object.assign(new Unreachable(`${host}: ${why}`), { again: true, silent: true })
+			return { why: `${host}: ${why}`, again: true, net: true }
 		}
-		if (!res.ok) throw Object.assign(new Unreachable(`${host}: HTTP ${res.status}`), { again: res.status === 429 || res.status >= 500 })
+		if (!res.ok) return { why: `${host}: HTTP ${res.status}`, again: res.status === 429 || res.status >= 500, waitMs: retryAfterMs(res) }
 		let body
 		try {
 			body = await res.json()
 		} catch {
-			throw Object.assign(new Unreachable(`${host}: the answer is not JSON`), { again: true })
+			return { why: `${host}: the answer is not JSON`, again: true }
 		}
-		if (body.error) throw new Unreachable(`${host}: ${method}: ${body.error.message ?? 'rpc error'}`)
-		return body.result
+		if (body.error) return { why: `${host}: ${method}: ${body.error.message ?? 'rpc error'}`, again: looksRateLimited(body.error) }
+		return { result: body.result }
 	}
-	async function post(url, method, params) {
-		if (down.has(url)) throw new Unreachable(down.get(url))
-		for (let attempt = 1; ; attempt++) {
-			try {
-				return await once(url, method, params)
-			} catch (e) {
-				if (!(e instanceof Unreachable) || !e.again || attempt >= RPC_ATTEMPTS) {
-					if (e.silent) down.set(url, e.message)
-					throw e
+
+	/** One URL, chain id first. Marks a URL that cannot connect, or that is another chain, as left out. */
+	async function askUrl(url, method, params) {
+		let r
+		if (!good.has(url)) {
+			r = await once(url, 'eth_chainId', [])
+			if ('result' in r) {
+				const got = Number(BigInt(r.result))
+				if (got !== chain.id) {
+					bad.set(url, `${new URL(url).host} is chain ${got}, not ${chain.name} ${chain.id}`)
+					return { why: bad.get(url), again: false }
 				}
-				await new Promise((r) => setTimeout(r, pauseMs * attempt))
+				good.add(url)
 			}
 		}
-	}
-	return async (method, params) => {
-		if (offline) throw new Unreachable('--offline')
-		const why = []
-		for (const url of chain.rpcs) {
-			try {
-				if (!good.has(url)) {
-					const got = Number(BigInt(await post(url, 'eth_chainId', [])))
-					if (got !== chain.id) throw new Unreachable(`${new URL(url).host} is chain ${got}, not ${chain.name} ${chain.id}`)
-					good.add(url)
-				}
-				return await post(url, method, params)
-			} catch (e) {
-				if (!(e instanceof Unreachable)) throw e
-				why.push(e.message)
-			}
+		if (good.has(url)) r = await once(url, method, params)
+		if (r.net) {
+			netFails.set(url, (netFails.get(url) ?? 0) + 1)
+			if (netFails.get(url) >= DOWN_AFTER) bad.set(url, r.why)
+		} else {
+			netFails.set(url, 0)
 		}
-		throw new Unreachable(why.join('; ') || `no RPC given for ${chain.name}`)
+		return r
+	}
+
+	async function ask(method, params) {
+		for (let round = 0; ; round++) {
+			const why = []
+			let again = false
+			let waitMs = 0
+			for (const url of chain.rpcs) {
+				if (bad.has(url)) {
+					why.push(bad.get(url))
+					continue
+				}
+				const r = await askUrl(url, method, params)
+				if ('result' in r) return r.result
+				why.push(r.why)
+				if (r.again && !bad.has(url)) {
+					again = true
+					waitMs = Math.max(waitMs, r.waitMs ?? 0)
+				}
+			}
+			const wait = Math.max(RETRY_DELAYS_MS[round] ?? 0, waitMs)
+			if (!again || round >= RETRY_DELAYS_MS.length || session.now() + wait > session.deadline) {
+				throw new Unreachable([...new Set(why)].join('; ') || `no RPC given for ${chain.name}`)
+			}
+			session.retries++
+			await session.sleep(wait)
+		}
+	}
+
+	return (method, params) => {
+		if (offline) return Promise.reject(new Unreachable('--offline'))
+		const key = `${method} ${JSON.stringify(params)}`
+		if (answers.has(key)) return Promise.resolve(answers.get(key))
+		const next = queue.then(() => (answers.has(key) ? answers.get(key) : ask(method, params)))
+		queue = next.then(
+			(result) => void answers.set(key, result),
+			() => {},
+		)
+		return next
 	}
 }
 
@@ -521,9 +595,10 @@ const rel = (path) => relative(REPO, path) || '.'
 
 /** Collects rows, prints each as it is decided. */
 export class Report {
-	constructor(print = console.log) {
+	constructor(print = console.log, session = { retries: 0 }) {
 		this.rows = []
 		this.print = print
+		this.session = session
 	}
 	say(line = '') {
 		this.print(line)
@@ -532,6 +607,7 @@ export class Report {
 	async check(name, fn) {
 		let status
 		let detail
+		const retriesBefore = this.session.retries
 		try {
 			const [ok, d] = await fn()
 			status = ok ? 'OK' : 'FAIL'
@@ -540,6 +616,8 @@ export class Report {
 			status = e instanceof Unreachable ? 'NOT CHECKED' : 'FAIL'
 			detail = e instanceof Unreachable ? `not checked: ${e.message}` : String(e?.message ?? e)
 		}
+		const asked = this.session.retries - retriesBefore
+		if (asked > 0) detail += ` (after ${asked} ${asked === 1 ? 'retry' : 'retries'})`
 		this.rows.push({ status, name, detail })
 		this.print(`  ${{ OK: 'OK  ', FAIL: 'FAIL', 'NOT CHECKED': '----' }[status]}  ${name.padEnd(15)} ${detail}`)
 		return status === 'OK'
@@ -664,12 +742,11 @@ async function checkTrail(rep, main, test, file, { record, expected } = {}) {
 	}
 	const mv = trail.inputs.movement
 	await rep.check('move on chain', async () => {
-		const w = `0x${'0'.repeat(24)}${lc(trail.inputs.wallet).slice(2)}`
-		const range = { fromBlock: `0x${mv.block.toString(16)}`, toBlock: `0x${mv.block.toString(16)}` }
-		const [sent, received] = await Promise.all([main('eth_getLogs', [{ ...range, topics: [TRANSFER_TOPIC, w] }]), main('eth_getLogs', [{ ...range, topics: [TRANSFER_TOPIC, null, w] }])])
-		const onchain = movementFromLogs(trail.inputs.wallet, mv.tx, [...sent, ...received])
+		const r = await main('eth_getTransactionReceipt', [mv.tx])
+		if (!r) return [false, `${short(lc(mv.tx))} is not on Robinhood Chain`]
+		const onchain = r.status === '0x1' ? movementFromLogs(trail.inputs.wallet, mv.tx, r.logs ?? []) : null
 		const same = onchain !== null && canonicalJson(onchain) === canonicalJson(mv)
-		return [same, same ? `${short(lc(mv.tx))} in block ${mv.block}: ${mv.transfers.length} transfer${mv.transfers.length === 1 ? '' : 's'} of the wallet, as the trail lists` : `Robinhood Chain shows ${onchain ? `${onchain.transfers.length} transfers` : 'no transfer of the wallet'} for ${mv.tx} in block ${mv.block}; the trail lists ${mv.transfers.length}`]
+		return [same, same ? `${short(lc(mv.tx))} in block ${mv.block}: ${mv.transfers.length} transfer${mv.transfers.length === 1 ? '' : 's'} of the wallet, as the trail lists` : `Robinhood Chain shows ${onchain ? `${onchain.transfers.length} transfers in block ${onchain.block}` : 'no transfer of the wallet'} for ${mv.tx}; the trail lists ${mv.transfers.length} in block ${mv.block}`]
 	})
 	await rep.check('trail onchain', async () => {
 		if (!file.trail_tx) return [false, 'the file names no trail tx (a simulated run writes nothing onchain)']
@@ -796,7 +873,7 @@ const USAGE = `usage: node verify.mjs [trail.json | block number] [--offline] [-
   block number   one of ${Object.keys(CLAIMS.decisions).join(', ')}
 exit code: 0 MATCH, 1 MISMATCH, 2 usage, 3 NOT CHECKED (an RPC could not be reached and nothing failed)`
 
-export async function run(argv, { print = console.log, fetchImpl = fetch, pauseMs } = {}) {
+export async function run(argv, { print = console.log, fetchImpl = fetch, sleep, now, gapMs } = {}) {
 	let args
 	let path = null
 	try {
@@ -809,9 +886,10 @@ export async function run(argv, { print = console.log, fetchImpl = fetch, pauseM
 	}
 	const mainChain = { ...CHAINS.mainnet, rpcs: args.rpc ? [args.rpc] : CHAINS.mainnet.rpcs }
 	const testChain = { ...CHAINS.testnet, rpcs: args.testnetRpc ? [args.testnetRpc] : CHAINS.testnet.rpcs }
-	const main = rpcClient(mainChain, { offline: args.offline, fetchImpl, pauseMs })
-	const test = rpcClient(testChain, { offline: args.offline, fetchImpl, pauseMs })
-	const rep = new Report(print)
+	const session = rpcSession({ sleep, now })
+	const main = rpcClient(mainChain, { offline: args.offline, fetchImpl, gapMs, session })
+	const test = rpcClient(testChain, { offline: args.offline, fetchImpl, gapMs, session })
+	const rep = new Report(print, session)
 	rep.say('vet402 copy-guard: recheck with no key, no account and no install')
 	rep.say(args.offline ? '  chains  not read (--offline)' : `  chains  ${mainChain.name} ${mainChain.id} at ${new URL(mainChain.rpcs[0]).host}, ${testChain.name} ${testChain.id} at ${new URL(testChain.rpcs[0]).host}`)
 	await rep.check('keccak256', () => [checkKeccak(), checkKeccak() ? 'the built-in hash gives the published test values' : 'the built-in hash is broken; no other line can be trusted'])
@@ -820,7 +898,7 @@ export async function run(argv, { print = console.log, fetchImpl = fetch, pauseM
 	const res = rep.result()
 	const count = (s) => rep.rows.filter((r) => r.status === s).length
 	rep.say('')
-	rep.say(`${count('OK')} OK, ${count('FAIL')} FAIL, ${count('NOT CHECKED')} not checked`)
+	rep.say(`${count('OK')} OK, ${count('FAIL')} FAIL, ${count('NOT CHECKED')} not checked${session.retries ? ` (an RPC was busy: asked again ${session.retries} ${session.retries === 1 ? 'time' : 'times'})` : ''}`)
 	rep.say(`RESULT: ${res.text}`)
 	return res.code
 }
