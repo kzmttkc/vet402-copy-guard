@@ -4,63 +4,73 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>vet402 copy-guard: the practice ledger</title>
-<meta name="description" content="An autonomous agent that checks a tokenized-stock move before it would copy it, records the practice trade it would make, and leaves a record anyone can recheck.">
+<meta name="description" content="An agent that checks which stock token really moved before it would copy a wallet, records the practice trade it would make, and leaves a record anyone can recheck.">
 <style>
-:root{--ink:#111;--mute:#5c5c5c;--line:#d9d9d9;--soft:#f5f5f3;--paper:#fff;--bad:#8a1c1c;--good:#1d5e3a;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+:root{--ink:#111;--mute:#5c5c5c;--line:#d9d9d9;--soft:#f5f5f3;--paper:#fff;--bad:#8a1c1c;--good:#1d5e3a;--warn:#a35a00;--grey:#6b6b6b;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
-main{max-width:1040px;margin:0 auto;padding:32px 16px 80px}
-h1{font-size:30px;line-height:1.2;margin:0 0 8px;letter-spacing:-.01em}
+main{max-width:1040px;margin:0 auto;padding:28px 16px 80px;overflow-wrap:anywhere}
+h1{font-size:32px;line-height:1.18;margin:0 0 10px;letter-spacing:-.015em;max-width:860px}
 h2{font-size:21px;margin:56px 0 12px;padding-top:20px;border-top:2px solid var(--ink)}
 h3{font-size:16px;margin:24px 0 6px}
 p{margin:0 0 12px}
 a{color:inherit;text-decoration:underline;text-underline-offset:2px}
-.lede{font-size:18px;color:#222;max-width:760px}
+.lede{font-size:18px;color:#222;max-width:780px}
 .mute{color:var(--mute)}
 .small{font-size:13.5px}
 code,.mono{font-family:var(--mono);font-size:.88em;word-break:break-all}
+.jump{font-size:14.5px;margin:14px 0 4px;display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}
+.jump a{display:inline-block;padding:5px 9px;border:1px solid var(--ink);text-decoration:none}
+.jump a:hover{background:var(--ink);color:#fff}
 blockquote{margin:0;padding:14px 16px;border-left:3px solid var(--ink);background:var(--soft)}
 blockquote p{font-size:19px;margin:0 0 4px}
-.voices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
-.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--ink);margin:20px 0}
+.voices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0 12px}
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--ink);margin:22px 0 10px}
 .nums div{padding:14px 12px;border-right:1px solid var(--line)}
 .nums div:last-child{border-right:0}
-.nums b{display:block;font-size:28px;line-height:1.1;font-variant-numeric:tabular-nums}
-.nums span{font-size:13px;color:var(--mute)}
+.nums b{display:block;font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.nums span{font-size:14px;color:#333;line-height:1.35;display:block;margin-top:4px}
 .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
 .two>div,.voices>blockquote,.story>div{min-width:0}
-main{overflow-wrap:anywhere}
 details summary{cursor:pointer;padding:8px 0;font-size:14.5px;text-decoration:underline;text-underline-offset:2px}
 .sum{font-size:15px;margin:0 0 4px}
 .sum b{font-variant-numeric:tabular-nums}
+.slot{font-size:12.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--mute);margin:22px 0 6px;font-weight:600}
 .card{border:1px solid var(--ink);padding:16px;margin:0 0 14px;background:var(--paper)}
 .card h3{margin:0 0 2px;font-size:18px}
-.card dl{margin:10px 0 0;display:grid;grid-template-columns:150px 1fr;gap:6px 12px}
+.card dl{margin:10px 0 0;display:grid;grid-template-columns:170px 1fr;gap:6px 12px}
 .card dt{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);padding-top:3px}
 .card dd{margin:0}
 .card ul{margin:0;padding-left:18px}
-.story{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--ink);margin:18px 0 22px}
+.story{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--ink);margin:18px 0 6px}
 .story div{padding:14px 14px 12px;border-right:1px solid var(--line)}
 .story div:last-child{border-right:0}
 .story b{display:block;font-size:12.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--mute);margin-bottom:4px}
 .story span{font-size:17px;line-height:1.35}
 .score{display:inline-block;font:700 13px/1 var(--mono);padding:6px 8px;color:#fff;margin:0 8px 6px 0}
-.score.FULL{background:#1d5e3a}.score.REDUCED{background:#a35a00}.score.NONE{background:#8a1c1c}
+.score.FULL{background:var(--good)}.score.REDUCED{background:var(--warn)}.score.NONE{background:var(--bad)}
 .marks{margin:8px 0 2px;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13.5px}
-.mark.good{color:#1d5e3a}.mark.bad{color:#8a1c1c;font-weight:600}
+.mark.good{color:var(--good)}.mark.bad{color:var(--bad);font-weight:600}.mark.sample{color:var(--grey)}
+.badge{display:inline-block;font:600 12.5px/1.2 var(--mono);padding:5px 8px;border:1px solid var(--grey);background:#e9e9e6;color:#3d3d3d}
+.badge.signed{background:var(--good);border-color:var(--good);color:#fff}
+.badge.unsigned{background:var(--bad);border-color:var(--bad);color:#fff}
 .tag{display:inline-block;font:600 11.5px/1 var(--mono);padding:4px 6px;border:1px solid var(--ink);margin-right:6px;vertical-align:2px}
 .tag.NONE{background:var(--ink);color:#fff}
 .tag.REDUCED{background:#e9e9e6}
 .tag.FULL{background:#fff}
 table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
 th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);border-bottom:1px solid var(--ink);white-space:nowrap}
-td.r,th.r{text-align:right}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);border-bottom:1px solid var(--ink)}
+td.r,th.r{text-align:right;white-space:nowrap}
 .scroll{overflow-x:auto;border:1px solid var(--line)}
 .scroll table{min-width:560px}
+.scroll.fit table{min-width:0}
+.scroll.tall{max-height:620px;overflow:auto}
+.scroll.tall th{position:sticky;top:0;background:var(--paper)}
 #rows{min-width:760px}
 .neg{color:var(--bad)}
 .pos{color:var(--good)}
+.other{color:var(--warn);font-weight:600}
 .filters{margin:10px 0}
 .filters button{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--ink);background:#fff;color:var(--ink);margin:0 6px 6px 0;cursor:pointer}
 .filters button[aria-pressed=true]{background:var(--ink);color:#fff}
@@ -70,88 +80,115 @@ tr.detail td{background:var(--soft)}
 ol.steps{padding-left:20px}
 ol.steps li{margin-bottom:10px}
 pre{background:var(--ink);color:#f3f3f3;padding:12px 14px;overflow-x:auto;font:13px/1.5 var(--mono)}
-footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-size:13.5px;color:var(--mute)}
-@media (max-width:720px){.voices,.two,.story{grid-template-columns:minmax(0,1fr)}.story div{border-right:0;border-bottom:1px solid var(--line)}.story div:last-child{border-bottom:0}.nums{grid-template-columns:1fr 1fr}.nums div:nth-child(2){border-right:0}.nums div:nth-child(-n+2){border-bottom:1px solid var(--line)}.card dl{grid-template-columns:1fr}h1{font-size:25px}}
+.last{font-size:19px;margin-top:40px;max-width:760px}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13.5px;color:var(--mute)}
+@media (max-width:720px){.voices,.two,.story{grid-template-columns:minmax(0,1fr)}.story div{border-right:0;border-bottom:1px solid var(--line)}.story div:last-child{border-bottom:0}.nums{grid-template-columns:1fr 1fr}.nums div:nth-child(2){border-right:0}.nums div:nth-child(-n+2){border-bottom:1px solid var(--line)}.card dl{grid-template-columns:1fr}h1{font-size:25px}.lede{font-size:17px}.story span{font-size:16px}.nums b{font-size:26px}}
 </style>
 </head>
 <body>
 <main>
-<p class="small mute">vet402 copy-guard. BLI Legal Tech Hackathon 2. Every time on this page is UTC.</p>
-<h1>An agent that checks a stock-token move before it would copy it, and shows its work</h1>
-<div class="story">
-<div><b>1. It saw</b><span>25 tokens listed as NVDA arrive in a wallet people might copy.</span></div>
-<div><b>2. It checked</b><span>The token is not Nvidia's stock token. A stranger sent it. The wallet never bought it.</span></div>
-<div><b>3. It did</b><span>Opened no position, and wrote down why in sentences anyone can read.</span></div>
+<p class="small mute">vet402 copy-guard. BLI Legal Tech Hackathon 2. Practice (paper) trades only. Every time on this page is UTC.</p>
+<h1>Before it would copy a wallet, this agent checks which token really moved.</h1>
+<p class="lede">Anyone can make a token and name it NVDA. copy-guard looks at which token moved, who signed for it and what the person it acts for allows. Then it writes down what it did and why, in plain sentences.</p>
+<div class="story" id="story">
+<div><b>1. It saw</b><span>25 tokens named NVDA arrive in a wallet that people might copy.</span></div>
+<div><b>2. It checked</b><span>They are not the NVDA Stock Token that Robinhood's issuer made. Another address sent them. The wallet did not sign for them.</span></div>
+<div><b>3. It did</b><span>It opened no position, and wrote down why. <a href="#cards">Read the card</a>.</span></div>
 </div>
-<p class="lede">Anyone can deploy a token called NVDA. A person, or a bot, who copies a wallet sees a ticker and a log. copy-guard reads the evidence first, sizes a practice trade by how strong that evidence is, and writes down every reason in plain sentences. Nothing on this page asks you to trust me. The last section shows how to recheck it.</p>
+<p class="jump"><span class="mute">Judging one bounty?</span> <a href="#chainlink">Chainlink CRE</a> <a href="#ryo">RYO-CHAN</a> <a href="#bli">BLI: who the agent acts for</a> <a href="#verify">Check it yourself</a></p>
 
 <div class="voices">
-<blockquote><p>&ldquo;$600 out the window in seconds&rdquo;</p><span class="small mute">@DCA_Sean, a Robinhood Chain user, after a scam coin appeared in his wallet's sell screen. Quoted by <a href="https://protos.com/robinhood-chain-scams-are-already-costing-users-dearly/">Protos, 2026-07-10</a>.</span></blockquote>
-<blockquote><p>&ldquo;I was asleep when the losses accumulated.&rdquo;</p><span class="small mute">crypto_chris, on an AI agent he let trade for him. <a href="https://blockeden.xyz/forum/t/my-ai-agent-lost-12k-in-a-weekend-a-cautionary-tale-about-autonomous-defi/368">BlockEden forum, 2026-02-06</a>.</span></blockquote>
+<blockquote><p>&ldquo;$600 out the window in seconds&rdquo;</p><span class="small mute">@DCA_Sean, a Robinhood Chain user, after a coin that Protos reports as a scam appeared in the sell screen of the wallet app. Quoted by <a href="https://protos.com/robinhood-chain-scams-are-already-costing-users-dearly/">Protos, 2026-07-10</a>.</span></blockquote>
+<blockquote><p>&ldquo;I was asleep when the losses accumulated.&rdquo;</p><span class="small mute">crypto_chris, writing about an AI agent that was left to trade alone. <a href="https://blockeden.xyz/forum/t/my-ai-agent-lost-12k-in-a-weekend-a-cautionary-tale-about-autonomous-defi/368">BlockEden forum, 2026-02-06</a>.</span></blockquote>
 </div>
-<p>The same trick has reached stock tokens. This is my own observation, and I have found no victim's account of it: on 2026-09-27 at 12:52, 25 tokens that a block explorer lists as NVDA arrived in a wallet that trades real Robinhood Stock Tokens. The card headed &ldquo;No position: fake NVDA&rdquo; below is that move.</p>
+<p class="small mute">Those two people wrote about tokens and agents in general. The move in the three steps above is my own observation of 2026-09-27 at 12:52, and I have found no account of anyone losing money to a stock ticker this way. This page accuses no one. It shows that a ticker is not unique.</p>
 
-<h3>Ledger health</h3>
 <div class="nums" id="nums"></div>
 <p class="note" id="note"></p>
 
-<h2>Decision cards</h2>
-<p class="mute">Each card starts with a score, how many of the 18 checks passed, and a mark for each group of checks. A red flag is a check that did not pass. Each card is built from fixed sentences filled with the values the rules read. No language model writes or decides anything, so the same inputs always give the same card. The card is part of the record whose hash is onchain.</p>
-<div id="cards"></div>
+<h2 id="cards">What it decided, one card per move</h2>
+<p class="mute">Each card starts with a score, the number of checks that passed, and a mark for each group of checks. A red flag is a check that did not pass. It describes the move and says nothing about any person. Each card is built from fixed sentences filled with the values the rules read. No language model writes or decides anything, so the same inputs always give the same card. The card is part of the record whose hash is onchain.</p>
+<div id="featured"></div>
 
-<h2>The practice ledger</h2>
-<p>Two books walk through the same moves in the order they happened. <b>copy-guard</b> opens what its rules, its mandate and the user's limits allow. <b>Blind copy</b> opens the full size on everything that looks like a Stock Token arriving. Both enter at the Chainlink feed's value at the block of the move and leave by the same exit rules.</p>
+<h2 id="ledger">The practice ledger</h2>
+<p>Two books walk through the same moves in the order they happened. <b>copy-guard</b> opens what its rules, its mandate and the user's limits allow. <b>Ticker copy</b> is a baseline I defined: it opens a position whenever a token with a stock ticker arrives in the wallet.</p>
 <p class="small mute" id="baseline"></p>
+<div class="scroll"><table id="compare"></table></div>
+<p class="note" id="paper"><b>Practice (paper) positions. This is not a forecast and not a track record.</b> A position in a token that is not the issuer's is valued only where the price of its own pool could be read from public logs. Otherwise it is listed as not measured and left out of every sum. Nothing is assumed to be worth zero. A pool value compares the pool's last swap with the swap the wallet bought in. It leaves out the move of the pool's other asset in USD, and it does not say that a position of that size could have been sold there.</p>
+<div id="bycohort"></div>
+<div id="samesize"></div>
 <div class="two">
 <div><h3>copy-guard</h3><p class="sum" id="guardsum"></p><details><summary>Every position</summary><div class="scroll"><table id="guard"></table></div></details></div>
-<div><h3>Blind copy</h3><p class="sum" id="blindsum"></p><details><summary>Every position</summary><div class="scroll"><table id="blind"></table></div></details></div>
+<div><h3>Ticker copy</h3><p class="sum" id="blindsum"></p><details><summary>Every position</summary><div class="scroll"><table id="blind"></table></div></details></div>
 </div>
 <h3>Every decision</h3>
 <div class="filters" id="filters"></div>
-<div class="scroll"><table id="rows"></table></div>
-<p class="small mute">Select a row to read its card. Rejected candidates stay in the ledger with their reasons.</p>
+<div class="scroll tall"><table id="rows"></table></div>
+<p class="small mute">Select a row to read its card. Declined moves stay in the ledger with their reasons.</p>
+<div id="others"></div>
 
-<h2>Who set the limits, and who the agent acts for</h2>
+<h2 id="bli">Who set the limits, and who the agent acts for</h2>
+<p class="mute">I am not a lawyer. Nothing on this page is legal advice or investment advice.</p>
+<p id="mandatestate"></p>
 <div class="two">
-<div><h3>The user's risk limits (<code>limits.json</code>)</h3><div class="scroll"><table id="limits"></table></div></div>
-<div><h3>The mandate (<code>mandate/</code>)</h3><div class="scroll"><table id="mandate"></table></div></div>
+<div><h3>The user's risk limits (<code>limits.json</code>)</h3><div class="scroll fit"><table id="limits"></table></div></div>
+<div><h3>The mandate (<code>mandate/</code>)</h3><div class="scroll fit"><table id="mandate"></table></div></div>
 </div>
-<p class="note"><b>One sentence, two values.</b> A person who says &ldquo;put at most $50 on one stock and stop the loss at 15%&rdquo; changes two lines of <code>limits.json</code>: <code>"full_usd": "50.00"</code> and <code>"stop_loss_pct": "15"</code>. The file is edited by hand, there is no parser for the sentence. Every later decision names the new file by hash, and the mandate has to be signed again, because new limits need the principal's consent.</p>
-<p class="small mute">These three headings are the words the Blockchain Legal Institute uses for its planned AI Agent Registration Tool.</p>
+<p class="small mute">The principal is an address. It is not a legal identity: nothing here ties that address to a named person or company, and nothing here is a registration.</p>
+<p class="small mute">The three headings below are the words the Blockchain Legal Institute uses for its planned <a href="https://bli.tools/legal-compliance-tech-tools/">AI Agent Registration Tool</a>.</p>
 <div class="scroll"><table>
 <tr><th>BLI's words</th><th>What this repo keeps for it</th></tr>
 <tr><td><b>Programmatic provenance</b></td><td>Every decision names the rules by the hash of two source files, the record by its hash, the move by its transaction, and the feed value by the transaction that published it. The Merkle root of all decisions is in one <code>LedgerAnchored</code> event: <span id="roottx"></span>.</td></tr>
-<tr><td><b>Human principal attribution</b></td><td><code>mandate/mandate.json</code> names the principal and the agent's payment key. The principal signs one readable line that carries the document's hash. Every decision carries that signature, and rule M1 opens nothing unless it recovers to the principal. <span id="mandatestate"></span></td></tr>
+<tr><td><b>Human principal attribution</b></td><td>A mandate names the principal and the agent's payment key, each by address. The principal signs one readable line that carries the mandate's hash. Every decision carries that signature, and rule M1 opens nothing unless it recovers to the principal the mandate names.</td></tr>
 <tr><td><b>Cryptographically verifiable operational boundaries</b></td><td><code>limits.json</code> is named by hash in the mandate and in every decision: sizes, the daily limit, what weaker evidence does to the size, the exit rules and a payment cap. The payment key can pay one address only. The witness in each signed Permit2 message pins the recipient.</td></tr>
 </table></div>
-<p class="small mute">A 2025 judge of this hackathon, Bourn Collier, has described a framework for &ldquo;tethering AI agents to accountable legal entities&rdquo; (DARA announcement, 2026-06-23). The mandate is one small, checkable form of that link.</p>
-
-<h2>Chainlink CRE: a compliance check before the agent acts</h2>
-<p>Three CRE workflows sit inside the decision. They are run with <code>cre workflow simulate</code>. Nothing is deployed to a DON, and a simulated write goes through CRE's simulation forwarder, which accepts reports from anyone. The events fix a hash and a time. They are not a DON attestation, which is why the recheck exists.</p>
+<h3>Two questions from BLI's own stage</h3>
 <div class="scroll"><table>
-<tr><th>Example in the bounty text</th><th>What this repo does</th></tr>
-<tr><td>AI agents consuming CRE workflows with x402 payments</td><td>A gate answers 402 in front of the workflow <code>rwa-verify</code>, takes 0.01 USDG on Robinhood Chain and then runs the workflow. <code>SKILL.md</code> and <code>agent.json</code> let an agent find it. Run so far as a dry run: the agent read the 402 and built the payment without signing. The one settled payment (2026-10-08) bought the record the workflow verifies.</td></tr>
-<tr><td>Tokenized asset servicing and lifecycle management</td><td>The workflow <code>token-check</code> reads each Stock Token's share multiplier, which changes with a corporate action, straight from Robinhood Chain.</td></tr>
-<tr><td>Automated risk monitoring</td><td><code>token-check</code> tells a real Stock Token from a look-alike by the issuer's own marks on chain: the code hash, the beacon and the official list. It does not ask vet402. <span id="tokencheck"></span></td></tr>
-<tr><td>Real-time reserve health checks</td><td>Not attempted.</td></tr>
+<tr><th>Asked</th><th>By</th><th>What the mandate and the trail hold</th></tr>
+<tr><td>&ldquo;Did I authorize this? What was the scope of that authorization?&rdquo;</td><td>Carole House, <a href="https://www.youtube.com/watch?v=1bYQiYAWvGk">BLI Bootcamp</a> (video published 2026-08-02)</td><td>Authorized: the signature over the mandate's hash is inside every decision, and anyone can recover the signer. Scope: practice trades only, these rules, these limits, this payment key, one payee, these dates.</td></tr>
+<tr><td>&ldquo;at what point did it exceed its authority?&rdquo;, and charges that &ldquo;accumulate unnoticed&rdquo;</td><td>James R. Holbein and Justin Holbein, <a href="https://bli.tools/usa-beyond-activating-http-402-the-x402-protocol/">BLI article on x402, 2025-12-14</a></td><td>Rule M1 and the two limit rules mark the exact decision at which a boundary would be crossed, and that decision opens nothing. Payments are capped per decision and in total, and each one is written to a ledger before it is sent.</td></tr>
 </table></div>
+<p class="small mute">A 2025 judge of this hackathon, Bourn Collier, has described a framework for &ldquo;tethering AI agents to accountable legal entities&rdquo; (<a href="https://pr.taosnews.com/article/DARA-to-Convene-International-Regulatory-Task-Forces-and-AI-Regulation-Sessions-in-the-US/6a3ac373564d536c69a53661">DARA announcement, 2026-06-23</a>). The mandate links an agent to an address that signed for it. Linking that address to a legal entity is outside this build.</p>
 
-<h2>The questions regulators are asking, and what this keeps</h2>
-<p class="mute">I am not a lawyer and this is not legal advice. The table does not say what any rule requires or what a court would accept. It lists words that rule makers and regulators have used, next to the material this build leaves behind.</p>
+<h3>The questions regulators are asking, and what this keeps</h3>
+<p class="mute">The table does not say what any rule requires or what a court would accept. Each row reads the same way: a rule maker or regulator has asked in these words, and this build keeps this material.</p>
 <div class="scroll"><table>
 <tr><th>Source</th><th>Their words</th><th>What this build keeps</th></tr>
-<tr><td><a href="https://www.law.cornell.edu/rules/fre/rule_902">U.S. Federal Rule of Evidence 902(14)</a></td><td>data copied from an electronic file, &ldquo;authenticated by a process of digital identification&rdquo;</td><td>Every record and every decision is named by a keccak256 hash that anyone can recompute. This is the kind of check the rule has in mind. The rule also asks for a qualified person's certification, which a script does not replace.</td></tr>
+<tr><td><a href="https://www.law.cornell.edu/rules/fre/rule_902">U.S. Federal Rule of Evidence 902(14)</a></td><td>data copied from an electronic file, &ldquo;authenticated by a process of digital identification&rdquo;</td><td>Every record and every decision is named by a keccak256 hash that anyone can recompute. Comparing hash values is the kind of check the rule's committee note describes. The rule also asks for a qualified person's certification, which a script does not replace.</td></tr>
 <tr><td><a href="https://www.law.cornell.edu/rules/fre/rule_902">Rule 902(13)</a></td><td>a record &ldquo;generated by an electronic process or system that produces an accurate result&rdquo;</td><td>The rules are fixed and use no language model. Anyone can rerun them on the saved inputs and compare.</td></tr>
-<tr><td><a href="https://www.finra.org/rules-guidance/guidance/reports/2026-finra-annual-regulatory-oversight-report/gen-ai">FINRA 2026 oversight report, GenAI</a></td><td>agent reasoning that is &ldquo;difficult to trace or explain&rdquo;, and &ldquo;how to track agent actions and decisions&rdquo;</td><td>One row per rule with the value it read, a card in plain sentences, and guardrails set by the user. FINRA's concern is agents that act without predefined rules. This agent is the opposite case: its rules are predefined.</td></tr>
-<tr><td><a href="https://foster.house.gov/media/press-releases/foster-sherman-seek-regulatory-clarity-agentic-ai-trading">Letter from eight House members to the SEC, 2026-06-24</a></td><td>the &ldquo;legal responsibilities of broker-dealers, AI developers, and AI agents themselves&rdquo;</td><td>An open question. This build does not answer it. It keeps what the answer will need: who the agent acted for, under which limits, on what evidence.</td></tr>
-<tr><td><a href="https://www.sec.gov/newsroom/speeches-statements/corp-fin-statement-tokenized-securities-012826">SEC staff statement on tokenized securities, 2026-01-28</a></td><td>a third party's token &ldquo;may or may not confer&rdquo; rights in the underlying security</td><td>Even a real token's rights depend on its structure. A look-alike confers nothing, and the agent names it by address.</td></tr>
+<tr><td><a href="https://www.finra.org/rules-guidance/guidance/reports/2026-finra-annual-regulatory-oversight-report/gen-ai">FINRA 2026 oversight report, GenAI</a></td><td>agent reasoning that is &ldquo;difficult to trace or explain&rdquo;, and &ldquo;how to track agent actions and decisions&rdquo;</td><td>One row per rule with the value it read, a card in plain sentences, and guardrails set by the user. FINRA's concern is agents that act without predefined rules. This agent's rules are predefined.</td></tr>
+<tr><td><a href="https://foster.house.gov/media/press-releases/foster-sherman-seek-regulatory-clarity-agentic-ai-trading">Letter from eight House members to the SEC, 2026-06-24</a></td><td>the &ldquo;legal responsibilities of broker-dealers, AI developers, and AI agents themselves&rdquo;</td><td>An open question, which this build does not answer. It keeps what an answer may need: who the agent acted for, under which limits, on what evidence.</td></tr>
+<tr><td><a href="https://www.sec.gov/newsroom/speeches-statements/corp-fin-statement-tokenized-securities-012826">SEC staff statement on tokenized securities, 2026-01-28</a></td><td>a third party's token &ldquo;may or may not confer&rdquo; rights in the underlying security</td><td>The staff's question is what a given token carries. The agent answers a narrower one first: which contract moved. A different token under the same ticker is not issued by the Stock Token's issuer, and the agent names it by address.</td></tr>
 <tr><td><a href="https://docs.robinhood.com/chain/stock-tokens/">Robinhood's own description of Stock Tokens</a></td><td>no &ldquo;legal or beneficial rights&rdquo; in the underlying security</td><td>The page identifies each token by its ticker. A ticker is not unique on a permissionless chain. The agent identifies tokens by contract address.</td></tr>
 <tr><td><a href="https://bli.tools/legal-compliance-tech-tools/">BLI, Legal Compliance Tech Tools</a></td><td>&ldquo;evidentiary standards&rdquo;, &ldquo;audit readiness&rdquo;, &ldquo;tamper-evident&rdquo;</td><td>An auditor can recheck every number on this page from public data with one command and no account.</td></tr>
 </table></div>
 
-<h2>Verify it yourself</h2>
+<h2 id="chainlink">Chainlink CRE: a compliance check before the agent acts</h2>
+<p>Three CRE workflows sit around the decision. They are run with <code>cre workflow simulate</code>. Nothing is deployed to a DON, and a simulated write goes through CRE's simulation forwarder, which accepts reports from anyone. The events fix a hash and a time. They are not a DON attestation, which is why the recheck at the end of this page exists.</p>
+<div class="scroll"><table>
+<tr><th>Example in the bounty text</th><th>What this repo does</th></tr>
+<tr><td>AI agents consuming CRE workflows with x402 payments</td><td>A gate answers 402 in front of the workflow <code>rwa-verify</code>, takes 0.01 USDG on Robinhood Chain and then runs the workflow. <code>SKILL.md</code> and <code>agent.json</code> let an agent find it. Run so far as a dry run: the agent read the 402 and built the payment without signing it. The one settled payment (2026-10-08) bought the record that the workflow verifies.</td></tr>
+<tr><td>Tokenized asset servicing and lifecycle management</td><td>The workflow <code>token-check</code> reads each Stock Token's share multiplier, which changes with a corporate action, straight from Robinhood Chain.</td></tr>
+<tr><td>Automated risk monitoring</td><td><code>token-check</code> tells the issuer's Stock Token from a different token under the same ticker by the issuer's own marks on chain: the code hash, the beacon and the official list. It does not ask vet402. <span id="tokencheck"></span></td></tr>
+<tr><td>Real-time reserve health checks</td><td>Not attempted.</td></tr>
+</table></div>
+<p class="small mute">The README has the one <code>cre workflow simulate</code> line, the code guide with line numbers, and what I learned using CRE.</p>
+
+<h2 id="ryo">RYO-CHAN: the same care, for stock tokens</h2>
+<p>RYO-CHAN protects investors with an anti-rug scanner. copy-guard does a neighbouring job for stock tokens: before anything copies a move, it says in everyday language which token moved and whether it is the issuer's.</p>
+<div class="scroll"><table>
+<tr><th>The bounty text</th><th>On this page</th></tr>
+<tr><td>&ldquo;record the practice trades they would make&rdquo;</td><td><a href="#ledger">The practice ledger</a>: every decision, the position it opened or did not open, with entry, size and exit.</td></tr>
+<tr><td>&ldquo;show cause and effect&rdquo;</td><td><a href="#cards">Every card</a>: what happened, why, and the action that follows.</td></tr>
+<tr><td>&ldquo;preserve a repeatable reasoning trail&rdquo;</td><td>No language model. The same inputs and the same limits give the same trail, and <a href="#verify">the recheck</a> repeats it with separate code.</td></tr>
+<tr><td>&ldquo;transparent signal rules and user-defined risk limits&rdquo;</td><td>Fixed rules, and <a href="#bli">the limits the user wrote</a>.</td></tr>
+<tr><td>&ldquo;Explain selected and rejected candidates&rdquo;</td><td>Declined moves stay in the ledger, each with its reasons.</td></tr>
+</table></div>
+<p class="note"><b>One sentence, two values.</b> A person who says &ldquo;put at most $50 on one stock and stop the loss at 15%&rdquo; changes two lines of <code>limits.json</code>: <code>"full_usd": "50.00"</code> and <code>"stop_loss_pct": "15"</code>. The file is edited by hand, and there is no parser for the sentence. Every later decision names the new file by hash, and the mandate has to be signed again, because new limits need the principal's consent.</p>
+
+<h2 id="verify">Check it yourself</h2>
 <ol class="steps">
-<li><b>Run the recheck.</b> Node 20 or newer, no key, no account, nothing to install. It rebuilds every hash, reruns every rule, replays the whole ledger and compares the result with two public chains.<pre>git clone &lt;REPO_URL&gt; vet402-bli &amp;&amp; cd vet402-bli
+<li><b>Run the recheck.</b> Node 20 or newer, no key, no account, nothing to install. It rebuilds every hash, reruns every rule, replays the whole ledger and compares the result with two public chains.<pre>git clone https://github.com/kzmttkc/vet402-copy-guard &amp;&amp; cd vet402-copy-guard
 node verify.mjs</pre><span id="verifyresult" class="small mute"></span></li>
 <li><b>Open the ledger's root</b> on Robinhood Testnet: <span id="rootlink"></span>. One <code>LedgerAnchored</code> event carries the Merkle root of every decision on this page.</li>
 <li><b>Open the payment</b> on Robinhood Chain: <a href="https://robinhoodchain.blockscout.com/tx/0x65c314bd758a59dfc79c78d8da76e557450fa1144726ddc4bfc77e183287af61">0x65c314bd…87af61</a>. 0.01 USDG from the agent's wallet to vet402's wallet, 2026-10-08. I paid it myself as a test. Both wallets are mine.</li>
@@ -161,19 +198,37 @@ node verify.mjs</pre><span id="verifyresult" class="small mute"></span></li>
 <h2>What this does not claim</h2>
 <ul>
 <li>Practice (paper) trades only. No real trade was placed, and nothing here says that copying any wallet makes money.</li>
-<li>The ledger compares two policies on past public moves. It is not a forecast and not advice.</li>
+<li>The ledger compares two policies on past public moves. It is not a forecast, not a track record and not advice.</li>
+<li>No token and no person is called a scam here. The record says which contract moved and that its address is not the one the issuer listed.</li>
+<li>The principal is an address. Nothing here ties it to a legal identity.</li>
 <li>The walk is a replay. Each wallet's record was read once, after the moves, so the rules judge a wallet with what is known now.</li>
 <li>Feed values arrive a few times a day. An entry price can be hours older than the move, within the age limit the user set.</li>
 <li>No customer yet. The one payment so far is my own test.</li>
-<li>vet402 reports what public chain data shows. It gives no legal or investment advice and is not affiliated with Robinhood, Chainlink or any token issuer.</li>
+<li>This is not legal advice and not investment advice. vet402 reports what public chain data shows and is not affiliated with Robinhood, Chainlink, RYO or any token issuer.</li>
 </ul>
+<p class="last">A ticker is a string that anyone can reuse. This page says which contract moved, who signed for it and who allowed the agent to act. Don't take my word for it. <a href="#verify">Run it.</a></p>
 <footer>vet402 copy-guard. MIT license. This page is one static file: it loads nothing from the network and builds every table from the ledger it carries.</footer>
 </main>
 <script type="application/json" id="ledger-data">/*LEDGER*/</script>
 <script type="application/json" id="page-data">/*EXTRA*/</script>
+<!-- Which cards stand at the top, and in which order. The page takes, for each slot in turn:
+     the row whose move_tx starts with "tx" when the ledger has it, otherwise the first row
+     (lowest n) that fits "match". With "same_ticker_as" it prefers a row with the ticker of
+     that earlier slot. A slot no row fits is left out. docs/handoff/C-to-A.md has the reasons. -->
+<script type="application/json" id="page-config">
+{
+ "cards": [
+  { "slot": "arrived", "caption": "1. A token arrived that the wallet never signed for", "tx": "0x1b838f40", "match": { "asset": "same_ticker", "arrival": ["received_unsigned"] } },
+  { "slot": "small_buy", "caption": "2. The wallet bought the issuer's Stock Token: a small practice position", "match": { "opened": true }, "same_ticker_as": "arrived" },
+  { "slot": "bought_other", "caption": "3. The wallet itself bought a different token under a stock ticker", "match": { "asset": "same_ticker", "arrival": ["bought", "in_signed"] } },
+  { "slot": "logged_out", "caption": "4. A log names the wallet as the sender of a payment it never signed", "tx": "0xf7cb51a2", "match": { "asset": "same_ticker", "invisible_characters": true } }
+ ]
+}
+</script>
 <script>
 const L = JSON.parse(document.getElementById('ledger-data').textContent)
 const X = JSON.parse(document.getElementById('page-data').textContent)
+const CFG = JSON.parse(document.getElementById('page-config').textContent)
 const $ = (id) => document.getElementById(id)
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c])
 const short = (h) => `${h.slice(0, 8)}…${h.slice(-4)}`
@@ -182,58 +237,130 @@ const ttx = (h) => `<a class="mono" href="https://explorer.testnet.chain.robinho
 const addr = (a) => `<a class="mono" href="https://robinhoodchain.blockscout.com/address/${a}">${a.slice(0, 6)}…${a.slice(-4)}</a>`
 const when = (t) => t.slice(0, 16).replace('T', ' ')
 const money = (s) => `<span class="${s.startsWith('-') ? 'neg' : Number(s) > 0 ? 'pos' : ''}">${esc(s)}</span>`
+const plural = (n, one, many) => `${n} ${Number(n) === 1 ? one : many}`
 const T = L.totals
+const lim = L.limits
+const M = L.mandate
 
+// ---- one reading of the ledger, for version 3 and for version 2 --------------------
+// Version 3 says what each row is about in row.main and how each position is valued.
+// Version 2 (the walk of 2026-10-14) did not, so the same facts are read from what it has.
+const OTHER_KIND = ['same_ticker', 'fake']
+const isOtherRow = (r) => (r.main ? OTHER_KIND.includes(r.main.kind) : r.failed.includes('C1'))
+const arrivalOf = (r) => {
+	if (r.main) return r.main.arrival
+	const h = r.card.happened
+	return /from this wallet|The wallet sent/.test(h) ? 'out' : /did not sign/.test(h) ? 'received_unsigned' : 'in_signed'
+}
+const guardPos = new Map(L.copy_guard_positions.map((p) => [p.n, p]))
+const tickerOf = (r) => r.main?.ticker ?? guardPos.get(r.n)?.symbol ?? r.card.headline.split(' ').pop()
+const isOtherPos = (p) => p.asset === 'same_ticker' || p.fake === true
+const measured = (p) => (isOtherPos(p) ? p.valued_by === 'pool' && p.result_usd !== null : p.result_usd !== null && p.result_usd !== undefined)
+const isOtherOpen = (b) => b && (b.asset === 'same_ticker' || b.fake === true)
+const mandateStatus = { signed_by_principal: 'signed', sample: 'sample', not_signed: 'unsigned' }[M.status] ?? (!M.signed_by_principal ? 'unsigned' : (M.sample ?? X.sample_mandate) ? 'sample' : 'signed')
+const MANDATE_WORDS = { signed: 'Mandate signed by the principal', sample: 'Sample mandate (not yet signed by the principal)', unsigned: 'No signed mandate' }
+const otherMoves = T.other_tokens?.moves ?? T.fakes_named
+const otherTokens = T.other_tokens?.tokens ?? null
+const blindOther = T.blind_copy.in_other_tokens?.count ?? T.blind_copy.fakes
+const totalChecks = L.rows[0]?.checks.total
+
+// ---- the first screen ----------------------------------------------------------------
 $('nums').innerHTML = [
-	[T.decisions, `decisions about ${T.wallets} wallets`],
-	[`${T.full} / ${T.reduced} / ${T.none}`, 'full / reduced / no position'],
-	[T.fakes_named, 'look-alike tokens named and refused'],
-	[`${T.blind_copy.fakes} of ${T.blind_copy.opened}`, 'positions of a blind copy that are look-alikes'],
+	[T.decisions, `moves of ${T.wallets} wallets looked at`],
+	[T.copy_guard.opened, 'practice positions opened, each sized by the evidence'],
+	[T.none, 'declined, each with a reason you can read'],
+	[otherMoves, `moves in ${otherTokens ? plural(otherTokens, 'token', 'tokens') : 'tokens'} that share a ticker but are not the issuer's`],
 ].map(([b, s]) => `<div><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join('')
-$('note').textContent = `${L.note} A blind copy would have opened ${T.blind_copy.opened} positions, ${T.blind_copy.fakes} of them in look-alike tokens. copy-guard opened ${T.copy_guard.opened}, sized by the evidence, and named ${T.fakes_named} look-alikes. Decided ${when(L.decided_at)}, marked at Robinhood Chain block ${L.mark_block}.`
+const chosenForIt = T.wallets_by_cohort?.same_ticker_buyers ?? 0
+$('note').textContent = `${L.note}${chosenForIt ? ` ${chosenForIt} of the ${T.wallets} wallets are in the walk because they bought a token under a listed ticker at another address, so the counts above are not a rate.` : ''} Decided ${when(L.decided_at)}, marked at Robinhood Chain block ${L.mark_block}.`
 $('baseline').textContent = L.baseline
 
-const RULE = { A1: 'Payment terms', A2: 'Record hash', A3: 'Record subject', A4: 'Anchor check by CRE', A5: 'Record replay', A6: 'Look-alikes reviewed', B1: 'Record covers the move', B2: 'Tokens classified', C1: 'Not a look-alike', C2: 'Stock Token moved', C3: 'Complete history', C4: 'Realized profit', M1: 'Mandate signed', V1: 'Official venue', D1: 'Bought by the wallet', P1: 'Chainlink price', L1: 'Daily limit', L2: 'Open positions' }
-const MARKS = [['Official token', ['C1', 'C2']], ['Bought by the wallet itself', ['D1']], ['Official venue', ['V1']], ['Chainlink price', ['P1']], ['Record intact', ['A1', 'A2', 'A3', 'A5', 'A6', 'B1', 'B2']], ['Wallet track record', ['A4', 'C3', 'C4']], ['Mandate signed', ['M1']], ['Within your limits', ['L1', 'L2']]]
+// ---- cards ---------------------------------------------------------------------------
+const RULE = { A1: 'Payment terms', A2: 'Record hash', A3: 'Record subject', A4: 'Anchor check by CRE', A5: 'Record replay', A6: 'Same-ticker tokens reviewed', B1: 'Record covers the move', B2: 'Tokens classified', C1: "Issuer's token, not only its ticker", C2: 'Stock Token moved', C3: 'Complete history', C4: 'Realized profit', M1: 'Mandate signed', V1: 'Official venue', D1: 'Bought by the wallet', P1: 'Chainlink price', L1: 'Daily limit', L2: 'Open positions' }
+const MARKS = [["Issuer's token", ['C1', 'C2']], ['Bought by the wallet itself', ['D1']], ['Official venue', ['V1']], ['Chainlink price', ['P1']], ['Record intact', ['A1', 'A2', 'A3', 'A5', 'A6', 'B1', 'B2']], ['Wallet track record', ['A4', 'C3', 'C4']], ['MANDATE', ['M1']], ['Within your limits', ['L1', 'L2']]]
+function mark(name, ids, flags) {
+	const bad = ids.some((id) => flags.includes(id))
+	if (name !== 'MANDATE') return `<span class="mark ${bad ? 'bad' : 'good'}">${bad ? '▲' : '●'} ${esc(name)}</span>`
+	if (bad || mandateStatus === 'unsigned') return `<span class="mark bad">▲ ${MANDATE_WORDS.unsigned}</span>`
+	return mandateStatus === 'signed' ? `<span class="mark good">● ${MANDATE_WORDS.signed}</span>` : `<span class="mark sample">◌ ${MANDATE_WORDS.sample}</span>`
+}
 function card(r) {
 	const c = r.checks
-	const marks = MARKS.map(([name, ids]) => { const bad = ids.some((id) => c.flags.includes(id)); return `<span class="mark ${bad ? 'bad' : 'good'}">${bad ? '▲' : '●'} ${esc(name)}</span>` }).join('')
-	return `<article class="card"><span class="score ${r.tier}">copy-guard check ${c.passed}/${c.total}</span><span class="tag ${r.tier}">${r.tier === 'NONE' ? 'NO POSITION' : `${r.tier} SIZE`}</span><span class="small mute">#${r.n} · ${when(r.move_time)} · wallet ${addr(r.wallet)} · move ${tx(r.move_tx)}</span>
-<h3>${esc(r.card.headline)}</h3><div class="marks">${marks}</div><dl>
+	return `<article class="card" id="card-${r.n}"><span class="score ${r.tier}">copy-guard check ${c.passed}/${c.total}</span><span class="tag ${r.tier}">${r.tier === 'NONE' ? 'NO POSITION' : `${r.tier} SIZE`}</span><span class="small mute">#${r.n} · ${when(r.move_time)} · wallet ${addr(r.wallet)} · move ${tx(r.move_tx)}</span>
+<h3>${esc(r.card.headline)}</h3><div class="marks">${MARKS.map(([name, ids]) => mark(name, ids, c.flags)).join('')}</div><dl>
 <dt>What happened</dt><dd>${esc(r.card.happened)}</dd>
-<dt>What a blind bot sees</dt><dd>${esc(r.card.blind_view)}</dd>
+<dt>What a ticker copy sees</dt><dd>${esc(r.card.blind_view)}</dd>
 <dt>Why</dt><dd><ul>${r.card.why.map((w) => `<li>${esc(w)}</li>`).join('')}</ul></dd>
 <dt>Red flags (${c.flags.length})</dt><dd>${c.flags.length ? c.flags.map((id) => `<span class="mark bad">▲ ${esc(RULE[id] ?? id)} <span class="mono">${esc(id)}</span></span>`).join(' &nbsp; ') : 'none'}</dd>
 <dt>Suggested action</dt><dd><b>${esc(r.card.so.replace(/^So copy-guard /, 'copy-guard '))}</b></dd></dl></article>`
 }
-const featured = []
-const pick = (test, max) => L.rows.forEach((r) => { if (test(r) && !featured.includes(r) && featured.filter(test).length < max) featured.push(r) })
-pick((r) => X.showcase.some((h) => r.move_tx.startsWith(h)), 3)
-pick((r) => r.copy_guard.opened, 3)
-pick((r) => r.failed.includes('C1'), 4)
-$('cards').innerHTML = featured.sort((a, b) => a.n - b.n).map(card).join('')
+function fits(r, m) {
+	if (m.opened !== undefined && Boolean(r.copy_guard.opened) !== m.opened) return false
+	if (m.asset === 'same_ticker' && !isOtherRow(r)) return false
+	if (m.arrival && !m.arrival.includes(arrivalOf(r))) return false
+	if (m.invisible_characters && !r.card.happened.includes('⟨U+')) return false
+	return true
+}
+const chosen = []
+for (const slot of CFG.cards) {
+	const free = L.rows.filter((r) => !chosen.some((x) => x.row === r))
+	const earlier = chosen.find((x) => x.slot === slot.same_ticker_as)
+	const pool = free.filter((r) => fits(r, slot.match ?? {}))
+	const row = (slot.tx && free.find((r) => r.move_tx.startsWith(slot.tx))) || (earlier && pool.find((r) => tickerOf(r) === tickerOf(earlier.row))) || pool[0]
+	if (row) chosen.push({ slot: slot.slot, caption: slot.caption, row })
+}
+$('featured').innerHTML = chosen.map((x) => `<p class="slot">${esc(x.caption)}</p>${card(x.row)}`).join('')
+const first = chosen.find((x) => x.slot === 'arrived')
+if (!first || !first.row.move_tx.startsWith('0x1b838f40')) $('story').hidden = true
+else $('story').querySelector('a').href = `#card-${first.row.n}`
+
+// ---- the two books -------------------------------------------------------------------
+const same = T.same_size
+$('compare').innerHTML = [
+	['', 'copy-guard', 'Ticker copy'],
+	['Moves looked at', T.decisions, `the same ${T.decisions}`],
+	['Practice positions opened', `${T.copy_guard.opened} (full size ${T.full}, reduced size ${T.reduced})`, T.blind_copy.opened],
+	['Of them in a token under a stock ticker at an address the issuer did not list', 0, `<span class="other">${blindOther}</span>`],
+	['Declined, each with a reason', T.none, '0. It has no rule to decline by'],
+	['Closed / still open at the mark', `${T.copy_guard.closed} / ${T.copy_guard.open}`, `${T.blind_copy.closed} / ${T.blind_copy.open}`],
+].map((row, i) => `<tr>${row.map((c, j) => (i === 0 ? `<th>${esc(c)}</th>` : j === 0 ? `<td>${esc(c)}</td>` : `<td>${String(c).startsWith('<') ? c : esc(c)}</td>`)).join('')}</tr>`).join('')
+const COHORT = { top_buyers: 'The largest buyers of Stock Tokens', same_ticker_buyers: 'Wallets chosen because they bought a token under a stock ticker at another address', watched: 'The demo wallet' }
+const BC = T.by_cohort
+$('bycohort').innerHTML = BC
+	? `<h3>The same counts by group of wallets</h3><p class="small mute">One group was chosen for what it bought, so the groups are shown apart.</p><div class="scroll"><table><tr><th>Group</th><th class="r">Wallets</th><th class="r">Moves</th><th class="r">copy-guard opened</th><th class="r">Ticker copy opened</th><th class="r">Of them in other tokens</th></tr>${Object.keys(COHORT).filter((k) => BC[k]?.wallets).map((k) => `<tr><td>${esc(COHORT[k])}</td><td class="r">${BC[k].wallets}</td><td class="r">${BC[k].decisions}</td><td class="r">${BC[k].copy_guard_opened}</td><td class="r">${BC[k].ticker_copy_opened}</td><td class="r">${BC[k].ticker_copy_in_other_tokens}</td></tr>`).join('')}</table></div>`
+	: ''
+const otherResult = (x) => [x.measured ? `${plural(x.measured, 'position', 'positions')} measured at the pool's own price: ${money(x.result_measured_usd)} USD` : '', x.not_measured ? `${plural(x.not_measured, 'position', 'positions')} not measured` : ''].filter(Boolean).join('. ') || 'none'
+$('samesize').innerHTML = same
+	? `<h3>The same positions at one size, ${esc(same.size_usd)} USD each</h3><p class="small mute">Both books at one size, so that size cannot make the difference.</p><div class="scroll"><table>
+<tr><th></th><th class="r">Positions</th><th class="r">Put in</th><th>Result at the exit or the mark</th></tr>
+<tr><td>Opened by both books</td><td class="r">${same.opened_by_both.count}</td><td class="r">${esc(same.opened_by_both.put_in_usd)} USD</td><td>${money(same.opened_by_both.result_usd)} USD, the same in both books</td></tr>
+<tr><td>Opened by the ticker copy only, in Stock Tokens</td><td class="r">${same.opened_by_ticker_copy_only_stock.count}</td><td class="r">${esc(same.opened_by_ticker_copy_only_stock.put_in_usd)} USD</td><td>${money(same.opened_by_ticker_copy_only_stock.result_usd)} USD</td></tr>
+<tr><td>Opened by the ticker copy only, in other tokens under a stock ticker</td><td class="r">${same.opened_by_ticker_copy_only_other.count}</td><td class="r">${esc(same.opened_by_ticker_copy_only_other.put_in_usd)} USD</td><td>${otherResult(same.opened_by_ticker_copy_only_other)}</td></tr>
+</table></div>`
+	: `<p class="small mute">At one size: copy-guard's positions in this walk are ${esc(lim.size.reduced_usd)} USD each. At that size the ticker copy would have put in ${(T.blind_copy.opened * Number(lim.size.reduced_usd)).toFixed(2)} USD. What its ${blindOther} positions in other tokens were worth afterwards is not measured in this walk, so no result in USD is compared here.</p>`
 
 function positions(ps, guard) {
 	const head = `<tr><th>#</th><th>Token</th>${guard ? '<th>Size</th>' : ''}<th class="r">Put in</th><th class="r">Entry</th><th>Left</th><th class="r">Result</th></tr>`
-	const body = ps.map((p) => `<tr><td>${p.n}</td><td>${esc(p.symbol)}${p.fake ? ' <span class="neg">look-alike</span>' : ''}</td>${guard ? `<td>${esc(p.tier)}</td>` : ''}<td class="r">${esc(p.notional_usd)}</td><td class="r">${esc(p.entry_price_usd ?? 'no price')}</td><td>${p.exit ? `${esc(p.exit.reason)}${p.exit.price_usd ? ` at ${esc(p.exit.price_usd)}` : ''}` : p.mark ? `open, marked at ${esc(p.mark.price_usd)}` : 'open'}</td><td class="r">${money(p.result_usd)}</td></tr>`).join('')
-	const t = guard ? T.copy_guard : T.blind_copy
-	const foot = `<tr><th colspan="${guard ? 3 : 2}">${t.opened} positions, ${t.closed} closed, ${t.open} open</th><th class="r">${esc(t.put_in_usd)}</th><th></th><th></th><th class="r">${money(t.result_usd)}</th></tr>`
+	const left = (p) => (isOtherPos(p) && !measured(p) ? 'not measured' : p.exit ? `${esc(p.exit.reason)}${p.exit.price_usd ? ` at ${esc(p.exit.price_usd)}` : ''}` : p.mark?.price_usd ? `open, marked at ${esc(p.mark.price_usd)}` : p.mark?.pool ? "open, marked at the pool's last swap" : 'open')
+	const body = ps.map((p) => `<tr><td>${p.n}</td><td>${esc(p.symbol)}${isOtherPos(p) ? ' <span class="other">same ticker, different token</span>' : ''}</td>${guard ? `<td>${esc(p.tier)}</td>` : ''}<td class="r">${esc(p.notional_usd)}</td><td class="r">${esc(p.entry_price_usd ?? (isOtherPos(p) ? 'no feed' : 'no price'))}</td><td>${left(p)}</td><td class="r">${measured(p) ? money(p.result_usd) : '<span class="mute">not measured</span>'}</td></tr>`).join('')
+	const done = ps.filter(measured)
+	const sum = done.reduce((s, p) => s + Number(p.result_usd), 0).toFixed(2)
+	const foot = `<tr><th colspan="${guard ? 3 : 2}">${ps.length} positions</th><th class="r">${ps.reduce((s, p) => s + Number(p.notional_usd), 0).toFixed(2)}</th><th></th><th>${done.length === ps.length ? '' : `${ps.length - done.length} not measured, left out of the sum`}</th><th class="r">${money(sum)}</th></tr>`
 	return head + (body || `<tr><td colspan="7" class="mute">No position.</td></tr>`) + foot
 }
-const sumLine = (t, extra) => `<b>${t.opened}</b> practice positions, <b>${esc(t.put_in_usd)}</b> USD put in${extra}. ${t.closed} closed, ${t.open} still open. Result at the exit or the mark: <b>${money(t.result_usd)}</b> USD.`
-$('guardsum').innerHTML = sumLine(T.copy_guard, `, all in real Stock Tokens (full ${T.full}, reduced ${T.reduced})`)
-$('blindsum').innerHTML = sumLine(T.blind_copy, `, <span class="neg">${T.blind_copy.fakes} of them in look-alike tokens</span>`)
+$('guardsum').innerHTML = `<b>${T.copy_guard.opened}</b> practice positions, all in the issuer's Stock Tokens (full size ${T.full}, reduced size ${T.reduced}), <b>${esc(T.copy_guard.put_in_usd)}</b> USD put in. ${T.copy_guard.closed} closed, ${T.copy_guard.open} still open.`
+$('blindsum').innerHTML = `<b>${T.blind_copy.opened}</b> practice positions. <span class="other">${blindOther} of them in a token under a stock ticker at an address the issuer did not list.</span> ${T.blind_copy.closed} closed, ${T.blind_copy.open} still open.`
 $('guard').innerHTML = positions(L.copy_guard_positions, true)
 $('blind').innerHTML = positions(L.blind_copy_positions, false)
 
-const FILTERS = { 'All': () => true, 'Positions opened': (r) => r.copy_guard.opened || r.blind_copy.opened, 'Look-alikes': (r) => r.failed.includes('C1'), 'Reduced or full': (r) => r.tier !== 'NONE' }
+const FILTERS = { 'All': () => true, 'Positions opened': (r) => r.copy_guard.opened || r.blind_copy.opened, 'Same ticker, different token': isOtherRow, 'Reduced or full': (r) => r.tier !== 'NONE' }
 let current = 'Positions opened'
 function rows() {
 	const list = L.rows.filter(FILTERS[current])
-	$('rows').innerHTML = `<tr><th>#</th><th>Move (UTC)</th><th>Wallet</th><th>copy-guard</th><th>Blind copy</th><th>Reason</th></tr>` + list.map((r) => {
+	$('rows').innerHTML = `<tr><th>#</th><th>Move (UTC)</th><th>Wallet</th><th>copy-guard</th><th>Ticker copy</th><th>Reason</th></tr>` + list.map((r) => {
 		const g = r.copy_guard.opened
 		const b = r.blind_copy.opened
-		return `<tr class="row" data-n="${r.n}"><td>${r.n}</td><td>${when(r.move_time)}<br>${tx(r.move_tx)}</td><td>${addr(r.wallet)}</td><td><span class="tag ${r.tier}">${r.tier}</span>${g ? `${esc(g.notional_usd)} USD at ${esc(g.entry_price_usd)}` : ''}</td><td>${b ? `${esc(b.notional_usd)} USD${b.fake ? ' <span class="neg">in a look-alike</span>' : ` at ${esc(b.entry_price_usd)}`}` : '<span class="mute">nothing</span>'}</td><td>${esc(r.card.headline)}</td></tr>`
+		return `<tr class="row" data-n="${r.n}"><td>${r.n}</td><td>${when(r.move_time)}<br>${tx(r.move_tx)}</td><td>${addr(r.wallet)}</td><td><span class="tag ${r.tier}">${r.tier}</span>${g ? `${esc(g.notional_usd)} USD at ${esc(g.entry_price_usd)}` : ''}</td><td>${b ? `${esc(b.notional_usd)} USD${isOtherOpen(b) ? ' <span class="other">in a different token under the ticker</span>' : ` at ${esc(b.entry_price_usd)}`}` : '<span class="mute">nothing</span>'}</td><td>${esc(r.card.headline)}</td></tr>`
 	}).join('')
 	$('filters').innerHTML = Object.keys(FILTERS).map((k) => `<button aria-pressed="${k === current}" data-f="${esc(k)}">${esc(k)} (${L.rows.filter(FILTERS[k]).length})</button>`).join('')
 }
@@ -249,7 +376,13 @@ $('rows').addEventListener('click', (e) => {
 	tr.insertAdjacentHTML('afterend', `<tr class="detail"><td colspan="6">${card(r)}</td></tr>`)
 })
 
-const lim = L.limits
+// ---- tokens that share a ticker (version 3 carries the list) -------------------------
+const O = T.other_tokens
+$('others').innerHTML = O?.list?.length
+	? `<h3>Tokens that share a ticker</h3><p class="small mute">Every token in the walk that carries the ticker of a Stock Token or of USDG at an address the issuer did not list. This is a record that tickers are not unique. It does not call any token, or anyone behind one, a scam.${[[O.sent_to_the_wallet, 'sent to a wallet that did not sign'], [O.bought_by_the_wallet, 'bought by the wallet itself, which signed and paid'], [O.received_unpaid, 'received in a transaction the wallet signed without paying'], [O.logged_as_sent_by_the_wallet, 'logged with the wallet as the sender']].filter(([n]) => n > 0).map(([n, s], i) => `${i ? ', ' : ' Of the moves: '}${n} ${s}`).join('')}${O.sent_to_the_wallet || O.bought_by_the_wallet ? '.' : ''}</p><div class="scroll"><table><tr><th>Ticker it carries</th><th>Contract</th><th>Name it carries</th><th class="r">Moves</th></tr>${O.list.map((o) => `<tr><td>${esc(o.ticker)}</td><td>${addr(o.token)}</td><td>${esc(o.name)}</td><td class="r">${o.moves}</td></tr>`).join('')}</table></div>`
+	: ''
+
+// ---- limits and mandate --------------------------------------------------------------
 $('limits').innerHTML = [
 	['Practice only', lim.practice_only ? 'yes' : 'no'],
 	['Full position', `${lim.size.full_usd} USD`],
@@ -267,16 +400,21 @@ $('limits').innerHTML = [
 	['Pay for evidence, at most', `${lim.payments.max_usdg_per_decision} USDG per decision, ${lim.payments.max_usdg_total} USDG in total`],
 	['keccak256', `<span class="mono">${esc(L.limits_keccak)}</span>`],
 ].map(([k, v]) => `<tr><td>${esc(k)}</td><td>${String(v).startsWith('<') ? v : esc(v)}</td></tr>`).join('')
-const M = L.mandate
 $('mandate').innerHTML = [
-	['Principal', addr(M.principal)],
+	['Status', `<span class="badge ${mandateStatus}">${MANDATE_WORDS[mandateStatus]}</span>`],
+	[mandateStatus === 'sample' ? 'Principal in the sample' : 'Principal', `${addr(M.principal)}${mandateStatus === 'sample' ? ' <span class="mute">a testnet-only key that stands in for the principal</span>' : ''}`],
+	...(mandateStatus === 'sample' && X.mandate_to_sign?.principal ? [['Principal who is to sign', addr(X.mandate_to_sign.principal)]] : []),
 	['Agent payment key', addr(M.agent_payment_key)],
-	['Signed by the principal', M.signed_by_principal ? 'yes' : 'no'],
 	['Valid', `${esc(M.valid_from)} to ${esc(M.valid_until)}`],
-	['Rules', `<span class="mono">${esc(L.rules.id)} v${esc(L.rules.version)}</span>`],
+	['Rules', `<span class="mono">${esc(L.rules.id)} v${esc(L.rules.version)}</span>, ${esc(totalChecks)} checks`],
 	['keccak256', `<span class="mono">${esc(M.keccak)}</span>`],
 ].map(([k, v]) => `<tr><td>${esc(k)}</td><td>${v}</td></tr>`).join('')
-$('mandatestate').innerHTML = X.sample_mandate ? '<b>This walk used the SAMPLE mandate: its principal is a testnet-only key that stands in for the real principal, whose signature is still to come.</b>' : ''
+$('mandatestate').innerHTML = {
+	signed: `<span class="badge signed">${MANDATE_WORDS.signed}</span> Every decision on this page carries the principal's signature.`,
+	sample: `<span class="badge sample">${MANDATE_WORDS.sample}</span> This walk used a sample mandate whose principal is a testnet-only key. The principal's own signature is still to come, and the walk is run again after it.`,
+	unsigned: `<span class="badge unsigned">${MANDATE_WORDS.unsigned}</span> No signature covered this walk, so rule M1 made every decision open nothing.`,
+}[mandateStatus]
+
 const root = X.anchor && X.anchor.ledger_tx ? `${ttx(X.anchor.ledger_tx)} on Robinhood Testnet, root <span class="mono">${esc(short(L.root))}</span>` : `root <span class="mono">${esc(L.root)}</span> (simulated, not written onchain)`
 $('roottx').innerHTML = root
 $('rootlink').innerHTML = root
