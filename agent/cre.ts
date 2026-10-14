@@ -43,7 +43,8 @@ export function simulate<T>(workflow: 'rwa-verify' | 'trail-anchor', payload: un
 	const r = spawnSync(CRE, args, { cwd: REPO, env, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 10 * 60 * 1000 })
 	const log = `${r.stdout ?? ''}${r.stderr ?? ''}`
 	const command = `cre ${args.join(' ').replace(REPO + '/', '')}`
-	writeFileSync(join(opts.workDir, `${opts.label}.cre.txt`), `$ ${command}\n${log}`)
+	// The CLI prints absolute paths. The saved copy shows the home folder as ~.
+	writeFileSync(join(opts.workDir, `${opts.label}.cre.txt`), `$ ${command}\n${log}`.split(homedir()).join('~'))
 	if (r.status !== 0) throw new Error(`cre exited ${r.status}; see ${opts.label}.cre.txt`)
 	return { ...parseSimulation<T>(log), log, command }
 }
