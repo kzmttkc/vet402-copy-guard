@@ -15,7 +15,9 @@ Anyone can deploy a token called NVDA. copy-guard is an agent that checks which 
 > "I was asleep when the losses accumulated."
 > crypto_chris, writing about an AI agent that was left to trade alone. [BlockEden forum, 2026-02-06](https://blockeden.xyz/forum/t/my-ai-agent-lost-12k-in-a-weekend-a-cautionary-tale-about-autonomous-defi/368).
 
+<!-- STORY:BEGIN -->
 Those two people wrote about tokens and agents in general. The same gap is open for stock tokens, because a ticker is not unique on a chain where anyone can deploy a token. What follows is my own observation, and I have found no account of anyone losing money this way. On 2026-09-27 at 12:52 UTC, 25 tokens that a block explorer lists as NVDA arrived in a wallet that trades Robinhood Stock Tokens. The wallet did not sign that transaction. A copier that goes by the ticker sees 25 NVDA arrive in that wallet. This record accuses no one. It shows that a ticker is not unique.
+<!-- STORY:END -->
 
 copy-guard is an autonomous agent that checks a move before it would copy it. It looks at which contract moved, who signed the transaction, where the token came from and what the wallet's record says. Then it sizes a practice trade by how strong that evidence is (full, reduced or none) and writes every reason in plain sentences. The rules are fixed and no language model decides, so the same inputs always give the same decision. The person it acts for sets the limits, and a mandate names that person by address. Chainlink CRE workflows check the token and the record before the agent acts, and they put the hash of its reasoning onchain.
 
@@ -156,15 +158,78 @@ A public RPC that is busy is asked again up to five times, and the line then end
 
 ## Chainlink: Best workflow with CRE
 
-CRE is the layer the agent's decision passes through. A CRE workflow checks the record the agent relies on before it acts, another reads from the chain whether a moved token is the issuer's Stock Token, and the reasoning the agent ends with goes onchain through a third. One line reproduces a run. It needs the CRE CLI (v1.37.0) and `cre login` once.
+CRE is the layer the agent's decision passes through. A CRE workflow checks the record the agent relies on before it acts, another reads from the chain whether a moved token is the issuer's Stock Token, and the reasoning the agent ends with goes onchain through a third. One line reproduces each run. It needs the CRE CLI (v1.37.0) and `cre login` once.
 
 <!-- CRE_SIMULATE:BEGIN -->
+Both lines run from the root of the repo, after `cre login` and `bun install` in the workflow's folder. No key is needed. The time at the start of each saved log line is the machine's local clock printed with a `Z` (row 3 of the notes below), so the excerpts leave it out.
+
+**token-check**, many tokens at one block. This payload holds the token of [the card](#the-practice-ledger) below among 12 tokens.
+
 ```bash
-cre workflow simulate token-check --target local-simulation --non-interactive --trigger-index 0 --http-payload token-check/payloads/fake-nvda.json
+cre workflow simulate token-check --target local-simulation --non-interactive --trigger-index 0 --http-payload docs/token-check/batch/batch-4.payload.json
 ```
 
-The payload is the move of 2026-09-27 from the top of this page. The saved output, [`docs/token-check/simulate-fake-nvda.txt`](docs/token-check/simulate-fake-nvda.txt), ends in `RESULT: DO NOT ALLOW` with the reasons `NOT_IN_LIST`, `CODE_HASH_DIFFERS`, `BEACON_DIFFERS` and `SYMBOL_COPIES_LISTED` among them.
+From [`docs/token-check/batch/batch-4.cre.txt`](docs/token-check/batch/batch-4.cre.txt), the saved output of the same payload run with `--broadcast`. Without `--broadcast` the write at the end is a dry run.
+
+```
+[USER LOG] token check, batch (Robinhood Chain 4663, read over JSON-RPC, no vet402 API)
+[USER LOG] tokens  12
+[USER LOG] state   robinhood-rpc.publicnode.com   logs rpc.mainnet.chain.robinhood.com
+[USER LOG] head    88095635 (median of the nodes), checking at block 88095615
+[USER LOG] block   88095615  hash 0x0d7b3cdd…fe21dc (the same from both RPCs)
+[USER LOG] NOT_ISSUER_TOKEN  0x5dd716fe…8e3539  "NVDA"  updates 0  NOT_IN_ISSUER_LIST CODE_HASH_DIFFERS BEACON_DIFFERS TICKER_SAME_AS_ISSUER_TOKEN NAME_SAME_AS_ISSUER_TOKEN NAME_ENDS_LIKE_ISSUER_TOKEN
+[USER LOG] ISSUER_TOKEN      0x5e812136…459786  "TTWO"  updates 0  IN_ISSUER_LIST CODE_HASH_MATCHES BEACON_MATCHES FACTORY_LOG_NAMES_TOKEN TICKER_MATCHES_LIST
+[USER LOG] NOT_ISSUER_TOKEN  0x5fc5360d…f1d168  "USDG"  updates 0  USDG_ADDRESS
+[USER LOG] NOT_ISSUER_TOKEN  0x623613c0…1186e0  "USDG"  updates 0  NOT_IN_ISSUER_LIST CODE_HASH_DIFFERS BEACON_DIFFERS TICKER_OR_NAME_READS_AS_USDG
+… 8 more rows of the same form
+[USER LOG] RESULT: 12 tokens at block 88095615, 3 the issuer's, 9 not
+[USER LOG] batch hash 0xb0322a58…41c97d (keccak256 of the canonical JSON of the rows)
+[USER LOG] batch hash written to 0xF49b4F21…016550 on robinhood-testnet, tx 0x1aaea557aad9af3d2a8129523ff0ca0aca62532bb254d2be19b2b13ed08f9842
+```
+
+The write is [`0x1aaea557…8f9842`](https://explorer.testnet.chain.robinhood.com/tx/0x1aaea557aad9af3d2a8129523ff0ca0aca62532bb254d2be19b2b13ed08f9842?tab=logs) on Robinhood Testnet.
+
+**rwa-verify**, the record the agent bought against its anchor on Robinhood Chain.
+
+```bash
+cre workflow simulate rwa-verify --target local-simulation --non-interactive --trigger-index 0 --http-payload rwa-verify/payloads/match.json
+```
+
+From [`docs/simulate-match.txt`](docs/simulate-match.txt), saved 2026-10-08. The all-zero transaction at the end is the dry run: nothing was broadcast.
+
+```
+[USER LOG] live /rwa record: HTTP 200, as_of 2026-10-08T11:37:31.000Z, X-Facts-Hash matches the body
+[USER LOG] record under test: 0xe9b08727…6ec25f rwa-recon-0.3 as_of 2026-09-30T03:00:07.000Z, recomputed factsHash 0x9d0e83d9…f721ee
+[USER LOG] OK    chain              chain id 4663
+[USER LOG] OK    tx status          success in block 76177721
+[USER LOG] OK    contract           Anchored log from 0x1955137e…17c22d (RwaAnchor)
+[USER LOG] OK    contract code      runtime equals the build of RwaAnchor.sol: no owner, no upgrade path
+[USER LOG] OK    anchoredBy         0x973cd8a9…4f6227
+[USER LOG] OK    subject            0xa158baaf…d3bfc5 = keccak(0xe9b08727…6ec25f)
+[USER LOG] OK    factsHash          0x9d0e83d9…f721ee = recomputed 0x9d0e83d9…f721ee (material v2, binds the whole JSON)
+[USER LOG] OK    record facts_hash  record says 0x9d0e83d9…f721ee
+[USER LOG] OK    methodVersion      3 = rwa-recon-0.3
+[USER LOG] OK    asOf               1790737207 = 2026-09-30T03:00:07.000Z
+[USER LOG] RESULT: MATCH. The JSON is the record that was anchored.
+[USER LOG] verdict written to 0x00000000…00dEaD on robinhood-testnet, tx 0x00000000…000000
+```
 <!-- CRE_SIMULATE:END -->
+
+<!-- CRE_NUMBERS:BEGIN -->
+**What `token-check` has checked so far.** 82 tokens that moved in the walk, in 9 CRE runs, the last at Robinhood Chain block 88102077.
+
+| What | Count |
+|---|---|
+| the issuer's Stock Tokens, every mark confirmed from the chain (the list, the code hash, the beacon, the factory's log) | 42 |
+| of them with a share multiplier update logged | 16 |
+| not the issuer's | 40 |
+| of them USDG itself | 1 |
+| of them at an address outside the list with the ticker or the name of a listed Stock Token | 3 |
+| of them at an address outside the list whose ticker or name reads as USDG (8 with invisible characters) | 31 |
+| of them at an address outside the list with no mark of a listed token | 5 |
+
+Each run wrote the hash of its rows in a `TokenBatchChecked` event ([run 1](https://explorer.testnet.chain.robinhood.com/tx/0xfa386a44268705425cc52115bf63badd8106e3e39ffc3b14c63eee71095eb77d?tab=logs), [run 2](https://explorer.testnet.chain.robinhood.com/tx/0xdbef8b0aeca1820e4a191c2f90edac9ccaf3be2d78ea28c711107fd96c518336?tab=logs), [run 3](https://explorer.testnet.chain.robinhood.com/tx/0x6cd511c78b0045af18171246be1d7ca8b92d2ec5e41b5aaf817e2c820fe3357e?tab=logs), [run 4](https://explorer.testnet.chain.robinhood.com/tx/0x1aaea557aad9af3d2a8129523ff0ca0aca62532bb254d2be19b2b13ed08f9842?tab=logs), [run 5](https://explorer.testnet.chain.robinhood.com/tx/0xf7b7484378d166b7b9d4b2ffbe97708fa3ddb1545c4e7d5c053b7cb2ef15fcb6?tab=logs), [run 6](https://explorer.testnet.chain.robinhood.com/tx/0xf04a9faefa83c3be99e70e902178e005a101fe50f471d795f5294c4a5609b320?tab=logs), [run 7](https://explorer.testnet.chain.robinhood.com/tx/0x3868b8e9d9bda1c340ce37c74eba35acbcee1ba00d2d55ce73f65db2446f4ae4?tab=logs), [run 8](https://explorer.testnet.chain.robinhood.com/tx/0x2b10033e7bf929064879346b65fd2dde82b45f429838375c3146eb64722eebb3?tab=logs), [run 9](https://explorer.testnet.chain.robinhood.com/tx/0x14338fa3c55cdf79c8238bcea3621a0828c59b3a1983d86d546b87e3bf9e2bea?tab=logs)). One more run read those receipts back over the EVM capability and wrote `keccak256(results.json)` = `0x7d0ef983…ba0e41` in [`0x175bf12a…3fdb08`](https://explorer.testnet.chain.robinhood.com/tx/0x175bf12ad77fd67d73490333b04ad1cc4c0c66d1ea7844836219f504a33fdb08?tab=logs), to `TokenCheckReceiver` on Robinhood Testnet. Every decision of the walk names that file by the same hash. `node token-check/recheck.mjs` reads every row again over plain JSON-RPC, with no CRE and no code shared with the workflow. Its last line: `RECHECK: 82 of 82 rows agree, 0 differ; state read at the checked block for 0, as it is now for 82; 0 problems with the onchain trail; 712 RPC requests`. The codes say what was read. None of them says who made a token or why.
+<!-- CRE_NUMBERS:END -->
 
 ### The bounty text, line by line
 
@@ -173,38 +238,44 @@ The four examples in the bounty text, in its order.
 | Example in the bounty text | What this repo does | Evidence |
 |---|---|---|
 | "AI agents consuming CRE workflows with x402 payments" | A gate answers 402 in front of the workflow `rwa-verify`, takes 0.01 USDG on Robinhood Chain and then runs the workflow. `SKILL.md` and `agent.json` let an agent find it and learn the terms | `agent/gate/`, `docs/agent/gate-dry-run/`. So far a dry run: the agent read the 402 and built the payment without signing it. The one settled payment (2026-10-08) bought the record that the workflow verifies |
-| "Tokenized asset servicing and lifecycle management" | The workflow `token-check` reads each Stock Token's share multiplier, which changes with a corporate action, straight from Robinhood Chain | `token-check/`, `docs/token-check/` |
-| "Automated risk monitoring" | `token-check` tells the issuer's Stock Token from a different token under the same ticker by the issuer's own marks on chain: the code hash, the beacon and the official list. It does not ask vet402. `rwa-verify` checks a record against its anchor, and `trail-anchor` refuses a decision that the rules do not give | `token-check/`, `rwa-verify/`, `trail-anchor/` |
+| "Tokenized asset servicing and lifecycle management" | The workflow `token-check` reads each Stock Token's share multiplier, which changes with a corporate action, straight from Robinhood Chain, and counts the multiplier updates each token has logged | `token-check/`, `docs/token-check/`, [what it has checked so far](#chainlink-best-workflow-with-cre) |
+| "Automated risk monitoring" | `token-check` tells the issuer's Stock Token from a different token under the same ticker by the issuer's own marks on chain: the list, the code hash, the beacon, the factory's log. It checks many tokens at one block, writes the hash of its rows, and a second program rechecks every row without CRE. It does not ask vet402. `rwa-verify` checks a record against its anchor, and `trail-anchor` refuses a decision that the rules do not give | `token-check/`, `rwa-verify/`, `trail-anchor/`, `docs/token-check/` |
 | "Real-time reserve health checks" | Not attempted | |
 
 The two requirements in the bounty text.
 
 | Requirement | Here |
 |---|---|
-| "Build, simulate, or deploy a CRE Workflow that's used as an orchestration layer within your project." | Three workflows, all run with `cre workflow simulate`. Rule A4 of the agent reads the verdict of `rwa-verify`, and a walk's Merkle root is written by `trail-anchor` |
+| "Build, simulate, or deploy a CRE Workflow that's used as an orchestration layer within your project." | Three workflows, all run with `cre workflow simulate`. Rule A4 of the agent reads the verdict of `rwa-verify`, every decision of the walk reads which token is the issuer's from the results of `token-check` and names that file by hash, and a walk's Merkle root is written by `trail-anchor` |
 | "Integrate at least one blockchain with an external API, system, data source, LLM, or AI agent and demonstrate a successful simulation (via the CRE CLI) or a live deployment on the CRE network." | Robinhood Chain and Robinhood Testnet, the vet402 API and the agent. Simulation logs are in `docs/` and `docs/token-check/`. A live deployment: not attempted |
 
 ### CRE code guide
 
-Where CRE is used, for a reader with thirty seconds. Line numbers are those of the commit that added this table.
+<!-- CRE_GUIDE:BEGIN -->
+Where CRE is used, for a reader with thirty seconds. `scripts/readme-numbers.mjs` finds each line number in the file as it is now.
 
-| Workflow | Handler | Trigger | HTTP capability: what it reads | Consensus | EVM capability: what it writes |
+| Workflow | Handler | Trigger | HTTP capability: what it reads | Consensus | EVM capability |
 |---|---|---|---|---|---|
-| `rwa-verify` | [`rwa-verify/workflow.ts`](rwa-verify/workflow.ts) L185 | HTTP trigger, L261 | L194 the live record from vet402, L207 the record under test, L213 Robinhood Chain JSON-RPC: chain id, the anchor's receipt, `eth_getCode` of RwaAnchor | `consensusIdenticalAggregation` on each read | L232 report, L234 `writeReport` to `RwaVerdictReceiver` on Robinhood Testnet |
-| `token-check` | [`token-check/workflow.ts`](token-check/workflow.ts) L252 | HTTP trigger, L286 | L263 Robinhood Chain JSON-RPC: the move's Transfer logs, each token's code, its EIP-1967 beacon slot, `symbol()`, `name()` and share multiplier | `consensusIdenticalAggregation`, L263 | none. It returns `allow` and reason bits and writes nothing |
-| `trail-anchor` | [`trail-anchor/workflow.ts`](trail-anchor/workflow.ts) L172 | HTTP trigger, L223 | L189 Robinhood Chain JSON-RPC: the move's Transfer logs and, for a paid decision, the settlement receipt | `consensusIdenticalAggregation`, L189 | L203 to L204 one decision to `ReasoningTrailReceiver`. L164 to L165 the Merkle root of a walk to `LedgerRootReceiver` |
+| `rwa-verify` | [`rwa-verify/workflow.ts`](rwa-verify/workflow.ts) L185 | HTTP trigger, L261 | L194 the live record from vet402, L207 the record under test, L213 Robinhood Chain JSON-RPC: chain id, the anchor's receipt, `eth_getCode` of RwaAnchor | `consensusIdenticalAggregation` on each read | **write**, L232 report, L234 `writeReport` to `RwaVerdictReceiver` on Robinhood Testnet |
+| `token-check`, one transaction | [`token-check/workflow.ts`](token-check/workflow.ts) L605 (`onTransaction`), dispatched from L597 | HTTP trigger, L637 | L614 Robinhood Chain JSON-RPC: the move's Transfer logs, each token's code, its EIP-1967 beacon slot, `symbol()`, `name()` and share multiplier (`readChain`, L199) | `consensusIdenticalAggregation`, L614 | none. It returns `allow` and reason bits |
+| `token-check`, many tokens | L482 (`onBatch`) | the same trigger, L637 | L495 the head of the chain (`readHead`, L329). L505 for every token `EXTCODEHASH`, the beacon slot, `symbol()`, `name()`, `uiMultiplier()` at one pinned block from a second RPC operator, and from Robinhood's RPC the factory log and every `UIMultiplierUpdated` log (`readBatch`, L346) | `consensusMedianAggregation` on the head, L495. `consensusIdenticalAggregation` on the rest, L505 | **write**, L474 to L475: the hash of the rows to `TokenCheckReceiver` |
+| `token-check`, anchor | L540 (`onAnchor`) | the same trigger, L637 | none | the report, L474 | **read**, L571: `getTransactionReceipt` of every run the file names, on Robinhood Testnet. **write**, L474 to L475: the hash of the file |
+| `trail-anchor` | [`trail-anchor/workflow.ts`](trail-anchor/workflow.ts) L172 | HTTP trigger, L223 | L189 Robinhood Chain JSON-RPC: the move's Transfer logs and, for a paid decision, the settlement receipt | `consensusIdenticalAggregation`, L189 | **write**, L203 to L204 one decision to `ReasoningTrailReceiver`. L164 to L165 the Merkle root of a walk to `LedgerRootReceiver` |
 
-There is no EVM read. Robinhood Chain mainnet is not on CRE's supported network list, so every mainnet read goes through the HTTP capability as plain JSON-RPC. `agent/cre.ts` starts the workflows, and `agent/gate/server.ts` starts `rwa-verify` after an x402 payment.
+One EVM read: before `token-check` anchors a results file it reads the receipt of each run on Robinhood Testnet and looks for the event it expects. Robinhood Chain mainnet is not on CRE's supported network list, so every mainnet read goes through the HTTP capability as plain JSON-RPC. `agent/cre.ts` starts the workflows, `scripts/token-check-batch.ts` starts `token-check` for a list of tokens, and `agent/gate/server.ts` starts `rwa-verify` after an x402 payment. Capabilities in use across the three workflows: HTTP trigger, HTTP action, EVM read, EVM write, and consensus of two kinds (identical, median).
+<!-- CRE_GUIDE:END -->
 
 ### What changes
 
-The last column holds only times I measured, on this machine on 2026-10-14.
+<!-- CHANGES:BEGIN -->
+The last column holds only times read from saved runs on this machine: the simulate logs (from the trigger to the write, the compile not counted) and five runs of the recheck.
 
 | Before | Here | What changes | Measured |
 |---|---|---|---|
-| A person opens a block explorer and compares a token's contract with the issuer's list by eye, if they think of it | `token-check` reads the code hash, the beacon and the official list from the chain | the check runs before the agent acts and returns a reason code a machine can read | 11 s for one `cre workflow simulate token-check` |
-| A reader trusts the site that shows a wallet's record | `rwa-verify` recomputes the record's hash and reads its anchor | MATCH or MISMATCH with one bit per failed check, as an event | 11 s for one `cre workflow simulate rwa-verify` |
-| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 19 to 22 s for `node verify.mjs` on the walk of that day, five runs back to back ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)) |
+| A person opens a block explorer and compares a token's contract with the issuer's list by eye, if they think of it | `token-check` reads the code hash, the beacon and the official list from the chain | the check runs before the agent acts and returns a reason code a machine can read | 8 s for 12 tokens at one block ([`batch-4.cre.txt`](docs/token-check/batch/batch-4.cre.txt)) |
+| A reader trusts the site that shows a wallet's record | `rwa-verify` recomputes the record's hash and reads its anchor | MATCH or MISMATCH with one bit per failed check, as an event | 3 s ([`docs/simulate-match.txt`](docs/simulate-match.txt)) |
+| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | not measured |
+<!-- CHANGES:END -->
 
 ### Why CRE
 
@@ -218,6 +289,7 @@ What this gives the people Chainlink's own video for this hackathon speaks to: a
 
 Notes for the CRE team, each with what I did, what I expected, what happened and what I did about it. CLI v1.37.0, TypeScript SDK, macOS.
 
+<!-- CRE_FEEDBACK:BEGIN -->
 | # | Steps | Expected | Actual | Workaround |
 |---|---|---|---|---|
 | 1 | `cre workflow simulate rwa-verify … --http-payload @rwa-verify/payloads/match.json` | the file is read, as with `curl -d @file` | `failed to parse HTTP trigger payload: invalid JSON input: @rwa-verify/payloads/match.json` (2026-10-14) | pass the path without `@`. A hint in the error would help |
@@ -226,9 +298,15 @@ Notes for the CRE team, each with what I did, what I expected, what happened and
 | 4 | `getNetwork` for Robinhood Chain mainnet (4663) | an EVM read, since Robinhood Testnet is supported | mainnet is not on the supported list | JSON-RPC over the HTTP capability with `consensusIdenticalAggregation`. A full receipt can be large, so the workflows ask `eth_getLogs` by topic instead |
 | 5 | `evm.writeReport` in a simulation without `--broadcast`, to a receiver address with no code (`0x…dEaD`) | a result that says nothing was sent | `TxStatus.SUCCESS` with an all-zero tx hash (`docs/simulate-match.txt`) | `agent/cre.ts` treats a zero hash as "not written". A distinct status for a dry run would be clearer |
 | 6 | `cre workflow simulate` on a fresh machine | a local run with no account | it asks for `cre login` first | log in once. Worth a line in the README of the templates, since judges reproduce on fresh machines |
-| 7 | several JSON-RPC calls in one node-mode function against a public RPC | all answered | HTTP 429 from the RPC when the calls follow each other at once | space the calls with the runtime's host `sleep`, `token-check/workflow.ts` L98 |
+| 7 | several JSON-RPC calls in one node-mode function against a public RPC | all answered | HTTP 429 from the RPC when the calls follow each other at once | space the calls with the runtime's host `sleep`, `token-check/workflow.ts` L144 |
+| 8 | read many tokens' state and logs over the HTTP capability in one execution | the 15 calls per execution are enough | one listed token needs up to 9 log queries, and the public RPC answers 429 to a whole batch above what the caller's address has left of its rate (requests of 10 items passed on a quiet line; with another reader on the same address, 3 did not), so at 10 items per request the call limit is reached at about 9 listed tokens | plan the run before reading (`plannedHttpCalls` in `token-check/batch.ts`), refuse a payload that cannot fit, and let the caller split the list. A per-execution budget the workflow can ask for at run time would remove the guesswork |
+| 9 | have every node read the same block of a chain CRE does not list | a way to pin "the block" across nodes | each node's `eth_blockNumber` can differ, so an answer read at "latest" would not be identical across nodes (not observed: a simulation is one node) | two rounds: median on the head, then every read pinned to head minus 20 with identical aggregation (`token-check/workflow.ts` L495, L505). Worth a template: it is the general recipe for reading an unlisted chain over HTTP |
+| 10 | `eth_getCode` for many unknown tokens in one HTTP answer | fits in 250 kb | a contract can be 24 kb, 49 kb as hex, so six tokens can pass the limit | an `eth_call` without `to` whose init code returns `EXTCODEHASH` (`extcodehashCall`, L326): 32 bytes per token |
+| 11 | `evm.getTransactionReceipt` in a simulation, for a transaction a run of a minute earlier wrote with `--broadcast` | the receipt | the receipt, with logs, on Robinhood Testnet. It worked the first time | none needed. It let the workflow check its own earlier writes before anchoring |
+| 12 | test `getTransactionReceipt` with `EvmMock` | a documented shape for the mocked receipt | the JSON form wants base64 for `address`, `topics`, `data` and a string for `status`; I found it in the generated types | `token-check/batch-workflow.test.ts`, `b64hex` |
 
-What worked well: the HTTP trigger plus `--http-payload` made each workflow a function I could call from the agent, from a gate and from a shell script with the same payload. Running the same TypeScript in `bun test` and in the WASM runtime let the workflows share the rule code with the agent.
+What worked well: the HTTP trigger plus `--http-payload` made each workflow a function I could call from the agent, from a gate and from a shell script with the same payload. The same `token-check` handler took three payloads, so the agent, a shell script and the anchor all call one workflow. `consensusMedianAggregation` and `consensusIdenticalAggregation` could be used in one execution, each on its own HTTP read. Running the same TypeScript in `bun test` and in the WASM runtime let the workflows share the rule code with the agent.
+<!-- CRE_FEEDBACK:END -->
 
 ## RYO-CHAN: Autonomous Agents
 
@@ -296,7 +374,7 @@ No move reached the full size in this walk. No position, by leading reason: a li
 The Merkle root of all 4200 decisions is `0x08050cbff7c889dd21d0864ce242a479040035d892275e919f684b0a6cfb4040`. It is in one `LedgerAnchored` event on Robinhood Testnet: [`0x109ada37…e201d0`](https://explorer.testnet.chain.robinhood.com/tx/0x109ada373e1c23c912dfea0d7ba3a47725e469b22f5fad4be9bdb3b68ce201d0?tab=logs).
 <!-- LEDGER:END -->
 
-Each decision is one line of [`docs/walk/trails.jsonl`](docs/walk/trails.jsonl): everything the rules read, every rule row, the size, the practice position with its exit, and a card. [`docs/ledger.json`](docs/ledger.json) holds the rows, both books and the totals. [`docs/index.html`](docs/index.html) carries the same ledger and builds its cards and tables from it. `verify.mjs` rebuilds all three from the trails and the saved feed values.
+Each decision is one line of [`docs/walk/trails.jsonl.gz`](docs/walk/trails.jsonl.gz) (gzipped; `gunzip -k` gives `trails.jsonl`, and [`docs/verify/compressed.json`](docs/verify/compressed.json) keeps its sha256 from before it was gzipped): everything the rules read, every rule row, the size, the practice position with its exit, and a card. [`docs/ledger.json`](docs/ledger.json) holds the rows, both books and the totals. [`docs/index.html`](docs/index.html) carries the totals, both books and every decision that opened a position, and loads the other decisions from [`docs/rows/`](docs/rows/), one file per wallet, when they are asked for. `verify.mjs` rebuilds the ledger from the trails and the saved feed values, and checks that the page and `docs/rows/` hold exactly its rows.
 
 A card reads like this. Every sentence is a fixed template filled with values from the trail.
 
@@ -391,7 +469,7 @@ The table separates two things that a ticker-only view mixes up. A token can be 
 <!-- OTHER_TOKENS:BEGIN -->
 | Ticker it carries | Contract | Name it carries | Moves in this walk | How it reached the wallet |
 |---|---|---|---|---|
-| SPY | [`0x69e7…6219`](https://robinhoodchain.blockscout.com/address/0x69e7778d46713e17572d610bdaca3943aa4e6219) | "" | 20 | came in a transaction the wallet signed |
+| SPY | [`0x69e7…6219`](https://robinhoodchain.blockscout.com/address/0x69e7778d46713e17572d610bdaca3943aa4e6219) | "" | 20 | bought by the wallet, which signed and paid |
 | USDG | [`0x2ce3…77af`](https://robinhoodchain.blockscout.com/address/0x2ce3e396e069ac9fa62046f423267072e06e77af) | "Global Dollar" | 3 | sent to the wallet, which did not sign |
 | USDG | [`0x0ef3…09c0`](https://robinhoodchain.blockscout.com/address/0x0ef3fccbc4c73be8bb14411cfe801df141e309c0) | "Global Dollar" | 2 | sent to the wallet, which did not sign |
 | USDG | [`0x36f4…4be2`](https://robinhoodchain.blockscout.com/address/0x36f4d7f0fa5c7348416282e04380ddff30ca4be2) | "Global Dollar" | 2 | sent to the wallet, which did not sign |
@@ -494,7 +572,7 @@ Each `evidence` grade is `reduced` or `none`. Setting all four to `none` gives t
 | Path | What |
 |---|---|
 | `verify.mjs` | the recheck. One file, no dependency, no code shared with the agent |
-| `docs/index.html` | the ledger as one static page. `scripts/build-page.mjs` builds it |
+| `docs/index.html`, `docs/rows/` | the ledger as one static page, and its decisions one file per wallet, loaded when asked. `scripts/build-page.mjs` builds both |
 | `limits.json`, `mandate/` | the user's limits and the mandate the principal signs |
 | `agent/rules.ts`, `agent/rules-v2.ts` | the rules. v1 is frozen, v2 adds the mandate, the venue, the buyer, the feed price and the limits |
 | `agent/card.ts`, `agent/ledger.ts`, `agent/walk.ts` | the decision card, the two practice books and the walk |
@@ -502,10 +580,11 @@ Each `evidence` grade is `reduced` or `none`. Setting all four to `none` gives t
 | `agent/gate/` | the x402 gate in front of `rwa-verify`, and the agent's client for it |
 | `SKILL.md`, `agent.json` | how another agent finds the gate and learns its terms |
 | `rwa-verify/` | CRE workflow: a vet402 record against its anchor on Robinhood Chain |
-| `token-check/` | CRE workflow: the issuer's Stock Token or a different token under its ticker, and the share multiplier, read from the chain |
+| `token-check/` | CRE workflow: the issuer's Stock Token or a different token under its ticker, and the share multiplier, read from the chain. `token-check/recheck.mjs` rechecks its results without CRE |
+| `scripts/token-check-batch.sh`, `docs/token-check/` | every token of the walk through `token-check`, the results file the walk reads, its anchor and the recheck |
 | `trail-anchor/` | CRE workflow: reruns the rules of one decision, or recomputes the Merkle root of a walk, and writes the hash |
-| `contracts/` | the three receivers on Robinhood Testnet. No owner, no storage, no upgrade path |
-| `docs/walk/` | the walk: records as read, feed values, one trail per decision, the anchor |
+| `contracts/` | the four receivers on Robinhood Testnet, `TokenCheckReceiver` among them. No owner, no storage, no upgrade path |
+| `docs/walk/` | the walk: records as read, feed values, one trail per decision, the anchor. The two largest files are gzipped (`trails.jsonl.gz`, `chain.json.gz`) |
 | `docs/agent/first-paid-run/` | the paid run of 2026-10-08: the record, the 402 exchange and settlement, three v1 trails |
 | `docs/agent/gate-dry-run/` | the 402 exchange with the gate and the payment the agent built and did not sign |
 | `docs/agent/copy-search/` | the search of 2026-10-14 described below |

@@ -1,11 +1,9 @@
 #!/usr/bin/env node
-// Proposed replacement for scripts/readme-numbers.mjs, written by the docs side (C) for A.
+// Fills every marked block of README.md from the saved walk and the saved CRE runs, so no
+// number in the README is typed by hand.
 //
-//   node docs/handoff/readme-numbers.C.mjs                              (works from here)
-//   cp docs/handoff/readme-numbers.C.mjs scripts/readme-numbers.mjs     (works from scripts/ too)
+//   node scripts/readme-numbers.mjs
 //
-// It fills every marked block of README.md from the saved walk, so no number in the README
-// is typed by hand. What each block means is in docs/handoff/C-to-A.md.
 //
 //   VERIFY         docs/verify/verify-output.txt, whole                    (kept, same name)
 //   VERIFY_TAIL    its last two lines
@@ -16,11 +14,17 @@
 //   LIMITS         limits.json as a table
 //   MANDATE        which mandate the walk used, and whether the principal has signed
 //   WALLETS        how the wallets were chosen, and how large the followed purchases were
+//   STORY          the move told at the top, from the card's own row
+//   CHANGES        what changes, with times read from the saved logs and docs/verify/verify-five-runs.txt
+//   CRE_SIMULATE   the `cre workflow simulate` lines and what they printed      docs/token-check/batch/, docs/simulate-match.txt
+//   CRE_NUMBERS    what token-check checked, its runs, the anchor, the recheck  docs/token-check/
+//   CRE_GUIDE      the CRE code guide; every line number is found in the file as it is now
+//   CRE_FEEDBACK   what I learned using CRE, with line numbers found the same way
 //
 // It reads ledger_version 3 (agent/ledger.ts after A's change) and still reads version 2.
 // Where a field is missing the block says "not measured" or leaves the sentence out.
 // It never fills in a guess.
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
@@ -29,12 +33,14 @@ while (!existsSync(join(REPO, 'verify.mjs'))) {
 	if (dirname(REPO) === REPO) throw new Error('verify.mjs not found above this script')
 	REPO = dirname(REPO)
 }
-const { canonicalJson, keccak256 } = await import(pathToFileURL(join(REPO, 'verify.mjs')).href)
+const { canonicalJson, keccak256, readWalkFile } = await import(pathToFileURL(join(REPO, 'verify.mjs')).href)
 
 const has = (p) => existsSync(join(REPO, p))
 const read = (p) => readFileSync(join(REPO, p), 'utf8')
 const json = (p) => JSON.parse(read(p))
 const maybe = (p) => (has(p) ? json(p) : null)
+// trails.jsonl is kept gzipped (trails.jsonl.gz). readWalkFile reads either form.
+const walkText = (p) => (has(`${p}.gz`) || has(p) ? readWalkFile(join(REPO, p)).toString('utf8') : '')
 
 const L = json('docs/ledger.json')
 const limits = json('limits.json')
@@ -42,7 +48,7 @@ const anchor = maybe('docs/walk/anchor.json')
 const selection = maybe('docs/walk/selection.json')
 const realMandate = maybe('mandate/mandate.json')
 const sampleMandate = maybe('mandate/sample/mandate.json')
-const trails = has('docs/walk/trails.jsonl') ? read('docs/walk/trails.jsonl').split('\n').filter(Boolean).map((l) => JSON.parse(l)) : []
+const trails = walkText('docs/walk/trails.jsonl').split('\n').filter(Boolean).map((l) => JSON.parse(l))
 
 const t = L.totals
 const lc = (s) => String(s ?? '').toLowerCase()
@@ -69,6 +75,8 @@ const HOW = {
 	out_unsigned: 'a log names the wallet as the sender, and the wallet did not sign',
 	out: 'a log names the wallet as the sender',
 }
+// Version 3 names how a token came in rows[].main.arrival with the words of FIELDS.md.
+const V3_HOW = { purchase: 'bought', swapped_unpaid: 'received_unpaid', liquidity: 'received_unpaid', rotation: 'received_unpaid' }
 const others = new Map()
 const note = (token, ticker, name, how) => {
 	const e = others.get(token) ?? { token, ticker, name, moves: 0, how: {} }
@@ -83,7 +91,8 @@ for (const trail of trails) {
 		if (!OTHER.has(m.kind)) continue
 		const tr = trail.inputs.movement.transfers.find((x) => lc(x.token) === lc(m.token))
 		const given = row?.main && lc(row.main.token) === lc(m.token) ? row.main.arrival : null
-		const how = tr?.direction === 'out' ? (signed ? 'out' : 'out_unsigned') : given && HOW[given] ? given : signed ? 'in_signed' : 'received_unsigned'
+		const givenHow = given ? (HOW[given] ? given : V3_HOW[given]) : null
+		const how = tr?.direction === 'out' ? (signed ? 'out' : 'out_unsigned') : (givenHow ?? (signed ? 'in_signed' : 'received_unsigned'))
 		note(m.token, m.ticker, m.name, how)
 	}
 }
@@ -243,6 +252,191 @@ const wallets = [
 const verifyOut = has('docs/verify/verify-output.txt') ? read('docs/verify/verify-output.txt').trimEnd() : null
 const fence = (body) => `\`\`\`\n${body}\n\`\`\``
 
+// ---- CRE: the one line, what it printed, what it checked, where in the code ---------
+// Everything below is read from the saved simulate logs, docs/token-check/ and the
+// workflow sources as they are now. A line number is found by its text, and a text that
+// is no longer in the file stops the script, so a stale number cannot reach the README.
+const sources = {}
+const lineOf = (file, text, from = 1) => {
+	sources[file] ??= read(file).split('\n')
+	const i = sources[file].findIndex((l, k) => k + 1 >= from && l.includes(text))
+	if (i < 0) throw new Error(`${file}: no line with ${JSON.stringify(text)}`)
+	return i + 1
+}
+const hexShort = (s) => s.replace(/0x[0-9a-fA-F]{40,64}\b/g, (h) => `${h.slice(0, 10)}…${h.slice(-6)}`)
+const userLog = (text) => text.split('\n').filter((l) => l.includes('[USER LOG]')).map((l) => l.slice(l.indexOf('[USER LOG]')).trimEnd())
+
+// token-check: the batch run that read the token of the README's card
+const tcAnchor = maybe('docs/token-check/anchor.json')
+const tcResults = maybe('docs/token-check/results.json')
+const tcDetails = maybe('docs/token-check/details.json')
+const cardToken = lc(row.main?.token ?? '')
+const batchDir = 'docs/token-check/batch'
+const batches = has(batchDir) ? readdirSync(join(REPO, batchDir)).filter((f) => /^batch-\d+\.payload\.json$/.test(f)).sort((a, b) => Number(a.match(/\d+/)[0]) - Number(b.match(/\d+/)[0])) : []
+const batchFile = batches.find((f) => lc(read(`${batchDir}/${f}`)).includes(cardToken)) ?? batches[0]
+let tcSimulate = ''
+if (batchFile) {
+	const payload = `${batchDir}/${batchFile}`
+	const logPath = payload.replace('.payload.json', '.cre.txt')
+	const log = read(logPath)
+	const ran = log.split('\n').find((l) => l.startsWith('$ cre workflow simulate'))
+	if (!ran || !ran.includes(`--http-payload ${payload}`)) throw new Error(`${logPath} does not start with the command for ${payload}`)
+	const command = ran.slice(2).replace(/ --broadcast\b/, '')
+	const lines = userLog(log)
+	const rowsOf = lines.filter((l) => /\] (NOT_)?ISSUER_TOKEN /.test(l))
+	const pick = [
+		rowsOf.find((l) => lc(l).includes(cardToken)),
+		rowsOf.find((l) => /\] ISSUER_TOKEN /.test(l)),
+		rowsOf.find((l) => l.includes('USDG_ADDRESS')),
+		rowsOf.find((l) => l.includes('TICKER_OR_NAME_READS_AS_USDG')),
+	].filter((l, i, a) => l && a.indexOf(l) === i)
+	const head = lines.slice(0, lines.indexOf(rowsOf[0]))
+	const tail = lines.slice(lines.indexOf(rowsOf[rowsOf.length - 1]) + 1)
+	const written = tail.find((l) => / tx 0x[0-9a-f]{64}/.test(l))
+	const writtenTx = written?.match(/0x[0-9a-f]{64}/)?.[0]
+	const excerpt = [...head, ...rowsOf.filter((l) => pick.includes(l)), `… ${plural(rowsOf.length - pick.length, 'more row', 'more rows')} of the same form`, ...tail].map((l) => (l === written ? l.replace(/0x[0-9a-fA-F]{40}\b/, (h) => `${h.slice(0, 10)}…${h.slice(-6)}`) : hexShort(l)))
+	tcSimulate = `**token-check**, many tokens at one block. This payload holds the token of [the card](#the-practice-ledger) below among ${plural(rowsOf.length, 'token', 'tokens')}.
+
+\`\`\`bash
+${command}
+\`\`\`
+
+From [\`${logPath}\`](${logPath}), the saved output of the same payload run with \`--broadcast\`. Without \`--broadcast\` the write at the end is a dry run.
+
+\`\`\`
+${excerpt.join('\n')}
+\`\`\`${writtenTx ? `\n\nThe write is [\`${short(writtenTx)}\`](https://explorer.testnet.chain.robinhood.com/tx/${writtenTx}?tab=logs) on Robinhood Testnet.` : ''}`
+}
+
+// rwa-verify: the record the agent bought, against its anchor
+const rwaLogPath = 'docs/simulate-match.txt'
+let rwaSimulate = ''
+if (has(rwaLogPath)) {
+	const log = read(rwaLogPath)
+	const ran = log.split('\n').find((l) => l.startsWith('$ cre workflow simulate'))
+	const lines = userLog(log).filter((l) => /\] (OK|FAIL|RESULT|live|record under test|verdict written)/.test(l))
+	const day = log.match(/^(\d{4}-\d{2}-\d{2})T/m)?.[1]
+	rwaSimulate = `**rwa-verify**, the record the agent bought against its anchor on Robinhood Chain.
+
+\`\`\`bash
+${ran.slice(2)}
+\`\`\`
+
+From [\`${rwaLogPath}\`](${rwaLogPath})${day ? `, saved ${day}` : ''}. The all-zero transaction at the end is the dry run: nothing was broadcast.
+
+\`\`\`
+${lines.map(hexShort).join('\n')}
+\`\`\``
+}
+
+// ---- the move at the top of the README: the card's own row --------------------------
+const seen = row.card.happened.match(/sent this wallet ([\d,.]+) tokens with the ticker (\S+?) /)
+if (!seen) throw new Error(`the card of decision ${row.n} does not say how many tokens arrived`)
+const signedIt = lc(trails.find((x) => x.inputs.movement.tx === row.move_tx)?.inputs.move?.signer) === lc(row.wallet)
+const story = `Those two people wrote about tokens and agents in general. The same gap is open for stock tokens, because a ticker is not unique on a chain where anyone can deploy a token. What follows is my own observation, and I have found no account of anyone losing money this way. On ${day(row.move_time)} at ${row.move_time.slice(11, 16)} UTC, ${seen[1]} tokens that a block explorer lists as ${seen[2]} arrived in a wallet that trades Robinhood Stock Tokens.${signedIt ? '' : ' The wallet did not sign that transaction.'} A copier that goes by the ticker sees ${seen[1]} ${seen[2]} arrive in that wallet. This record accuses no one. It shows that a ticker is not unique.`
+
+// ---- what changes, with the times read from saved logs ------------------------------
+const secs = (log, from, to) => {
+	const t = (re) => log.split('\n').find((l) => re.test(l))?.match(/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})Z/)?.[1]
+	const a = t(from)
+	const b = t(to)
+	return a && b ? (Date.parse(`${b}Z`) - Date.parse(`${a}Z`)) / 1000 : null
+}
+const tcLog = batchFile ? read(`${batchDir}/${batchFile}`.replace('.payload.json', '.cre.txt')) : ''
+const tcSecs = tcLog ? secs(tcLog, /Running trigger/, /batch hash written/) : null
+const rwaSecs = has(rwaLogPath) ? secs(read(rwaLogPath), /Running trigger/, /verdict written/) : null
+const fiveRuns = has('docs/verify/verify-five-runs.txt') ? read('docs/verify/verify-five-runs.txt') : ''
+const runTimes = [...fiveRuns.matchAll(/^run \d+ \((\S+)\): exit (\d+), (\d+) s, (.*)$/gm)].map((m) => ({ at: m[1], exit: Number(m[2]), s: Number(m[3]), tail: m[4] }))
+const fiveDay = fiveRuns.match(/on (\d{4}-\d{2}-\d{2})/)?.[1]
+const allMatch = runTimes.length > 0 && runTimes.every((r) => r.exit === 0 && /RESULT: MATCH/.test(r.tail))
+const range = (xs) => (Math.min(...xs) === Math.max(...xs) ? `${xs[0]}` : `${Math.min(...xs)} to ${Math.max(...xs)}`)
+const changes = `The last column holds only times read from saved runs on this machine: the simulate logs (from the trigger to the write, the compile not counted) and five runs of the recheck.
+
+| Before | Here | What changes | Measured |
+|---|---|---|---|
+| A person opens a block explorer and compares a token's contract with the issuer's list by eye, if they think of it | \`token-check\` reads the code hash, the beacon and the official list from the chain | the check runs before the agent acts and returns a reason code a machine can read | ${tcSecs !== null ? `${tcSecs} s for ${plural((tcLog.match(/\] (NOT_)?ISSUER_TOKEN /g) ?? []).length, 'token', 'tokens')} at one block ([\`${batchFile.replace('.payload.json', '.cre.txt')}\`](${batchDir}/${batchFile.replace('.payload.json', '.cre.txt')}))` : 'not measured'} |
+| A reader trusts the site that shows a wallet's record | \`rwa-verify\` recomputes the record's hash and reads its anchor | MATCH or MISMATCH with one bit per failed check, as an event | ${rwaSecs !== null ? `${rwaSecs} s ([\`${rwaLogPath}\`](${rwaLogPath}))` : 'not measured'} |
+| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | ${runTimes.length ? `${range(runTimes.map((r) => r.s))} s for \`node verify.mjs\` on this walk, ${runTimes.length} runs back to back${fiveDay ? ` on ${fiveDay}` : ''}${allMatch ? ', each RESULT: MATCH' : ''} ([\`docs/verify/verify-five-runs.txt\`](docs/verify/verify-five-runs.txt)). Most of it is waiting on the public RPC` : 'not measured'} |`
+
+const creSimulate = [
+	'Both lines run from the root of the repo, after `cre login` and `bun install` in the workflow\'s folder. No key is needed. The time at the start of each saved log line is the machine\'s local clock printed with a `Z` (row 3 of the notes below), so the excerpts leave it out.',
+	tcSimulate,
+	rwaSimulate,
+]
+	.filter(Boolean)
+	.join('\n\n')
+
+// What token-check has checked: docs/token-check/{anchor,results,details}.json and the recheck's last line
+let creNumbers = 'No token-check results are saved yet.'
+if (tcAnchor && tcResults) {
+	const MARKS = ['TICKER_SAME_AS_ISSUER_TOKEN', 'TICKER_SAME_AFTER_FOLDING', 'NAME_SAME_AS_ISSUER_TOKEN', 'NAME_ENDS_LIKE_ISSUER_TOKEN', 'TICKER_OR_NAME_READS_AS_USDG', 'ISSUER_CODE_AT_UNLISTED_ADDRESS']
+	const rows = Object.values(tcResults.tokens)
+	const issuer = rows.filter((r) => r.issuer_token)
+	const not = rows.filter((r) => !r.issuer_token)
+	const usdg = not.filter((r) => r.reasons.includes('USDG_ADDRESS'))
+	const listedUnconfirmed = not.filter((r) => r.reasons.includes('IN_ISSUER_LIST'))
+	const sameTicker = not.filter((r) => r.reasons.includes('NOT_IN_ISSUER_LIST') && r.reasons.some((x) => ['TICKER_SAME_AS_ISSUER_TOKEN', 'TICKER_SAME_AFTER_FOLDING', 'NAME_SAME_AS_ISSUER_TOKEN', 'NAME_ENDS_LIKE_ISSUER_TOKEN', 'ISSUER_CODE_AT_UNLISTED_ADDRESS'].includes(x)))
+	const readsUsdg = not.filter((r) => r.reasons.includes('TICKER_OR_NAME_READS_AS_USDG') && !sameTicker.includes(r))
+	const plain = not.filter((r) => r.reasons.includes('NOT_IN_ISSUER_LIST') && !r.reasons.some((x) => MARKS.includes(x)))
+	const invisible = not.filter((r) => r.reasons.includes('INVISIBLE_CHARACTERS'))
+	const updated = issuer.filter((r) => r.multiplier_updates > 0)
+	const recheck = has('docs/token-check/recheck-output.txt') ? read('docs/token-check/recheck-output.txt').trimEnd().split('\n').pop() : null
+	const runs = tcDetails?.runs ?? tcResults.cre_runs.map((r, i) => ({ run: i + 1, tx: r.tx }))
+	creNumbers = `**What \`token-check\` has checked so far.** ${plural(tcAnchor.tokens, 'token', 'tokens')} that moved in the walk, in ${plural(tcAnchor.runs, 'CRE run', 'CRE runs')}, the last at Robinhood Chain block ${tcAnchor.last_checked_block}.
+
+| What | Count |
+|---|---|
+| the issuer's Stock Tokens, every mark confirmed from the chain (the list, the code hash, the beacon, the factory's log) | ${issuer.length} |
+| of them with a share multiplier update logged | ${updated.length} |
+| not the issuer's | ${not.length} |
+| of them USDG itself | ${usdg.length} |
+| of them at an address outside the list with the ticker or the name of a listed Stock Token | ${sameTicker.length} |
+| of them at an address outside the list whose ticker or name reads as USDG${invisible.length ? ` (${invisible.length} with invisible characters)` : ''} | ${readsUsdg.length} |
+| of them at an address outside the list with no mark of a listed token | ${plain.length} |
+${listedUnconfirmed.length ? `| of them in the list, with a mark the chain did not confirm | ${listedUnconfirmed.length} |\n` : ''}
+Each run wrote the hash of its rows in a \`TokenBatchChecked\` event (${runs.map((r) => `[run ${r.run}](https://explorer.testnet.chain.robinhood.com/tx/${r.tx}?tab=logs)`).join(', ')}). One more run read those receipts back over the EVM capability and wrote \`keccak256(results.json)\` = \`${short(tcAnchor.results_keccak)}\` in [\`${short(tcAnchor.anchor_tx)}\`](https://explorer.testnet.chain.robinhood.com/tx/${tcAnchor.anchor_tx}?tab=logs), to \`TokenCheckReceiver\` on Robinhood Testnet. Every decision of the walk names that file by the same hash. ${recheck ? `\`node token-check/recheck.mjs\` reads every row again over plain JSON-RPC, with no CRE and no code shared with the workflow. Its last line: \`${recheck}\`.` : ''} The codes say what was read. None of them says who made a token or why.`
+}
+
+// The code guide, with every line number found in the file as it is now
+const TC = 'token-check/workflow.ts'
+const RV = 'rwa-verify/workflow.ts'
+const TA = 'trail-anchor/workflow.ts'
+const L_ = (f, t, from) => `L${lineOf(f, t, from)}`
+const span = (f, a, b) => {
+	const x = lineOf(f, a)
+	return `L${x} to L${lineOf(f, b, x)}`
+}
+const tcWrite = span(TC, 'const report = runtime.report(prepareReportRequest(encoded))', 't.evm.writeReport(runtime')
+const tcTrigger = L_(TC, 'cre.handler(http.trigger(')
+const creGuide = `Where CRE is used, for a reader with thirty seconds. \`scripts/readme-numbers.mjs\` finds each line number in the file as it is now.
+
+| Workflow | Handler | Trigger | HTTP capability: what it reads | Consensus | EVM capability |
+|---|---|---|---|---|---|
+| \`rwa-verify\` | [\`${RV}\`](${RV}) ${L_(RV, 'export const onHttpTrigger')} | HTTP trigger, ${L_(RV, 'cre.handler(http.trigger(')} | ${L_(RV, 'http.sendRequest(runtime, fetchLive')} the live record from vet402, ${L_(RV, 'http.sendRequest(runtime, fetchRecord')} the record under test, ${L_(RV, '.sendRequest(runtime, fetchChain')} Robinhood Chain JSON-RPC: chain id, the anchor's receipt, \`eth_getCode\` of RwaAnchor | \`consensusIdenticalAggregation\` on each read | **write**, ${L_(RV, 'const report = runtime.report(')} report, ${L_(RV, '.writeReport(runtime')} \`writeReport\` to \`RwaVerdictReceiver\` on Robinhood Testnet |
+| \`token-check\`, one transaction | [\`${TC}\`](${TC}) ${L_(TC, 'function onTransaction(')} (\`onTransaction\`), dispatched from ${L_(TC, 'export const onHttpTrigger')} | HTTP trigger, ${tcTrigger} | ${L_(TC, 'http.sendRequest(runtime, readChain')} Robinhood Chain JSON-RPC: the move's Transfer logs, each token's code, its EIP-1967 beacon slot, \`symbol()\`, \`name()\` and share multiplier (\`readChain\`, ${L_(TC, 'export const readChain')}) | \`consensusIdenticalAggregation\`, ${L_(TC, 'http.sendRequest(runtime, readChain')} | none. It returns \`allow\` and reason bits |
+| \`token-check\`, many tokens | ${L_(TC, 'function onBatch(')} (\`onBatch\`) | the same trigger, ${tcTrigger} | ${L_(TC, 'http.sendRequest(runtime, readHead')} the head of the chain (\`readHead\`, ${L_(TC, 'export const readHead')}). ${L_(TC, 'http.sendRequest(runtime, readBatch')} for every token \`EXTCODEHASH\`, the beacon slot, \`symbol()\`, \`name()\`, \`uiMultiplier()\` at one pinned block from a second RPC operator, and from Robinhood's RPC the factory log and every \`UIMultiplierUpdated\` log (\`readBatch\`, ${L_(TC, 'export const readBatch')}) | \`consensusMedianAggregation\` on the head, ${L_(TC, 'http.sendRequest(runtime, readHead')}. \`consensusIdenticalAggregation\` on the rest, ${L_(TC, 'http.sendRequest(runtime, readBatch')} | **write**, ${tcWrite}: the hash of the rows to \`TokenCheckReceiver\` |
+| \`token-check\`, anchor | ${L_(TC, 'function onAnchor(')} (\`onAnchor\`) | the same trigger, ${tcTrigger} | none | the report, ${L_(TC, 'const report = runtime.report(prepareReportRequest(encoded))')} | **read**, ${L_(TC, 'evm.getTransactionReceipt(runtime')}: \`getTransactionReceipt\` of every run the file names, on Robinhood Testnet. **write**, ${tcWrite}: the hash of the file |
+| \`trail-anchor\` | [\`${TA}\`](${TA}) ${L_(TA, 'export const onHttpTrigger')} | HTTP trigger, ${L_(TA, 'cre.handler(http.trigger(')} | ${L_(TA, '.sendRequest(runtime, checkChain')} Robinhood Chain JSON-RPC: the move's Transfer logs and, for a paid decision, the settlement receipt | \`consensusIdenticalAggregation\`, ${L_(TA, '.sendRequest(runtime, checkChain')} | **write**, ${span(TA, 'runtime.report(prepareReportRequest(encodeTrail(trail)))', 'evm.writeReport(runtime, { receiver: cfg.receiverAddress')} one decision to \`ReasoningTrailReceiver\`. ${span(TA, 'const report = runtime.report(prepareReportRequest(encoded))', 'receiver: cfg.ledgerReceiverAddress')} the Merkle root of a walk to \`LedgerRootReceiver\` |
+
+One EVM read: before \`token-check\` anchors a results file it reads the receipt of each run on Robinhood Testnet and looks for the event it expects. Robinhood Chain mainnet is not on CRE's supported network list, so every mainnet read goes through the HTTP capability as plain JSON-RPC. \`agent/cre.ts\` starts the workflows, \`scripts/token-check-batch.ts\` starts \`token-check\` for a list of tokens, and \`agent/gate/server.ts\` starts \`rwa-verify\` after an x402 payment. Capabilities in use across the three workflows: HTTP trigger, HTTP action, EVM read, EVM write, and consensus of two kinds (identical, median).`
+
+const creFeedback = `| # | Steps | Expected | Actual | Workaround |
+|---|---|---|---|---|
+| 1 | \`cre workflow simulate rwa-verify … --http-payload @rwa-verify/payloads/match.json\` | the file is read, as with \`curl -d @file\` | \`failed to parse HTTP trigger payload: invalid JSON input: @rwa-verify/payloads/match.json\` (2026-10-14) | pass the path without \`@\`. A hint in the error would help |
+| 2 | a payload schema with \`z.string().url()\` and a valid \`https://raw.githubusercontent.com/…\` URL | accepted, as under Bun | rejected inside \`cre workflow simulate\` (2026-10-09). The same schema passes in \`bun test\` | a plain pattern, \`${RV}\` ${span(RV, "zod's .url() rejected", '.optional(),', )} |
+| 3 | read the start of any line of a simulate log | UTC, since the time ends in \`Z\` | the machine's local clock with a \`Z\`. My logs read 8 hours ahead on a UTC+8 clock and 7 hours ahead on a UTC+7 clock | I state it next to the saved logs and use block times |
+| 4 | \`getNetwork\` for Robinhood Chain mainnet (4663) | an EVM read, since Robinhood Testnet is supported | mainnet is not on the supported list | JSON-RPC over the HTTP capability with \`consensusIdenticalAggregation\`. A full receipt can be large, so the workflows ask \`eth_getLogs\` by topic instead |
+| 5 | \`evm.writeReport\` in a simulation without \`--broadcast\`, to a receiver address with no code (\`0x…dEaD\`) | a result that says nothing was sent | \`TxStatus.SUCCESS\` with an all-zero tx hash (\`docs/simulate-match.txt\`) | \`agent/cre.ts\` treats a zero hash as "not written". A distinct status for a dry run would be clearer |
+| 6 | \`cre workflow simulate\` on a fresh machine | a local run with no account | it asks for \`cre login\` first | log in once. Worth a line in the README of the templates, since judges reproduce on fresh machines |
+| 7 | several JSON-RPC calls in one node-mode function against a public RPC | all answered | HTTP 429 from the RPC when the calls follow each other at once | space the calls with the runtime's host \`sleep\`, \`${TC}\` ${L_(TC, 'The CRE WASM runtime has a host `sleep`')} |
+| 8 | read many tokens' state and logs over the HTTP capability in one execution | the 15 calls per execution are enough | one listed token needs up to 9 log queries, and the public RPC answers 429 to a whole batch above what the caller's address has left of its rate (requests of 10 items passed on a quiet line; with another reader on the same address, 3 did not), so at 10 items per request the call limit is reached at about 9 listed tokens | plan the run before reading (\`plannedHttpCalls\` in \`token-check/batch.ts\`), refuse a payload that cannot fit, and let the caller split the list. A per-execution budget the workflow can ask for at run time would remove the guesswork |
+| 9 | have every node read the same block of a chain CRE does not list | a way to pin "the block" across nodes | each node's \`eth_blockNumber\` can differ, so an answer read at "latest" would not be identical across nodes (not observed: a simulation is one node) | two rounds: median on the head, then every read pinned to head minus 20 with identical aggregation (\`${TC}\` ${L_(TC, 'http.sendRequest(runtime, readHead')}, ${L_(TC, 'http.sendRequest(runtime, readBatch')}). Worth a template: it is the general recipe for reading an unlisted chain over HTTP |
+| 10 | \`eth_getCode\` for many unknown tokens in one HTTP answer | fits in 250 kb | a contract can be 24 kb, 49 kb as hex, so six tokens can pass the limit | an \`eth_call\` without \`to\` whose init code returns \`EXTCODEHASH\` (\`extcodehashCall\`, ${L_(TC, 'export const extcodehashCall')}): 32 bytes per token |
+| 11 | \`evm.getTransactionReceipt\` in a simulation, for a transaction a run of a minute earlier wrote with \`--broadcast\` | the receipt | the receipt, with logs, on Robinhood Testnet. It worked the first time | none needed. It let the workflow check its own earlier writes before anchoring |
+| 12 | test \`getTransactionReceipt\` with \`EvmMock\` | a documented shape for the mocked receipt | the JSON form wants base64 for \`address\`, \`topics\`, \`data\` and a string for \`status\`; I found it in the generated types | \`token-check/batch-workflow.test.ts\`, \`b64hex\` |
+
+What worked well: the HTTP trigger plus \`--http-payload\` made each workflow a function I could call from the agent, from a gate and from a shell script with the same payload. The same \`token-check\` handler took three payloads, so the agent, a shell script and the anchor all call one workflow. \`consensusMedianAggregation\` and \`consensusIdenticalAggregation\` could be used in one execution, each on its own HTTP read. Running the same TypeScript in \`bun test\` and in the WASM runtime let the workflows share the rule code with the agent.`
+
 const swap = (text, name, body) => {
 	const a = `<!-- ${name}:BEGIN -->`
 	const b = `<!-- ${name}:END -->`
@@ -259,6 +453,12 @@ const blocks = [
 	['LIMITS', limitsTable],
 	['MANDATE', mandate],
 	['WALLETS', wallets],
+	['STORY', story],
+	['CHANGES', changes],
+	['CRE_SIMULATE', creSimulate],
+	['CRE_NUMBERS', creNumbers],
+	['CRE_GUIDE', creGuide],
+	['CRE_FEEDBACK', creFeedback],
 ]
 let readme = read('README.md')
 for (const [name, body] of blocks) readme = swap(readme, name, body)
