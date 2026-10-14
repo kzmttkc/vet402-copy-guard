@@ -10,6 +10,11 @@
 //        on Robinhood Testnet
 //
 // The agent cannot get a conclusion recorded here that its own rules do not give.
+//
+// A second payload, { ledger }, anchors a whole walk at once: the workflow recomputes the
+// Merkle root from the trail hashes it is given, counts the decisions by size, and writes
+// the root with the hashes of the mandate, the limits and the rules to LedgerRootReceiver.
+// It does not rerun the rules of every decision in that mode. `node verify.mjs` does.
 import {
 	bytesToHex,
 	consensusIdenticalAggregation,
@@ -26,15 +31,18 @@ import {
 } from '@chainlink/cre-sdk'
 import { encodeAbiParameters, parseAbiParameters } from 'viem'
 import { z } from 'zod'
+import { merkleRoot } from '../agent/ledger'
 import { groupMovements, type Log, TRANSFER_TOPIC } from '../agent/movement'
 import { PAY_TO, USDG } from '../agent/rules'
 import { recheckTrail, type Trail, trailReportFields } from '../agent/trail'
-import { canonicalJson, fromUtf8, utf8 } from '../rwa-verify/verify'
+import { canonicalJson, fromUtf8, keccakText, utf8 } from '../rwa-verify/verify'
 
 export const configSchema = z.object({
 	robinhoodRpc: z.string(),
 	chainSelectorName: z.string(),
 	receiverAddress: z.string(),
+	/** LedgerRootReceiver, for the { ledger } payload. */
+	ledgerReceiverAddress: z.string().optional(),
 	gasLimit: z.string(),
 })
 export type Config = z.infer<typeof configSchema>
@@ -110,10 +118,63 @@ export function encodeTrail(trail: Trail): `0x${string}` {
 	])
 }
 
+export const LEDGER_REPORT_ABI = parseAbiParameters(
+	'bytes32 root, bytes32 mandateHash, bytes32 limitsHash, bytes32 rulesHash, uint32 decisions, uint32 full, uint32 reduced, uint32 none, uint64 markBlock',
+)
+
+export type LedgerPayload = {
+	root: string
+	/** One per decision, in walk order: the keccak256 of the trail and the size it ended in. */
+	leaves: { leaf: string; tier: 'FULL' | 'REDUCED' | 'NONE' }[]
+	mandate_keccak: string
+	limits_keccak: string
+	rules: unknown
+	mark_block: number
+}
+
+const HASH32 = /^0x[0-9a-f]{64}$/
+
+/** Anchor a whole walk: recompute the root from the leaves, refuse when it differs, write it once. */
+function anchorLedger(runtime: Runtime<Config>, ledger: LedgerPayload): string {
+	const cfg = runtime.config
+	if (!cfg.ledgerReceiverAddress) throw new Error('config has no ledgerReceiverAddress')
+	if (!Array.isArray(ledger.leaves) || ledger.leaves.length === 0) throw new Error('ledger has no leaves')
+	for (const l of ledger.leaves) if (!HASH32.test(l.leaf) || !['FULL', 'REDUCED', 'NONE'].includes(l.tier)) throw new Error('a leaf is not a hash with a size')
+	if (!HASH32.test(ledger.mandate_keccak) || !HASH32.test(ledger.limits_keccak)) throw new Error('the mandate and the limits must be named by hash')
+	const root = merkleRoot(ledger.leaves.map((l) => l.leaf))
+	if (root !== String(ledger.root).toLowerCase()) throw new Error(`ledger refused: the leaves give root ${root}, the payload says ${ledger.root}`)
+	const count = (t: string) => ledger.leaves.filter((l) => l.tier === t).length
+	const rulesHash = keccakText(canonicalJson(ledger.rules))
+	runtime.log(`ledger: ${ledger.leaves.length} decisions, FULL ${count('FULL')}, REDUCED ${count('REDUCED')}, NONE ${count('NONE')}`)
+	runtime.log(`root ${root} recomputed from the leaves`)
+	const network = getNetwork({ chainFamily: 'evm', chainSelectorName: cfg.chainSelectorName, isTestnet: true })
+	if (!network) throw new Error(`unknown chain ${cfg.chainSelectorName}`)
+	const evm = new EVMClient(network.chainSelector.selector)
+	const encoded = encodeAbiParameters(LEDGER_REPORT_ABI, [
+		root as `0x${string}`,
+		ledger.mandate_keccak as `0x${string}`,
+		ledger.limits_keccak as `0x${string}`,
+		rulesHash as `0x${string}`,
+		ledger.leaves.length,
+		count('FULL'),
+		count('REDUCED'),
+		count('NONE'),
+		BigInt(ledger.mark_block),
+	])
+	const report = runtime.report(prepareReportRequest(encoded)).result()
+	const write = evm.writeReport(runtime, { receiver: cfg.ledgerReceiverAddress, report, gasConfig: { gasLimit: cfg.gasLimit } }).result()
+	if (write.txStatus !== TxStatus.SUCCESS) throw new Error(`writeReport failed: ${write.errorMessage || write.txStatus}`)
+	const tx = bytesToHex(write.txHash ?? new Uint8Array(32))
+	runtime.log(`ledger root written to ${cfg.ledgerReceiverAddress} on ${cfg.chainSelectorName}, tx ${tx}`)
+	return JSON.stringify({ root, decisions: ledger.leaves.length, full: count('FULL'), reduced: count('REDUCED'), none: count('NONE'), rulesHash, ledgerTx: tx })
+}
+
 export const onHttpTrigger = (runtime: Runtime<Config>, payload: HTTPPayload): string => {
 	const cfg = runtime.config
 	const raw = payload.input && payload.input.length > 0 ? fromUtf8(payload.input) : '{}'
-	const trail = (JSON.parse(raw) as { trail?: Trail }).trail
+	const body = JSON.parse(raw) as { trail?: Trail; ledger?: LedgerPayload }
+	if (body.ledger) return anchorLedger(runtime, body.ledger)
+	const trail = body.trail
 	if (!trail) throw new Error('payload has no trail')
 
 	// 1. The rules, again.

@@ -10,7 +10,8 @@ import { DRY_PURCHASE, FAKE_NVDA, inputs, QQQ_BUY } from '../agent/test-helpers'
 import { buildTrail, type Trail, trailHash } from '../agent/trail'
 import { fromUtf8, utf8 } from '../rwa-verify/verify'
 import config from './config.json'
-import { type Config, initWorkflow, onHttpTrigger, REPORT_ABI } from './workflow'
+import { merkleRoot } from '../agent/ledger'
+import { type Config, initWorkflow, LEDGER_REPORT_ABI, onHttpTrigger, REPORT_ABI } from './workflow'
 
 const b64 = (s: string) => Buffer.from(utf8(s)).toString('base64')
 const meta = { decided_at: '2026-10-09T06:00:00.000Z', rules_source_keccak: `0x${'cd'.repeat(32)}` }
@@ -140,5 +141,20 @@ describe('initWorkflow', () => {
 		const handlers = initWorkflow(config as Config)
 		expect(handlers).toHaveLength(1)
 		expect(handlers[0].fn).toBe(onHttpTrigger)
+	})
+
+	test('a ledger payload: the root is recomputed from the leaves and written once; another root is refused', () => {
+		const seen = wire()
+		const leaves = ['FULL', 'REDUCED', 'NONE', 'NONE', 'NONE'].map((tier, i) => ({ leaf: `0x${String(i + 1).repeat(64)}`, tier }))
+		const ledger = { leaves, mandate_keccak: `0x${'a'.repeat(64)}`, limits_keccak: `0x${'b'.repeat(64)}`, rules: { id: 'copy-guard', version: 2 }, mark_block: 87947981 }
+		const runtime = newTestRuntime<Config>(null, undefined, { ...(config as Config), ledgerReceiverAddress: '0x000000000000000000000000000000000000dEaD' })
+		const root = merkleRoot(leaves.map((l) => l.leaf))
+		const out = JSON.parse(onHttpTrigger(runtime as any, { input: utf8(JSON.stringify({ ledger: { ...ledger, root } })) } as any))
+		expect(out).toMatchObject({ root, decisions: 5, full: 1, reduced: 1, none: 3 })
+		expect(seen.reports).toHaveLength(1)
+		const [r, m, l, , decisions, full, reduced, none, mark] = decodeAbiParameters(LEDGER_REPORT_ABI, `0x${seen.reports[0].slice(2 + 109 * 2)}` as `0x${string}`)
+		expect([r, m, l, decisions, full, reduced, none, mark]).toEqual([root as `0x${string}`, ledger.mandate_keccak as `0x${string}`, ledger.limits_keccak as `0x${string}`, 5, 1, 1, 3, 87947981n])
+		expect(() => onHttpTrigger(runtime as any, { input: utf8(JSON.stringify({ ledger: { ...ledger, root: `0x${'f'.repeat(64)}` } })) } as any)).toThrow(/ledger refused/)
+		expect(seen.reports).toHaveLength(1)
 	})
 })

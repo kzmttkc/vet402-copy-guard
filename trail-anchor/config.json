@@ -2,5 +2,6 @@
   "robinhoodRpc": "https://rpc.mainnet.chain.robinhood.com",
   "chainSelectorName": "robinhood-testnet",
   "receiverAddress": "0x991311C2ECA78B83dA3593C7500804af6FEEa0B3",
-  "gasLimit": "300000"
+  "gasLimit": "300000",
+  "ledgerReceiverAddress": "0xe3f0cA4f474E15364017eE3f6fc0D0949e5aF0C9"
 }
