@@ -1,14 +1,23 @@
 {
-  "limits_version": 1,
+  "limits_version": 2,
   "practice_only": true,
-  "position": {
-    "max_usd_per_position": "100.00",
+  "size": {
+    "full_usd": "100.00",
+    "reduced_usd": "25.00",
     "max_usd_per_day": "300.00",
-    "max_open_positions": 5
+    "max_open_positions": 10
+  },
+  "evidence": {
+    "record_not_anchored": "reduced",
+    "history_partial": "reduced",
+    "wallet_result_unknown": "reduced",
+    "wallet_at_a_loss": "none",
+    "max_price_age_hours": 96
   },
   "exit": {
-    "take_profit_pct": "10",
-    "stop_loss_pct": "5",
+    "when_wallet_sells": true,
+    "stop_loss_pct": "10",
+    "take_profit_pct": "20",
     "max_holding_days": 30
   },
   "payments": {

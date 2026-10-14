@@ -4,7 +4,7 @@
 // No language model writes anything, so the same trail always gives the same card, and
 // the card is part of the trail whose hash goes onchain. verify.mjs has its own writing
 // of these templates and compares.
-import { mandateGap, type DecisionInputsV2, type DecisionV2, type MovedToken } from './rules-v2'
+import { type DecisionInputsV2, type DecisionV2, mandateGap, type MovedToken, priceGap, stockLegV2 } from './rules-v2'
 import { type Transfer, USDG } from './rules'
 
 export type Card = {
@@ -94,27 +94,33 @@ function blindView(inp: DecisionInputsV2, leg: Leg | null): string {
 	return `A bot that copies this wallet sees ${n} token transfer${n === 1 ? '' : 's'}.`
 }
 
-const HOLD_HEADLINE: Record<string, string> = {
+/** The short reason in the headline of a decision that opens nothing, by the first row that made the size none. */
+const NONE_HEADLINE: Record<string, string> = {
 	A1: 'payment terms not as published',
 	A2: 'record does not match its hash',
 	A3: 'record is about another wallet',
+	A4: 'record not confirmed against its anchor',
 	A5: 'record does not replay',
 	A6: 'look-alike still under review',
 	B1: 'record older than the move',
 	B2: 'a moved token is not classified',
 	M1: 'no signed mandate covers it',
-}
-const NO_HEADLINE: Record<string, string> = {
 	C2: 'no Stock Token moved',
 	C3: 'track record incomplete',
-	C4: 'no realized profit',
-	C5: 'no price to size a position',
+	C4: 'wallet not in profit',
+	V1: 'not bought on an official venue',
+	D1: 'not a buy by the wallet',
+	P1: 'no Chainlink price at the block',
 	L1: 'daily limit reached',
 	L2: 'position limit reached',
 }
 
+/** Which reason leads a card: what the move is comes before what the wallet's record lacks. */
+const PRIORITY = ['A2', 'A3', 'A1', 'A5', 'A6', 'B1', 'B2', 'M1', 'D1', 'C2', 'V1', 'P1', 'A4', 'C3', 'C4', 'L1', 'L2']
+
 function reason(id: string, inp: DecisionInputsV2): string[] {
 	const r = inp.record
+	const leg = stockLegV2(inp)
 	switch (id) {
 		case 'A1':
 			return ['The payment terms offered for the evidence were not the published ones (0.01 USDG on Robinhood Chain, paid to vet402), so the evidence was not trusted.']
@@ -123,7 +129,7 @@ function reason(id: string, inp: DecisionInputsV2): string[] {
 		case 'A3':
 			return ['The record is about another wallet or another chain.']
 		case 'A4':
-			if (inp.cre.verdict === 'NO_ANCHOR') return ['vet402 has not anchored a record for this wallet onchain, so the Chainlink CRE workflow had nothing to check its records against.']
+			if (inp.cre.verdict === 'NO_ANCHOR') return ['vet402 has not anchored a record for this wallet onchain, so the Chainlink CRE workflow had nothing to check its record against.']
 			if (inp.cre.verdict === 'MISMATCH') return [`The Chainlink CRE workflow found that the wallet's anchored record does not match its onchain hash (reason bits ${inp.cre.reason_bits}).`]
 			return ["The Chainlink CRE workflow did not confirm the wallet's anchored record."]
 		case 'A5':
@@ -146,15 +152,20 @@ function reason(id: string, inp: DecisionInputsV2): string[] {
 		case 'C2':
 			return ['No real Robinhood Stock Token moved, so there is nothing to copy.']
 		case 'C3':
-			return [`The wallet's history could not be rebuilt in full (status: ${r.r1_status}), so its track record is unknown.`]
+			return [`The wallet's history could only be rebuilt in part (status: ${r.r1_status}), so its track record is not fully known.`]
 		case 'C4':
-			if (r.realized_usd === null) return ['The record gives no realized result for this wallet.']
+			if (r.realized_usd === null) return ['The record gives no realized result for this wallet, so it is not known whether its closed trades made or lost money.']
 			if (r.realized_usd.startsWith('-')) return [`The wallet's closed trades add up to a loss of ${r.realized_usd.slice(1)} USD.`]
 			return [`The wallet's closed trades add up to ${r.realized_usd} USD, which is not a profit.`]
-		case 'C5':
-			return ['The record has no USD price for the moved Stock Token, so a practice position cannot be sized.']
+		case 'V1':
+			return [`The Stock Token did not come from an official venue (${inp.venue.filter((v) => v.kind === 'other').map((v) => shortAddr(lc(v.address))).join(', ') || 'no counterparty'} is neither the Uniswap v4 PoolManager nor an official Uniswap v3 pool).`]
+		case 'D1':
+			if (leg && leg.direction !== 'in') return ['The wallet sold or sent the Stock Token. That opens nothing. It closes a practice position copied from this wallet in the same token, if one is open.']
+			return ['The wallet received the Stock Token in a transaction it did not sign, so this is not a buy the wallet chose.']
+		case 'P1':
+			return [`No Chainlink feed value can be used as the price at the block of the move (${priceGap(inp)}), so a practice position cannot be entered.`]
 		case 'L1':
-			return [`The limit of ${inp.limits.position.max_usd_per_day} USD per day leaves no room (${inp.book.used_usd_today} USD used on ${inp.book.day}).`]
+			return [`The limit of ${inp.limits.size.max_usd_per_day} USD per day leaves no room (${inp.book.used_usd_today} USD used on ${inp.book.day}).`]
 		case 'L2':
 			return [`${inp.book.open_positions} practice positions are open, which is the limit the user set.`]
 		default:
@@ -162,42 +173,43 @@ function reason(id: string, inp: DecisionInputsV2): string[] {
 	}
 }
 
+/** Which of the user's limits turned a weaker record into a smaller position, or into none. */
+function limitNote(ids: string[], inp: DecisionInputsV2, effect: 'reduced' | 'none'): string[] {
+	const graded = ids.filter((id) => (id === 'A4' && inp.cre.verdict === 'NO_ANCHOR') || id === 'C3' || id === 'C4')
+	if (!graded.length) return []
+	return [effect === 'reduced' ? `The user's limits allow a reduced position on this evidence (${graded.join(', ')}).` : `The user's limits say to open nothing on this evidence (${graded.join(', ')}).`]
+}
+
 export function buildCard(inp: DecisionInputsV2, d: DecisionV2): Card {
 	const leg = mainLeg(inp)
 	const base = { happened: happened(inp, leg), blind_view: blindView(inp, leg) }
-	if (d.conclusion === 'COPY' && d.paper_trade) {
+	if (d.paper_trade) {
 		const p = d.paper_trade
-		const stock = inp.tokens_moved.find((m) => m.token === p.token)
+		const full = d.tier === 'FULL'
 		return {
-			headline: `Practice ${p.side}: ${p.notional_usd} USD of ${p.symbol}`,
+			headline: `Practice buy, ${full ? 'full' : 'reduced'} size: ${p.notional_usd} USD of ${p.symbol}`,
 			...base,
 			why: [
-				`The record matches the hash that came with it, and the Chainlink CRE workflow confirmed the wallet's anchored record: MATCH.`,
-				`${p.symbol} is the real Robinhood Stock Token at ${shortAddr(stock?.token ?? p.token)}, and no look-alike is part of the move.`,
-				`The wallet's full history could be rebuilt, and its closed trades add up to a profit of ${inp.record.realized_usd} USD.`,
-				`A mandate signed by ${shortAddr(lc(inp.mandate.document.principal))} covers the decision, and the limits leave room for ${p.notional_usd} USD.`,
+				`${p.symbol} is the real Robinhood Stock Token at ${shortAddr(p.token)}. No look-alike is part of the move, the wallet bought it itself, and it came from an official Uniswap venue.`,
+				full
+					? `The record matches its hash, the Chainlink CRE workflow confirmed the wallet's anchored record (MATCH), the wallet's full history could be rebuilt and its closed trades add up to a profit of ${inp.record.realized_usd} USD.`
+					: 'The record matches its hash, but the evidence about the wallet is weaker:',
+				...(full ? [] : [...d.decisive.flatMap((id) => reason(id, inp)), ...limitNote(d.decisive, inp, 'reduced')]),
+				`A mandate signed by ${shortAddr(lc(inp.mandate.document.principal))} covers the decision.`,
 			],
-			so: `So copy-guard opened a practice ${p.side} of ${p.notional_usd} USD: ${p.shares} ${p.symbol} at ${p.price_usd} USD, ${p.price_basis}. It will ${p.exit.rule}. No real trade was placed.`,
-		}
-	}
-	if (d.conclusion === 'HOLD') {
-		const first = d.decisive[0]
-		const head = first === 'A4' ? (inp.cre.verdict === 'NO_ANCHOR' ? 'no anchored record to check against' : 'anchored record not confirmed') : (HOLD_HEADLINE[first] ?? 'evidence not good enough')
-		return {
-			headline: `Held: ${head}`,
-			...base,
-			why: d.decisive.flatMap((id) => reason(id, inp)),
-			so: 'So copy-guard held. The evidence was not good enough to judge the move either way. No practice position was opened and no real trade was placed.',
+			so: `So copy-guard opened a practice buy of ${p.notional_usd} USD: ${p.shares} ${p.symbol} at ${p.price_usd} USD, the Chainlink feed's value at the block of the move. It will ${p.exit.rule}. No real trade was placed.`,
 		}
 	}
 	const fake = d.decisive.includes('C1')
 	const fakeTicker = inp.tokens_moved.find((m) => m.kind === 'fake')?.ticker ?? ''
-	const rest = d.decisive.filter((id) => id !== 'C1')
-	const why = fake ? [...reason('C1', inp), ...(rest.length ? [`${rest.length === 1 ? 'Rule' : 'Rules'} ${rest.join(', ')} failed as well. The rule rows show each one.`] : [])] : d.decisive.flatMap((id) => reason(id, inp))
+	// The reasons a person needs first. After a fake, the rows that fail only because no Stock Token moved are counted, not spelled out.
+	const rank = (id: string) => (PRIORITY.indexOf(id) + 1 || 99)
+	const lead = fake ? ['C1'] : d.decisive.filter((id) => !(d.decisive.includes('C2') && ['V1', 'D1', 'P1'].includes(id))).sort((x, y) => rank(x) - rank(y))
+	const rest = d.decisive.filter((id) => !lead.includes(id))
 	return {
-		headline: fake ? `Not copied: fake ${fakeTicker}` : `Not copied: ${NO_HEADLINE[d.decisive[0]] ?? 'a rule failed'}`,
+		headline: fake ? `No position: fake ${fakeTicker}` : `No position: ${NONE_HEADLINE[lead[0]] ?? 'a rule failed'}`,
 		...base,
-		why,
-		so: 'So copy-guard did not copy it. No practice position was opened and no real trade was placed.',
+		why: [...lead.flatMap((id) => reason(id, inp)), ...limitNote(lead, inp, 'none'), ...(rest.length ? [`${rest.length === 1 ? 'Rule' : 'Rules'} ${rest.join(', ')} failed as well. The rule rows show each one.`] : [])],
+		so: 'So copy-guard opened no position. No real trade was placed.',
 	}
 }

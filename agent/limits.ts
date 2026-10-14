@@ -8,24 +8,43 @@
 // key-free checker get the same numbers.
 import { canonicalJson, keccakText } from '../rwa-verify/verify'
 
+export type Grade = 'reduced' | 'none'
+
 export type Limits = {
-	limits_version: 1
+	limits_version: 2
 	/** True means the agent may only record practice trades. This build has no code path that trades. */
 	practice_only: boolean
-	position: {
-		/** The most one practice position may be worth, in USD. */
-		max_usd_per_position: string
+	size: {
+		/** A practice position when every piece of evidence is there, in USD. */
+		full_usd: string
+		/** A practice position when the token and the venue are real but the wallet's record is weaker, in USD. */
+		reduced_usd: string
 		/** The most all practice positions opened on one UTC day may be worth, in USD. */
 		max_usd_per_day: string
 		/** How many practice positions may be open at once. */
 		max_open_positions: number
 	}
+	/** What weaker evidence does to the size: "reduced" opens the smaller position, "none" opens nothing. */
+	evidence: {
+		/** vet402 has not anchored a record for the wallet onchain, so CRE had nothing to check it against. */
+		record_not_anchored: Grade
+		/** The wallet's history could only be rebuilt in part. */
+		history_partial: Grade
+		/** The record gives no realized result for the wallet. */
+		wallet_result_unknown: Grade
+		/** The wallet's closed trades add up to a loss, or to nothing. */
+		wallet_at_a_loss: Grade
+		/** A Chainlink feed value older than this at the block of the move is not used as an entry price. */
+		max_price_age_hours: number
+	}
 	exit: {
-		/** Close a practice position when the price has moved this many percent in its favour. */
-		take_profit_pct: string
-		/** Close it when the price has moved this many percent against it. */
+		/** Leave when the copied wallet sells or sends the same token. */
+		when_wallet_sells: boolean
+		/** Leave when the feed is this many percent under the entry. */
 		stop_loss_pct: string
-		/** Close it after this many days whatever the price. */
+		/** Leave when the feed is this many percent over the entry. */
+		take_profit_pct: string
+		/** Leave after this many days whatever the price. */
 		max_holding_days: number
 	}
 	payments: {
@@ -38,6 +57,7 @@ export type Limits = {
 
 const MONEY = /^(0|[1-9]\d{0,8})(\.\d{1,2})?$/
 const PCT = /^(0|[1-9]\d{0,2})(\.\d{1,2})?$/
+const GRADES = ['reduced', 'none']
 
 export function parseLimits(v: unknown): Limits {
 	const l = v as Limits
@@ -45,19 +65,30 @@ export function parseLimits(v: unknown): Limits {
 		throw new Error(`limits.json: ${what}`)
 	}
 	if (!l || typeof l !== 'object') bad('not an object')
-	if (l.limits_version !== 1) bad('limits_version must be 1')
+	if (l.limits_version !== 2) bad('limits_version must be 2')
 	if (typeof l.practice_only !== 'boolean') bad('practice_only must be true or false')
-	for (const k of ['max_usd_per_position', 'max_usd_per_day'] as const) if (!MONEY.test(l.position?.[k] ?? '')) bad(`position.${k} must be a USD amount such as "100.00"`)
-	if (!Number.isInteger(l.position?.max_open_positions) || l.position.max_open_positions < 0 || l.position.max_open_positions > 1000) bad('position.max_open_positions must be a whole number')
+	for (const k of ['full_usd', 'reduced_usd', 'max_usd_per_day'] as const) if (!MONEY.test(l.size?.[k] ?? '')) bad(`size.${k} must be a USD amount such as "100.00"`)
+	if (!Number.isInteger(l.size?.max_open_positions) || l.size.max_open_positions < 0 || l.size.max_open_positions > 10000) bad('size.max_open_positions must be a whole number')
+	if (cents(l.size.reduced_usd) > cents(l.size.full_usd)) bad('size.reduced_usd must not be above size.full_usd')
+	for (const k of ['record_not_anchored', 'history_partial', 'wallet_result_unknown', 'wallet_at_a_loss'] as const) if (!GRADES.includes(l.evidence?.[k])) bad(`evidence.${k} must be "reduced" or "none"`)
+	if (!Number.isInteger(l.evidence?.max_price_age_hours) || l.evidence.max_price_age_hours < 1 || l.evidence.max_price_age_hours > 8760) bad('evidence.max_price_age_hours must be a whole number of hours')
+	if (typeof l.exit?.when_wallet_sells !== 'boolean') bad('exit.when_wallet_sells must be true or false')
 	for (const k of ['take_profit_pct', 'stop_loss_pct'] as const) if (!PCT.test(l.exit?.[k] ?? '')) bad(`exit.${k} must be a percentage such as "10"`)
 	if (!Number.isInteger(l.exit?.max_holding_days) || l.exit.max_holding_days < 1 || l.exit.max_holding_days > 3650) bad('exit.max_holding_days must be a whole number of days')
 	for (const k of ['max_usdg_per_decision', 'max_usdg_total'] as const) if (!MONEY.test(l.payments?.[k] ?? '')) bad(`payments.${k} must be a USDG amount such as "0.01"`)
 	// Exactly these keys, so the hash covers everything the file says.
 	const shape = canonicalJson({
-		limits_version: 1,
+		limits_version: 2,
 		practice_only: l.practice_only,
-		position: { max_usd_per_position: l.position.max_usd_per_position, max_usd_per_day: l.position.max_usd_per_day, max_open_positions: l.position.max_open_positions },
-		exit: { take_profit_pct: l.exit.take_profit_pct, stop_loss_pct: l.exit.stop_loss_pct, max_holding_days: l.exit.max_holding_days },
+		size: { full_usd: l.size.full_usd, reduced_usd: l.size.reduced_usd, max_usd_per_day: l.size.max_usd_per_day, max_open_positions: l.size.max_open_positions },
+		evidence: {
+			record_not_anchored: l.evidence.record_not_anchored,
+			history_partial: l.evidence.history_partial,
+			wallet_result_unknown: l.evidence.wallet_result_unknown,
+			wallet_at_a_loss: l.evidence.wallet_at_a_loss,
+			max_price_age_hours: l.evidence.max_price_age_hours,
+		},
+		exit: { when_wallet_sells: l.exit.when_wallet_sells, stop_loss_pct: l.exit.stop_loss_pct, take_profit_pct: l.exit.take_profit_pct, max_holding_days: l.exit.max_holding_days },
 		payments: { max_usdg_per_decision: l.payments.max_usdg_per_decision, max_usdg_total: l.payments.max_usdg_total },
 	})
 	if (shape !== canonicalJson(l)) bad('unknown or missing field')

@@ -24,9 +24,9 @@
     "id": "copy-guard",
     "version": 2,
     "source_keccak": "0x2abeff7f6a488b520e458445381413f81507fc545c1dc466fe27d54250e93b12",
-    "limits_rules_keccak": "0x3edb479e44b85b0908a641298dced1951ae36afcd8ca839779505abc2d21355b"
+    "limits_rules_keccak": "0x92791b15da3a8de6de1f0392d657070a59ed6cbd40f543642fd1660156aef59e"
   },
-  "limits_keccak": "0xe85c6299d22a6ea61331dfa8e7281d38cd3c42cfdeb975333f508ab461c61df1",
+  "limits_keccak": "0x1e7624863e095cbdb3475e8f01b8e6befbe53ed24389a2b51c3dcb479d72c2cf",
   "chain_id": 4663,
   "valid_from": "2026-10-14T00:00:00Z",
   "valid_until": "2026-12-31T23:59:59Z"

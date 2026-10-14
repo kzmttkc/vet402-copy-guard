@@ -32,12 +32,13 @@ import { privateKeyToAccount } from 'viem/accounts'
 import { type AnchorRef, httpRpc, LOG_SPAN, movements, newestAnchor, RPC, type Rpc } from './chain'
 import { type CreRun, REPO, simulate } from './cre'
 import { chain, erc20 } from './evm'
+import { feedSeries, priceAt, venueOf } from './facts'
 import { payGate } from './gate/client'
 import { cents, limitsKeccak, type Limits, parseLimits, paymentCapAtomic, usd, usdgAtomic } from './limits'
 import { mandateRef, type MandateRef, parseMandate } from './mandate'
 import { recordInputs } from './record'
 import { type CreInputs, type Movement, USDG } from './rules'
-import { type Book, type DecisionInputsV2, movedTokens, RULES_V2, type RulesRef } from './rules-v2'
+import { type Book, type DecisionInputsV2, movedTokens, RULES_V2, type RulesRef, stockLegV2, type Venue } from './rules-v2'
 import { effectiveSpent, ledgerPath, payOnce, readChainSpend } from './pay'
 import { buildTrailV2, type Purchase, type TrailV2, trailHash } from './trail'
 import {
@@ -404,8 +405,8 @@ export async function main(argv: string[]) {
 	say(`  watching    ${getAddress(wallet)} on Robinhood Chain 4663, ${replay ? `replay of blocks ${replay.join(', ')}` : `blocks ${fromBlock}..${toBlock}`}`)
 	const m = policy.mandate
 	const signedByPrincipal = Boolean(m.signer) && m.signer?.toLowerCase() === m.document.principal.toLowerCase()
-	say(`  mandate     ${m.keccak} principal ${m.document.principal} ${signedByPrincipal ? 'signed by the principal' : m.signature ? `signed by ${m.signer}, NOT the principal` : 'NOT SIGNED: every decision will be HOLD'} (${policy.mandateDir}/)`)
-	say(`  limits      ${policy.limitsKeccak} ${policy.limits.position.max_usd_per_position} USD per position, ${policy.limits.position.max_usd_per_day} USD per day, payments at most ${cap} USDG atomic in total`)
+	say(`  mandate     ${m.keccak} principal ${m.document.principal} ${signedByPrincipal ? 'signed by the principal' : m.signature ? `signed by ${m.signer}, NOT the principal` : 'NOT SIGNED: every decision will be NONE'} (${policy.mandateDir}/)`)
+	say(`  limits      ${policy.limitsKeccak} full ${policy.limits.size.full_usd} USD, reduced ${policy.limits.size.reduced_usd} USD, ${policy.limits.size.max_usd_per_day} USD per day, payments at most ${cap} USDG atomic in total`)
 
 	// 1. Detect.
 	const found = replay
@@ -495,9 +496,21 @@ export async function main(argv: string[]) {
 
 	// 4. Decide, write the trail, notarize it through CRE, keep the practice trade.
 	const earlier = args.book ? loadTrails(join(REPO, args.book)) : []
+	const venueCache = new Map<string, Venue['kind']>()
 	const results = []
 	for (const mv of todo) {
 		const mf = await moveFacts(rpc, mv)
+		const tokensMoved = movedTokens(facts, mv.transfers, mf.decimals, USDG)
+		// Who the Stock Token came from, and the Chainlink feed's value at the block of the move.
+		const leg = stockLegV2({ movement: mv, tokens_moved: tokensMoved } as DecisionInputsV2)
+		const venue: Venue[] = []
+		let price: DecisionInputsV2['price'] = null
+		if (leg) {
+			const others = [...new Set(mv.transfers.filter((t) => t.token.toLowerCase() === leg.token.toLowerCase() && t.direction === leg.direction).map((t) => (leg.direction === 'in' ? t.from : t.to)))]
+			for (const a of others) venue.push(await venueOf(rpc, a, venueCache))
+			const stock = (facts.tokens ?? []).find((k: any) => k.canonical === true && String(k.token).toLowerCase() === leg.token.toLowerCase() && k.feed)
+			if (stock) price = priceAt(await feedSeries(rpc, leg.token, stock.symbol, stock.feed, mv.block - 6_000_000, mv.block), mv.block)
+		}
 		const inputs: DecisionInputsV2 = {
 			wallet,
 			movement: mv,
@@ -508,7 +521,9 @@ export async function main(argv: string[]) {
 			payer: payer.toLowerCase(),
 			rules: policy.rules,
 			move: { time: mf.time, signer: mf.signer },
-			tokens_moved: movedTokens(facts, mv.transfers, mf.decimals, USDG),
+			tokens_moved: tokensMoved,
+			venue,
+			price,
 			limits: policy.limits,
 			limits_keccak: policy.limitsKeccak,
 			mandate: policy.mandate,
@@ -522,7 +537,7 @@ export async function main(argv: string[]) {
 		say(`  movement    ${mv.tx} block ${mv.block} at ${mf.time}`)
 		for (const t of mv.transfers) say(`              ${t.direction === 'in' ? 'in ' : 'out'} ${t.token} ${t.amount_raw}`)
 		for (const r of trail.decision.rule_results) say(`    ${r.ok ? 'OK  ' : 'FAIL'} ${r.id} ${r.detail}`)
-		say(`  DECISION    ${trail.decision.conclusion}${trail.decision.decisive.length ? ` (${trail.decision.decisive.join(', ')})` : ''}`)
+		say(`  DECISION    ${trail.decision.tier} (${trail.decision.conclusion})${trail.decision.decisive.length ? ` (${trail.decision.decisive.join(', ')})` : ''}`)
 		say(`  CARD        ${trail.card.headline}`)
 		say(`              ${trail.card.happened}`)
 		for (const w of trail.card.why) say(`              ${w}`)

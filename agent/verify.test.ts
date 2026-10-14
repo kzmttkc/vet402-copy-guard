@@ -262,7 +262,9 @@ function fetchFor(w: World) {
 }
 
 /** Runs the recheck on a clock that only moves when the code waits, so no test really sleeps. */
-async function recheck(w: World, argv: string[] = [], gapMs = 0) {
+/** The paid run of 2026-10-08 (sections 1 to 4) unless a test names something else. The ledger and the gate have their own tests in v2.test.ts. */
+const PAID_RUN = ['--only', 'paid-run']
+async function recheck(w: World, argv: string[] = PAID_RUN, gapMs = 0) {
 	const lines: string[] = []
 	const waits: number[] = []
 	let clock = 1_000_000
@@ -364,7 +366,7 @@ describe('verify.mjs: the whole recheck', () => {
 			expect(r.ok).toHaveLength(14)
 			expect([r.code, r.last]).toEqual([3, 'RESULT: NOT CHECKED'])
 		}
-		const offline = await recheck(world(), ['--offline'])
+		const offline = await recheck(world(), [...PAID_RUN, '--offline'])
 		expect([offline.code, offline.last, offline.fail.length, offline.open.length]).toEqual([3, 'RESULT: NOT CHECKED', 0, 12])
 		expect(world().calls).toEqual([])
 	}, SLOW)
@@ -447,7 +449,7 @@ describe('verify.mjs: the whole recheck', () => {
 
 	test('requests go out one at a time, with a pause between them, and no question is asked twice', async () => {
 		const w = world()
-		const r = await recheck(w, [], 120)
+		const r = await recheck(w, PAID_RUN, 120)
 		expect(r.code).toBe(0)
 		expect(w.mostInFlight).toBe(1)
 		const asked = w.calls.map((c) => `${c.url} ${c.method} ${c.params}`)
@@ -500,7 +502,7 @@ describe('verify.mjs: the whole recheck', () => {
 
 	test('from the command line with no network: the exit code is 3 and the last line says NOT CHECKED', () => {
 		const node = spawnSync('node', ['--version']).status === 0 ? 'node' : process.execPath
-		const r = spawnSync(node, [join(REPO, 'verify.mjs'), '--offline'], { encoding: 'utf8' })
+		const r = spawnSync(node, [join(REPO, 'verify.mjs'), '--only', 'paid-run', '--offline'], { encoding: 'utf8' })
 		expect(r.status).toBe(3)
 		expect(r.stdout.trimEnd().split('\n').pop()).toBe('RESULT: NOT CHECKED')
 		expect(r.stdout).not.toContain('FAIL  ')
