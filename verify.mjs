@@ -1724,7 +1724,14 @@ async function checkTrail(rep, main, test, file, { record, expected } = {}) {
 			const time = block ? new Date(Number(BigInt(block.timestamp)) * 1000).toISOString() : '(no block)'
 			if (time !== trail.inputs.move.time) bad.push(`the block is from ${time}, the trail says ${trail.inputs.move.time}`)
 			for (const m of trail.inputs.tokens_moved) {
-				const d = Number(BigInt(await main('eth_call', [{ to: m.token, data: '0x313ce567' }, 'latest'])))
+				// A token without decimals() reverts. The walk reads that as 18, and so does this check. A revert is an answer, not an outage.
+		const d = await main('eth_call', [{ to: m.token, data: '0x313ce567' }, 'latest']).then(
+			(x) => Number(BigInt(x)),
+			(e) => {
+				if (/execution reverted/i.test(String(e?.message))) return 18
+				throw e
+			},
+		)
 				if (d !== m.decimals) bad.push(`${m.token} has ${d} decimals, the trail says ${m.decimals}`)
 			}
 			if (bad.length) return [false, bad.join('; ')]
@@ -1853,14 +1860,22 @@ async function chainFacts(main, t) {
 	const time = block ? new Date(Number(BigInt(block.timestamp)) * 1000).toISOString() : '(no block)'
 	if (time !== inp.move.time) bad.push(`the block is from ${time}, the trail says ${inp.move.time}`)
 	for (const m of inp.tokens_moved) {
-		const d = Number(BigInt(await main('eth_call', [{ to: m.token, data: '0x313ce567' }, 'latest'])))
+		// A token without decimals() reverts. The walk reads that as 18, and so does this check. A revert is an answer, not an outage.
+		const d = await main('eth_call', [{ to: m.token, data: '0x313ce567' }, 'latest']).then(
+			(x) => Number(BigInt(x)),
+			(e) => {
+				if (/execution reverted/i.test(String(e?.message))) return 18
+				throw e
+			},
+		)
 		if (d !== m.decimals) bad.push(`${m.token} has ${d} decimals, the trail says ${m.decimals}`)
 	}
 	for (const v of inp.venue) {
 		let kind = 'other'
 		if (lc(v.address) === V4_POOL_MANAGER) kind = 'uniswap-v4-pool-manager'
 		else {
-			const f = await main('eth_call', [{ to: v.address, data: '0xc45a0155' }, 'latest']).catch((e) => (e instanceof Unreachable ? Promise.reject(e) : '0x'))
+			// factory() reverts on anything that is not a pool: that is an answer (not a v3 pool), not an outage.
+			const f = await main('eth_call', [{ to: v.address, data: '0xc45a0155' }, 'latest']).catch((e) => (e instanceof Unreachable && !/execution reverted/i.test(String(e.message)) ? Promise.reject(e) : '0x'))
 			if (typeof f === 'string' && f.length === 66 && addrOf(f) === V3_FACTORY) kind = 'uniswap-v3-pool'
 		}
 		if (kind !== v.kind) bad.push(`${v.address} is ${kind}, the trail says ${v.kind}`)
