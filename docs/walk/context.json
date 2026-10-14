@@ -1,0 +1,954 @@
+{
+ "window": {
+  "from_block": 62420751,
+  "to_block": 87977834,
+  "from_time": "2026-09-14T01:33:25.000Z",
+  "to_time": "2026-10-14T01:33:25.000Z"
+ },
+ "selection": {
+  "asked": 100,
+  "selected": 19,
+  "stop": "Stopped because 100 addresses had been asked: 100 addresses asked from the top of the ranking, 19 selected, 81 with no record.",
+  "no_record": [
+   {
+    "wallet": "0x51c72848c68a965f66fa7a88855f9f7784502a7f",
+    "bound_rank": 1,
+    "bound_usd": "311868484.64",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x51C72848c68a965f66FA7a88855F9f7784502a7F\",\"chain_id\":4663,\"as_of_block\":88070884,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":22,\"held\":[\"AAPL\",\"AMC\",\"AMD\",\"COIN\",\"CRCL\",\"GLD\",\"GME\",\"GOOGL\",\"HIMS\","
+   },
+   {
+    "wallet": "0x3c82eb1863a021a27ca72d638ac1b33331869a71",
+    "bound_rank": 2,
+    "bound_usd": "196091667.08",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x3c82EB1863A021a27ca72d638Ac1B33331869a71\",\"chain_id\":4663,\"as_of_block\":88071039,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":636},\"deta"
+   },
+   {
+    "wallet": "0x65050a9b7e5075a2ba5ced7b1b64ee66262c40dc",
+    "bound_rank": 3,
+    "bound_usd": "152796001.24",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x65050A9b7E5075A2bA5cED7b1b64EE66262c40Dc\",\"chain_id\":4663,\"as_of_block\":88071095,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":1000},\"det"
+   },
+   {
+    "wallet": "0x6aa80dbbed9ae5ab45fbf61f9644fada3b29326e",
+    "bound_rank": 4,
+    "bound_usd": "128670938.68",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x6aa80DbBed9ae5aB45FbF61f9644faDA3b29326E\",\"chain_id\":4663,\"as_of_block\":88071286,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":751},\"deta"
+   },
+   {
+    "wallet": "0x278d858f05b94576c1e6f73285886876ff6ef8d2",
+    "bound_rank": 6,
+    "bound_usd": "87595400.69",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x278d858f05b94576C1E6f73285886876ff6eF8D2\",\"chain_id\":4663,\"as_of_block\":88071531,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":49,\"held\":[\"AAPL\",\"AMC\",\"AMD\",\"AMZN\",\"AVGO\",\"BABA\",\"BE\",\"COIN\",\"COST\",\""
+   },
+   {
+    "wallet": "0xfa686b40541334a8983b3d28902f832e23f9cd1f",
+    "bound_rank": 7,
+    "bound_usd": "85842508.44",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xFa686B40541334a8983b3D28902f832e23F9Cd1F\",\"chain_id\":4663,\"as_of_block\":88071601,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"NVDA\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":975}"
+   },
+   {
+    "wallet": "0xcef7501b9b060a599a81735bead6641c0e6baf46",
+    "bound_rank": 8,
+    "bound_usd": "85554862.14",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xCef7501b9B060a599a81735bEAD6641C0E6bAF46\",\"chain_id\":4663,\"as_of_block\":88071670,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":19,\"held\":[\"AAPL\",\"AMC\",\"COST\",\"CRCL\",\"GME\",\"HIMS\",\"INTC\",\"LLY\",\"META\","
+   },
+   {
+    "wallet": "0x8f10b468b06c6fd214b65f87778827f7d113f996",
+    "bound_rank": 9,
+    "bound_usd": "81917865.41",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x8F10B468b06c6FD214B65F87778827F7D113f996\",\"chain_id\":4663,\"as_of_block\":88071803,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":192,\"held\":[\"AAOI\",\"AAPL\",\"ABCL\",\"ADBE\",\"AEHR\",\"AEIS\",\"ALAB\",\"AMAT\",\"AM"
+   },
+   {
+    "wallet": "0x203bffa697bee74d39d255c1c028e3efa689b5f7",
+    "bound_rank": 10,
+    "bound_usd": "68320676.63",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x203BFFa697beE74d39D255C1C028e3efA689B5F7\",\"chain_id\":4663,\"as_of_block\":88071870,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":91,\"held\":[\"AAOI\",\"AAPL\",\"AMAT\",\"AMC\",\"AMD\",\"AMZN\",\"ASML\",\"AVGO\",\"BA\",\""
+   },
+   {
+    "wallet": "0x9689992f5b5c09447f15906d8d11214944488341",
+    "bound_rank": 11,
+    "bound_usd": "63412142.29",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x9689992f5b5C09447f15906d8d11214944488341\",\"chain_id\":4663,\"as_of_block\":88071934,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":644},\"deta"
+   },
+   {
+    "wallet": "0x3d90f66b534dd8482b181e24655a9e8265316be9",
+    "bound_rank": 12,
+    "bound_usd": "57514376.50",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x3d90f66B534Dd8482b181e24655A9e8265316BE9\",\"chain_id\":4663,\"as_of_block\":88072001,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":927},\"deta"
+   },
+   {
+    "wallet": "0xc33acc93942105c57602e59e8e448c20ba718a85",
+    "bound_rank": 14,
+    "bound_usd": "42199381.10",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xc33AcC93942105c57602e59E8E448C20ba718a85\",\"chain_id\":4663,\"as_of_block\":88072298,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":10,\"held\":[\"AAPL\",\"CRCL\",\"GOOGL\",\"META\",\"MU\",\"NVDA\",\"QQQ\",\"SPCX\",\"SPY\","
+   },
+   {
+    "wallet": "0x1521027b665fa38fa4a642991607ad708376dd7b",
+    "bound_rank": 15,
+    "bound_usd": "41600136.29",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x1521027B665FA38Fa4a642991607ad708376dD7b\",\"chain_id\":4663,\"as_of_block\":88072374,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":998},\"deta"
+   },
+   {
+    "wallet": "0xd750615e5900f2aa09083e95c0dbb4958b173800",
+    "bound_rank": 16,
+    "bound_usd": "40504232.03",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xd750615E5900f2AA09083E95c0dbB4958b173800\",\"chain_id\":4663,\"as_of_block\":88072489,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":713},\"deta"
+   },
+   {
+    "wallet": "0x2f4579ca81717d3d61bf8b6f06571877bbe54a07",
+    "bound_rank": 18,
+    "bound_usd": "31816718.76",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x2F4579Ca81717d3D61BF8b6f06571877Bbe54A07\",\"chain_id\":4663,\"as_of_block\":88072630,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":49,\"held\":[\"AAPL\",\"AMAT\",\"AMC\",\"AMD\",\"AMZN\",\"ASML\",\"AVGO\",\"BB\",\"BE\",\"CO"
+   },
+   {
+    "wallet": "0x8aeaca1e2ba7d75cc60a3e1fa834958c877a1fbd",
+    "bound_rank": 19,
+    "bound_usd": "29477307.37",
+    "has_code": false,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x8AeaCa1E2ba7d75CC60a3e1fa834958c877A1fbD\",\"chain_id\":4663,\"as_of_block\":88072699,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":67,\"held\":[\"AAPL\",\"AMC\",\"AMD\",\"AMZN\",\"ASML\",\"BA\",\"BABA\",\"BB\",\"BE\",\"BULL"
+   },
+   {
+    "wallet": "0x8876789976decbfcbbbe364623c63652db8c0904",
+    "bound_rank": 20,
+    "bound_usd": "28924479.77",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x8876789976dEcBfCbBbe364623C63652db8C0904\",\"chain_id\":4663,\"as_of_block\":88072769,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":989},\"deta"
+   },
+   {
+    "wallet": "0x6e2a35a7ad683cf634d91492d73bb7ff774c6919",
+    "bound_rank": 21,
+    "bound_usd": "28252923.59",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x6e2A35A7AD683cF634D91492d73bb7FF774c6919\",\"chain_id\":4663,\"as_of_block\":88072956,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":666},\"deta"
+   },
+   {
+    "wallet": "0x66b570d1b419209c54cf9a85c04c64557c038edf",
+    "bound_rank": 22,
+    "bound_usd": "26236060.23",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x66b570D1b419209C54cF9a85c04C64557c038eDF\",\"chain_id\":4663,\"as_of_block\":88073020,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"SPY\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":646},"
+   },
+   {
+    "wallet": "0x0005ea38eb0a69d1253508ebdbdb9ea8cb26b5ef",
+    "bound_rank": 23,
+    "bound_usd": "23162859.50",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x0005Ea38EB0a69D1253508EBDBdB9eA8Cb26B5Ef\",\"chain_id\":4663,\"as_of_block\":88073090,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":14,\"held\":[\"AAPL\",\"AMZN\",\"BE\",\"DJT\",\"GLD\",\"INTC\",\"MSFT\",\"MSTR\",\"NU\",\"NV"
+   },
+   {
+    "wallet": "0xcedb799b8eed839b10add695e7c7803dd82b79c8",
+    "bound_rank": 24,
+    "bound_usd": "23123475.80",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xCeDb799B8eed839b10AdD695e7C7803Dd82B79c8\",\"chain_id\":4663,\"as_of_block\":88073254,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":1000},\"det"
+   },
+   {
+    "wallet": "0xec261798f56440dc243aa3696b635cf3077b9fb6",
+    "bound_rank": 25,
+    "bound_usd": "19285389.51",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xeC261798F56440DC243Aa3696B635Cf3077b9fb6\",\"chain_id\":4663,\"as_of_block\":88073318,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":998},\"deta"
+   },
+   {
+    "wallet": "0x006102b16a04c20306a28b652745d3973d7d24fa",
+    "bound_rank": 26,
+    "bound_usd": "19134828.83",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x006102b16A04c20306A28b652745D3973D7D24fa\",\"chain_id\":4663,\"as_of_block\":88073387,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":1057},\"det"
+   },
+   {
+    "wallet": "0x204faca1764b154221e35c0d20abb3c525710498",
+    "bound_rank": 27,
+    "bound_usd": "19130349.28",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x204FAca1764B154221e35c0d20aBb3c525710498\",\"chain_id\":4663,\"as_of_block\":88073453,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":653},\"deta"
+   },
+   {
+    "wallet": "0xdda569baedf25a26b2dc1017e563a7c548b2c6db",
+    "bound_rank": 28,
+    "bound_usd": "18973003.19",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xdDa569bAEdf25A26B2dC1017E563a7c548b2C6Db\",\"chain_id\":4663,\"as_of_block\":88073523,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"CRCL\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":1000"
+   },
+   {
+    "wallet": "0x8f612edf9bb0e3ca8719341ed7c896fc46e54b66",
+    "bound_rank": 29,
+    "bound_usd": "18525273.60",
+    "has_code": false,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x8F612eDF9bb0e3ca8719341ED7C896Fc46E54B66\",\"chain_id\":4663,\"as_of_block\":88073593,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":16,\"held\":[\"AMD\",\"AMZN\",\"BB\",\"COIN\",\"GOOGL\",\"HIMS\",\"INTC\",\"META\",\"MSFT\""
+   },
+   {
+    "wallet": "0xc216bfa5da000965e820845c32e6fd88db275743",
+    "bound_rank": 31,
+    "bound_usd": "16948000.53",
+    "has_code": false,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xC216BfA5dA000965E820845c32e6FD88DB275743\",\"chain_id\":4663,\"as_of_block\":88073763,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":4,\"held\":[\"GLD\",\"GME\",\"INTC\",\"PLTR\"],\"limit\":{\"kind\":\"transactions\",\"ma"
+   },
+   {
+    "wallet": "0x9b169052ee1569ec5bdf51dbf48d2962526cf6d9",
+    "bound_rank": 32,
+    "bound_usd": "15363767.48",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x9b169052Ee1569Ec5bDF51DbF48D2962526cF6D9\",\"chain_id\":4663,\"as_of_block\":88073832,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":21,\"held\":[\"AAPL\",\"AMD\",\"AMZN\",\"COIN\",\"CRCL\",\"DJT\",\"GME\",\"GOOGL\",\"HIMS\""
+   },
+   {
+    "wallet": "0x3b52de48a9457cd662485dc5e7971e02e9c2bee1",
+    "bound_rank": 33,
+    "bound_usd": "15335752.36",
+    "has_code": false,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x3B52DE48a9457CD662485dc5e7971E02E9c2BEE1\",\"chain_id\":4663,\"as_of_block\":88073901,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":996},\"deta"
+   },
+   {
+    "wallet": "0x7ab338fde039feb0da5a38d90d1a08fff1c31af0",
+    "bound_rank": 35,
+    "bound_usd": "13283758.61",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x7Ab338fdE039fEB0da5a38d90D1A08fFf1C31aF0\",\"chain_id\":4663,\"as_of_block\":88074041,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":742},\"deta"
+   },
+   {
+    "wallet": "0x2ca37ff95caf25366ef16fc2e655b78a165d125f",
+    "bound_rank": 36,
+    "bound_usd": "12524191.58",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x2Ca37ff95caF25366eF16fc2E655b78a165D125F\",\"chain_id\":4663,\"as_of_block\":88074106,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":192,\"held\":[\"AAOI\",\"AAPL\",\"ABCL\",\"ADBE\",\"AEHR\",\"AEIS\",\"ALAB\",\"AMAT\",\"AM"
+   },
+   {
+    "wallet": "0x97b524cdd66ca3d2e74b6db923daf8873db50416",
+    "bound_rank": 37,
+    "bound_usd": "11363827.63",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x97b524cdD66Ca3d2E74b6dB923DAF8873dB50416\",\"chain_id\":4663,\"as_of_block\":88074177,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"TSLA\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":999}"
+   },
+   {
+    "wallet": "0xdf24400adbb93a0838a3b69a58d9e349d9a0d650",
+    "bound_rank": 38,
+    "bound_usd": "11244974.02",
+    "has_code": false,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xdF24400aDBb93a0838A3b69a58d9e349d9A0D650\",\"chain_id\":4663,\"as_of_block\":88074246,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"AMZN\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":1002"
+   },
+   {
+    "wallet": "0xe492912f37c2a4eca45d42dc67548f4c6cd7ce2b",
+    "bound_rank": 39,
+    "bound_usd": "10978468.31",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xe492912F37C2A4eCa45D42DC67548F4C6Cd7ce2B\",\"chain_id\":4663,\"as_of_block\":88074315,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":1005},\"det"
+   },
+   {
+    "wallet": "0x302a6e0ce29361cbcc10dede65998283dd8a17ac",
+    "bound_rank": 40,
+    "bound_usd": "10222134.14",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x302A6e0cE29361cBcc10DEdE65998283DD8A17AC\",\"chain_id\":4663,\"as_of_block\":88074439,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":640},\"deta"
+   },
+   {
+    "wallet": "0x88a0641c1fbff74b99d460c440369f44dd432af9",
+    "bound_rank": 41,
+    "bound_usd": "9633356.05",
+    "has_code": false,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x88a0641c1FBfF74B99D460C440369f44dD432Af9\",\"chain_id\":4663,\"as_of_block\":88074510,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":2,\"held\":[\"BABA\",\"SPCX\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"foun"
+   },
+   {
+    "wallet": "0x09ad820aac5779683b481c4674208a4e1b024afa",
+    "bound_rank": 42,
+    "bound_usd": "9294617.42",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x09AD820aaC5779683B481c4674208A4e1B024Afa\",\"chain_id\":4663,\"as_of_block\":88074575,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":977},\"deta"
+   },
+   {
+    "wallet": "0x79fab311c8c6cf0a39d9d8296cf2a26c5ca84de6",
+    "bound_rank": 43,
+    "bound_usd": "8973103.07",
+    "has_code": false,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x79faB311C8C6Cf0A39d9D8296Cf2a26C5CA84dE6\",\"chain_id\":4663,\"as_of_block\":88074720,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":2,\"held\":[\"MSFT\",\"SPY\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found"
+   },
+   {
+    "wallet": "0x73991a25c818bf1f1128deaab1492d45638de0d3",
+    "bound_rank": 44,
+    "bound_usd": "8219543.47",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x73991a25C818Bf1f1128dEAaB1492D45638DE0D3\",\"chain_id\":4663,\"as_of_block\":88074790,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":1000},\"det"
+   },
+   {
+    "wallet": "0x48a097df16c7844a33b1c3d11ab353457846e13f",
+    "bound_rank": 46,
+    "bound_usd": "8043162.37",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x48A097DF16c7844a33B1c3d11aB353457846e13F\",\"chain_id\":4663,\"as_of_block\":88074978,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":158,\"held\":[\"AAOI\",\"AAPL\",\"ABCL\",\"ADBE\",\"AEHR\",\"AEIS\",\"ALAB\",\"AMAT\",\"AM"
+   },
+   {
+    "wallet": "0xef161b8b000810944017a69af3b4bb28c87ae318",
+    "bound_rank": 48,
+    "bound_usd": "7105043.50",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xeF161b8b000810944017a69Af3B4bb28c87Ae318\",\"chain_id\":4663,\"as_of_block\":88075170,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":786},\"deta"
+   },
+   {
+    "wallet": "0xcf84e6c387e074f73e8c86bc9cff774f32b35604",
+    "bound_rank": 49,
+    "bound_usd": "6636906.94",
+    "has_code": false,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xcf84e6C387E074F73E8c86bc9CfF774F32b35604\",\"chain_id\":4663,\"as_of_block\":88075236,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"NVDA\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":1002"
+   },
+   {
+    "wallet": "0xe647df965dc7ebee27fdd8840a7fc907540eb3d3",
+    "bound_rank": 50,
+    "bound_usd": "6517011.58",
+    "has_code": false,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xE647Df965Dc7EBEE27fDd8840a7fc907540EB3D3\",\"chain_id\":4663,\"as_of_block\":88075306,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"SPY\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":1235}"
+   },
+   {
+    "wallet": "0xec9aa0a6c2372131a0502aba6188269ab52cacb5",
+    "bound_rank": 51,
+    "bound_usd": "6336111.00",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xEC9Aa0a6c2372131a0502ABA6188269Ab52CACb5\",\"chain_id\":4663,\"as_of_block\":88075377,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":165,\"held\":[\"AAOI\",\"AAPL\",\"ABCL\",\"ADBE\",\"AEHR\",\"AEIS\",\"ALAB\",\"AMAT\",\"AM"
+   },
+   {
+    "wallet": "0xc94135b63772b91d79d0a2daab2a8801f32359bd",
+    "bound_rank": 52,
+    "bound_usd": "5951726.05",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xC94135b63772b91D79d0A2DaAb2a8801f32359bD\",\"chain_id\":4663,\"as_of_block\":88075446,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":717},\"deta"
+   },
+   {
+    "wallet": "0xe5e702641ea86f4ae6cc3cdaed2b886f976be044",
+    "bound_rank": 54,
+    "bound_usd": "5356095.97",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xE5e702641Ea86F4ae6cC3cDaeD2B886f976Be044\",\"chain_id\":4663,\"as_of_block\":88075586,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":60,\"held\":[\"AAPL\",\"AMC\",\"AMD\",\"AMZN\",\"BABA\",\"BB\",\"BE\",\"BULL\",\"COIN\",\"CO"
+   },
+   {
+    "wallet": "0x0e867974275cd31c25015c2753c9d75f9f355379",
+    "bound_rank": 56,
+    "bound_usd": "5172762.13",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x0e867974275Cd31C25015C2753C9d75F9f355379\",\"chain_id\":4663,\"as_of_block\":88076231,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":86,\"held\":[\"AAPL\",\"ADBE\",\"AMAT\",\"AMC\",\"AMD\",\"AMKR\",\"AMZN\",\"ASML\",\"ASTS\""
+   },
+   {
+    "wallet": "0x656111ac221ac16a6d6094f759a6a2228114c871",
+    "bound_rank": 57,
+    "bound_usd": "5154578.95",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x656111aC221ac16a6d6094f759a6a2228114c871\",\"chain_id\":4663,\"as_of_block\":88076302,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":6,\"held\":[\"AAPL\",\"BABA\",\"NVDA\",\"SPCX\",\"SPY\",\"TSLA\"],\"limit\":{\"kind\":\"tr"
+   },
+   {
+    "wallet": "0x2815c10740f4d738b20fdc13167c865380156623",
+    "bound_rank": 58,
+    "bound_usd": "5133340.88",
+    "has_code": false,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x2815c10740F4D738b20FDC13167c865380156623\",\"chain_id\":4663,\"as_of_block\":88076411,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":2,\"held\":[\"COIN\",\"PLTR\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"foun"
+   },
+   {
+    "wallet": "0x28c14d5d39752f65f645681c1e22cb9993f075e5",
+    "bound_rank": 59,
+    "bound_usd": "5037501.79",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x28c14d5d39752f65F645681c1e22cb9993F075e5\",\"chain_id\":4663,\"as_of_block\":88076482,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":81,\"held\":[\"AAPL\",\"ADBE\",\"AMAT\",\"AMC\",\"AMD\",\"AMZN\",\"ASML\",\"AVGO\",\"BA\",\""
+   },
+   {
+    "wallet": "0x62fc80823e766e4cc7cce3ca745d6bb39fbcf4ca",
+    "bound_rank": 60,
+    "bound_usd": "5034942.38",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x62FC80823e766e4Cc7ccE3ca745d6Bb39fbcF4cA\",\"chain_id\":4663,\"as_of_block\":88076551,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":18,\"held\":[\"AAPL\",\"CCL\",\"COIN\",\"CRCL\",\"CRWV\",\"FICO\",\"IBM\",\"LULU\",\"MSFT\""
+   },
+   {
+    "wallet": "0xe9f89a769f234f6cc75e1c1c6b1fd9963d72c652",
+    "bound_rank": 61,
+    "bound_usd": "4998728.00",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xE9F89A769F234F6cc75e1C1C6b1fD9963D72c652\",\"chain_id\":4663,\"as_of_block\":88076621,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":894},\"deta"
+   },
+   {
+    "wallet": "0x1149133ed99dd48a2029eb27c15edbb38f572fb1",
+    "bound_rank": 63,
+    "bound_usd": "4915145.54",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x1149133eD99Dd48a2029Eb27c15eDBB38f572Fb1\",\"chain_id\":4663,\"as_of_block\":88076800,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":12,\"held\":[\"AAPL\",\"AMD\",\"AMZN\",\"GOOGL\",\"HIMS\",\"META\",\"MSFT\",\"MU\",\"PLTR\""
+   },
+   {
+    "wallet": "0xdba25059630011211971098c07981d6c49dff3f8",
+    "bound_rank": 64,
+    "bound_usd": "4782765.92",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xdbA25059630011211971098c07981d6c49dFf3f8\",\"chain_id\":4663,\"as_of_block\":88076869,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":1000},\"det"
+   },
+   {
+    "wallet": "0x07da9da197d89c8cc5d8b9a8230a181bdd2541ae",
+    "bound_rank": 65,
+    "bound_usd": "4670385.35",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x07DA9DA197d89c8CC5D8b9a8230A181bDd2541ae\",\"chain_id\":4663,\"as_of_block\":88076934,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":636},\"deta"
+   },
+   {
+    "wallet": "0xf0b7eaaf868191adc00065ca13391ef436ce8faf",
+    "bound_rank": 66,
+    "bound_usd": "4668381.72",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xF0B7EaaF868191aDc00065Ca13391Ef436ce8faF\",\"chain_id\":4663,\"as_of_block\":88077003,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":734},\"deta"
+   },
+   {
+    "wallet": "0x1195c074f898b7644ba732407619c9804dfe6dce",
+    "bound_rank": 68,
+    "bound_usd": "4382433.36",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x1195C074F898b7644bA732407619c9804dFE6DCE\",\"chain_id\":4663,\"as_of_block\":88077143,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":611},\"deta"
+   },
+   {
+    "wallet": "0xbea6edfb4cd1196a0d5f486432ec6020fb407369",
+    "bound_rank": 69,
+    "bound_usd": "4336877.82",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xBEA6EDFB4cd1196a0D5F486432eC6020Fb407369\",\"chain_id\":4663,\"as_of_block\":88077213,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":768},\"deta"
+   },
+   {
+    "wallet": "0x6f02324d20cc679d0e585290caa6b16bacbc0f77",
+    "bound_rank": 70,
+    "bound_usd": "4091311.70",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x6f02324d20CC679d0E585290CAa6b16baCbC0F77\",\"chain_id\":4663,\"as_of_block\":88077282,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":157,\"held\":[\"AAOI\",\"AAPL\",\"ABCL\",\"ADBE\",\"AEHR\",\"AEIS\",\"ALAB\",\"AMAT\",\"AM"
+   },
+   {
+    "wallet": "0xbc7682bb94dd84d88020449e4a67263d22ed9a6a",
+    "bound_rank": 71,
+    "bound_usd": "3925801.51",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xBc7682bB94DD84d88020449e4A67263d22ed9A6A\",\"chain_id\":4663,\"as_of_block\":88077353,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"SPY\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":850},"
+   },
+   {
+    "wallet": "0x01779b73f3bc23d5ffa03938fcffc2c3f56afea6",
+    "bound_rank": 72,
+    "bound_usd": "3766578.19",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x01779b73f3Bc23d5ffa03938FCFFC2C3F56Afea6\",\"chain_id\":4663,\"as_of_block\":88077422,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"SPY\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":776},"
+   },
+   {
+    "wallet": "0x73743818b1a84dcc902e49fe33f8a99b9781187b",
+    "bound_rank": 73,
+    "bound_usd": "3585805.37",
+    "has_code": false,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x73743818B1a84DCC902E49Fe33F8A99B9781187b\",\"chain_id\":4663,\"as_of_block\":88077488,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":1005},\"det"
+   },
+   {
+    "wallet": "0x498752d5fa0600cbd613074c151abe15b3fec7cb",
+    "bound_rank": 74,
+    "bound_usd": "3576487.02",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x498752D5fa0600CBd613074C151Abe15B3FeC7CB\",\"chain_id\":4663,\"as_of_block\":88077555,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":13,\"held\":[\"AAPL\",\"AMD\",\"COIN\",\"GOOGL\",\"INTC\",\"MSFT\",\"MU\",\"NVDA\",\"PLTR\""
+   },
+   {
+    "wallet": "0x00000000e91fc5bad977c0cc4ad60557c06886a2",
+    "bound_rank": 75,
+    "bound_usd": "3542383.69",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x00000000e91fc5BAd977C0cc4Ad60557c06886a2\",\"chain_id\":4663,\"as_of_block\":88077626,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":706},\"deta"
+   },
+   {
+    "wallet": "0x40720e9af240e24fc64340474fee1c9123c2d9c3",
+    "bound_rank": 76,
+    "bound_usd": "3523102.17",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x40720E9Af240E24fC64340474FEe1c9123C2D9C3\",\"chain_id\":4663,\"as_of_block\":88077696,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"SPY\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":840},"
+   },
+   {
+    "wallet": "0x4e3468951d49f2eea976ed0d6e75ffcb44a9a544",
+    "bound_rank": 79,
+    "bound_usd": "3255422.43",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x4e3468951D49f2EEa976eD0D6e75fFCb44a9a544\",\"chain_id\":4663,\"as_of_block\":88077997,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":101,\"held\":[\"AAOI\",\"AAPL\",\"ADBE\",\"AMAT\",\"AMC\",\"AMD\",\"AMZN\",\"APLD\",\"ASML"
+   },
+   {
+    "wallet": "0x7ee56a614196be0d5174e7950cb6f3968564efdd",
+    "bound_rank": 82,
+    "bound_usd": "3003297.36",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x7ee56a614196BE0D5174e7950cb6f3968564EfDd\",\"chain_id\":4663,\"as_of_block\":88078223,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":26,\"held\":[\"AAPL\",\"AMD\",\"AMZN\",\"BB\",\"COIN\",\"CRCL\",\"DJT\",\"GME\",\"GOOGL\",\""
+   },
+   {
+    "wallet": "0x47516269845068017e312096dceeb4896cdd9141",
+    "bound_rank": 83,
+    "bound_usd": "2959855.48",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x47516269845068017E312096dCeeB4896CDD9141\",\"chain_id\":4663,\"as_of_block\":88078293,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":2,\"held\":[\"PLTR\",\"SPY\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found"
+   },
+   {
+    "wallet": "0x6454725396dad1166dddd28af694701ad0775685",
+    "bound_rank": 84,
+    "bound_usd": "2871706.25",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x6454725396DAd1166DddD28Af694701ad0775685\",\"chain_id\":4663,\"as_of_block\":88078363,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"META\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":1000"
+   },
+   {
+    "wallet": "0x68ee3ec0c6278408d35d33ec360693317ad25b37",
+    "bound_rank": 85,
+    "bound_usd": "2841816.20",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x68eE3EC0C6278408D35D33eC360693317AD25b37\",\"chain_id\":4663,\"as_of_block\":88078433,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":1000},\"det"
+   },
+   {
+    "wallet": "0xd8e68548b6bde6b67b38a3726a1500ec40003af5",
+    "bound_rank": 87,
+    "bound_usd": "2799128.22",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xD8e68548B6bDe6B67b38a3726A1500ec40003af5\",\"chain_id\":4663,\"as_of_block\":88078619,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":641},\"deta"
+   },
+   {
+    "wallet": "0xb802ff2094e27f4d5ae6f4ab9a0ed64bbc361d59",
+    "bound_rank": 88,
+    "bound_usd": "2781653.70",
+    "has_code": false,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xB802Ff2094E27f4D5Ae6f4Ab9A0eD64Bbc361D59\",\"chain_id\":4663,\"as_of_block\":88078689,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"AAPL\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":625}"
+   },
+   {
+    "wallet": "0x9f6d8cd05ffb7b157668e7d403b88b227c1b3750",
+    "bound_rank": 89,
+    "bound_usd": "2750074.71",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x9f6d8cd05FfB7b157668e7d403b88B227C1B3750\",\"chain_id\":4663,\"as_of_block\":88078758,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":815},\"deta"
+   },
+   {
+    "wallet": "0x876d4ae08ef35b91c340680b784812da7eafa643",
+    "bound_rank": 90,
+    "bound_usd": "2704723.86",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x876d4Ae08ef35B91C340680b784812DA7EAFA643\",\"chain_id\":4663,\"as_of_block\":88078823,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":1000},\"det"
+   },
+   {
+    "wallet": "0x323d552f1594eefcd7f19561cb95806afb0b60bb",
+    "bound_rank": 91,
+    "bound_usd": "2704492.74",
+    "has_code": false,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x323D552F1594EeFCd7f19561Cb95806AfB0b60bB\",\"chain_id\":4663,\"as_of_block\":88078893,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"SPCX\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":983}"
+   },
+   {
+    "wallet": "0x8b6da881baf895eeec2e9f8b6887a1e79a55a9fe",
+    "bound_rank": 92,
+    "bound_usd": "2679783.91",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x8b6da881baf895eeec2E9F8B6887A1e79a55a9fE\",\"chain_id\":4663,\"as_of_block\":88078964,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":943},\"deta"
+   },
+   {
+    "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
+    "bound_rank": 94,
+    "bound_usd": "2627145.58",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xBb75F6e4bDE3DFA3716239e02274175f37892Cc7\",\"chain_id\":4663,\"as_of_block\":88079104,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":60,\"held\":[\"AAPL\",\"AMC\",\"AMD\",\"AMZN\",\"ASML\",\"AVGO\",\"BA\",\"BABA\",\"BB\",\"BE"
+   },
+   {
+    "wallet": "0xe4d3b90ab2279a871b0db517446a9f854ab4b962",
+    "bound_rank": 95,
+    "bound_usd": "2587344.36",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xE4d3B90Ab2279a871b0Db517446A9f854aB4B962\",\"chain_id\":4663,\"as_of_block\":88079174,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"SPY\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":873},"
+   },
+   {
+    "wallet": "0xae12249727017ba3b1b556c202c3ffe8a9531fef",
+    "bound_rank": 97,
+    "bound_usd": "2493312.48",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xAe12249727017Ba3b1B556c202c3FfE8A9531FeF\",\"chain_id\":4663,\"as_of_block\":88079372,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"MSFT\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":640}"
+   },
+   {
+    "wallet": "0xb5e643d7e30846c45ac605aa92eecbce88f19cf5",
+    "bound_rank": 99,
+    "bound_usd": "2461033.42",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xB5E643d7E30846c45AC605AA92EECBcE88f19CF5\",\"chain_id\":4663,\"as_of_block\":88079534,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"SPY\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":708},"
+   },
+   {
+    "wallet": "0xc1552b02672894287c7016a0e214bfa54eef7c03",
+    "bound_rank": 100,
+    "bound_usd": "2454447.91",
+    "has_code": true,
+    "http_status": 422,
+    "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xc1552b02672894287C7016a0e214Bfa54eEF7c03\",\"chain_id\":4663,\"as_of_block\":88079613,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"RCAT\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":657}"
+   }
+  ]
+ },
+ "price_source": "AnswerUpdated logs of the feed's aggregator: the last answer at or before the block, the last in log order within a block. The public RPC keeps no historical state, so latestRoundData() cannot be asked at a past block.",
+ "wallets": [
+  {
+   "wallet": "0xe9b08727131e34010b34006c660d4c1b436ec25f",
+   "cohort": "watched",
+   "rank": null,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0xd7572f7ed161d3c46ca86d7da52d94d4b2d104a9",
+   "cohort": "top_buyers",
+   "rank": 1,
+   "purchases_usd": "118556723.18",
+   "record_http": 200
+  },
+  {
+   "wallet": "0xaeb83c45e9bd22abd37853058e2a032d5d008600",
+   "cohort": "top_buyers",
+   "rank": 2,
+   "purchases_usd": "54656195.80",
+   "record_http": 200
+  },
+  {
+   "wallet": "0xfe12d3d09e2ba45590c8484876b17dad9492f2f4",
+   "cohort": "top_buyers",
+   "rank": 3,
+   "purchases_usd": "35526500.26",
+   "record_http": 200
+  },
+  {
+   "wallet": "0xff737c78f1ee4667019fe1d09607c0c1f2d44b2f",
+   "cohort": "top_buyers",
+   "rank": 4,
+   "purchases_usd": "17516443.30",
+   "record_http": 200
+  },
+  {
+   "wallet": "0xfb5fec1459616fc525e0ecbe5b5c62aa36ede673",
+   "cohort": "top_buyers",
+   "rank": 5,
+   "purchases_usd": "14566878.03",
+   "record_http": 200
+  },
+  {
+   "wallet": "0x74ab4f44d753a7926c58bd012203f9f715d7a149",
+   "cohort": "top_buyers",
+   "rank": 6,
+   "purchases_usd": "8098279.03",
+   "record_http": 200
+  },
+  {
+   "wallet": "0xf11135c440c1782af2b0b766e756deae2210a43e",
+   "cohort": "top_buyers",
+   "rank": 7,
+   "purchases_usd": "7439744.95",
+   "record_http": 200
+  },
+  {
+   "wallet": "0x260e2b479f2e6a5d9b638e540641527acf3e0011",
+   "cohort": "top_buyers",
+   "rank": 8,
+   "purchases_usd": "5457439.88",
+   "record_http": 200
+  },
+  {
+   "wallet": "0xe2ed71633b1918de6e796d9bbafa3aa4432973a5",
+   "cohort": "top_buyers",
+   "rank": 9,
+   "purchases_usd": "5310425.22",
+   "record_http": 200
+  },
+  {
+   "wallet": "0xe4a609a6f6ff07ee2a93d99cae32246b25552151",
+   "cohort": "top_buyers",
+   "rank": 10,
+   "purchases_usd": "4935866.72",
+   "record_http": 200
+  },
+  {
+   "wallet": "0x1632d06045396fc34bc05fe2900dfe3e09fe41d5",
+   "cohort": "top_buyers",
+   "rank": 11,
+   "purchases_usd": "4482292.50",
+   "record_http": 200
+  },
+  {
+   "wallet": "0x8a500099568729030547d503f3d5aaf75b0ce509",
+   "cohort": "top_buyers",
+   "rank": 12,
+   "purchases_usd": "3412554.03",
+   "record_http": 200
+  },
+  {
+   "wallet": "0xb7124430f4d51d93f038ac793faa46767403bc5c",
+   "cohort": "top_buyers",
+   "rank": 13,
+   "purchases_usd": "3370637.69",
+   "record_http": 200
+  },
+  {
+   "wallet": "0x7690ea2bab2f6c906240f7c35fd636515d2eb969",
+   "cohort": "top_buyers",
+   "rank": 14,
+   "purchases_usd": "3175885.08",
+   "record_http": 200
+  },
+  {
+   "wallet": "0x2312b5480f7e3d1894ed046af15b23186ff0f53c",
+   "cohort": "top_buyers",
+   "rank": 15,
+   "purchases_usd": "3103630.70",
+   "record_http": 200
+  },
+  {
+   "wallet": "0x03b95224bbb5ce0d923d1bfdafa6306f969d99cd",
+   "cohort": "top_buyers",
+   "rank": 16,
+   "purchases_usd": "2826625.14",
+   "record_http": 200
+  },
+  {
+   "wallet": "0xe5764a0855c5609263be9bc0ef1e640e3fc9490c",
+   "cohort": "top_buyers",
+   "rank": 17,
+   "purchases_usd": "2628392.44",
+   "record_http": 200
+  },
+  {
+   "wallet": "0x60caa4bcba5dda11ba26dc0e7632c106fabdddae",
+   "cohort": "top_buyers",
+   "rank": 18,
+   "purchases_usd": "2568813.76",
+   "record_http": 200
+  },
+  {
+   "wallet": "0x8b6d974142fe732169b4c7910cb1737679a35ade",
+   "cohort": "top_buyers",
+   "rank": 19,
+   "purchases_usd": "2492518.65",
+   "record_http": 200
+  },
+  {
+   "wallet": "0xf8725e806bdd1039daaa702e8618ff41557b1469",
+   "cohort": "same_ticker_buyers",
+   "rank": 1,
+   "purchases_usd": null,
+   "record_http": 404
+  },
+  {
+   "wallet": "0x4cabff591fc360699fc299d454a3201288b2e1c1",
+   "cohort": "same_ticker_buyers",
+   "rank": 2,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0x63e165a2cc1cf9c4dde9f41d62f99035bd870986",
+   "cohort": "same_ticker_buyers",
+   "rank": 3,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0x065b23380044e30486b25ab9627be274dde1c20d",
+   "cohort": "same_ticker_buyers",
+   "rank": 4,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0xa2615e8debd453f6ae5b16552b3d489417d9c373",
+   "cohort": "same_ticker_buyers",
+   "rank": 5,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0xe0ce0e1f091b24805fbda582e242195883b50f9f",
+   "cohort": "same_ticker_buyers",
+   "rank": 6,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0xb2514659edd5be950593949eee641c3703b93fdf",
+   "cohort": "same_ticker_buyers",
+   "rank": 7,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0xdc4d15a2c10b6258a5d0219a7947c90b19391937",
+   "cohort": "same_ticker_buyers",
+   "rank": 8,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0x510636f72e2347030c13c8f4b4a858d4f6c0c9b1",
+   "cohort": "same_ticker_buyers",
+   "rank": 9,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0xb970e4913f5b6e32a72d841dfd2450057e30b914",
+   "cohort": "same_ticker_buyers",
+   "rank": 10,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0xc4233c560787372ae201f8915d83416ea967f26f",
+   "cohort": "same_ticker_buyers",
+   "rank": 11,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0xbcf978cd4194bb851b1e556f9a39beb63c252b59",
+   "cohort": "same_ticker_buyers",
+   "rank": 12,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0x052bf407aa6b61b667a1be292dfeb518f225d211",
+   "cohort": "same_ticker_buyers",
+   "rank": 13,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0x41e5a54b4bc076c7cbc98bcf18b022b92d750383",
+   "cohort": "same_ticker_buyers",
+   "rank": 14,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0x821b760afeabab93f132640f7296fb2276dba559",
+   "cohort": "same_ticker_buyers",
+   "rank": 15,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0x793155b3b35cf80bfd88a48e7de5bf1fa5f0c672",
+   "cohort": "same_ticker_buyers",
+   "rank": 16,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0x99076e3d3757b8fdb18246fc5b9ce38e1df41b5f",
+   "cohort": "same_ticker_buyers",
+   "rank": 17,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0x9a26c0dcd3d3f6f194301a17a66232b84cd1e5f3",
+   "cohort": "same_ticker_buyers",
+   "rank": 18,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0xa634f171b85c0c29df154d64b48edc0284cd05fd",
+   "cohort": "same_ticker_buyers",
+   "rank": 19,
+   "purchases_usd": null,
+   "record_http": 200
+  },
+  {
+   "wallet": "0xe845229cfed0b23e51ae6c41eb13ae1c61680878",
+   "cohort": "same_ticker_buyers",
+   "rank": 20,
+   "purchases_usd": null,
+   "record_http": 200
+  }
+ ],
+ "pool_marks": {
+  "0x9f0f44d4c09ddb14d0bcc71a1486a2d16351dbc53fded2c0237e35021e87ef34": {
+   "block": 87883602,
+   "tx": "0x602fda9408f94dbbcbb872b04bb1b7b38ef707a32cd42634c3e7204656004144",
+   "log_index": 8,
+   "sqrt_price_x96": "2549522252653070829944039278481957"
+  }
+ }
+}

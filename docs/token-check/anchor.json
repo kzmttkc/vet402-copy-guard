@@ -1,0 +1,14 @@
+{
+  "results_file": "docs/token-check/results.json",
+  "results_keccak": "0x7d0ef98393644903ba187f643e08f3eacf5c417db5e4dd3e843f826c21ba0e41",
+  "anchor_tx": "0x175bf12ad77fd67d73490333b04ad1cc4c0c66d1ea7844836219f504a33fdb08",
+  "event": "TokenCheckResultsAnchored",
+  "receiver": "0xF49b4F2110E6E0dAbd1f3B532EFd64E10a016550",
+  "network": "robinhood-testnet (46630)",
+  "tokens": 82,
+  "issuer_tokens": 42,
+  "runs": 9,
+  "last_checked_block": 88102077,
+  "simulate_log": "docs/token-check/batch/anchor.cre.txt",
+  "written_through": "CRE's simulation forwarder (MockKeystoneForwarder). Not a DON attestation."
+}

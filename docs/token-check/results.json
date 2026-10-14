@@ -1,0 +1,1089 @@
+{
+  "generated_at": "2026-10-14T05:04:43.989Z",
+  "cre_runs": [
+    {
+      "tx": "0xfa386a44268705425cc52115bf63badd8106e3e39ffc3b14c63eee71095eb77d",
+      "simulate_log": "docs/token-check/batch/batch-1.cre.txt"
+    },
+    {
+      "tx": "0xdbef8b0aeca1820e4a191c2f90edac9ccaf3be2d78ea28c711107fd96c518336",
+      "simulate_log": "docs/token-check/batch/batch-2.cre.txt"
+    },
+    {
+      "tx": "0x6cd511c78b0045af18171246be1d7ca8b92d2ec5e41b5aaf817e2c820fe3357e",
+      "simulate_log": "docs/token-check/batch/batch-3.cre.txt"
+    },
+    {
+      "tx": "0x1aaea557aad9af3d2a8129523ff0ca0aca62532bb254d2be19b2b13ed08f9842",
+      "simulate_log": "docs/token-check/batch/batch-4.cre.txt"
+    },
+    {
+      "tx": "0xf7b7484378d166b7b9d4b2ffbe97708fa3ddb1545c4e7d5c053b7cb2ef15fcb6",
+      "simulate_log": "docs/token-check/batch/batch-5.cre.txt"
+    },
+    {
+      "tx": "0xf04a9faefa83c3be99e70e902178e005a101fe50f471d795f5294c4a5609b320",
+      "simulate_log": "docs/token-check/batch/batch-6.cre.txt"
+    },
+    {
+      "tx": "0x3868b8e9d9bda1c340ce37c74eba35acbcee1ba00d2d55ce73f65db2446f4ae4",
+      "simulate_log": "docs/token-check/batch/batch-7.cre.txt"
+    },
+    {
+      "tx": "0x2b10033e7bf929064879346b65fd2dde82b45f429838375c3146eb64722eebb3",
+      "simulate_log": "docs/token-check/batch/batch-8.cre.txt"
+    },
+    {
+      "tx": "0x14338fa3c55cdf79c8238bcea3621a0828c59b3a1983d86d546b87e3bf9e2bea",
+      "simulate_log": "docs/token-check/batch/batch-9.cre.txt"
+    }
+  ],
+  "tokens": {
+    "0x05a3d1cd21d0c88145e82600e62e7e496e0f222b": {
+      "issuer_token": true,
+      "ticker": "AMC",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092367
+    },
+    "0x05b37fb53a299a1b874a619e1c4c404d52c36f4c": {
+      "issuer_token": true,
+      "ticker": "RDDT",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092367
+    },
+    "0x0bd7d308f8e1639fab988df18a8011f41eacad73": {
+      "issuer_token": false,
+      "ticker": "WETH",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092367
+    },
+    "0x0c95df78d9f692beb3feaeceb2ef1e614513b1f7": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092367
+    },
+    "0x0ef3fccbc4c73be8bb14411cfe801df141e309c0": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092367
+    },
+    "0x116f00968269b7bfbad4109ce591d6e74c0601d4": {
+      "issuer_token": true,
+      "ticker": "NET",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092367
+    },
+    "0x117cc2133c37b721f49de2a7a74833232b3b4c0c": {
+      "issuer_token": true,
+      "ticker": "SPY",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88092367
+    },
+    "0x12f190a9f9d7d37a250758b26824b97ce941bf54": {
+      "issuer_token": true,
+      "ticker": "AMZN",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092367
+    },
+    "0x147d436a2f253cc8e8d52efb18a6ba6f9e827e5a": {
+      "issuer_token": false,
+      "ticker": "USDC",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092367
+    },
+    "0x1b0e319c6a659f002271b69db8a7df2f911c153e": {
+      "issuer_token": true,
+      "ticker": "GME",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092367
+    },
+    "0x1d11f0496982706c5e14a514d4e79f2e6bde4516": {
+      "issuer_token": true,
+      "ticker": "DJT",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092367
+    },
+    "0x1dc878194328a96680c23b8d3c1186637b199eb3": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092662
+    },
+    "0x1ee1a8fcc194a4fcdbce10f958aea8a18e831458": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092662
+    },
+    "0x22b1137c0637bf8f7ac7fbcfa857604e4b89d8d7": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092662
+    },
+    "0x2504cc3b84585a5cdf88f4c4f50b2afe9181150c": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092662
+    },
+    "0x2ce3e396e069ac9fa62046f423267072e06e77af": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092662
+    },
+    "0x2e0847e8910a9732eb3fb1bb4b70a580adad4fe3": {
+      "issuer_token": true,
+      "ticker": "GOOGL",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88092662
+    },
+    "0x318f563dceddbe58625400d9f7ee27eecef5b1a3": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092662
+    },
+    "0x322f0929c4625ed5bad873c95208d54e1c003b2d": {
+      "issuer_token": true,
+      "ticker": "TSLA",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092662
+    },
+    "0x36f4d7f0fa5c7348416282e04380ddff30ca4be2": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092662
+    },
+    "0x38ebf2ab30cbff745e2db10aa17b6aaaad001885": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092662
+    },
+    "0x39dbed3a2bd333467115de45665cc57f813c4571": {
+      "issuer_token": false,
+      "ticker": "PONS",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88092662
+    },
+    "0x411efb0e7f985935daec3d4c3ebaea0d0ad7d89f": {
+      "issuer_token": true,
+      "ticker": "SLV",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095346
+    },
+    "0x4190ee598c2a69d35bef53c83d152ae0f25ea416": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095346
+    },
+    "0x42b4fa90438ecb1a0c2676ff25a9f27355dd53c2": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095346
+    },
+    "0x42e140c4b439c42dc01aa29be1fce2bc64d7f160": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095346
+    },
+    "0x43b07d15ce533bec5476d70c22a78a1b2b662155": {
+      "issuer_token": true,
+      "ticker": "MRNA",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095346
+    },
+    "0x48e39e56acdba37b09020c0b734a613c9a2f100a": {
+      "issuer_token": true,
+      "ticker": "BB",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095346
+    },
+    "0x4a0e65a3eccec6dbe60ae065f2e7bb85fae35eea": {
+      "issuer_token": true,
+      "ticker": "SPCX",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095346
+    },
+    "0x4d3f37a965b21ab4122e92dd41d2693e742c883b": {
+      "issuer_token": false,
+      "ticker": "RIPE",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095346
+    },
+    "0x4ea005168d7f09a7a0ba9d1def21a479950e44c2": {
+      "issuer_token": true,
+      "ticker": "COST",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88095346
+    },
+    "0x4ff7f19a6c4c7ebcba25248610dbe642bbd0b792": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095346
+    },
+    "0x5411257cedf60bc40f4bead410bf8d02079056a2": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095346
+    },
+    "0x58ffe4a942d3885baa22d7520691f611ef09e7aa": {
+      "issuer_token": true,
+      "ticker": "TSM",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 2,
+      "checked_block": 88095346
+    },
+    "0x5dd716fe12275b69f04b26beeca343843c8e3539": {
+      "issuer_token": false,
+      "ticker": "NVDA",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_SAME_AS_ISSUER_TOKEN",
+        "NAME_SAME_AS_ISSUER_TOKEN",
+        "NAME_ENDS_LIKE_ISSUER_TOKEN"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095615
+    },
+    "0x5e81213613b6b86eab4c6c50d718d34359459786": {
+      "issuer_token": true,
+      "ticker": "TTWO",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095615
+    },
+    "0x5fc5360d0400a0fd4f2af552add042d716f1d168": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "USDG_ADDRESS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095615
+    },
+    "0x623613c0e9211a7215b4fd4ab80656fcbd1186e0": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095615
+    },
+    "0x62fd0668e10d8b72339be2dcf7643001688ff13b": {
+      "issuer_token": true,
+      "ticker": "MRVL",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88095615
+    },
+    "0x65abeb15f2fed8cccf979c9429f517f937bdc0d5": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095615
+    },
+    "0x67f438bd18131f152b6387083628e8eeaa5fb8b2": {
+      "issuer_token": false,
+      "ticker": "USDG ",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095615
+    },
+    "0x69e7778d46713e17572d610bdaca3943aa4e6219": {
+      "issuer_token": false,
+      "ticker": "SPY",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_SAME_AS_ISSUER_TOKEN"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095615
+    },
+    "0x711681d447e8f53ac228f20afad1e179ab5e78f1": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095615
+    },
+    "0x72ead0c700f07b645a8f91badd82be5c545b9d37": {
+      "issuer_token": false,
+      "ticker": "NVDA",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_SAME_AS_ISSUER_TOKEN",
+        "NAME_SAME_AS_ISSUER_TOKEN",
+        "NAME_ENDS_LIKE_ISSUER_TOKEN"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095615
+    },
+    "0x73acfc8352b6a9f0baacd02a266e58fde4b1c183": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88095615
+    },
+    "0x75742c18bc1f1c5c5f448f4c9d9c6f66dafaaa38": {
+      "issuer_token": true,
+      "ticker": "SOXX",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88095615
+    },
+    "0x8005d266423c7ea827372c9c864491e5786600ea": {
+      "issuer_token": true,
+      "ticker": "LLY",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88098280
+    },
+    "0x83726b15b25013e95b56357c4795b848ab32c3bc": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88098280
+    },
+    "0x86923f96303d656e4aa86d9d42d1e57ad2023fdc": {
+      "issuer_token": true,
+      "ticker": "AMD",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88098280
+    },
+    "0x87673a619fc4f3fc08068a0bb04f60aa2d04ca62": {
+      "issuer_token": false,
+      "ticker": "mooBeefyAlandaleRobinhoodWETH-SPY",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88098280
+    },
+    "0x894e1ec2d74ffe5aef8dc8a9e84686accb964f2a": {
+      "issuer_token": true,
+      "ticker": "PLTR",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88098280
+    },
+    "0x92fd66527192e3e61d4ddd13322aa222de86f9b5": {
+      "issuer_token": true,
+      "ticker": "SGOV",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 4,
+      "checked_block": 88098280
+    },
+    "0x941ae714ec6d8130c7b75d67160ca08f1e7d11dd": {
+      "issuer_token": true,
+      "ticker": "DELL",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88098280
+    },
+    "0x980dcf6766fa79f5cf0c4aadb3ab477ff15a9619": {
+      "issuer_token": true,
+      "ticker": "IBM",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88098529
+    },
+    "0x9909c4e8cae5ada810c7297943ae767f87d00a3e": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88098529
+    },
+    "0xa913c4c2f28aa7b0b15a7c6008a6e19ff8bf85c0": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88098529
+    },
+    "0xad25ac6c84d497db898fa1e8387bf6af3532a1c4": {
+      "issuer_token": true,
+      "ticker": "BABA",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88098529
+    },
+    "0xaf3d76f1834a1d425780943c99ea8a608f8a93f9": {
+      "issuer_token": true,
+      "ticker": "AAPL",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88098529
+    },
+    "0xb1bf26c1d20ff267a4f93550d1e0d06ac40a114b": {
+      "issuer_token": true,
+      "ticker": "RIVN",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88098529
+    },
+    "0xb90a19ff0af67f7779aff50a882a9cff42446400": {
+      "issuer_token": true,
+      "ticker": "SNDK",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88101209
+    },
+    "0xc0d6457c16cc70d6790dd43521c899c87ce02f35": {
+      "issuer_token": true,
+      "ticker": "META",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88101209
+    },
+    "0xc4f85cebec3fe6c77df0f71f3a3e139d43bbb4a3": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88101209
+    },
+    "0xc6417224f693a0d8bf612bc6d7dcbbc268d5ad13": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88101209
+    },
+    "0xc72b96e0e48ecd4dc75e1e45396e26300bc39681": {
+      "issuer_token": true,
+      "ticker": "INTC",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88101209
+    },
+    "0xc9a981fee1f9dec688bb123ccdecc63d0debfc4e": {
+      "issuer_token": true,
+      "ticker": "GLD",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88101209
+    },
+    "0xcb071fc69e4aebd512387316578752e5c20b92e0": {
+      "issuer_token": false,
+      "ticker": "U[U+206F]S[U+206F]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88101209
+    },
+    "0xccee82fe024c36fa15e1005ede3e9e4787e23d09": {
+      "issuer_token": true,
+      "ticker": "HIMS",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88101209
+    },
+    "0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec": {
+      "issuer_token": true,
+      "ticker": "NVDA",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88101658
+    },
+    "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68": {
+      "issuer_token": true,
+      "ticker": "QQQ",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88101658
+    },
+    "0xd6b8cecde770507fc46cde7ea82dde383ed7a7e5": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88101658
+    },
+    "0xd9c6ee31275554006ca30abcde7b48188c4e2cf0": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88101658
+    },
+    "0xdb81a12de6c0aebeddf2d85d531dd50cac7366ef": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88101658
+    },
+    "0xdf0992e440dd0be65bd8439b609d6d4366bf1cb5": {
+      "issuer_token": true,
+      "ticker": "CRCL",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88101658
+    },
+    "0xe0444ef8bf4ed74f74fd73686e2ddf4c1c5591e8": {
+      "issuer_token": true,
+      "ticker": "NFLX",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88101658
+    },
+    "0xe7391e4047c7e5d48f31cd2b87004c10e875f288": {
+      "issuer_token": false,
+      "ticker": "U[U+206F]S[U+206F]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88101658
+    },
+    "0xe93237c50d904957cf27e7b1133b510c669c2e74": {
+      "issuer_token": true,
+      "ticker": "MSFT",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88102077
+    },
+    "0xec262a75e413fafd0df80480274532c79d42da09": {
+      "issuer_token": true,
+      "ticker": "MSTR",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88102077
+    },
+    "0xec90adc7157d68d9213a88627b66956950374a3e": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88102077
+    },
+    "0xf0c4bf4c582cb3836e98394b1d4e7b7281101be8": {
+      "issuer_token": true,
+      "ticker": "RBLX",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88102077
+    },
+    "0xf23250dac154d05bb671cb0d0ebef3c635c79ce2": {
+      "issuer_token": true,
+      "ticker": "UPS",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88102077
+    },
+    "0xf6589f11bc40b669e584073f428b05562f568733": {
+      "issuer_token": true,
+      "ticker": "SNAP",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88102077
+    },
+    "0xff080c8ce2e5feadaca0da81314ae59d232d4afd": {
+      "issuer_token": true,
+      "ticker": "MU",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 2,
+      "checked_block": 88102077
+    }
+  }
+}

@@ -1,0 +1,43 @@
+$ cre workflow simulate token-check --target local-simulation --non-interactive --trigger-index 0 --http-payload docs/token-check/batch/anchor.payload.json --broadcast
+✓ Workflow compiled
+✓ Simulation limits enabled
+  HTTP: req=120kb resp=250kb timeout=10s | ConfHTTP: req=125kb resp=500kb timeout=1m30s | Consensus obs=25kb | ChainWrite evm_report=50kb evm_gas=10000000 solana_report=265b solana_cu=300000 | WASM binary=100mb compressed=20mb
+  Binary hash: 6e23a2f35e89bcc55d71aa9d5889a5813d80c01b4799d4308ca576a45e596c12
+  Config hash: 15ecce3c14a026a5d49e662198f93518da03b5d593aec5c435fb9795d06eeb11
+✓ Loaded JSON from file: ./docs/token-check/batch/anchor.payload.json
+✓ Created HTTP trigger payload with 2 fields
+2026-10-14T12:04:54Z [SIMULATION] Simulator Initialized
+
+2026-10-14T12:04:54Z [SIMULATION] Running trigger trigger=http-trigger@1.0.0-alpha
+2026-10-14T12:04:54Z [USER LOG] token check, anchor: 82 tokens (42 the issuer's) from 9 runs
+2026-10-14T12:04:55Z [USER LOG] run 1   0xfa386a44268705425cc52115bf63badd8106e3e39ffc3b14c63eee71095eb77d holds TokenBatchChecked 0xed85687b976ea99e6d52a6b25ffca39b99d4d0cc5a42b0f166915617dc27eb73 (11 tokens)
+2026-10-14T12:04:55Z [USER LOG] run 2   0xdbef8b0aeca1820e4a191c2f90edac9ccaf3be2d78ea28c711107fd96c518336 holds TokenBatchChecked 0xaea7a111647e6a331953145b7857ea54f2fbd71b2cdfb75cd7628dc42dabb5a8 (11 tokens)
+2026-10-14T12:04:55Z [USER LOG] run 3   0x6cd511c78b0045af18171246be1d7ca8b92d2ec5e41b5aaf817e2c820fe3357e holds TokenBatchChecked 0xc41a88a3e96dbf9336545e555e6f5c3577126c71d0e0e9e3698c82a2f1ad2c1a (12 tokens)
+2026-10-14T12:04:55Z [USER LOG] run 4   0x1aaea557aad9af3d2a8129523ff0ca0aca62532bb254d2be19b2b13ed08f9842 holds TokenBatchChecked 0xb0322a582a31394f420335271a4d8685fba5299ae7c26f0555f08619dd41c97d (12 tokens)
+2026-10-14T12:04:56Z [USER LOG] run 5   0xf7b7484378d166b7b9d4b2ffbe97708fa3ddb1545c4e7d5c053b7cb2ef15fcb6 holds TokenBatchChecked 0xe9bd1c0314844c59630f53195ec9aceba0b22970c41516d213f3272d1efb967b (7 tokens)
+2026-10-14T12:04:56Z [USER LOG] run 6   0xf04a9faefa83c3be99e70e902178e005a101fe50f471d795f5294c4a5609b320 holds TokenBatchChecked 0x8b62ea88d0e54c514a9f31aa86d5a197fe696e9acf040a92c86ce5169b81070e (6 tokens)
+2026-10-14T12:04:56Z [USER LOG] run 7   0x3868b8e9d9bda1c340ce37c74eba35acbcee1ba00d2d55ce73f65db2446f4ae4 holds TokenBatchChecked 0xccd82eb3d61ea1b82dc7553f9bfb48ff453b75259e81947809557e68f0e65715 (8 tokens)
+2026-10-14T12:04:57Z [USER LOG] run 8   0x2b10033e7bf929064879346b65fd2dde82b45f429838375c3146eb64722eebb3 holds TokenBatchChecked 0xfebb50e5c8ef95addedda286d3f437b0509caf1a37b01cb7bbc17d8429d82191 (8 tokens)
+2026-10-14T12:04:57Z [USER LOG] run 9   0x14338fa3c55cdf79c8238bcea3621a0828c59b3a1983d86d546b87e3bf9e2bea holds TokenBatchChecked 0xb4757cb1b29f676a5c8b2abbeef3e2f475381e2e06a6f39cce2d6bed1a74811d (7 tokens)
+2026-10-14T12:04:57Z [USER LOG] results hash 0x7d0ef98393644903ba187f643e08f3eacf5c417db5e4dd3e843f826c21ba0e41 (keccak256 of the file)
+2026-10-14T12:04:59Z [USER LOG] results hash written to 0xF49b4F2110E6E0dAbd1f3B532EFd64E10a016550 on robinhood-testnet, tx 0x175bf12ad77fd67d73490333b04ad1cc4c0c66d1ea7844836219f504a33fdb08
+
+✓ Workflow Simulation Result:
+"{\"mode\":\"anchor\",\"resultsHash\":\"0x7d0ef98393644903ba187f643e08f3eacf5c417db5e4dd3e843f826c21ba0e41\",\"listHash\":\"0xcf8a7a002322c28a77f427d342485fd06bd26c97fa0a2f1577615615ac7cfe5e\",\"tokens\":82,\"issuerTokens\":42,\"runs\":9,\"lastCheckedBlock\":88102077,\"anchorTx\":\"0x175bf12ad77fd67d73490333b04ad1cc4c0c66d1ea7844836219f504a33fdb08\"}"
+
+2026-10-14T12:05:00Z [SIMULATION] Execution finished signal received
+2026-10-14T12:05:00Z [SIMULATION] Skipping WorkflowEngineV2
+
+╭──────────────────────────────────────────────────────╮
+│ Simulation complete! Ready to deploy your workflow?  │
+│                                                      │
+│ Run cre account access to request deployment access. │
+╰──────────────────────────────────────────────────────╯
+Initializing...
+Loading settings...
+Checking RPC connectivity...
+Compiling workflow...
+
+⚠️  Update available! You’re running 1.37.0, but 1.38.0 is the latest.
+Run `cre update` or visit https://github.com/smartcontractkit/cre-cli/releases to upgrade.
+
