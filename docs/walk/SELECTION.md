@@ -1,53 +1,74 @@
 # Which wallets the walk follows
 
-This file states the selection so that it can be reproduced from the public Robinhood Chain RPC (`https://rpc.mainnet.chain.robinhood.com`, chain id 4663) without reading the code. The code is `scripts/select-wallets.ts`. Its output is `docs/walk/selection.json` (the selected wallets with every purchase counted), `docs/walk/selection-purchases.json` and `docs/walk/wallets.json` (what `agent/walk.ts` reads).
+**In one sentence: the walk follows notable wallets whose record can be checked.**
 
-There are three groups. They are never mixed in a total without saying so: every ledger row carries its group (`cohort`), and `docs/ledger.json` gives the main counts per group (`totals.by_cohort`).
+This file states the selection so that it can be reproduced from the public Robinhood Chain RPC (`https://rpc.mainnet.chain.robinhood.com`, chain id 4663) and vet402's free route, without reading the code. The code is `scripts/select-wallets.ts`. Its output is `docs/walk/selection.json` and `docs/walk/wallets.json` (what `agent/walk.ts` reads).
 
-## Group 1, `top_buyers`: the 30 largest buyers of Stock Tokens in 30 days
+Two things are kept apart and never mixed in a total without saying so: the **selected wallets** (section 1), and two **observations** (section 3), which are not "notable wallets" and are counted as their own groups. Every ledger row carries its group (`cohort`), and `docs/ledger.json` gives the counts per group (`totals.by_cohort`).
+
+This is the second version of the rule. The first one ranked wallets by purchases they signed themselves. An independent re-implementation showed four faults in it: a rearranged liquidity position counted as a purchase, an exchange of one Stock Token for another counted as a purchase, a purchase through a router was never counted, and finding the top 30 needed about 42,000 receipts (20 hours on the public RPC). The rule below was written to answer those four.
+
+## 1. The selected wallets (`top_buyers`)
 
 **Window.** Blocks 62,420,751 to 87,977,834, both included. The end is the head of the chain when the selection was first run (block time 2026-10-14T01:33:25Z). The start is the first block whose timestamp is at or after the end's timestamp minus 30 × 86,400 seconds (block time 2026-09-14T01:33:25Z).
 
-**Tokens.** The entries of `token-check/registry-snapshot.json` (Robinhood's own asset list at `https://docs.robinhood.com/chain/contracts`, taken 2026-09-28T22:24:32Z, 195 Stock Tokens) whose `feed` is not null: 33 tokens. The addresses and feeds are repeated in `selection.json` under `tokens`.
+**Tokens.** The entries of `token-check/registry-snapshot.json` whose `feed` is not null: 33 tokens. The snapshot is a copy of Robinhood's own asset list at `https://docs.robinhood.com/chain/contracts`, taken 2026-09-28T22:24:32Z (195 Stock Tokens). A token listed, or given a Chainlink feed, after that date is not in it. The addresses and feeds are repeated in `selection.json` under `tokens`.
 
 **Official venues.**
 - the Uniswap v4 PoolManager, `0x8366a39cc670b4001a1121b8f6a443a643e40951`;
-- every Uniswap v3 pool created by the factory `0x1f7d7550b1b028f7571e69a784071f0205fd2efa` for a pair that holds one of the 33 tokens: the address in the second data word of each `PoolCreated(address,address,uint24,int24,address)` log (topic0 `0x783cca1c0412dd0d695e784568c96da2e9c22ff989357a2e8b1d9b2b4e6b7118`) of that factory, from block 0 to the end of the window, whose `token0` (topic1) or `token1` (topic2) is one of the 33 tokens.
+- every Uniswap v3 pool created by the factory `0x1f7d7550b1b028f7571e69a784071f0205fd2efa` for a pair that holds one of the 33 tokens: the address in the second data word of each `PoolCreated(address,address,uint24,int24,address)` log (topic0 `0x783cca1c0412dd0d695e784568c96da2e9c22ff989357a2e8b1d9b2b4e6b7118`) of that factory, from block 0 to the end of the window, whose `token0` (topic1) or `token1` (topic2) is one of the 33 tokens. There are 1,901 such pools.
 
-**Candidate transfer.** A log of one of the 33 tokens with topic0 `Transfer(address,address,uint256)` (`0xddf252ad…b3ef`), exactly three topics, `from` (topic1) an official venue **of that token** (the PoolManager, or a v3 pool that holds that token), in a block of the window. A transfer whose receiver is itself an official venue of any of the 33 tokens is dropped.
+**Candidate transfer.** A log of one of the 33 tokens with topic0 `Transfer(address,address,uint256)` (`0xddf252ad…b3ef`), exactly three topics, `from` (topic1) an official venue **of that token** (the PoolManager, or a v3 pool that holds that token), in a block of the window. A transfer whose receiver is itself an official venue of any of the 33 tokens is dropped. In the window there are 9,651,160 such transfers (7,547,153 out of the PoolManager and 2,065,463 out of v3 pools after 38,544 to a venue are dropped), to 55,090 receivers.
 
-**Purchase.** A candidate transfer to an address W is a purchase by W when all of these hold:
-1. the transaction succeeded (`status` 1) and its `from` is W, so W signed it;
-2. W paid in the same transaction: the receipt holds a `Transfer` log with three topics whose `from` (topic1) is W and whose emitting contract is not the token bought, or the transaction's `value` is above zero.
+**Rank.** For each receiver, the sum over its candidate transfers of `amount / 10^18 × P`, where `amount` is the data word of the log and `P` is the token's price at that block (section 2, "Price"). This is an upper bound of what the receiver bought, found in one pass over the logs. No receipt is opened for it. Receivers are ranked by this sum, largest first, ties by address ascending. A receiver here is whoever the venue sent the token to: a wallet, a router or another contract.
 
-So a liquidity-pool `collect`, a fee claim, a withdrawal, an airdrop, a bridge delivery and a purchase made through a contract that keeps the tokens are not purchases.
+**Select.** From the top of the ranking down, vet402's free route `https://vet402.com/api/v1/rwa/facts/<address>?chain=4663` is asked once per address (at most ten requests a minute), and the answer is saved in `docs/walk/records/`.
+- HTTP 200 with a record, whatever its `r1_status` (complete or partial): the address is **selected**.
+- Any other answer (for example 422 when the address has more history than the route rebuilds): the address is **not selected**. It is written to `selection.json` under `no_record`, with its rank, its upper bound, the HTTP status and the reason vet402 gave. The ledger counts these addresses and says why nothing was opened for them: a wallet whose record cannot be built cannot be checked.
+- A busy answer (429, 5xx, no answer in 120 seconds) is asked again up to three times, 30 seconds apart. If it stays busy the address is not selected, with that status.
 
-**Size of a purchase.** `amount / 10^18 × P`, written with two decimals (JavaScript `toFixed(2)`). `amount` is the data word of the Transfer log. `P` is the token's Chainlink feed value at the block: the `current` (topic1, read as a signed 256-bit integer) of the last `AnswerUpdated(int256,uint256,uint256)` log (topic0 `0x0559884f…fc5f`) of the feed's aggregator with a block number at or below the purchase's block and `current` above zero, divided by `10^decimals()` of the feed. The aggregator is what the feed's `aggregator()` (selector `0x245a7bfc`) answers at `latest`. Its logs are read from block (window start − 6,000,000) on. A transfer with no such value is not counted (count in `selection-output.txt`). No age limit applies to `P` here.
+The selection stops when 30 addresses are selected or 100 addresses have been asked, whichever comes first. `selection.json` says which, how many were asked and how many had no record.
 
-**Ranking.** The size of W is the sum of the two-decimal sizes of its purchases in the window. Wallets are ranked by size, largest first, ties by address ascending. The first 30 are the group.
+**Not excluded.** No address is dropped by hand, for being busy, for being a contract, or because its trades lost money. The only filter is the one above: vet402 could build a record.
 
-**How the top 30 are found without opening every transaction.** For each receiver, the sum of `amount / 10^18 × P` over all its candidate transfers is an upper bound of its size. Receivers are read from the largest bound down. An address with contract code at `latest` cannot sign a transaction and has size 0 (code that starts with `0xef0100`, an EIP-7702 delegation, counts as an account, not a contract). For an account every transaction is opened and the purchases are summed. The reading stops when the 30th-largest size found so far is at least the next unread receiver's bound. `selection.json` lists every receiver read, with its bound and its size, under `read`.
+**What is opened on the chain.** Only the transactions of the selected wallets that their records list (vet402's free route lists at most 600 per wallet). That is what makes the selection finish on the public RPC.
 
-**Not excluded.** No wallet is dropped because vet402 could not build a record for it, because it is busy, or because its trades lost money. A wallet for which vet402's free route does not answer 200 stays in the walk: each of its purchases becomes a decision that opens nothing, with the HTTP status as the reason.
+## 2. Definitions the selection, rule D1 and the ticker-copy baseline share
 
-## Group 2, `watched`: one wallet
+**Purchase.** Within one transaction, a wallet W **bought** a token T (a Stock Token, or in section 3 the token named there) when all of these hold:
 
-`0xe9b08727131e34010b34006c660d4c1b436ec25f`, the wallet copy-guard was first pointed at, and the only wallet vet402 has anchored a record for. It is here because the earlier runs of this agent watched it, not because of the rule above. Tokens with the tickers NVDA and USDG that the issuer did not issue were sent to it.
+(a) *An official swap put T out.* An official venue emitted a swap log in the transaction, and the same venue sent T in the transaction (a `Transfer` of T whose `from` is that venue), and W received T (a `Transfer` of T whose `to` is W). The swap log is `Swap(bytes32,address,int128,int128,uint160,uint128,int24,uint24)` of the v4 PoolManager (topic0 `0x40e9cecb9f5f1f1c5b9c97dec2917b7ee92e57ba5563708daca94dd84ad7112f`), or `Swap(address,address,int256,int256,uint160,uint128,int24)` (topic0 `0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67`) of a contract whose `factory()` answers the official v3 factory. T need not come to W straight from the venue: a router may stand between.
 
-## Group 3, `same_ticker_buyers`: the first 20 buyers of one token that uses the ticker SPY
+(b) *W itself paid.* A `Transfer` of USDG (`0x5fc5360d0400a0fd4f2af552add042d716f1d168`) or of WETH (`0x0bd7d308f8e1639fab988df18a8011f41eacad73`, what `WETH9()` of the official position manager answers) whose `from` is W is in the transaction, or the transaction's `value` is above zero and its `from` is W. Another Stock Token, or a token of unknown worth, leaving W is not a payment.
 
-This group is an observation chosen for what it shows. It is not a sample of anything, and its rows are counted apart.
+(c) *No liquidity operation.* The transaction holds none of these logs: v3 pool `Mint(address,address,int24,int24,uint128,uint256,uint256)`, `Burn(address,int24,int24,uint128,uint256,uint256)`, `Collect(address,address,int24,int24,uint128,uint128)`; position manager `IncreaseLiquidity(uint256,uint128,uint256,uint256)`, `DecreaseLiquidity(uint256,uint128,uint256,uint256)`, `Collect(uint256,address,uint256,uint256)`; v4 PoolManager `ModifyLiquidity(bytes32,address,int24,int24,int256,bytes32)`. The test is the whole transaction, which is stricter than "an operation of W": a transaction that rearranges liquidity is never a purchase.
 
-**Token.** `0x69e7778d46713e17572d610bdaca3943aa4e6219`. Its `symbol()` answers `SPY` and its `name()` answers `Spy Chip`. It is not in Robinhood's asset list, where SPY is another address. Nothing here says who made it or why.
+(d) *No other Stock Token left W.* If a Stock Token other than T left W in the transaction (a `Transfer` whose `from` is W, of any token in the issuer's list), the move is a **rotation**, an exchange of one Stock Token for another, and not a purchase, whatever else was paid.
 
-**Purchase.** As in group 1, with this token in place of the 33 and the v4 PoolManager as the only venue: a `Transfer` of the token from the PoolManager to W, in a transaction W signed and in which W paid. In the window the PoolManager sent this token 441 times to 224 receivers, all between blocks 87,803,610 and 87,836,198.
+The signer of the transaction need not be W. A relayed or routed transaction is a purchase when the payment left W.
 
-**Group.** The 20 wallets with the earliest purchase, ordered by block, then by transaction hash ascending, then by address ascending. A wallet already in group 1 or 2 stays in that group and is not counted here, and the next wallet takes its place.
+Every arrival of T in W is one of five kinds, tested in this order: **liquidity** (c fails), **rotation** (d fails), **purchase** (a and b hold), **swapped, not paid by the wallet** (a holds, b does not), **received** (no official swap put T out: a plain transfer, an airdrop, a bridge delivery). A transfer of T out of W is **out**. Only a purchase opens a practice position, in either book.
 
-## What the walk reads for each wallet
+**Price.** The price of a Stock Token at a block is its Chainlink feed's last answer at or before that block. The public RPC keeps no historical state (an `eth_call` of `latestRoundData()` at a past block is refused), so the answer is read from logs: the `current` (topic1, a signed 256-bit integer) of the last `AnswerUpdated(int256,uint256,uint256)` log (topic0 `0x0559884f…fc5f`) of the feed's aggregator whose block number is at or below the block and whose `current` is above zero, divided by `10^decimals()` of the feed. When several such logs are in the same block, the last in log order is used, also for a move earlier in that block. The aggregator is what the feed's `aggregator()` (selector `0x245a7bfc`) answers at `latest`, and its logs are read from block (window start − 6,000,000) on. `selection.json` records, per feed, that this aggregator has an answer before the window starts, so no price in the window is missing because a feed changed its aggregator. Every decision that reads a price names the transaction that published it, and the ledger says which of the two ways was used (`price_source`).
 
-For each wallet, vet402's free route `https://vet402.com/api/v1/rwa/facts/<address>?chain=4663` is asked once and the answer saved in `docs/walk/records/`. The moves of a wallet are every transaction its record lists as evidence, every transaction in which its record names a token under a listed ticker, and every purchase counted above. For a wallet with no record they are the purchases counted above.
+## 3. Observations, counted apart
 
-## Why 30 days and not the whole history
+These are not "notable wallets". They are here for what they show, and the ledger gives their rows as their own groups.
 
-The 33 tokens left official venues several million times since the chain opened. The public RPC answers at most 10,000 logs per query and throttles. Thirty days is what one run reads in under an hour. The window is a choice, stated here. The rule itself does not depend on it: `--days` changes it.
+**`watched`, one wallet.** `0xe9b08727131e34010b34006c660d4c1b436ec25f`, the wallet copy-guard was first pointed at, and the only wallet vet402 has anchored a record for. A token with the ticker NVDA and tokens that read as USDG, none of them the issuer's, were sent to it.
+
+**`same_ticker_buyers`, the first 20 buyers of one token that uses the ticker SPY.**
+- *Token.* `0x69e7778d46713e17572d610bdaca3943aa4e6219`. Its `symbol()` answers `SPY` and its `name()` answers `Spy Chip`. It is not in the issuer's list, where SPY is another address. Nothing here says who made it or why.
+- *Left out.* The receiver of the token's first mint (the `to` of its first `Transfer` log whose `from` is the zero address, by block and log index), and the signer of that transaction. Also any wallet already in section 1 or the watched wallet.
+- *Purchase.* The definition of section 2 with this token as T and the v4 PoolManager as the only venue. In the window the PoolManager sent this token 441 times to 224 receivers, all between blocks 87,803,610 and 87,836,198.
+- *Group.* The 20 wallets with the earliest purchase, ordered by block, then by transaction hash ascending, then by address ascending.
+- *Record.* Each is asked for once on vet402's free route. A wallet with no record stays in the group: its one counted purchase becomes a decision that opens nothing, with the HTTP status as the reason.
+- *Value.* A practice position the ticker-copy baseline opens in this token is valued at the pool's own price: the pool's price in the swap of the purchase against the pool's last swap at or before the mark block. It is never assumed to be worth zero.
+
+## 4. What the walk reads for each wallet
+
+The moves of a wallet are every transaction its record lists as evidence and every transaction in which its record names a token under a listed ticker. For a `same_ticker_buyers` wallet the one purchase counted above is added.
+
+## 5. Why 30 days, 30 wallets and 100 questions
+
+The 33 tokens left official venues 9.65 million times in 30 days, and the public RPC answers at most 10,000 logs per query. Thirty days is what one pass reads in about two hours. vet402's free route allows ten requests a minute, so 100 questions take at least ten minutes and usually more. These three numbers are choices, stated here. `--days`, `--top` and `--max-asked` change them.
