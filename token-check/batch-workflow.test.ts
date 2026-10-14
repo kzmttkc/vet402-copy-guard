@@ -191,11 +191,17 @@ describe('token-check, many tokens at once', () => {
 		expect(logs).toContain('(the same from both RPCs)')
 
 		// the head, then the state from the second operator in one request, then the logs from Robinhood's own RPC
-		expect(seen.requests.map((r) => r.url)).toEqual([STATE, STATE, LOGS])
+		// 2 identity reads, and for NVDA and QQQ the factory log and one query per 10,000,000 blocks since deployment
+		const logItems = 2 + [NVDA, QQQ].reduce((n, t) => n + 1 + Math.ceil((BLOCK - t.deployed_block! + 1) / 10_000_000), 0)
+		const logRequests = Math.ceil(logItems / ITEMS_PER_CALL)
+		expect(seen.requests.map((r) => r.url)).toEqual([STATE, STATE, ...Array(logRequests).fill(LOGS)])
 		expect(seen.requests[0]).toMatchObject({ items: 1, methods: ['eth_blockNumber'] })
 		expect(seen.requests[1].items).toBe(2 + 5 * 6)
 		expect(seen.requests[1].methods).not.toContain('eth_getLogs')
 		expect(seen.requests[2].methods).toEqual(['eth_chainId', 'eth_getBlockByNumber', 'eth_getLogs'])
+		expect(seen.requests.slice(2).reduce((n, r) => n + r.items, 0)).toBe(logItems)
+		for (const r of seen.requests.slice(2)) expect(r.items).toBeLessThanOrEqual(ITEMS_PER_CALL)
+		expect(seen.requests.length).toBeLessThanOrEqual(MAX_HTTP_CALLS)
 		// every state read is pinned to the one block
 		expect([...seen.tags]).toEqual([hex(BLOCK)])
 	})
@@ -257,7 +263,8 @@ describe('token-check, many tokens at once', () => {
 		let seen = wire({ ...world(), rateLimitOnce: 'eth_getLogs' })
 		const { out } = run({ tokens: ALL })
 		expect(out.issuerTokens).toBe(2)
-		expect(seen.requests.filter((r) => r.url === LOGS).map((r) => r.items)).toEqual([seen.requests[2].items, 1])
+		// the first log request is followed by one more that carries only the item that was refused
+		expect(seen.requests.filter((r) => r.url === LOGS).map((r) => r.items).slice(0, 2)).toEqual([ITEMS_PER_CALL, 1])
 		seen = wire({ ...world(), status: (url) => (url === LOGS ? 429 : 200) })
 		expect(() => run({ tokens: ALL })).toThrow(/no answer from the RPC after 4 tries/)
 		expect(seen.reports).toEqual([])
@@ -279,6 +286,22 @@ describe('token-check, many tokens at once', () => {
 		expect(() => run({ tokens: [PLAIN], wallet: PLAIN })).toThrow()
 		expect(() => run({ tokens: [PLAIN], block: -1 })).toThrow()
 		expect(() => run({ tokens: [PLAIN] }, { robinhoodRpc: LOGS })).toThrow(/receiverAddress/)
+	})
+
+	test('a caller on a busy line may ask for smaller requests to Robinhood\'s RPC, and the plan counts them', () => {
+		let seen = wire(world())
+		const { out } = run({ tokens: [NVDA.token, PLAIN], itemsPerCall: 2 })
+		expect(out.issuerTokens).toBe(1)
+		const logs = seen.requests.filter((r) => r.url === LOGS)
+		for (const r of logs) expect(r.items).toBeLessThanOrEqual(2)
+		expect(logs.length).toBeGreaterThan(4)
+		expect(seen.requests.find((r) => r.url === STATE && r.items > 1)?.items).toBe(2 + 5 * 2)
+		// three listed tokens at two items per request need more requests than one run may spend
+		seen = wire(world())
+		expect(() => run({ tokens: [NVDA.token, QQQ.token, SPY.token], itemsPerCall: 2 })).toThrow(/send fewer tokens/)
+		expect(seen.reports).toEqual([])
+		expect(() => run({ tokens: [PLAIN], itemsPerCall: 0 })).toThrow()
+		expect(() => run({ tokens: [PLAIN], itemsPerCall: ITEMS_PER_CALL + 1 })).toThrow()
 	})
 
 	test('the same address twice is checked once', () => {

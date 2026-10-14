@@ -1,6 +1,7 @@
 // The batch check, pure part: what one token is from what was read, the wording
 // of the reasons, what fits in one run, and the shape of the results file.
 import { describe, expect, test } from 'bun:test'
+import { readFileSync } from 'node:fs'
 import { canonicalJson, keccakText } from '../rwa-verify/verify'
 import {
 	BATCH_REASON_TEXT,
@@ -134,6 +135,14 @@ describe('one token', () => {
 		}
 		const lines = renderBatch(judgeBatch({ chainId: 4663, block: BLOCK, blockHash: `0x${'11'.repeat(32)}`, tokens: [genuine(NVDA), stranger('NVDA', 'NVIDIA Robinhood Coin')] }))
 		for (const line of lines) expect(line).not.toMatch(loaded)
+	})
+})
+
+describe('the reason table', () => {
+	test('docs/token-check/README.md lists every reason code with the text in the code', () => {
+		const readme = readFileSync(new URL('../docs/token-check/README.md', import.meta.url), 'utf8')
+		for (const code of BATCH_REASONS) expect(readme).toContain(`| \`${code}\` | ${BATCH_REASON_TEXT[code]} |`)
+		for (const code of SHARES_A_LISTED_MARK) expect(readme).toContain(`\`${code}\``)
 	})
 })
 

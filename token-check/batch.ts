@@ -237,12 +237,16 @@ export const LOG_SPAN_BLOCKS = 10_000_000
 export const MAX_BATCH_TOKENS = 60
 /** The canonical JSON of what one run read may be this long. CRE's consensus limit is 25 kb. */
 export const MAX_OBSERVATION_BYTES = 24_000
-/** JSON-RPC items per HTTP request to Robinhood's own RPC. It rate-limits the items of a batch. */
-export const ITEMS_PER_CALL = 40
+/**
+ * JSON-RPC items per HTTP request to Robinhood's own RPC. It answers 429 to a whole
+ * batch that is larger than what the caller's address has left of its rate. Ten went
+ * through on a quiet line (2026-10-14); with a second reader on the same address, three did not.
+ */
+export const ITEMS_PER_CALL = 10
 /** JSON-RPC items per HTTP request to a second RPC that is used for state only. */
 export const STATE_ITEMS_PER_CALL = 400
 /** HTTP requests a run is planned with. CRE allows 15 per execution, the rest is left for retries. */
-export const PLAN_HTTP_CALLS = 10
+export const PLAN_HTTP_CALLS = 11
 /** State reads per token: EXTCODEHASH, the beacon slot, symbol(), name(), uiMultiplier(). */
 export const STATE_ITEMS_PER_TOKEN = 5
 /** Identity reads per RPC: eth_chainId and the header of the checked block. */
@@ -262,22 +266,25 @@ export function logItems(token: string, block: number): number {
 	return listed.deployed_block === null ? 0 : 1 + logWindows(listed.deployed_block, block).length
 }
 
-/** HTTP requests one run over `tokens` at `block` needs when every request is answered the first time. */
-export function plannedHttpCalls(tokens: string[], block: number, separateStateRpc: boolean): number {
+/**
+ * HTTP requests one run over `tokens` at `block` needs when every request is answered the
+ * first time. `itemsPerCall`: how many JSON-RPC items go into one request to Robinhood's RPC.
+ */
+export function plannedHttpCalls(tokens: string[], block: number, separateStateRpc: boolean, itemsPerCall: number = ITEMS_PER_CALL): number {
 	const state = tokens.length * STATE_ITEMS_PER_TOKEN + IDENTITY_ITEMS
 	const logs = tokens.reduce((n, t) => n + logItems(t, block), 0)
 	const head = 1
-	if (separateStateRpc) return head + Math.ceil(state / STATE_ITEMS_PER_CALL) + Math.ceil((logs + IDENTITY_ITEMS) / ITEMS_PER_CALL)
-	return head + Math.ceil((state + logs) / ITEMS_PER_CALL)
+	if (separateStateRpc) return head + Math.ceil(state / STATE_ITEMS_PER_CALL) + Math.ceil((logs + IDENTITY_ITEMS) / itemsPerCall)
+	return head + Math.ceil((state + logs) / itemsPerCall)
 }
 
 /** Split `tokens` into runs, in order, each within MAX_BATCH_TOKENS and PLAN_HTTP_CALLS. */
-export function planRuns(tokens: string[], block: number, separateStateRpc: boolean): string[][] {
+export function planRuns(tokens: string[], block: number, separateStateRpc: boolean, itemsPerCall: number = ITEMS_PER_CALL): string[][] {
 	const runs: string[][] = []
 	let current: string[] = []
 	for (const t of tokens) {
 		const next = [...current, t]
-		if (current.length > 0 && (next.length > MAX_BATCH_TOKENS || plannedHttpCalls(next, block, separateStateRpc) > PLAN_HTTP_CALLS)) {
+		if (current.length > 0 && (next.length > MAX_BATCH_TOKENS || plannedHttpCalls(next, block, separateStateRpc, itemsPerCall) > PLAN_HTTP_CALLS)) {
 			runs.push(current)
 			current = [t]
 		} else {

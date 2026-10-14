@@ -303,12 +303,19 @@ export const batchPayloadSchema = z
 		// Optional. With it every node of a DON reads the same block. Without it the nodes agree
 		// on the head first (median) and the run checks a few blocks behind that.
 		block: z.number().int().positive().optional(),
+		// Optional. JSON-RPC items per request to Robinhood's RPC, when the caller has measured
+		// that the line lets fewer than ITEMS_PER_CALL through at once.
+		itemsPerCall: z.number().int().min(1).max(ITEMS_PER_CALL).optional(),
 	})
 	.strict()
 export type BatchPayload = z.infer<typeof batchPayloadSchema>
 
-/** How far behind the agreed head the batch check reads, so every RPC backend already has the block. */
-export const HEAD_MARGIN = 8
+/**
+ * How far behind the agreed head the batch check reads, so every RPC backend already has
+ * the block (about two seconds on this chain). Not further: the second RPC operator keeps
+ * state for fewer than 128 blocks.
+ */
+export const HEAD_MARGIN = 20
 
 /**
  * Init code that returns EXTCODEHASH of `token`, sent as an eth_call without `to`:
@@ -336,7 +343,7 @@ function inChunks(sr: HTTPSendRequester, url: string, calls: Call[], size: numbe
  * must be Robinhood Chain and give the same hash for the block. The return value
  * is canonical JSON, so nodes agree on it byte for byte.
  */
-export const readBatch = (sr: HTTPSendRequester, stateRpc: string, logRpc: string, tokensCsv: string, block: number, callsUsed: number): string => {
+export const readBatch = (sr: HTTPSendRequester, stateRpc: string, logRpc: string, tokensCsv: string, block: number, callsUsed: number, itemsPerCall: number): string => {
 	const budget: Budget = { calls: callsUsed }
 	const tokens = tokensCsv.split(',')
 	const tag = hex(block)
@@ -381,9 +388,9 @@ export const readBatch = (sr: HTTPSendRequester, stateRpc: string, logRpc: strin
 	let logA: Answer[]
 	if (separate) {
 		stateA = inChunks(sr, stateRpc, stateCalls, STATE_ITEMS_PER_CALL, budget)
-		logA = inChunks(sr, logRpc, logCalls, ITEMS_PER_CALL, budget)
+		logA = inChunks(sr, logRpc, logCalls, itemsPerCall, budget)
 	} else {
-		const all = inChunks(sr, stateRpc, [...stateCalls, ...logCalls], ITEMS_PER_CALL, budget)
+		const all = inChunks(sr, stateRpc, [...stateCalls, ...logCalls], itemsPerCall, budget)
 		stateA = all.slice(0, stateCalls.length)
 		logA = all.slice(stateCalls.length)
 	}
@@ -490,11 +497,12 @@ function onBatch(runtime: Runtime<Config>, input: BatchPayload): string {
 		used = 1
 		runtime.log(`head    ${head} (median of the nodes), checking at block ${block}`)
 	}
-	const planned = plannedHttpCalls(tokens, block, stateRpc !== cfg.robinhoodRpc) - 1 + used
+	const itemsPerCall = input.itemsPerCall ?? ITEMS_PER_CALL
+	const planned = plannedHttpCalls(tokens, block, stateRpc !== cfg.robinhoodRpc, itemsPerCall) - 1 + used
 	if (planned > MAX_HTTP_CALLS) throw new Error(`${tokens.length} tokens need ${planned} RPC requests, one run may spend ${MAX_HTTP_CALLS}; send fewer tokens`)
 
 	const read = JSON.parse(
-		http.sendRequest(runtime, readBatch, consensusIdenticalAggregation<string>())(stateRpc, cfg.robinhoodRpc, tokens.join(','), block, used).result(),
+		http.sendRequest(runtime, readBatch, consensusIdenticalAggregation<string>())(stateRpc, cfg.robinhoodRpc, tokens.join(','), block, used, itemsPerCall).result(),
 	) as BatchRead
 	const result = judgeBatch(read)
 	runtime.log(`block   ${result.block}  hash ${result.blockHash}${stateRpc !== cfg.robinhoodRpc ? ' (the same from both RPCs)' : ''}`)
