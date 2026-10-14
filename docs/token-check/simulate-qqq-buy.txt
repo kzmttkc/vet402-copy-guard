@@ -1,0 +1,46 @@
+$ cre version
+CRE CLI version v1.37.0
+$ cre workflow simulate token-check --target local-simulation --non-interactive --trigger-index 0 --http-payload token-check/payloads/qqq-buy.json
+Initializing...
+Loading settings...
+! Using default private key for chain write simulation. To use your own key, set CRE_ETH_PRIVATE_KEY in your .env file or system environment.
+Checking RPC connectivity...
+Compiling workflow...
+✓ Workflow compiled
+✓ Simulation limits enabled
+  HTTP: req=120kb resp=250kb timeout=10s | ConfHTTP: req=125kb resp=500kb timeout=1m30s | Consensus obs=25kb | ChainWrite evm_report=50kb evm_gas=10000000 solana_report=265b solana_cu=300000 | WASM binary=100mb compressed=20mb
+  Binary hash: 7e08f995dc80498a36b468ade6b3f241369c4f231cba8a8b933239117a002873
+  Config hash: daaf80cd1159b88281465b7815c6a13ea1a56c8cc1a26fa646d09b928022852f
+✓ Loaded JSON from file: ~/vet402-bli/token-check/payloads/qqq-buy.json
+✓ Created HTTP trigger payload with 2 fields
+2026-10-14T07:55:41Z [SIMULATION] Simulator Initialized
+
+2026-10-14T07:55:41Z [SIMULATION] Running trigger trigger=http-trigger@1.0.0-alpha
+2026-10-14T07:55:41Z [USER LOG] token check (Robinhood Chain 4663, read over JSON-RPC, no vet402 API)
+2026-10-14T07:55:41Z [USER LOG] tx      0x0eac7685c6c57c3929d053bea9b5fa4b9879e2afc798848ee2b8ccf0e56a13f8
+2026-10-14T07:55:41Z [USER LOG] wallet  0xe9b08727131e34010b34006c660d4c1b436ec25f
+2026-10-14T07:55:41Z [USER LOG] list    195 Stock Tokens, taken 2026-09-28T22:24:32.769Z, https://docs.robinhood.com/chain/contracts
+2026-10-14T07:55:44Z [USER LOG] block   68837431
+2026-10-14T07:55:44Z [USER LOG] GENUINE_STOCK_TOKEN  0xd5f3879160bc7c32ebb4dc785f8a4f505888de68  symbol "QQQ"  name "Invesco QQQ • Robinhood Token"  in
+2026-10-14T07:55:44Z [USER LOG] - notice MULTIPLIER_CHANGED: uiMultiplier is not 1, the token has had a corporate action
+2026-10-14T07:55:44Z [USER LOG] - notice MULTIPLIER_CHANGED_AFTER_TX: uiMultiplier changed after this transaction, the same raw amount shows a different number of shares now
+2026-10-14T07:55:44Z [USER LOG] - uiMultiplier 1.000700791241405425
+2026-10-14T07:55:44Z [USER LOG] - UIMultiplierUpdated in block 69210998: 1 to 1.000700791241405425, in effect from unix 1790035834 (after this tx)
+2026-10-14T07:55:44Z [USER LOG] USDG  0x5fc5360d0400a0fd4f2af552add042d716f1d168  symbol "USDG"  name "Global Dollar"  out
+2026-10-14T07:55:44Z [USER LOG] RESULT: ALLOW  reasonBits 786432
+
+✓ Workflow Simulation Result:
+"{\"tx\":\"0x0eac7685c6c57c3929d053bea9b5fa4b9879e2afc798848ee2b8ccf0e56a13f8\",\"wallet\":\"0xe9b08727131e34010b34006c660d4c1b436ec25f\",\"block\":68837431,\"allow\":true,\"reasonBits\":786432,\"reasons\":[\"MULTIPLIER_CHANGED\",\"MULTIPLIER_CHANGED_AFTER_TX\"],\"tokens\":[{\"token\":\"0xd5f3879160bc7c32ebb4dc785f8a4f505888de68\",\"verdict\":\"GENUINE_STOCK_TOKEN\",\"reasons\":[\"MULTIPLIER_CHANGED\",\"MULTIPLIER_CHANGED_AFTER_TX\"],\"reasonBits\":786432,\"symbol\":\"QQQ\",\"name\":\"Invesco QQQ • Robinhood Token\",\"ticker\":\"QQQ\",\"direction\":\"in\",\"amountInRaw\":\"6860320028365553927\",\"amountOutRaw\":\"0\",\"multiplier\":\"1.000700791241405425\",\"multiplierChanged\":true,\"multiplierChangedAfterTx\":true,\"multiplierUpdates\":[{\"block\":69210998,\"tx\":\"0x6331915e6ddac124b1ea59b0db720892615fbd8ffbbea59cc9772147e326bba6\",\"before\":\"1\",\"after\":\"1.000700791241405425\",\"effectiveAt\":1790035834,\"afterTx\":true}]},{\"token\":\"0x5fc5360d0400a0fd4f2af552add042d716f1d168\",\"verdict\":\"USDG\",\"reasons\":[],\"reasonBits\":0,\"symbol\":\"USDG\",\"name\":\"Global Dollar\",\"ticker\":\"USDG\",\"direction\":\"out\",\"amountInRaw\":\"0\",\"amountOutRaw\":\"5000000000\",\"multiplier\":null,\"multiplierChanged\":null,\"multiplierChangedAfterTx\":null,\"multiplierUpdates\":[]}],\"list\":{\"takenAt\":\"2026-09-28T22:24:32.769Z\",\"source\":\"https://docs.robinhood.com/chain/contracts\",\"sourceFileKeccak256\":\"0xcf8a7a002322c28a77f427d342485fd06bd26c97fa0a2f1577615615ac7cfe5e\",\"count\":195}}"
+
+2026-10-14T07:55:44Z [SIMULATION] Execution finished signal received
+2026-10-14T07:55:44Z [SIMULATION] Skipping WorkflowEngineV2
+
+╭──────────────────────────────────────────────────────╮
+│ Simulation complete! Ready to deploy your workflow?  │
+│                                                      │
+│ Run cre account access to request deployment access. │
+╰──────────────────────────────────────────────────────╯
+
+⚠️  Update available! You’re running 1.37.0, but 1.38.0 is the latest.
+Run `cre update` or visit https://github.com/smartcontractkit/cre-cli/releases to upgrade.
+

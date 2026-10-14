@@ -1,0 +1,1 @@
+Simulated on 2026-10-14 for three real moves of the demo wallet: the QQQ buy is allowed (a genuine Stock Token and USDG), the 25 "NVDA" and the 20,000 "USDG" are refused as look-alikes.

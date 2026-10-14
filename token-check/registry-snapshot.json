@@ -1,0 +1,1383 @@
+{
+ "about": "Robinhood Stock Tokens on Robinhood Chain (4663), reduced from the registry.json of vet402 (github.com/kzmttkc/vet402, packages/rwa). The list is a point-in-time copy. A token listed after list_taken_at is not in it.",
+ "list_taken_at": "2026-09-28T22:24:32.769Z",
+ "extracted_at": "2026-10-14T00:42:23.542Z",
+ "chain_id": 4663,
+ "source": "https://docs.robinhood.com/chain/contracts",
+ "source_api": "https://api.robinhood.com/rhj/assets",
+ "source_file": "packages/rwa/registry.json",
+ "source_file_keccak256": "0xcf8a7a002322c28a77f427d342485fd06bd26c97fa0a2f1577615615ac7cfe5e",
+ "count": 195,
+ "usdg": {
+  "token": "0x5fc5360d0400a0fd4f2af552add042d716f1d168",
+  "symbol": "USDG",
+  "name": "Global Dollar"
+ },
+ "tokens": [
+  {
+   "token": "0x521cf887e6531c6f667b5bc4d896e5d9bfe8eb2e",
+   "symbol": "AAOI",
+   "name": "Applied Optoelectronics",
+   "feed": null,
+   "deployed_block": 48233
+  },
+  {
+   "token": "0xaf3d76f1834a1d425780943c99ea8a608f8a93f9",
+   "symbol": "AAPL",
+   "name": "Apple",
+   "feed": "0x6b22a786baa607d76728168703a39ea9c99f2cd0",
+   "deployed_block": 48276
+  },
+  {
+   "token": "0x3139d77ace0cbaa5bdfd38bd1f1911a794af0b0e",
+   "symbol": "ABCL",
+   "name": "Abcellera Biologics",
+   "feed": null,
+   "deployed_block": 20947402
+  },
+  {
+   "token": "0x232b8ed6377be97813853b0ac104c4cda8378d1b",
+   "symbol": "ADBE",
+   "name": "Adobe",
+   "feed": null,
+   "deployed_block": 20948654
+  },
+  {
+   "token": "0x5f604fba1162193a4388a5dfa56f556f3e133cc2",
+   "symbol": "AEHR",
+   "name": "Aehr",
+   "feed": null,
+   "deployed_block": 20948804
+  },
+  {
+   "token": "0xfaf9cb261b5fcc1f404bb10cd39c5c6c1974e612",
+   "symbol": "AEIS",
+   "name": "Advanced Energy",
+   "feed": null,
+   "deployed_block": 20948623
+  },
+  {
+   "token": "0x748c32c3ca24edf31ea597db1f3d330a7a6da3dc",
+   "symbol": "ALAB",
+   "name": "Astera Labs, Inc.",
+   "feed": null,
+   "deployed_block": 20950021
+  },
+  {
+   "token": "0x36046893810a7e7fce501229d57dc3fc8c8716d0",
+   "symbol": "AMAT",
+   "name": "Applied Materials",
+   "feed": null,
+   "deployed_block": 48252
+  },
+  {
+   "token": "0x99d9d8663545151603863c5acbd6fc3218899009",
+   "symbol": "AMBA",
+   "name": "Ambarella",
+   "feed": null,
+   "deployed_block": 20949048
+  },
+  {
+   "token": "0x05a3d1cd21d0c88145e82600e62e7e496e0f222b",
+   "symbol": "AMC",
+   "name": "AMC Entertainment",
+   "feed": null,
+   "deployed_block": 20948513
+  },
+  {
+   "token": "0x86923f96303d656e4aa86d9d42d1e57ad2023fdc",
+   "symbol": "AMD",
+   "name": "AMD",
+   "feed": "0x943a29e7ae51a4798823ca9eed2ed533b2a22c72",
+   "deployed_block": 48278
+  },
+  {
+   "token": "0xdd356aa38f40a7b7076755ac854b6fbb1f0d305b",
+   "symbol": "AMKR",
+   "name": "Amkor Technology",
+   "feed": null,
+   "deployed_block": 20949804
+  },
+  {
+   "token": "0x12f190a9f9d7d37a250758b26824b97ce941bf54",
+   "symbol": "AMZN",
+   "name": "Amazon",
+   "feed": "0xd5a1508ced74c084ebf3cbe853e2c968fb2a651c",
+   "deployed_block": 48288
+  },
+  {
+   "token": "0x28babd556b60e53663b8615036479a29c2cdd1bf",
+   "symbol": "ANET",
+   "name": "Arista",
+   "feed": null,
+   "deployed_block": 20947367
+  },
+  {
+   "token": "0xb8dbf92f9741c9ac1c32115e78581f23509916fd",
+   "symbol": "APLD",
+   "name": "Applied Digital",
+   "feed": null,
+   "deployed_block": 46136
+  },
+  {
+   "token": "0xa249baf1063af884807c1e1400aef7784836917e",
+   "symbol": "APP",
+   "name": "AppLovin",
+   "feed": null,
+   "deployed_block": 20947577
+  },
+  {
+   "token": "0x47f93d52cbec7c6d2cfc080e154002370a60daea",
+   "symbol": "ASML",
+   "name": "ASML Holding NV",
+   "feed": "0xb4106147e8cce40b7d46124090d373a71b70f87d",
+   "deployed_block": 46137
+  },
+  {
+   "token": "0x1af6446f07eb1d97c546afc8c9544cbdf3ad5137",
+   "symbol": "ASTS",
+   "name": "AST SpaceMobile",
+   "feed": null,
+   "deployed_block": 46128
+  },
+  {
+   "token": "0x373c06c4f7bde527d7dae4ba169e42b55e393ced",
+   "symbol": "AUR",
+   "name": "Aurora Innovation",
+   "feed": null,
+   "deployed_block": 20949237
+  },
+  {
+   "token": "0xf6290b5e7c26502e2da514c31509849718ea76a5",
+   "symbol": "AVAV",
+   "name": "AeroVironment",
+   "feed": null,
+   "deployed_block": 20950365
+  },
+  {
+   "token": "0x156e175dd063a8ce274c50654ef40e0032b3fbcf",
+   "symbol": "AVGO",
+   "name": "Broadcom",
+   "feed": null,
+   "deployed_block": 48318
+  },
+  {
+   "token": "0xc27dbd474af5181c5a8777903690d8d262d12648",
+   "symbol": "AXON",
+   "name": "Axon",
+   "feed": null,
+   "deployed_block": 20947880
+  },
+  {
+   "token": "0x141eea040c2250eec0314e336975e81f85f6585e",
+   "symbol": "AXTI",
+   "name": "AXT",
+   "feed": null,
+   "deployed_block": 20949311
+  },
+  {
+   "token": "0x4d21483a44bf67a86b77e3da301411880797d452",
+   "symbol": "BA",
+   "name": "Boeing",
+   "feed": null,
+   "deployed_block": 46114
+  },
+  {
+   "token": "0xad25ac6c84d497db898fa1e8387bf6af3532a1c4",
+   "symbol": "BABA",
+   "name": "Alibaba",
+   "feed": "0x62cc8f9b5f56a33c9c8a60c8b92779f523c4e984",
+   "deployed_block": 48262
+  },
+  {
+   "token": "0x48e39e56acdba37b09020c0b734a613c9a2f100a",
+   "symbol": "BB",
+   "name": "Blackberry",
+   "feed": null,
+   "deployed_block": 20950571
+  },
+  {
+   "token": "0x822cc93ffd030293e9842c30bbd678f530701867",
+   "symbol": "BE",
+   "name": "Bloom Energy",
+   "feed": null,
+   "deployed_block": 48283
+  },
+  {
+   "token": "0x2f62fc9fabb470c690f141c28340ed832bb27020",
+   "symbol": "BND",
+   "name": "Vanguard Total Bond Market ETF",
+   "feed": null,
+   "deployed_block": 21689593
+  },
+  {
+   "token": "0xcef9027c7d6985b85f0ba431125073529a947a68",
+   "symbol": "BULL",
+   "name": "Webull",
+   "feed": null,
+   "deployed_block": 20948552
+  },
+  {
+   "token": "0x5c90450bbb4273d7b2f17cf6917aeb237a569679",
+   "symbol": "CBRS",
+   "name": "Cerebras Systems",
+   "feed": null,
+   "deployed_block": 48216
+  },
+  {
+   "token": "0x9651342cea770ae9a2969ba2a52611523146aef9",
+   "symbol": "CCL",
+   "name": "Carnival Corporation",
+   "feed": null,
+   "deployed_block": 48217
+  },
+  {
+   "token": "0xae517a2903e68bd929dfd15be875f8369d53e94a",
+   "symbol": "CEG",
+   "name": "Constellation Energy",
+   "feed": null,
+   "deployed_block": 20947610
+  },
+  {
+   "token": "0x8cf07c5a878945185d327aaa6e33faa95f95e7bf",
+   "symbol": "CELH",
+   "name": "Celsius",
+   "feed": null,
+   "deployed_block": 46134
+  },
+  {
+   "token": "0x44f6d488021f8233b9416294d1fe9b1fee28382d",
+   "symbol": "CIEN",
+   "name": "Ciena",
+   "feed": null,
+   "deployed_block": 20948118
+  },
+  {
+   "token": "0x62200915e7deab1ec7f79fb246dadbb80eacddd0",
+   "symbol": "CLOV",
+   "name": "Clover Health Investments",
+   "feed": null,
+   "deployed_block": 20949691
+  },
+  {
+   "token": "0xbf449977089c718c004a66c554b26b94ef3ad4de",
+   "symbol": "CLS",
+   "name": "Celestica",
+   "feed": null,
+   "deployed_block": 20948260
+  },
+  {
+   "token": "0xcbb95bbf36099d34da091dc6fa6f49efa257cee3",
+   "symbol": "CLSK",
+   "name": "CleanSpark",
+   "feed": "0x810c12d3a554bc47fd39597fe3b3aac4941f50ef",
+   "deployed_block": 46127
+  },
+  {
+   "token": "0x92f9f459f1a9a5ad266b182be7bffd1c6c666894",
+   "symbol": "COHR",
+   "name": "Coherent",
+   "feed": null,
+   "deployed_block": 20947170
+  },
+  {
+   "token": "0x6330d8c3178a418788df01a47479c0ce7ccf450b",
+   "symbol": "COIN",
+   "name": "Coinbase",
+   "feed": "0xa3a468a452940b7d6b69991207b508c609a98ef2",
+   "deployed_block": 48319
+  },
+  {
+   "token": "0x4ea005168d7f09a7a0ba9d1def21a479950e44c2",
+   "symbol": "COST",
+   "name": "Costco",
+   "feed": null,
+   "deployed_block": 48316
+  },
+  {
+   "token": "0xdf0992e440dd0be65bd8439b609d6d4366bf1cb5",
+   "symbol": "CRCL",
+   "name": "Circle Internet Group",
+   "feed": "0x6652edf64ba3731c4f2d3ce821a0fb1f1f6b482a",
+   "deployed_block": 48280
+  },
+  {
+   "token": "0x4d67253bc223e6b0e104f1084c1fb2b669ddc41b",
+   "symbol": "CRDO",
+   "name": "Credo Technology Group",
+   "feed": null,
+   "deployed_block": 20948873
+  },
+  {
+   "token": "0xd95b44124e475743a7589e68f3d74008a5536d44",
+   "symbol": "CRM",
+   "name": "Salesforce",
+   "feed": null,
+   "deployed_block": 20946974
+  },
+  {
+   "token": "0xea72ecca2d0f6bfa1394dbbcff85b52cd4233931",
+   "symbol": "CRWD",
+   "name": "CrowdStrike Holdings",
+   "feed": null,
+   "deployed_block": 48228
+  },
+  {
+   "token": "0x5f10a1c971b69e47e059e1dc91901b59b3fb49c3",
+   "symbol": "CRWV",
+   "name": "CoreWeave",
+   "feed": "0xe1b3aabcafad1c94708dc1367dcff8aa4407487c",
+   "deployed_block": 48282
+  },
+  {
+   "token": "0xf543967eebb6f1917992ef0e68de63ab07a5a0da",
+   "symbol": "CSCO",
+   "name": "Cisco Systems",
+   "feed": null,
+   "deployed_block": 20948587
+  },
+  {
+   "token": "0x63d5a3b6939a33f1e75d8bcd85759858239600db",
+   "symbol": "CTSH",
+   "name": "Cognizant",
+   "feed": null,
+   "deployed_block": 20948942
+  },
+  {
+   "token": "0xa4f319104089fe321dc8093c6e707d4fe190a988",
+   "symbol": "CVNA",
+   "name": "Carvana",
+   "feed": null,
+   "deployed_block": 20949656
+  },
+  {
+   "token": "0x27c99fbde9d0d2aa4f4bfb4943f237843ddf6958",
+   "symbol": "DDOG",
+   "name": "Datadog",
+   "feed": null,
+   "deployed_block": 48230
+  },
+  {
+   "token": "0x941ae714ec6d8130c7b75d67160ca08f1e7d11dd",
+   "symbol": "DELL",
+   "name": "Dell",
+   "feed": "0x1c6c8cadbe02e19129c39ddb92281ce4c0bf206b",
+   "deployed_block": 48222
+  },
+  {
+   "token": "0x1d11f0496982706c5e14a514d4e79f2e6bde4516",
+   "symbol": "DJT",
+   "name": "Trump Media & Technology Group",
+   "feed": null,
+   "deployed_block": 20946859
+  },
+  {
+   "token": "0xc02f12b9fe9e707079ec0d546f3050d3f6c1f8bd",
+   "symbol": "DOCN",
+   "name": "DigitalOcean",
+   "feed": null,
+   "deployed_block": 20948981
+  },
+  {
+   "token": "0x39ec44bee4f6a116c6f9b8de566848a985c53c60",
+   "symbol": "ELF",
+   "name": "e.l.f. Beauty",
+   "feed": null,
+   "deployed_block": 48255
+  },
+  {
+   "token": "0x1c690498150252222c275a5ced69d3a6b1f52d5e",
+   "symbol": "EWT",
+   "name": "iShares MSCI Taiwan Capped ETF",
+   "feed": null,
+   "deployed_block": 20947973
+  },
+  {
+   "token": "0x7f0abef0c07280f82c6a08ead09ded6bae2c13fc",
+   "symbol": "EWY",
+   "name": "iShares MSCI South Korea fund",
+   "feed": "0xefdf54610b62a7753ec30bdc380847c12d32e1d1",
+   "deployed_block": 48265
+  },
+  {
+   "token": "0x25c288e6d899b9bc30160965ad9644c67e73be0c",
+   "symbol": "F",
+   "name": "Ford Motor",
+   "feed": null,
+   "deployed_block": 48267
+  },
+  {
+   "token": "0xa48f22a46c0f1c46ca7d111cb6c137c271987180",
+   "symbol": "FICO",
+   "name": "Fair Isaac",
+   "feed": null,
+   "deployed_block": 20950535
+  },
+  {
+   "token": "0x41f4267525a8aff329540ef24fd83d9044758b33",
+   "symbol": "FIG",
+   "name": "Figma",
+   "feed": null,
+   "deployed_block": 20947845
+  },
+  {
+   "token": "0x9ece29a4a2397c0a35fb5fa8ee2b9509130a98cc",
+   "symbol": "FISV",
+   "name": "Fiserv",
+   "feed": null,
+   "deployed_block": 20947012
+  },
+  {
+   "token": "0x93dbb1d2dc5d63f4abacff30485273f538df68ac",
+   "symbol": "FIX",
+   "name": "Comfort Systems",
+   "feed": null,
+   "deployed_block": 20949620
+  },
+  {
+   "token": "0x282e87451e10fa6679bc7d76c69be44cd3fc777c",
+   "symbol": "FLNC",
+   "name": "Fluence Energy",
+   "feed": null,
+   "deployed_block": 46115
+  },
+  {
+   "token": "0x03bc731ffb162cdd7b98d3c6542bfc291126075d",
+   "symbol": "FLY",
+   "name": "Firefly Aerospace Inc.",
+   "feed": null,
+   "deployed_block": 20947507
+  },
+  {
+   "token": "0x3fb8976980d486084b2eb4a404bd12e72823958f",
+   "symbol": "FTNT",
+   "name": "Fortinet",
+   "feed": null,
+   "deployed_block": 20949910
+  },
+  {
+   "token": "0xeb30663bdff0622ef4e4e5cbb4e975f19f33f51d",
+   "symbol": "FUTU",
+   "name": "Futu Holdings",
+   "feed": null,
+   "deployed_block": 46130
+  },
+  {
+   "token": "0x63b814ddbd6bf339f25fed8c36158a008d5b373e",
+   "symbol": "GE",
+   "name": "General Electric",
+   "feed": null,
+   "deployed_block": 20949159
+  },
+  {
+   "token": "0x94b8aae43a1ccc08aa64b7d1f29b4d920af4a0c9",
+   "symbol": "GEV",
+   "name": "GE Vernova",
+   "feed": null,
+   "deployed_block": 20947047
+  },
+  {
+   "token": "0xc9a981fee1f9dec688bb123ccdecc63d0debfc4e",
+   "symbol": "GLD",
+   "name": "SPDR Gold Trust",
+   "feed": null,
+   "deployed_block": 20947470
+  },
+  {
+   "token": "0x7c04e6a3368f2a1de3874f0e80d2e0a1a9915da6",
+   "symbol": "GLW",
+   "name": "Corning",
+   "feed": null,
+   "deployed_block": 48314
+  },
+  {
+   "token": "0x2d427692e928fa156ec22acfabafa0447c5805b7",
+   "symbol": "GLXY",
+   "name": "Galaxy Digital Inc.",
+   "feed": null,
+   "deployed_block": 20947542
+  },
+  {
+   "token": "0x1b0e319c6a659f002271b69db8a7df2f911c153e",
+   "symbol": "GME",
+   "name": "GameStop",
+   "feed": "0x27c71df6a64fb476468edf256cf72c038bab5b67",
+   "deployed_block": 48258
+  },
+  {
+   "token": "0x2e0847e8910a9732eb3fb1bb4b70a580adad4fe3",
+   "symbol": "GOOGL",
+   "name": "Alphabet Class A",
+   "feed": "0xf6f373a037c30f0e5010d854385ca89185ae638b",
+   "deployed_block": 48284
+  },
+  {
+   "token": "0xeb61c0ed490a367d4e3631ccf8a74b3bfc7e775d",
+   "symbol": "HII",
+   "name": "Huntington Ingalls",
+   "feed": null,
+   "deployed_block": 20947933
+  },
+  {
+   "token": "0xccee82fe024c36fa15e1005ede3e9e4787e23d09",
+   "symbol": "HIMS",
+   "name": "Hims & Hers Health",
+   "feed": null,
+   "deployed_block": 20950062
+  },
+  {
+   "token": "0x59dd09d4900c2e4b5f75b7c0d4e6796fcc234cb1",
+   "symbol": "HPE",
+   "name": "HP Enterprise",
+   "feed": null,
+   "deployed_block": 20947327
+  },
+  {
+   "token": "0xaea445c5f3db1a462998ccc422a875a361ee5d99",
+   "symbol": "HWM",
+   "name": "Howmet Aerospace",
+   "feed": null,
+   "deployed_block": 20947652
+  },
+  {
+   "token": "0x980dcf6766fa79f5cf0c4aadb3ab477ff15a9619",
+   "symbol": "IBM",
+   "name": "IBM",
+   "feed": null,
+   "deployed_block": 20949463
+  },
+  {
+   "token": "0x7c148f74ac7445d1f28366b7fcdc6792a9fcd0cf",
+   "symbol": "IBRX",
+   "name": "ImmunityBio,",
+   "feed": null,
+   "deployed_block": 20948909
+  },
+  {
+   "token": "0xacef2e09adb47ad6abebad9ff06689e60615c2b6",
+   "symbol": "INDA",
+   "name": "iShares MSCI India ETF",
+   "feed": null,
+   "deployed_block": 20950291
+  },
+  {
+   "token": "0xb853bc83a753342a4f8320ea680b4b1e84118d21",
+   "symbol": "INFQ",
+   "name": "Infleqtion",
+   "feed": null,
+   "deployed_block": 20950504
+  },
+  {
+   "token": "0xf1953dab6fad537488d5a022361ffaa8b4c95ec6",
+   "symbol": "INOD",
+   "name": "Innodata",
+   "feed": null,
+   "deployed_block": 46125
+  },
+  {
+   "token": "0xc72b96e0e48ecd4dc75e1e45396e26300bc39681",
+   "symbol": "INTC",
+   "name": "Intel",
+   "feed": "0x3f390c5c24628ac7c489515402235fead71d1913",
+   "deployed_block": 48286
+  },
+  {
+   "token": "0x56d23bee5f41a7120170b0c603dae30128e460e9",
+   "symbol": "INTU",
+   "name": "Intuit",
+   "feed": null,
+   "deployed_block": 48272
+  },
+  {
+   "token": "0x558378e000d634a36593e338ebacdd6207640efe",
+   "symbol": "IONQ",
+   "name": "IonQ",
+   "feed": "0x22efec4919baf55f360e0edee4abeb26de4971eb",
+   "deployed_block": 46133
+  },
+  {
+   "token": "0xf0ab0c93be6f41369d302e55db1a96b3c430212d",
+   "symbol": "IREN",
+   "name": "IREN Limited",
+   "feed": null,
+   "deployed_block": 48250
+  },
+  {
+   "token": "0xeaf2512dfc1beac608f8794b3793cd4e02894aa6",
+   "symbol": "JBL",
+   "name": "Jabil Inc.",
+   "feed": null,
+   "deployed_block": 20950328
+  },
+  {
+   "token": "0x03dfbbe0ac4e7bcdafd08ed41a400326b77d8c80",
+   "symbol": "JNJ",
+   "name": "Johnson & Johnson",
+   "feed": null,
+   "deployed_block": 20949982
+  },
+  {
+   "token": "0xb334c5ce741b80b5b671f47f5c269cb193fe8e24",
+   "symbol": "JOBY",
+   "name": "Joby Aviation",
+   "feed": null,
+   "deployed_block": 20948072
+  },
+  {
+   "token": "0x96b933c74ecb4a0926b9210cef7b743ef46be2e9",
+   "symbol": "KLAC",
+   "name": "KLA",
+   "feed": null,
+   "deployed_block": 20948694
+  },
+  {
+   "token": "0x12e3c047bf9aecaf9ddc98c05c31bfd1dd043993",
+   "symbol": "KSS",
+   "name": "Kohls Corporation",
+   "feed": null,
+   "deployed_block": 20949425
+  },
+  {
+   "token": "0x7fd06a4d81ccfa3f351394e144d5191874c31313",
+   "symbol": "KTOS",
+   "name": "Kratos Defense & Security Solutions",
+   "feed": null,
+   "deployed_block": 20949729
+  },
+  {
+   "token": "0x48d60243c66437c6ac3c2495be94747aed5dfe25",
+   "symbol": "LHX",
+   "name": "L3Harris",
+   "feed": null,
+   "deployed_block": 20948335
+  },
+  {
+   "token": "0x8ef20885f94e3d9bc7eb3080279188bd5ed7c08c",
+   "symbol": "LITE",
+   "name": "Lumentum",
+   "feed": null,
+   "deployed_block": 46129
+  },
+  {
+   "token": "0x8005d266423c7ea827372c9c864491e5786600ea",
+   "symbol": "LLY",
+   "name": "Eli Lilly",
+   "feed": null,
+   "deployed_block": 48260
+  },
+  {
+   "token": "0x329fcaceb9ad6f9580dd5f643fed0646900d043c",
+   "symbol": "LMT",
+   "name": "Lockheed",
+   "feed": null,
+   "deployed_block": 20949538
+  },
+  {
+   "token": "0x57b0030166db0c31690d1a5aa167e2e26e2c29a4",
+   "symbol": "LRCX",
+   "name": "Lam Research Corp",
+   "feed": null,
+   "deployed_block": 20946935
+  },
+  {
+   "token": "0x4e62068525ab11fe768e29dfd00ef909b9803016",
+   "symbol": "LULU",
+   "name": "Lululemon",
+   "feed": null,
+   "deployed_block": 46124
+  },
+  {
+   "token": "0xa5d4968421ba94814be3b136b15cf422101ac1a3",
+   "symbol": "LUNR",
+   "name": "Intuitive Machines",
+   "feed": null,
+   "deployed_block": 48219
+  },
+  {
+   "token": "0xddf2266b79abf0b48898959b0ed6e6adf512be74",
+   "symbol": "MDB",
+   "name": "MongoDB",
+   "feed": null,
+   "deployed_block": 48220
+  },
+  {
+   "token": "0xc0d6457c16cc70d6790dd43521c899c87ce02f35",
+   "symbol": "META",
+   "name": "Meta Platforms",
+   "feed": "0x7c38c00c30bee9378381e7b6135d7283356d71b1",
+   "deployed_block": 48281
+  },
+  {
+   "token": "0xc6cbad1016b38b797610c25e1dc7d95988b1f362",
+   "symbol": "MOD",
+   "name": "Modine",
+   "feed": null,
+   "deployed_block": 20948005
+  },
+  {
+   "token": "0x52d50d0280ad1054b43f052bd70a49a212a1b128",
+   "symbol": "MPWR",
+   "name": "Monolithic Power Systems",
+   "feed": null,
+   "deployed_block": 20947284
+  },
+  {
+   "token": "0x43b07d15ce533bec5476d70c22a78a1b2b662155",
+   "symbol": "MRNA",
+   "name": "Moderna",
+   "feed": null,
+   "deployed_block": 20946697
+  },
+  {
+   "token": "0x62fd0668e10d8b72339be2dcf7643001688ff13b",
+   "symbol": "MRVL",
+   "name": "Marvell Technology",
+   "feed": null,
+   "deployed_block": 48320
+  },
+  {
+   "token": "0xe93237c50d904957cf27e7b1133b510c669c2e74",
+   "symbol": "MSFT",
+   "name": "Microsoft",
+   "feed": "0x45c3c877c15e6ba2ebb19ea114ea508d14c1af2e",
+   "deployed_block": 48275
+  },
+  {
+   "token": "0xec262a75e413fafd0df80480274532c79d42da09",
+   "symbol": "MSTR",
+   "name": "Strategy Inc.",
+   "feed": "0x396118bdfb181e6240e74d243f266b061c0edc3d",
+   "deployed_block": 48238
+  },
+  {
+   "token": "0xc93f4d80e268ab922e871bd169156c3cc41894e6",
+   "symbol": "MTSI",
+   "name": "MACOM",
+   "feed": null,
+   "deployed_block": 20949272
+  },
+  {
+   "token": "0xff080c8ce2e5feadaca0da81314ae59d232d4afd",
+   "symbol": "MU",
+   "name": "Micron Technology",
+   "feed": "0x425eefdcf05ed6526c3ce61af99429a228a6d596",
+   "deployed_block": 48292
+  },
+  {
+   "token": "0x48961813349333209994750ffa89b3c5c22ec969",
+   "symbol": "MXL",
+   "name": "MaxLinear",
+   "feed": null,
+   "deployed_block": 48213
+  },
+  {
+   "token": "0xf7181b63fdb858558a74ba96bc42732684cd7965",
+   "symbol": "NAVN",
+   "name": "Navan",
+   "feed": null,
+   "deployed_block": 20948295
+  },
+  {
+   "token": "0x9d9c6684f596f66a64c030b93a886d51fd4d7931",
+   "symbol": "NBIS",
+   "name": "Nebius Group",
+   "feed": "0xe1d87b116ba0fe898998f1d140339d1fa1e09705",
+   "deployed_block": 48266
+  },
+  {
+   "token": "0x116f00968269b7bfbad4109ce591d6e74c0601d4",
+   "symbol": "NET",
+   "name": "Cloudflare, Inc. Class A common stock",
+   "feed": null,
+   "deployed_block": 20946819
+  },
+  {
+   "token": "0xe0444ef8bf4ed74f74fd73686e2ddf4c1c5591e8",
+   "symbol": "NFLX",
+   "name": "Netflix",
+   "feed": null,
+   "deployed_block": 48218
+  },
+  {
+   "token": "0xbef75684c43c4ea7bd18dd532a2244674ee8b926",
+   "symbol": "NNE",
+   "name": "Nano Nuclear Energy",
+   "feed": null,
+   "deployed_block": 46121
+  },
+  {
+   "token": "0x0c3260af4b8f13a69c4c2dfb84fd667890cdfa14",
+   "symbol": "NOW",
+   "name": "ServiceNow",
+   "feed": null,
+   "deployed_block": 48244
+  },
+  {
+   "token": "0x408c14038a04f7bd235329e26d2bf569ee20e250",
+   "symbol": "NU",
+   "name": "Nu",
+   "feed": null,
+   "deployed_block": 48251
+  },
+  {
+   "token": "0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec",
+   "symbol": "NVDA",
+   "name": "NVIDIA",
+   "feed": "0x379ec4f7c378f34a1b47e4f3cbebcbac3e8e9f15",
+   "deployed_block": 45898
+  },
+  {
+   "token": "0xbe6702d7b70315376dc48a3293f24f0982f86386",
+   "symbol": "NVTS",
+   "name": "Navitas Semiconductor",
+   "feed": null,
+   "deployed_block": 48317
+  },
+  {
+   "token": "0x8b2f88497f15a18e9d4ffa1a8ffb8538399ae774",
+   "symbol": "OKLO",
+   "name": "Oklo",
+   "feed": null,
+   "deployed_block": 20949123
+  },
+  {
+   "token": "0xbbd09f72b025360fee5c928053dca6248d35be54",
+   "symbol": "ON",
+   "name": "ON Semiconductor",
+   "feed": null,
+   "deployed_block": 20947244
+  },
+  {
+   "token": "0x8ff63eaeee3fe54ba450c4f5538064ec5a893aef",
+   "symbol": "ONTO",
+   "name": "Onto Innovation",
+   "feed": null,
+   "deployed_block": 20949945
+  },
+  {
+   "token": "0xb0992820e760d836549ba69bc7598b4af75dee03",
+   "symbol": "ORCL",
+   "name": "Oracle",
+   "feed": "0x0e6a64a2b58a6693a531e6c555f3a5d042eea844",
+   "deployed_block": 48289
+  },
+  {
+   "token": "0x40e7a279850e443f582059ae5dc1c3b6563e6395",
+   "symbol": "OUST",
+   "name": "Ouster",
+   "feed": null,
+   "deployed_block": 20949763
+  },
+  {
+   "token": "0x1cdad396db64bda184d5182a97dd9b3c62100b7d",
+   "symbol": "P",
+   "name": "Everpure",
+   "feed": null,
+   "deployed_block": 48227
+  },
+  {
+   "token": "0xb039597ed45cba7b6e2fb9e8be51802969cee5be",
+   "symbol": "PANW",
+   "name": "Palo Alto Networks",
+   "feed": null,
+   "deployed_block": 20949196
+  },
+  {
+   "token": "0xfb2664f07b6aadd29ea7a59d8859b1aeb8645cda",
+   "symbol": "PATH",
+   "name": "UiPath",
+   "feed": null,
+   "deployed_block": 20946654
+  },
+  {
+   "token": "0x9b23573b156b52565012f5ce02cdf60afbaa70be",
+   "symbol": "PENG",
+   "name": "Penguin Solutions",
+   "feed": null,
+   "deployed_block": 46126
+  },
+  {
+   "token": "0x7066a64c24e4206cd62e83bf198c1e7eb361f51e",
+   "symbol": "PFE",
+   "name": "Pfizer",
+   "feed": null,
+   "deployed_block": 20946617
+  },
+  {
+   "token": "0xaa4d64474c172010ab57719cb9951e6142a100d3",
+   "symbol": "PL",
+   "name": "Planet Labs",
+   "feed": null,
+   "deployed_block": 20948729
+  },
+  {
+   "token": "0x894e1ec2d74ffe5aef8dc8a9e84686accb964f2a",
+   "symbol": "PLTR",
+   "name": "Palantir Technologies",
+   "feed": "0x820abedff239034956b7a9d2f0a331f9f075eb4c",
+   "deployed_block": 48285
+  },
+  {
+   "token": "0xcf6b2d875361be807eafa57458c80f28521f9333",
+   "symbol": "POET",
+   "name": "POET Technologies",
+   "feed": null,
+   "deployed_block": 48235
+  },
+  {
+   "token": "0x237c16d66590f67b886d978acd362eaead8b18c7",
+   "symbol": "POWL",
+   "name": "Powell Industries",
+   "feed": null,
+   "deployed_block": 20948039
+  },
+  {
+   "token": "0x4189f0c66ebbb0bfef1c31f763131361ef32f77c",
+   "symbol": "PR",
+   "name": "Permian Resources",
+   "feed": null,
+   "deployed_block": 48214
+  },
+  {
+   "token": "0x9ab02ead789b6903c3c44d0ed32f9c707cdf12fd",
+   "symbol": "PWR",
+   "name": "Quanta",
+   "feed": null,
+   "deployed_block": 20947762
+  },
+  {
+   "token": "0xc583c60aef9dc401da72cec1b404743a93cea1cc",
+   "symbol": "QBTS",
+   "name": "D-Wave Quantum Inc. Common Stock",
+   "feed": null,
+   "deployed_block": 46113
+  },
+  {
+   "token": "0x0f17206447090e464c277571124dd2688e48aea9",
+   "symbol": "QCOM",
+   "name": "Qualcomm",
+   "feed": null,
+   "deployed_block": 48263
+  },
+  {
+   "token": "0xb7edfe2f33c1ac06830a971dfb559bde8a2a3d76",
+   "symbol": "QNT",
+   "name": "Quantinuum Inc. Class A",
+   "feed": null,
+   "deployed_block": 20947723
+  },
+  {
+   "token": "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68",
+   "symbol": "QQQ",
+   "name": "Invesco QQQ",
+   "feed": "0x80901d846d5d7b030f26b480776ee3b29374c2ae",
+   "deployed_block": 48287
+  },
+  {
+   "token": "0x59818904ab4ce163b3ce4ffb64f2d6ca02c434b4",
+   "symbol": "QUBT",
+   "name": "Quantum Computing",
+   "feed": null,
+   "deployed_block": 48256
+  },
+  {
+   "token": "0xf0c4bf4c582cb3836e98394b1d4e7b7281101be8",
+   "symbol": "RBLX",
+   "name": "Roblox",
+   "feed": null,
+   "deployed_block": 48271
+  },
+  {
+   "token": "0xfde6b5d9bb419b10c23268c74e369abff39c0460",
+   "symbol": "RCAT",
+   "name": "Red Cat",
+   "feed": null,
+   "deployed_block": 20947204
+  },
+  {
+   "token": "0x05b37fb53a299a1b874a619e1c4c404d52c36f4c",
+   "symbol": "RDDT",
+   "name": "Reddit",
+   "feed": null,
+   "deployed_block": 46131
+  },
+  {
+   "token": "0x92ef19e82bd8ff36661de838d5eae7e5cef0effe",
+   "symbol": "RDW",
+   "name": "Redwire",
+   "feed": null,
+   "deployed_block": 48253
+  },
+  {
+   "token": "0x284358abc07f9359f19f4b5b4ac91901be2597ba",
+   "symbol": "RGTI",
+   "name": "Rigetti Computing",
+   "feed": "0x2a045cf1c49c61c166c036d2f06fa2d2d984f765",
+   "deployed_block": 48231
+  },
+  {
+   "token": "0xb1bf26c1d20ff267a4f93550d1e0d06ac40a114b",
+   "symbol": "RIVN",
+   "name": "Rivian Automotive",
+   "feed": null,
+   "deployed_block": 48224
+  },
+  {
+   "token": "0x3b14c39e89d60d627b42a1a4ca45b5bb45fc12e2",
+   "symbol": "RKLB",
+   "name": "Rocket Lab Corporation",
+   "feed": "0x045477bf65aef6f4f2386ad0164579e48381cc74",
+   "deployed_block": 48234
+  },
+  {
+   "token": "0x756bc80af765c82da966a788858d65adf14f3793",
+   "symbol": "RUN",
+   "name": "Sunrun",
+   "feed": null,
+   "deployed_block": 20950216
+  },
+  {
+   "token": "0x95052ddcd5dc25641657424a8cf04834997e1730",
+   "symbol": "SATS",
+   "name": "EchoStar",
+   "feed": null,
+   "deployed_block": 48254
+  },
+  {
+   "token": "0xd63abb2c13d7a8421a8017a712802053568e3c1d",
+   "symbol": "SCHD",
+   "name": "Schwab US Dividend Equity ETF",
+   "feed": null,
+   "deployed_block": 20948840
+  },
+  {
+   "token": "0x92fd66527192e3e61d4ddd13322aa222de86f9b5",
+   "symbol": "SGOV",
+   "name": "iShares 0-3 Month Treasury Bond",
+   "feed": null,
+   "deployed_block": 48290
+  },
+  {
+   "token": "0xf53f66751b1eff985311b693531e3290f600c410",
+   "symbol": "SHOP",
+   "name": "Shopify",
+   "feed": null,
+   "deployed_block": 48273
+  },
+  {
+   "token": "0xbe274710bf3d9567e1b290ef6a5f9f90ca016fd8",
+   "symbol": "SHY",
+   "name": "iShares 1-3 Year Treasury Bond ETF",
+   "feed": null,
+   "deployed_block": 20947135
+  },
+  {
+   "token": "0x77e655e37f4d913fb9540e0d541d824171a60e81",
+   "symbol": "SIMO",
+   "name": "Silicon Motion",
+   "feed": null,
+   "deployed_block": 20948370
+  },
+  {
+   "token": "0x84cab63bc87912e71ad199ff14a0ba45de68fef8",
+   "symbol": "SKHY",
+   "name": "SK hynix Inc. American Depositary Shares",
+   "feed": null,
+   "deployed_block": 8691227
+  },
+  {
+   "token": "0x285b231728c7e4333799183df1094d775246a535",
+   "symbol": "SLS",
+   "name": "SELLAS Life Sciences",
+   "feed": null,
+   "deployed_block": 20949350
+  },
+  {
+   "token": "0x411efb0e7f985935daec3d4c3ebaea0d0ad7d89f",
+   "symbol": "SLV",
+   "name": "iShares Silver Trust",
+   "feed": "0x209b73908e92ae021826ed79609845451ecba2ce",
+   "deployed_block": 48279
+  },
+  {
+   "token": "0xc01aa1fecec0605b13bc84874ff7256c0f5f562a",
+   "symbol": "SMCI",
+   "name": "Super Micro Computer",
+   "feed": null,
+   "deployed_block": 48242
+  },
+  {
+   "token": "0x072f979c2cac8e1391b0162a87fee094bf8744a0",
+   "symbol": "SMH",
+   "name": "VanEck Semiconductor ETF",
+   "feed": null,
+   "deployed_block": 20947096
+  },
+  {
+   "token": "0x1eebee7f74517e0279dfb09d25b0407beec3fdd6",
+   "symbol": "SMR",
+   "name": "NuScale Power",
+   "feed": null,
+   "deployed_block": 20946898
+  },
+  {
+   "token": "0xf6589f11bc40b669e584073f428b05562f568733",
+   "symbol": "SNAP",
+   "name": "Snap",
+   "feed": null,
+   "deployed_block": 20949500
+  },
+  {
+   "token": "0xb90a19ff0af67f7779aff50a882a9cff42446400",
+   "symbol": "SNDK",
+   "name": "Sandisk Corporation",
+   "feed": "0xfb133fa4b7b385802b693a293606682df47109a3",
+   "deployed_block": 48293
+  },
+  {
+   "token": "0xba0cab75495255d0cb58e22b648bfed4ecd1f47e",
+   "symbol": "SNOW",
+   "name": "Snowflake",
+   "feed": null,
+   "deployed_block": 20949878
+  },
+  {
+   "token": "0x98e75885157c80992a8d41b696d8c9c6fb30a926",
+   "symbol": "SOFI",
+   "name": "SoFi Technologies",
+   "feed": null,
+   "deployed_block": 48223
+  },
+  {
+   "token": "0x6e3dfd9f7e1649baa14d25cac18c94d62db10a54",
+   "symbol": "SOUN",
+   "name": "SoundHound AI",
+   "feed": null,
+   "deployed_block": 20950099
+  },
+  {
+   "token": "0x75742c18bc1f1c5c5f448f4c9d9c6f66dafaaa38",
+   "symbol": "SOXX",
+   "name": "iShares Semiconductor ETF",
+   "feed": null,
+   "deployed_block": 48241
+  },
+  {
+   "token": "0x4a0e65a3eccec6dbe60ae065f2e7bb85fae35eea",
+   "symbol": "SPCX",
+   "name": "Space Exploration Technologies Corp. Class A Common Stock",
+   "feed": "0xb265810950ba6c5c0ff821c9963014a56fd8bffb",
+   "deployed_block": 58487
+  },
+  {
+   "token": "0xad622320e520de39e72d41ef07438c3fd3354875",
+   "symbol": "SPMO",
+   "name": "Invesco S&P 500 Momentum ETF",
+   "feed": null,
+   "deployed_block": 48261
+  },
+  {
+   "token": "0x117cc2133c37b721f49de2a7a74833232b3b4c0c",
+   "symbol": "SPY",
+   "name": "SPDR S&P 500 ETF Trust",
+   "feed": "0x319724394d3a0e3669269846abe664cd621f9f6a",
+   "deployed_block": 48294
+  },
+  {
+   "token": "0xb1969f6604ca1ae7a2cd3f1827876e914594ca2d",
+   "symbol": "TE",
+   "name": "T1 Energy",
+   "feed": null,
+   "deployed_block": 20950404
+  },
+  {
+   "token": "0x5b97476b922f3305131b8f0b9d333172e87f4aae",
+   "symbol": "TEAM",
+   "name": "Atlassian Corporation",
+   "feed": null,
+   "deployed_block": 20950133
+  },
+  {
+   "token": "0xb1cc0ec7db69cf43539119814df40071b9d61793",
+   "symbol": "TEM",
+   "name": "Tempus AI",
+   "feed": null,
+   "deployed_block": 20950437
+  },
+  {
+   "token": "0x2778c5024d5ca2cdb0f8ead671ffc69963adcd9c",
+   "symbol": "TER",
+   "name": "Teradyne",
+   "feed": null,
+   "deployed_block": 20948475
+  },
+  {
+   "token": "0x89776d4cd68193597a2fc132cfac1fde36ccea8a",
+   "symbol": "TSEM",
+   "name": "Tower Semiconductor",
+   "feed": null,
+   "deployed_block": 48245
+  },
+  {
+   "token": "0x322f0929c4625ed5bad873c95208d54e1c003b2d",
+   "symbol": "TSLA",
+   "name": "Tesla",
+   "feed": "0x4a1166a659a55625345e9515b32adecea5547c38",
+   "deployed_block": 34767
+  },
+  {
+   "token": "0x58ffe4a942d3885baa22d7520691f611ef09e7aa",
+   "symbol": "TSM",
+   "name": "Taiwan Semiconductor Manufacturing",
+   "feed": "0x874cf94aa8ec88fd9560094dd065f2fb3e41fc2f",
+   "deployed_block": 48257
+  },
+  {
+   "token": "0x0b5fb4031cae9163db10b169ee72685f0edc8545",
+   "symbol": "TTD",
+   "name": "Trade Desk",
+   "feed": null,
+   "deployed_block": 20948763
+  },
+  {
+   "token": "0x5e81213613b6b86eab4c6c50d718d34359459786",
+   "symbol": "TTWO",
+   "name": "Take-Two Interactive Software",
+   "feed": null,
+   "deployed_block": 46123
+  },
+  {
+   "token": "0x0e6e67ba88e7b5d9b67636a215c76779b948de79",
+   "symbol": "UMC",
+   "name": "United Microelectronics",
+   "feed": null,
+   "deployed_block": 48240
+  },
+  {
+   "token": "0xcf364ea52787e289de6f32077834056e3e70d6a8",
+   "symbol": "UNH",
+   "name": "UnitedHealth",
+   "feed": null,
+   "deployed_block": 20949016
+  },
+  {
+   "token": "0xf23250dac154d05bb671cb0d0ebef3c635c79ce2",
+   "symbol": "UPS",
+   "name": "UPS",
+   "feed": null,
+   "deployed_block": 48225
+  },
+  {
+   "token": "0xd917b029c761d264c6a312bbbcda868658ef86a6",
+   "symbol": "USAR",
+   "name": "USA Rare Earth",
+   "feed": null,
+   "deployed_block": 48291
+  },
+  {
+   "token": "0xa30fa36db767ad9ed3f7a60fc79526fb4d56d344",
+   "symbol": "USO",
+   "name": "United States Oil Fund",
+   "feed": "0x75a9c76ef439e2c7c2e5a34ab105ecfe3766431c",
+   "deployed_block": 48277
+  },
+  {
+   "token": "0x6006ed4b2f94110851ff7509d97d034f0eed9226",
+   "symbol": "VICR",
+   "name": "Vicor",
+   "feed": null,
+   "deployed_block": 20947687
+  },
+  {
+   "token": "0xfa78c12e6488814a0262e4e802749a4a737d5fb7",
+   "symbol": "VRT",
+   "name": "Vertiv",
+   "feed": null,
+   "deployed_block": 20949841
+  },
+  {
+   "token": "0x26dcbfb34fc83cabd6990f449674efdc6097ff85",
+   "symbol": "VSAT",
+   "name": "ViaSat",
+   "feed": null,
+   "deployed_block": 20946783
+  },
+  {
+   "token": "0x561e2a49212b7ccf47f2744ccb83e200722fadbc",
+   "symbol": "VST",
+   "name": "Vistra",
+   "feed": null,
+   "deployed_block": 20949579
+  },
+  {
+   "token": "0x0594134df3f171a354d9c85ebd65b7a6148f6d09",
+   "symbol": "VTI",
+   "name": "Vanguard Morningstar Total Stock Market ETF",
+   "feed": null,
+   "deployed_block": 20950257
+  },
+  {
+   "token": "0x82da4646242e1d962e96e932269dc644c94a9caa",
+   "symbol": "WDAY",
+   "name": "Workday",
+   "feed": null,
+   "deployed_block": 46112
+  },
+  {
+   "token": "0xf52597345a8edf418bc4071b4a35112472277d3e",
+   "symbol": "WDC",
+   "name": "Western Digital",
+   "feed": null,
+   "deployed_block": 20948407
+  },
+  {
+   "token": "0x348be1a8663f15edde5cdf8a96bb69078f7ab6fd",
+   "symbol": "WULF",
+   "name": "TeraWulf",
+   "feed": null,
+   "deployed_block": 20949088
+  },
+  {
+   "token": "0x9e7abd3c9139d14e4c86dce0e455aab7a0c2fb3e",
+   "symbol": "WYFI",
+   "name": "WhiteFiber, Inc.",
+   "feed": null,
+   "deployed_block": 20950470
+  },
+  {
+   "token": "0x15cd20759ce7f3285c29a319de2d1a2e098c6f43",
+   "symbol": "XLK",
+   "name": "State Street Technology Select Sector SPDR ETF",
+   "feed": null,
+   "deployed_block": 48264
+  },
+  {
+   "token": "0xa8eb3bccbf2017ee7cbfb652eb51cf2e1b153289",
+   "symbol": "XNDU",
+   "name": "Xanadu Quantum",
+   "feed": null,
+   "deployed_block": 46135
+  },
+  {
+   "token": "0xf9b46d3d1b22199d4d1025a9cedb540a33f1a2d5",
+   "symbol": "XOM",
+   "name": "ExxonMobil Holdings Corporation",
+   "feed": null,
+   "deployed_block": 48259
+  },
+  {
+   "token": "0x44c4f142009036cf477ed2d09932051843137cf1",
+   "symbol": "ZM",
+   "name": "Zoom",
+   "feed": null,
+   "deployed_block": 48221
+  },
+  {
+   "token": "0x7dc013eb55e436f30d7ed1afe4e36d6e45e3c3f7",
+   "symbol": "ZS",
+   "name": "Zscaler",
+   "feed": null,
+   "deployed_block": 48232
+  }
+ ]
+}
