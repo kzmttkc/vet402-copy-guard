@@ -5,20 +5,20 @@ One page: who pays whom, where each check happens, and what stays on which chain
 ```mermaid
 flowchart TB
   subgraph person["The person"]
-    P["Principal<br/>signs mandate/mandate.json<br/>writes limits.json"]
+    P["Principal (an address)<br/>signs mandate/mandate.json<br/>writes limits.json"]
   end
 
   subgraph agent["copy-guard, the autonomous agent (agent/)"]
     W["1. See a move<br/>ERC-20 Transfer logs of a watched wallet"]
     E["2. Get the evidence<br/>vet402 /rwa record, feed value, venue"]
-    R["3. Decide<br/>18 fixed rules, no language model<br/>FULL / REDUCED / NONE"]
-    L["4. Practice ledger<br/>entry, size, exit, card<br/>next to a blind copy"]
+    R["3. Decide<br/>fixed rules, no language model<br/>FULL / REDUCED / NONE"]
+    L["4. Practice ledger<br/>entry, size, exit, card<br/>next to a ticker copy"]
   end
 
   subgraph cre["Chainlink CRE workflows (cre workflow simulate)"]
     G["x402 gate (agent/gate)<br/>402, 0.01 USDG, then run"]
     V["rwa-verify<br/>record against its anchor<br/>MATCH / MISMATCH"]
-    T["token-check<br/>real Stock Token or look-alike<br/>share multiplier"]
+    T["token-check<br/>the issuer's Stock Token, or a different<br/>token under its ticker, and the share multiplier"]
     A["trail-anchor<br/>rerun the rules of one decision,<br/>or the Merkle root of a walk"]
   end
 
@@ -65,12 +65,14 @@ flowchart TB
 
 The agent can pay one address. `pickAccept` refuses any other payee, token, chain or price before a signature exists, and the Permit2 witness pins the recipient inside the signed message. The cap is 1 USDG in code. The user's `limits.json` can lower it and cannot raise it.
 
+The principal is an address. Nothing here ties it to a legal identity. Whether the principal has signed the mandate yet is stated at the top of the mandate section of the README and of the page.
+
 ## Where each check happens
 
 | Check | Where | What it refuses |
 |---|---|---|
 | The record is the one vet402 anchored | CRE `rwa-verify` | one changed character, another contract, operator, wallet or date |
-| The token is the issuer's real Stock Token | CRE `token-check`, straight from the chain | a look-alike with a copied ticker or name, without asking vet402 |
+| The token is the issuer's Stock Token | CRE `token-check`, straight from the chain | a different token that carries a listed ticker or name at another address, without asking vet402 |
 | The decision follows from its inputs | the agent, then CRE `trail-anchor`, then `verify.mjs` | a conclusion, a size or a card the rules do not give |
 | The person authorized it | rule M1 in every decision | no signature, another signer, other rules, other limits, another payment key, another date |
 | The size stays inside the user's limits | rules L1 and L2, and the sizes in `limits.json` | more than the daily limit, more open positions than allowed |
@@ -90,7 +92,7 @@ The testnet receivers trust CRE's simulation forwarder, which accepts reports fr
 
 1. `bun agent/walk.ts` reads each wallet's record once from vet402's free route and lists the moves the record names as evidence.
 2. For each move, in block order, it reads the receipt, the block time, the venue the Stock Token came from and the Chainlink feed's last value at or before that block.
-3. The 18 rules give a size. The practice book opens, or does not open, a position. Earlier positions leave when the copied wallet sells, when the feed crosses the stop or the target, or when the time limit passes.
+3. The rules give a size. The practice book opens, or does not open, a position. Earlier positions leave when the copied wallet sells, when the feed crosses the stop or the target, or when the time limit passes.
 4. Each decision becomes one JSON trail with a card. Its keccak256 is a leaf.
 5. The CRE workflow `trail-anchor` recomputes the Merkle root from the leaves and writes it once to `LedgerRootReceiver`.
 6. `node scripts/build-page.mjs` puts the ledger into `docs/index.html`.

@@ -19,7 +19,7 @@ Read these in order. Every path is on the gate's own host.
 ## Quick setup
 
 ```bash
-git clone <REPO_URL> vet402-bli && cd vet402-bli
+git clone https://github.com/kzmttkc/vet402-copy-guard && cd vet402-copy-guard
 cd agent && bun install && cd ..
 bun agent/gate/server.ts                 # http://127.0.0.1:4021, CRE simulated
 bun agent/gate/server.ts --broadcast     # also writes the verdict to Robinhood Testnet

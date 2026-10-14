@@ -1,10 +1,12 @@
-> This is the README as it stood on 2026-10-13 UTC (commit `42d461f`), kept as the detailed record of the first build: the `rwa-verify` workflow, its simulation logs, the paid run of 2026-10-08 and the dry run before it. `node verify.mjs --only paid-run` rechecks what it describes. The current README is one level up.
+> This is the README of 2026-10-13 UTC (commit `42d461f`), kept as the detailed record of the first build: the `rwa-verify` workflow, its simulation logs, the paid run of 2026-10-08 and the dry run before it. `node verify.mjs --only paid-run` rechecks what it describes. The current README is one level up.
+>
+> Two things were changed afterwards and nothing else. The clone address is now the public one. And the words fake and look-alike were replaced. The text of 2026-10-13 used them for a token that shares a ticker with a Stock Token. They say more than the chain shows, so this page now says what the chain does show: a different token with the same ticker, at an address the issuer did not list. The rule file `agent/rules.ts` and the vet402 record still use their own labels, `fake` and look-alike. Those are labels about an address and the issuer's list, and they say nothing about who made a token or why.
 
 # vet402 copy-guard: an agent that pays for evidence before it acts, and a record anyone can recheck
 
-A fake "NVDA" token sent to a wallet looks like a real stock purchase to anyone who copies that wallet. People lose money to a look-alike they had no way to tell apart, which makes fake tickers a consumer-harm problem before they are a technical one.
+A token with the ticker NVDA that is sent to a wallet looks like a stock purchase to anyone who copies that wallet by ticker. A ticker is not unique on a chain where anyone can deploy a token, which makes this a consumer-protection problem before it is a technical one.
 
-In this repo an autonomous agent pays 0.01 USDG over x402 for a wallet's vet402 /rwa record, has a Chainlink CRE workflow re-verify that record against its onchain anchor, and then declines to copy any move that involves a fake. It decides by 13 fixed rules and uses no language model, so the same inputs always give the same conclusion. It writes down every rule it applied and has a second CRE workflow put the hash of that reasoning trail onchain.
+In this repo an autonomous agent pays 0.01 USDG over x402 for a wallet's vet402 /rwa record, has a Chainlink CRE workflow re-verify that record against its onchain anchor, and then declines to copy any move in a token that carries a listed ticker at an address the issuer did not list. It decides by 13 fixed rules and uses no language model, so the same inputs always give the same conclusion. It writes down every rule it applied and has a second CRE workflow put the hash of that reasoning trail onchain.
 
 Nobody has to take my word, the agent's or a server's for any of it. One command, with no key, no account and nothing to install, rechecks the payment, the record and all three decisions against two public chains.
 
@@ -15,7 +17,7 @@ Step 1 needs Node 20 or newer and a copy of this repo. Steps 2 to 4 need only a 
 **1. Run the recheck** from the root of the repo.
 
 ```bash
-git clone <REPO_URL> vet402-bli && cd vet402-bli
+git clone https://github.com/kzmttkc/vet402-copy-guard && cd vet402-copy-guard
 node verify.mjs
 ```
 
@@ -113,13 +115,13 @@ https://robinhoodchain.blockscout.com/tx/0x15f9ed8ae5dd466c2f35021c9f1291e7a624a
 
 Look at the one log, `Anchored`, emitted by `RwaAnchor`. Its `factsHash` is `0x9d0e83d968786570beebf0d322b36e0836dc81ebe896bd186304405ba8f721ee`, the value step 1 recomputed from `rwa-verify/fixtures/anchored-record.json`.
 
-**What this run shows and what it leaves open.** I paid for it myself. The agent's wallet and the wallet that received the 0.01 USDG are both mine. The payment shows that the x402 path settles on Robinhood Chain and that every step leaves evidence a stranger can recheck. It does not show a customer. All three decisions are DO_NOT_COPY because the wallet I watched has an incomplete history and a realized loss, and two of the three moves involve a fake token. The COPY path is covered by the tests.
+**What this run shows and what it leaves open.** I paid for it myself. The agent's wallet and the wallet that received the 0.01 USDG are both mine. The payment shows that the x402 path settles on Robinhood Chain and that every step leaves evidence a stranger can recheck. It does not show a customer. All three decisions are DO_NOT_COPY because the wallet I watched has an incomplete history and a realized loss, and two of the three moves are in a token that carries a listed ticker at another address. The COPY path is covered by the tests.
 
 ## How it fits together
 
 The first half of this repo is a Chainlink CRE workflow that re-checks a vet402 /rwa record. The answer is MATCH or MISMATCH, with the reason.
 
-1. [vet402 /rwa](https://vet402.com/rwa) rebuilds a Robinhood Chain wallet's Stock Token record from public chain data, names the fake look-alike tokens and anchors the record's hash onchain in `RwaAnchor` ([`0x1955…c22d`](https://robinhoodchain.blockscout.com/address/0x1955137e7773f2459eb75fb88842026c6517c22d)).
+1. [vet402 /rwa](https://vet402.com/rwa) rebuilds a Robinhood Chain wallet's Stock Token record from public chain data, names the tokens that carry a listed ticker at another address and anchors the record's hash onchain in `RwaAnchor` ([`0x1955…c22d`](https://robinhoodchain.blockscout.com/address/0x1955137e7773f2459eb75fb88842026c6517c22d)).
 2. The CRE workflow takes a record, recomputes its hash the same way vet402's one-file checker [`verify-record.mjs`](https://github.com/kzmttkc/vet402/blob/main/packages/rwa/scripts/verify-record.mjs) does, and reads the anchor from Robinhood Chain over a public RPC.
 3. It writes the verdict (MATCH or MISMATCH plus one bit per failed check) to a small receiver contract, so a lawyer, an auditor or an autonomous agent can point to it.
 
@@ -166,7 +168,7 @@ The checks, each with its own bit in `reasons`:
 |---|---|
 | RPC is Robinhood Chain 4663 | 2048 |
 | anchor tx exists and succeeded | 1 |
-| it has an `Anchored` log from RwaAnchor (a log from a look-alike contract is ignored) | 2 |
+| it has an `Anchored` log from RwaAnchor (a log from any other contract is ignored) | 2 |
 | RwaAnchor's code is the pinned build with no owner and no upgrade path | 4 |
 | the anchor was written by the operator the record names | 8 |
 | subject = keccak of the wallet | 16 |
@@ -242,7 +244,7 @@ The receiver was deployed to trust CRE's simulation forwarder (`MockKeystoneForw
 
 ## The agent: copy-guard
 
-A copy-trading bot copies what a wallet appears to do. On Robinhood Chain a wallet "receives NVDA" whenever anyone sends it a fake NVDA, and a fake USDG log can name the wallet as the sender of a payment it never made. copy-guard is an agent that checks before it would copy, and writes down why, so a person can recheck the decision later without trusting the agent.
+A copy-trading bot copies what a wallet appears to do. On Robinhood Chain a wallet "receives NVDA" whenever anyone sends it a token with the ticker NVDA, and a log from a token named USDG can name the wallet as the sender of a payment it never made. copy-guard is an agent that checks before it would copy, and writes down why, so a person can recheck the decision later without trusting the agent.
 
 For each new move of a watched wallet it:
 
@@ -264,10 +266,10 @@ The agent cannot get a conclusion recorded that its own rules do not give.
 | | A3 the record is about the watched wallet on chain 4663 | HOLD |
 | | A4 the CRE workflow says MATCH for the wallet's newest anchor | HOLD |
 | | A5 the record replays to its own balances (`r1_status` is not `unverified`) | HOLD |
-| | A6 every look-alike token is left out of the figures and none waits for review | HOLD |
+| | A6 every token under a listed ticker at another address is left out of the figures and none waits for review | HOLD |
 | B, does the record cover the move | B1 the record was built at or after the move's block | HOLD |
-| | B2 the record says what every moved token is: Stock Token, USDG or a named fake | HOLD |
-| C, should the move be copied | C1 no moved token is a look-alike the record names as fake | DO_NOT_COPY |
+| | B2 the record says what every moved token is: Stock Token, USDG or a named token under a listed ticker at another address | HOLD |
+| C, should the move be copied | C1 no moved token is one the record names as carrying a listed ticker at another address | DO_NOT_COPY |
 | | C2 the move moves a Robinhood Stock Token | DO_NOT_COPY |
 | | C3 the wallet's track record is complete (`r1_status` `reconstructed`) | DO_NOT_COPY |
 | | C4 the wallet has a realized profit | DO_NOT_COPY |
@@ -288,8 +290,8 @@ The agent replayed three real moves of the demo wallet with `--pay`. Everything 
 | Move | What a naive bot sees | Conclusion | Failed rules | Trail hash | Trail on Robinhood Testnet |
 |---|---|---|---|---|---|
 | [`0x0eac7685…13f8`](https://robinhoodchain.blockscout.com/tx/0x0eac7685c6c57c3929d053bea9b5fa4b9879e2afc798848ee2b8ccf0e56a13f8) | a QQQ buy for 5,000 USDG | DO_NOT_COPY | C3 partial track record, C4 realized -273.01 | `0x26fa5a0f…67b420` | [`0x02239201…778e92`](https://explorer.testnet.chain.robinhood.com/tx/0x022392017a8803f9a19c0ef0fba3ac495437584cb3d31f0372b0363ffb778e92) |
-| [`0x1b838f40…b51b`](https://robinhoodchain.blockscout.com/tx/0x1b838f40a43d54b7ce3364f08f723516170be2d03fdbcd6ab801c79f7f77b51b) | 25 NVDA received | DO_NOT_COPY | C1 the token is a fake imitating NVDA, then C2 to C5 | `0x925ab3b6…38e8aa` | [`0x36dead3c…7fca7b`](https://explorer.testnet.chain.robinhood.com/tx/0x36dead3cf93da183f8b25b5b8f87c6fb36083e52ff11c61a23eda9c8d37fca7b) |
-| [`0xf7cb51a2…8717`](https://robinhoodchain.blockscout.com/tx/0xf7cb51a25f62bfbe63760404055b36d380eed0d47c68f99cdccaa17e9c478717) | 20,000 USDG sent | DO_NOT_COPY | C1 the token is a fake imitating USDG, then C2 to C5 | `0x527e16e2…cc1801` | [`0xfd3df929…563199`](https://explorer.testnet.chain.robinhood.com/tx/0xfd3df9297c75c65df6651251485c355b31d44ae692db652ced3c1e68c9563199) |
+| [`0x1b838f40…b51b`](https://robinhoodchain.blockscout.com/tx/0x1b838f40a43d54b7ce3364f08f723516170be2d03fdbcd6ab801c79f7f77b51b) | 25 NVDA received | DO_NOT_COPY | C1 not the Stock Token NVDA, a different token with the same ticker, then C2 to C5 | `0x925ab3b6…38e8aa` | [`0x36dead3c…7fca7b`](https://explorer.testnet.chain.robinhood.com/tx/0x36dead3cf93da183f8b25b5b8f87c6fb36083e52ff11c61a23eda9c8d37fca7b) |
+| [`0xf7cb51a2…8717`](https://robinhoodchain.blockscout.com/tx/0xf7cb51a25f62bfbe63760404055b36d380eed0d47c68f99cdccaa17e9c478717) | 20,000 USDG sent | DO_NOT_COPY | C1 not USDG, a different token whose name reads USDG, then C2 to C5 | `0x527e16e2…cc1801` | [`0xfd3df929…563199`](https://explorer.testnet.chain.robinhood.com/tx/0xfd3df9297c75c65df6651251485c355b31d44ae692db652ced3c1e68c9563199) |
 
 Each `DecisionRecorded` event names the payment tx, the move, the CRE verdict tx and the hash of the record, so the event alone ties the decision to what was paid for. `node verify.mjs` rechecks all of it.
 
@@ -302,8 +304,8 @@ The payment wallet held nothing at that point, so the agent ran in its default d
 | Move | What a naive bot sees | Conclusion | Failed rules | Trail on Robinhood Testnet |
 |---|---|---|---|---|
 | [`0x0eac7685…13f8`](https://robinhoodchain.blockscout.com/tx/0x0eac7685c6c57c3929d053bea9b5fa4b9879e2afc798848ee2b8ccf0e56a13f8) | a QQQ buy for 5,000 USDG | DO_NOT_COPY | C3 partial track record, C4 realized -273.01 | [`0x41823517…2a46e1`](https://explorer.testnet.chain.robinhood.com/tx/0x418235176be8d19d4619fd054a1e98d44d282b5facb0a40041e7cc2f1e2a46e1) |
-| [`0x1b838f40…b51b`](https://robinhoodchain.blockscout.com/tx/0x1b838f40a43d54b7ce3364f08f723516170be2d03fdbcd6ab801c79f7f77b51b) | 25 NVDA received | DO_NOT_COPY | C1 the token is a fake imitating NVDA, then C2 to C5 | [`0xa4bc09a5…70452f`](https://explorer.testnet.chain.robinhood.com/tx/0xa4bc09a5f80028057f6a0934f015b5d8a6c6d058435edc11e0d61232c770452f) |
-| [`0xf7cb51a2…8717`](https://robinhoodchain.blockscout.com/tx/0xf7cb51a25f62bfbe63760404055b36d380eed0d47c68f99cdccaa17e9c478717) | 20,000 USDG sent | DO_NOT_COPY | C1 the token is a fake imitating USDG, then C2 to C5 | [`0x339123b0…7e8cc5`](https://explorer.testnet.chain.robinhood.com/tx/0x339123b04782cc88216fb456ee253d148b173ec1472ea4c750047b40627e8cc5) |
+| [`0x1b838f40…b51b`](https://robinhoodchain.blockscout.com/tx/0x1b838f40a43d54b7ce3364f08f723516170be2d03fdbcd6ab801c79f7f77b51b) | 25 NVDA received | DO_NOT_COPY | C1 not the Stock Token NVDA, a different token with the same ticker, then C2 to C5 | [`0xa4bc09a5…70452f`](https://explorer.testnet.chain.robinhood.com/tx/0xa4bc09a5f80028057f6a0934f015b5d8a6c6d058435edc11e0d61232c770452f) |
+| [`0xf7cb51a2…8717`](https://robinhoodchain.blockscout.com/tx/0xf7cb51a25f62bfbe63760404055b36d380eed0d47c68f99cdccaa17e9c478717) | 20,000 USDG sent | DO_NOT_COPY | C1 not USDG, a different token whose name reads USDG, then C2 to C5 | [`0x339123b0…7e8cc5`](https://explorer.testnet.chain.robinhood.com/tx/0x339123b04782cc88216fb456ee253d148b173ec1472ea4c750047b40627e8cc5) |
 
 All three passed every A and B rule. The CRE re-verification of the newest anchor (`0x15f9…5c7f`) said MATCH in [`0x6b85468c…d39e47`](https://explorer.testnet.chain.robinhood.com/tx/0x6b85468c2549ae1ff225c506b71c028711dcc4b594a420eb99d2680d84d39e47). The COPY path is covered by the tests: the same QQQ buy on a record with a complete, profitable history gives a paper buy of 0.133023 QQQ at 751.7499 USD.
 
