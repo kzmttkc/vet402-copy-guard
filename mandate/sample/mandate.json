@@ -1,0 +1,33 @@
+{
+  "mandate_version": 1,
+  "title": "SAMPLE. vet402 copy-guard practice mandate signed with a testnet-only key. Not the real principal.",
+  "principal": "0xBB621a68f7C142CD340C5D5e71056Ecd42f8f48D",
+  "agent": {
+    "name": "vet402 copy-guard",
+    "payment_key": "0xc380D9F41D90765A4820429B9Da151889E8bED94"
+  },
+  "scope": {
+    "practice_only": true,
+    "may": [
+      "read public chain data and vet402 /rwa records",
+      "pay for evidence over x402 in USDG on Robinhood Chain, within the limits named below",
+      "record practice trades and write the hash of each reasoning trail onchain"
+    ],
+    "may_not": [
+      "place a real trade",
+      "pay any address other than 0x973cD8a91A771C2C04C6036888F8175D6b4F6227",
+      "move any asset other than the USDG it pays for evidence",
+      "act on a move when a rule of group A, B or M fails"
+    ]
+  },
+  "rules": {
+    "id": "copy-guard",
+    "version": 2,
+    "source_keccak": "0x2abeff7f6a488b520e458445381413f81507fc545c1dc466fe27d54250e93b12",
+    "limits_rules_keccak": "0x3edb479e44b85b0908a641298dced1951ae36afcd8ca839779505abc2d21355b"
+  },
+  "limits_keccak": "0xe85c6299d22a6ea61331dfa8e7281d38cd3c42cfdeb975333f508ab461c61df1",
+  "chain_id": 4663,
+  "valid_from": "2026-10-14T00:00:00Z",
+  "valid_until": "2026-12-31T23:59:59Z"
+}

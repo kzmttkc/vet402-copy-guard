@@ -1,0 +1,18 @@
+{
+  "limits_version": 1,
+  "practice_only": true,
+  "position": {
+    "max_usd_per_position": "100.00",
+    "max_usd_per_day": "300.00",
+    "max_open_positions": 5
+  },
+  "exit": {
+    "take_profit_pct": "10",
+    "stop_loss_pct": "5",
+    "max_holding_days": 30
+  },
+  "payments": {
+    "max_usdg_per_decision": "0.01",
+    "max_usdg_total": "1.00"
+  }
+}

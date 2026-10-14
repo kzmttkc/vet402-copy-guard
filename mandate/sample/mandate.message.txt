@@ -1,0 +1,1 @@
+vet402 copy-guard mandate v1: I, 0xBB621a68f7C142CD340C5D5e71056Ecd42f8f48D, authorize the agent whose payment key is 0xc380D9F41D90765A4820429B9Da151889E8bED94 to act for me under the mandate with keccak256 0x0fb67d7e643657842f461ec3d0e5c13879926f9518c8e3939071f6f0080d2d61. Practice trades only: yes. Valid from 2026-10-14T00:00:00Z until 2026-12-31T23:59:59Z.
