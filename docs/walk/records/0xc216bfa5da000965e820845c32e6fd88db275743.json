@@ -1,0 +1,7 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0xc216bfa5da000965e820845c32e6fd88db275743?chain=4663",
+  "http_status": 422,
+  "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xC216BfA5dA000965E820845c32e6FD88DB275743\",\"chain_id\":4663,\"as_of_block\":88073763,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":4,\"held\":[\"GLD\",\"GME\",\"INTC\",\"PLTR\"],\"limit\":{\"kind\":\"transactions\",\"ma",
+  "x_facts_hash": "",
+  "facts": null
+}

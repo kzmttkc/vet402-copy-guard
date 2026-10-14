@@ -1,0 +1,7 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x498752d5fa0600cbd613074c151abe15b3fec7cb?chain=4663",
+  "http_status": 422,
+  "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x498752D5fa0600CBd613074C151Abe15B3FeC7CB\",\"chain_id\":4663,\"as_of_block\":88077555,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":13,\"held\":[\"AAPL\",\"AMD\",\"COIN\",\"GOOGL\",\"INTC\",\"MSFT\",\"MU\",\"NVDA\",\"PLTR\"",
+  "x_facts_hash": "",
+  "facts": null
+}

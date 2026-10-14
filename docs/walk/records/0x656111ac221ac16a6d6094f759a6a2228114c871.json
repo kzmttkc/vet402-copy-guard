@@ -1,0 +1,7 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x656111ac221ac16a6d6094f759a6a2228114c871?chain=4663",
+  "http_status": 422,
+  "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x656111aC221ac16a6d6094f759a6a2228114c871\",\"chain_id\":4663,\"as_of_block\":88076302,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":6,\"held\":[\"AAPL\",\"BABA\",\"NVDA\",\"SPCX\",\"SPY\",\"TSLA\"],\"limit\":{\"kind\":\"tr",
+  "x_facts_hash": "",
+  "facts": null
+}

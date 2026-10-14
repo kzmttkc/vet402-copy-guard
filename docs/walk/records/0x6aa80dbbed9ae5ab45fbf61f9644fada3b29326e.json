@@ -1,0 +1,7 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x6aa80dbbed9ae5ab45fbf61f9644fada3b29326e?chain=4663",
+  "http_status": 422,
+  "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x6aa80DbBed9ae5aB45FbF61f9644faDA3b29326E\",\"chain_id\":4663,\"as_of_block\":88071286,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":0,\"held\":[],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":751},\"deta",
+  "x_facts_hash": "",
+  "facts": null
+}

@@ -1,0 +1,7 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x51c72848c68a965f66fa7a88855f9f7784502a7f?chain=4663",
+  "http_status": 422,
+  "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x51C72848c68a965f66FA7a88855F9f7784502a7F\",\"chain_id\":4663,\"as_of_block\":88070884,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":22,\"held\":[\"AAPL\",\"AMC\",\"AMD\",\"COIN\",\"CRCL\",\"GLD\",\"GME\",\"GOOGL\",\"HIMS\",",
+  "x_facts_hash": "",
+  "facts": null
+}

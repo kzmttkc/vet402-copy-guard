@@ -1,0 +1,7 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x62fc80823e766e4cc7cce3ca745d6bb39fbcf4ca?chain=4663",
+  "http_status": 422,
+  "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x62FC80823e766e4Cc7ccE3ca745d6Bb39fbcF4cA\",\"chain_id\":4663,\"as_of_block\":88076551,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":18,\"held\":[\"AAPL\",\"CCL\",\"COIN\",\"CRCL\",\"CRWV\",\"FICO\",\"IBM\",\"LULU\",\"MSFT\"",
+  "x_facts_hash": "",
+  "facts": null
+}

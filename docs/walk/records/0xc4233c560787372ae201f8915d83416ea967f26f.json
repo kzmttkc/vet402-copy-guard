@@ -1,0 +1,190 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0xc4233c560787372ae201f8915d83416ea967f26f?chain=4663",
+  "http_status": 200,
+  "reason": "",
+  "x_facts_hash": "0x7599e89b2d75184c544e82ce766370dfee6b15190e31ed066749f257ea5b1992",
+  "facts": {
+    "address": "0xc4233C560787372aE201f8915d83416ea967f26f",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T04:27:59.000Z",
+    "as_of_block": 88080553,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "BB",
+        "MSTR",
+        "QQQ"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "MSTR",
+        "name": "Strategy Inc.",
+        "token": "0xec262a75e413fAfD0dF80480274532C79D42da09",
+        "canonical": true,
+        "raw": "2454823064135",
+        "shares_ui": "0.00000245",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x396118bdFB181e6240E74D243F266B061c0edc3D",
+        "feed_answer": "15388225983",
+        "feed_updated_at": "2026-10-14T02:57:31.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "2454823064135",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "QQQ",
+        "name": "Invesco QQQ",
+        "token": "0xD5f3879160bc7c32ebb4dC785F8a4F505888de68",
+        "canonical": true,
+        "raw": "344175880132",
+        "shares_ui": "0.00000034",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x80901d846d5D7B030F26B480776EE3b29374C2ae",
+        "feed_answer": "74360306549",
+        "feed_updated_at": "2026-10-14T00:08:41.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "344175880132",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 69210998,
+            "time": "2026-09-22T00:00:50.000Z",
+            "effective_at": "2026-09-22T00:10:34.000Z",
+            "tx": "0x6331915e6ddac124b1ea59b0db720892615fbd8ffbbea59cc9772147e326bba6",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000700791241405425",
+            "ratio": "1.000700791241405425",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "BB",
+        "name": "Blackberry",
+        "token": "0x48E39E56aCdbA37b09020C0b734A613C9a2f100A",
+        "canonical": true,
+        "raw": "49726165427699",
+        "shares_ui": "0.00004972",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "49726165427699",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 6,
+      "univ4": 0,
+      "other_unparsed": 0
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": null,
+    "mdd_usd": null,
+    "gaps": [
+      "unknown_cost_lots",
+      "no_feed",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0x69E7778d46713e17572D610bDaca3943aa4e6219",
+        "symbol_raw": "SPY",
+        "name_raw": "Spy Chip",
+        "imitates": "SPY",
+        "reasons": [
+          "symbol_copies_stock_token",
+          "code_hash_differs",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "received",
+        "counterparty": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+        "mimics": null,
+        "first_seen_block": 87804135,
+        "tx": "0x4a65d5c19648e480017cfedca0c95966b52f73be9792fc053b6372d15181f750",
+        "amount_raw": "2704180709179182200103235",
+        "transfers_seen": 7,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 88080553,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 22,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0xc81ff3943b9acfd1bdae19eb7e12f0365c15ba2d2fbf213cd2ba96838611ea02",
+        "0x42dd21ecbd2f63c41c9f608ddc0cd845af53699033029f9df53b94c89a11e914",
+        "0xdfc3ddc6190ed9b6456b2bd24f9d7fc21700bd73fa3fd858036891a3f33eec0d",
+        "0x58b0b5c723d7ec35840b7d3c7702f12f50663fd0a888a2a8f948f9e570ea8c3d",
+        "0xb12022e8922ac0c1665023c84eff1dd76e08da10b29ff39195d5021d8a4f17d3",
+        "0xdbf0385ecc3bce6fa30c40027cbaf0d1b6bf0d6ee5b9db3f110860bc86f2e3e9"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

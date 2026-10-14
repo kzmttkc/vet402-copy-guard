@@ -1,0 +1,7 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0xdf24400adbb93a0838a3b69a58d9e349d9a0d650?chain=4663",
+  "http_status": 422,
+  "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xdF24400aDBb93a0838A3b69a58d9e349d9A0D650\",\"chain_id\":4663,\"as_of_block\":88074246,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"AMZN\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":1002",
+  "x_facts_hash": "",
+  "facts": null
+}

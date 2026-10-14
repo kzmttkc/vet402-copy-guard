@@ -1,0 +1,189 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x9a26c0dcd3d3f6f194301a17a66232b84cd1e5f3?chain=4663",
+  "http_status": 200,
+  "reason": "",
+  "x_facts_hash": "0xd1a1a43cfad8a76b187420d23ab740f9cf44b2ea3fbcea13aa4932db9adab188",
+  "facts": {
+    "address": "0x9a26C0Dcd3d3f6F194301A17a66232B84CD1E5F3",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T04:28:48.000Z",
+    "as_of_block": 88081033,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "AMC",
+        "GLD",
+        "LLY"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "AMC",
+        "name": "AMC Entertainment",
+        "token": "0x05a3d1Cd21d0C88145E82600E62e7E496e0F222B",
+        "canonical": true,
+        "raw": "89552533242992",
+        "shares_ui": "0.00008955",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "89552533242992",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "GLD",
+        "name": "SPDR Gold Trust",
+        "token": "0xC9a981FEE1F9DEc688bb123ccDeCc63D0deBFC4e",
+        "canonical": true,
+        "raw": "988824357803789",
+        "shares_ui": "0.00098882",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "988824357803789",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 1,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "LLY",
+        "name": "Eli Lilly",
+        "token": "0x8005d266423c7ea827372c9c864491e5786600ea",
+        "canonical": true,
+        "raw": "196274395793",
+        "shares_ui": "0.00000019",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "196274395793",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 60346735,
+            "time": "2026-09-11T15:01:30.000Z",
+            "effective_at": "2026-09-11T15:10:30.000Z",
+            "tx": "0xb20fb11da8a57ff41835258059c4c80ae7a5a454db171f9fdd30802924289c03",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000002288774375687",
+            "ratio": "1.000002288774375687",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 5,
+      "univ4": 0,
+      "other_unparsed": 0
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": null,
+    "mdd_usd": null,
+    "gaps": [
+      "no_feed",
+      "unknown_cost_lots",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0x69E7778d46713e17572D610bDaca3943aa4e6219",
+        "symbol_raw": "SPY",
+        "name_raw": "Spy Chip",
+        "imitates": "SPY",
+        "reasons": [
+          "symbol_copies_stock_token",
+          "code_hash_differs",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "received",
+        "counterparty": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+        "mimics": null,
+        "first_seen_block": 87804454,
+        "tx": "0x87a02f7afd7daa2ba95f5f346a2f2f70e53c03c8fab47b20ca223d7cf526e8a2",
+        "amount_raw": "3106253623367793304952350",
+        "transfers_seen": 3,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 88081033,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 27,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0x18315b635f052599903b824349c59e500bd9241ba15e83ac652a998405ff1350",
+        "0xb7cc4e3f514273e75414671712fd28584d16e5a84d739d41c60830b981f87854",
+        "0x5c3b0b3d4d630149425a420879a5c2773b8296aeb958f023c296dd33d8d9ceba",
+        "0x9b0e7de5349044e823dcf3eebb1d4008175fefb5851ca1f13ea86e5c61de3429",
+        "0xbb03dcf4865eda010b18521ab6b4f6b9a773fe71cd1404f0ac25f2c2671ff6b4"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

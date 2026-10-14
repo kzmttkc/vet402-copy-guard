@@ -1,0 +1,209 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0xe5764a0855c5609263be9bc0ef1e640e3fc9490c?chain=4663",
+  "http_status": 200,
+  "reason": "",
+  "x_facts_hash": "0xe46322d6feb4977b4e851e428387b42498b1ff4936577385d5b5c6eefc3a3194",
+  "facts": {
+    "address": "0xe5764a0855C5609263be9BC0EF1e640E3fc9490c",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T04:25:26.000Z",
+    "as_of_block": 88079034,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "SPY"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "SPY",
+        "name": "SPDR S&P 500 ETF Trust",
+        "token": "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+        "canonical": true,
+        "raw": "0",
+        "shares_ui": "0.00000000",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x319724394D3A0e3669269846abE664Cd621f9f6A",
+        "feed_answer": "77893965709",
+        "feed_updated_at": "2026-10-14T00:00:53.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "0",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 1,
+          "univ3": 0,
+          "univ4": 0,
+          "other_unparsed": 12
+        },
+        "corporate_actions": [
+          {
+            "block": 65779981,
+            "time": "2026-09-18T00:00:49.000Z",
+            "effective_at": "2026-09-18T00:10:33.000Z",
+            "tx": "0x2fe45ab24d1b3fa87883f8b08daf29dae969c5b43d0afe9ccca299c11a641025",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1001717991187472003",
+            "ratio": "1.001717991187472003",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      }
+    ],
+    "events_summary": {
+      "transfer": 1,
+      "univ3": 0,
+      "univ4": 0,
+      "other_unparsed": 12
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": null,
+    "mdd_usd": null,
+    "gaps": [
+      "other_unparsed",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0x318f563DCEddbe58625400d9f7ee27eecEf5B1A3",
+        "symbol_raw": "U⟨U+17B5⟩S⟨U+17B5⟩DG",
+        "name_raw": "U⟨U+17B5⟩S⟨U+17B5⟩DG",
+        "imitates": "USDG",
+        "reasons": [
+          "imitates_usdg",
+          "hidden_characters",
+          "mimics_counterparty",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "sent",
+        "counterparty": "0xdc2a8e549d4ff2895554fe0a2ab760f6fed68a23",
+        "mimics": "0xdc2a2217f1adf3aa9073988f1e8d05fbba858a23",
+        "first_seen_block": 76304327,
+        "tx": "0x64ef6784f2bf4272daeb87f324835d60645b185cc4258ab15932dc5c3e743a63",
+        "amount_raw": "10000000000",
+        "transfers_seen": 2,
+        "counted": false,
+        "found_by": "alchemy"
+      },
+      {
+        "token": "0xc4F85ceBec3FE6C77df0F71f3a3e139d43BBb4A3",
+        "symbol_raw": "U⟨U+17B5⟩S⟨U+17B5⟩DG",
+        "name_raw": "U⟨U+17B5⟩S⟨U+17B5⟩DG",
+        "imitates": "USDG",
+        "reasons": [
+          "imitates_usdg",
+          "hidden_characters",
+          "mimics_counterparty",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "sent",
+        "counterparty": "0xdc2a8e549d4ff2895554fe0a2ab760f6fed68a23",
+        "mimics": "0xdc2a2217f1adf3aa9073988f1e8d05fbba858a23",
+        "first_seen_block": 77975579,
+        "tx": "0x28455eea097fbb132517c7f10286620c4743b8771cd9dcb6d79789b2d367f0de",
+        "amount_raw": "568054891575",
+        "transfers_seen": 1,
+        "counted": false,
+        "found_by": "alchemy"
+      },
+      {
+        "token": "0x22B1137c0637bf8F7AC7fbCfa857604E4B89d8D7",
+        "symbol_raw": "U⟨U+17B5⟩S⟨U+17B5⟩DG",
+        "name_raw": "U⟨U+17B5⟩S⟨U+17B5⟩DG",
+        "imitates": "USDG",
+        "reasons": [
+          "imitates_usdg",
+          "hidden_characters",
+          "mimics_counterparty",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "sent",
+        "counterparty": "0xdc2a8e549d4ff2895554fe0a2ab760f6fed68a23",
+        "mimics": "0xdc2a2217f1adf3aa9073988f1e8d05fbba858a23",
+        "first_seen_block": 78796339,
+        "tx": "0x8414d5fde65e4beecc542f54bdcd2b506d75f60aa973569a2f1620e5d78fbd78",
+        "amount_raw": "234192021629",
+        "transfers_seen": 1,
+        "counted": false,
+        "found_by": "alchemy"
+      },
+      {
+        "token": "0xCb071fc69e4aEBD512387316578752e5c20B92e0",
+        "symbol_raw": "U⟨U+206F⟩S⟨U+206F⟩DG",
+        "name_raw": "U⟨U+206F⟩S⟨U+206F⟩DG",
+        "imitates": "USDG",
+        "reasons": [
+          "imitates_usdg",
+          "hidden_characters",
+          "mimics_counterparty",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "sent",
+        "counterparty": "0xdc2a8e549d4ff2895554fe0a2ab760f6fed68a23",
+        "mimics": "0xdc2a2217f1adf3aa9073988f1e8d05fbba858a23",
+        "first_seen_block": 81096575,
+        "tx": "0x268ad8cf22cb42bcf0b70b5b6001147f3ad8f443af2e7d035af1d45f4ea05703",
+        "amount_raw": "331000000000",
+        "transfers_seen": 1,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 88079034,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 11,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0x0cf940f06142d1c1d4e2d0d945150649ca4c4e79b73f74a1fd5776945a5eda68",
+        "0x930518c8ba0865a29a579e00c82083c163042b33c2f3bcfdf3ac4e169331f49d",
+        "0xc796c3ac44cee0c59ad4e77209181af10173c0019daea27bb5220bca08932fd9",
+        "0xcea1116142d97aa6ef865ee82ace7a64a92f37e704afc6c48f92b08e0cdddc13",
+        "0x11a5159d08e68adfd9bb816fcf2b1e134759ee0b739bb15904edf44241cd9378",
+        "0x184e9a2d02a4e1a08a0e84bb8f5e7f16d4cf33aa5035d3d8741272c702488053",
+        "0xe52a27478d2ad76fa6c493e3d40fc8d09cc38de2bb4e8096775c990e550c54a7",
+        "0x1d6d7ca00f4f08d83389ad2218915184d87e391ddd29eb3992264be27de7c9b2",
+        "0xd1b736c504c61f4c0f9336cf5059dd3036acc4182cb091a0f99d73e484ea2815",
+        "0x245a38fd46702055e6e161b458baa7bd2439cb6456ff5c35e07834bb26e0901d",
+        "0xe22407dc4957fa6876ade3f411e7dedd7624a741158e6b4440e506be765fd054",
+        "0x069c29de7ac8a43ced6d62d63856e7c051f47a8477d1250a0f9fb109d41a0e1b",
+        "0xd7bf9934c0e9a412956d693ff8713de44336cf53e6c9fd81711716b26068a4e4"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

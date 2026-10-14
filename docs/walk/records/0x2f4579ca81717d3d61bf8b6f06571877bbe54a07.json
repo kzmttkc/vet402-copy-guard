@@ -1,0 +1,7 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x2f4579ca81717d3d61bf8b6f06571877bbe54a07?chain=4663",
+  "http_status": 422,
+  "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x2F4579Ca81717d3D61BF8b6f06571877Bbe54A07\",\"chain_id\":4663,\"as_of_block\":88072630,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":49,\"held\":[\"AAPL\",\"AMAT\",\"AMC\",\"AMD\",\"AMZN\",\"ASML\",\"AVGO\",\"BB\",\"BE\",\"CO",
+  "x_facts_hash": "",
+  "facts": null
+}

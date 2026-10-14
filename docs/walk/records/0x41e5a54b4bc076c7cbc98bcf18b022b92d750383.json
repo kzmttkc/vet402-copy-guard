@@ -1,0 +1,271 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x41e5a54b4bc076c7cbc98bcf18b022b92d750383?chain=4663",
+  "http_status": 200,
+  "reason": "",
+  "x_facts_hash": "0x20a2b71370065f4e1f53dcaa8b95fa62c850bcdc9c01817d648756d14033bf94",
+  "facts": {
+    "address": "0x41e5a54B4bc076c7CbC98bcF18b022B92D750383",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T04:28:20.000Z",
+    "as_of_block": 88080757,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "AMD",
+        "HIMS",
+        "SGOV",
+        "SPY"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "SPY",
+        "name": "SPDR S&P 500 ETF Trust",
+        "token": "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+        "canonical": true,
+        "raw": "555041772204652",
+        "shares_ui": "0.00055599",
+        "usd": "0.43",
+        "usd_reason": null,
+        "feed": "0x319724394D3A0e3669269846abE664Cd621f9f6A",
+        "feed_answer": "77893965709",
+        "feed_updated_at": "2026-10-14T00:00:53.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "555041772204652",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 1,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 65779981,
+            "time": "2026-09-18T00:00:49.000Z",
+            "effective_at": "2026-09-18T00:10:33.000Z",
+            "tx": "0x2fe45ab24d1b3fa87883f8b08daf29dae969c5b43d0afe9ccca299c11a641025",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1001717991187472003",
+            "ratio": "1.001717991187472003",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "AMD",
+        "name": "AMD",
+        "token": "0x86923f96303D656E4aa86D9d42D1e57ad2023fdC",
+        "canonical": true,
+        "raw": "272040899958",
+        "shares_ui": "0.00000027",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x943A29E7ae51A4798823ca9eEd2ed533B2A22C72",
+        "feed_answer": "61226814780",
+        "feed_updated_at": "2026-10-14T02:29:03.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "272040899958",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "HIMS",
+        "name": "Hims & Hers Health",
+        "token": "0xCceE82fE024c36fA15E1005edE3E9e4787e23D09",
+        "canonical": true,
+        "raw": "13506584640423",
+        "shares_ui": "0.00001350",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "13506584640423",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "SGOV",
+        "name": "iShares 0-3 Month Treasury Bond",
+        "token": "0x92FD66527192E3e61d4DDd13322Aa222DE86F9B5",
+        "canonical": true,
+        "raw": "4272215361697",
+        "shares_ui": "0.00000430",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "4272215361697",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 4629631,
+            "time": "2026-07-08T20:05:10.000Z",
+            "effective_at": "2026-07-08T20:14:32.000Z",
+            "tx": "0x79292bc8af671bd6fc4ebc8f5e7a27c814d87988e175cbfab2ab1db1df0efbfb",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000957519890990718",
+            "ratio": "1.000957519890990718",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          },
+          {
+            "block": 30302195,
+            "time": "2026-08-07T15:00:36.000Z",
+            "effective_at": "2026-08-07T15:10:24.000Z",
+            "tx": "0x94aaa4c5c537412b8a5ed4a1933cc8ee7cb3c5bc903a741e11d4aada5dc02ebd",
+            "multiplier_before": "1000957519890990718",
+            "multiplier_after": "1002981519346766532",
+            "ratio": "1.00202206328995484",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          },
+          {
+            "block": 51269236,
+            "time": "2026-08-31T23:50:51.000Z",
+            "effective_at": "2026-09-01T00:00:26.000Z",
+            "tx": "0xf33317c324c4d1d53278dd5c0fcb6ca3afeea41ccf39441ecada548148f5f4e7",
+            "multiplier_before": "1002981519346766532",
+            "multiplier_after": "1005101770003214918",
+            "ratio": "1.00211394787994627",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          },
+          {
+            "block": 76929117,
+            "time": "2026-10-01T00:00:48.000Z",
+            "effective_at": "2026-10-01T00:10:35.000Z",
+            "tx": "0x17eef4102c7aadc5403096deb3e462cf006f1b745eb287e452b16337bd8235bd",
+            "multiplier_before": "1005101770003214918",
+            "multiplier_after": "1007186931447954063",
+            "ratio": "1.002074577427848401",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 7,
+      "univ4": 0,
+      "other_unparsed": 0
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": null,
+    "mdd_usd": null,
+    "gaps": [
+      "no_feed",
+      "unknown_cost_lots",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0x69E7778d46713e17572D610bDaca3943aa4e6219",
+        "symbol_raw": "SPY",
+        "name_raw": "Spy Chip",
+        "imitates": "SPY",
+        "reasons": [
+          "symbol_copies_stock_token",
+          "code_hash_differs",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "received",
+        "counterparty": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+        "mimics": null,
+        "first_seen_block": 87804251,
+        "tx": "0x1134d5a11664d20161cbc83459df32faae72ef24d87f533108e76c1093df2eae",
+        "amount_raw": "2869698202026622269632809",
+        "transfers_seen": 8,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 88080757,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 18,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0x074979d25d21bc86558e27e55b7c3b603a9b2621b514643f55722a4784addd9b",
+        "0x0455f9b33d0eb4164453bb3ac9b03413c159c23fe53504884719179bbb439b36",
+        "0xa0a3b10576cc972a941059ae83ead15d72aa2e6ce0e6a2a6846a12b6a35d8efc",
+        "0x2a2fb55c5366ad6a4481344bc0e983dbe1391576a4a42367b11b3c30daec829a",
+        "0xcf3dc44f87e7bc486ae65fb296101666b32f9947311e74f6a10232534ea9c541",
+        "0x51aac0d8e670c207dd2957764c04bc486709ce3dada9cfca65131e39388909a0",
+        "0x8e587142a77b574575cd9a8b42401c5692adb6519609238ce3bba90248e1b9d9"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

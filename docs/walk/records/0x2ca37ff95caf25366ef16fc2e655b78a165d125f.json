@@ -1,0 +1,7 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x2ca37ff95caf25366ef16fc2e655b78a165d125f?chain=4663",
+  "http_status": 422,
+  "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x2Ca37ff95caF25366eF16fc2E655b78a165D125F\",\"chain_id\":4663,\"as_of_block\":88074106,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":192,\"held\":[\"AAOI\",\"AAPL\",\"ABCL\",\"ADBE\",\"AEHR\",\"AEIS\",\"ALAB\",\"AMAT\",\"AM",
+  "x_facts_hash": "",
+  "facts": null
+}

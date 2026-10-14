@@ -1,0 +1,293 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x793155b3b35cf80bfd88a48e7de5bf1fa5f0c672?chain=4663",
+  "http_status": 200,
+  "reason": "",
+  "x_facts_hash": "0x467774021a00bde7b83ecc10ca1e2417486c493c83ac2aefd4643edba9a90ce8",
+  "facts": {
+    "address": "0x793155B3b35cF80Bfd88a48e7De5BF1FA5F0c672",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T04:28:34.000Z",
+    "as_of_block": 88080893,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "CRCL",
+        "DELL",
+        "DJT",
+        "LLY",
+        "MSTR",
+        "SNAP"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "CRCL",
+        "name": "Circle Internet Group",
+        "token": "0xdF0992E440dD0be65BD8439b609d6D4366bf1CB5",
+        "canonical": true,
+        "raw": "5421617457983",
+        "shares_ui": "0.00000542",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x6652eDf64bA3731C4F2D3ce821A0Fb1f1f6b482a",
+        "feed_answer": "8483187641",
+        "feed_updated_at": "2026-10-14T04:19:24.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "5421617457983",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "DELL",
+        "name": "Dell",
+        "token": "0x941AE714EC6D8130c7B75d67160Ca08f1e7d11Dd",
+        "canonical": true,
+        "raw": "842976870764",
+        "shares_ui": "0.00000084",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x1C6c8cADBe02E19129c39dDB92281cE4c0bf206b",
+        "feed_answer": "56934677889",
+        "feed_updated_at": "2026-10-14T04:25:09.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "842976870764",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 26853518,
+            "time": "2026-08-03T15:00:48.000Z",
+            "effective_at": "2026-08-03T15:10:23.000Z",
+            "tx": "0x8881e24ee42a7fdac96523e3166e8361ea72d24c45f2f6991a1da174acb531a8",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000063708620124549",
+            "ratio": "1.000063708620124549",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "MSTR",
+        "name": "Strategy Inc.",
+        "token": "0xec262a75e413fAfD0dF80480274532C79D42da09",
+        "canonical": true,
+        "raw": "2393701587839",
+        "shares_ui": "0.00000239",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x396118bdFB181e6240E74D243F266B061c0edc3D",
+        "feed_answer": "15388225983",
+        "feed_updated_at": "2026-10-14T02:57:31.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "2393701587839",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "DJT",
+        "name": "Trump Media & Technology Group",
+        "token": "0x1D11f0496982706C5e14A514D4E79F2e6BdE4516",
+        "canonical": true,
+        "raw": "29391421719076",
+        "shares_ui": "0.00002939",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "29391421719076",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "LLY",
+        "name": "Eli Lilly",
+        "token": "0x8005d266423c7ea827372c9c864491e5786600ea",
+        "canonical": true,
+        "raw": "263650251",
+        "shares_ui": "0.00000000",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "263650251",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 4,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 60346735,
+            "time": "2026-09-11T15:01:30.000Z",
+            "effective_at": "2026-09-11T15:10:30.000Z",
+            "tx": "0xb20fb11da8a57ff41835258059c4c80ae7a5a454db171f9fdd30802924289c03",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000002288774375687",
+            "ratio": "1.000002288774375687",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "SNAP",
+        "name": "Snap",
+        "token": "0xF6589F11Bc40b669e584073F428B05562F568733",
+        "canonical": true,
+        "raw": "33077189232746",
+        "shares_ui": "0.00003307",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "33077189232746",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 14,
+      "univ4": 0,
+      "other_unparsed": 0
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": null,
+    "mdd_usd": null,
+    "gaps": [
+      "no_feed",
+      "unknown_cost_lots",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0x69E7778d46713e17572D610bDaca3943aa4e6219",
+        "symbol_raw": "SPY",
+        "name_raw": "Spy Chip",
+        "imitates": "SPY",
+        "reasons": [
+          "symbol_copies_stock_token",
+          "code_hash_differs",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "received",
+        "counterparty": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+        "mimics": null,
+        "first_seen_block": 87804359,
+        "tx": "0x3657d32a26dddeef8421f6e48aeab652a6805d3b3f5621d697fd6e20eeef26f4",
+        "amount_raw": "2985634009388497589499254",
+        "transfers_seen": 5,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 88080893,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 19,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0x40fa37b4e4896938b00f4568875c7dce33f266829483dd24af88b793a8185a8d",
+        "0x336db8be334fd86d2c3c3bf39467d7dcb2dfd626fa658d68f628c7b091b83561",
+        "0x1e553fff33746dc2962199b5a21a3115cd2d9f01a5965894d9fb24280120f765",
+        "0x6b986a416ce6268c938d14327c1eea060721f3227ab6fc03ad01c621db60fab9",
+        "0x0dabd4fcee55ecdaf00b6d5fd3676663cf0c439ca179bad1bebb9e7114c96364",
+        "0x706b9772282841491b153ac6083c16cdf89c449ca171124cb01eb806ca13df7f",
+        "0x5b53561a447825e5476a1ea6bd6ad6c18e40b3b29a2cd079e93fe4905953d164",
+        "0xade08ce942bf950d36dbb6d43414a0a13040833d47581778d8e3f56c1c519217",
+        "0x102d52c712050dcda862989ababde453debd6d4056ddd4c229460653a380301a",
+        "0x3a8baddf95f6a2bab83a9a9addc0df0b0a9f300ed056cb9438696931c12a3fa3",
+        "0xece8cbcfaff738db4bb26ff68b5807d01f519802feaa102215d1773635695528",
+        "0xc863ef4671ac7b4d0b92cb0d8a0c9620a85cca3b134b266bbfc395b6fa294ac2",
+        "0x8f4c8fcc6828f8eb506aecd41fedaccfdb4ac9256e60fb717bfe49e4d85eed35",
+        "0x54e7221d944f29602336b9b6df6d9428fe53e93507ad652e270d7e71f7405684"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

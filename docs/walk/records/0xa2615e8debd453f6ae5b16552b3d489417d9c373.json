@@ -1,0 +1,218 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0xa2615e8debd453f6ae5b16552b3d489417d9c373?chain=4663",
+  "http_status": 200,
+  "reason": "",
+  "x_facts_hash": "0xde4a2796f3739058126e7cafec8957b26bc8715dce90cdf98c4bc978027d3a46",
+  "facts": {
+    "address": "0xa2615e8DeBd453F6ae5b16552B3d489417D9c373",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T04:27:17.000Z",
+    "as_of_block": 88080137,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "INTC",
+        "MSTR",
+        "NVDA",
+        "SPCX"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "INTC",
+        "name": "Intel",
+        "token": "0xc72b96e0E48ecd4DC75E1e45396e26300BC39681",
+        "canonical": true,
+        "raw": "2441960705195",
+        "shares_ui": "0.00000244",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x3f390C5C24628Ac7C489515402235FeAD71D1913",
+        "feed_answer": "10381567496",
+        "feed_updated_at": "2026-10-14T02:04:02.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "2441960705195",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "MSTR",
+        "name": "Strategy Inc.",
+        "token": "0xec262a75e413fAfD0dF80480274532C79D42da09",
+        "canonical": true,
+        "raw": "1795585302447",
+        "shares_ui": "0.00000179",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x396118bdFB181e6240E74D243F266B061c0edc3D",
+        "feed_answer": "15388225983",
+        "feed_updated_at": "2026-10-14T02:57:31.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "1795585302447",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "NVDA",
+        "name": "NVIDIA",
+        "token": "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC",
+        "canonical": true,
+        "raw": "1590823861468",
+        "shares_ui": "0.00000159",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x379EC4f7C378F34a1B47E4F3cbeBCbAC3E8E9F15",
+        "feed_answer": "22935264710",
+        "feed_updated_at": "2026-10-13T20:03:51.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "1590823861468",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 58952659,
+            "time": "2026-09-09T23:50:42.000Z",
+            "effective_at": "2026-09-10T00:00:30.000Z",
+            "tx": "0x4ac23f2e58e2c4962dcd701c2beff581e87f3995152a29d527c07a3afd67d956",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000775159164630595",
+            "ratio": "1.000775159164630595",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "SPCX",
+        "name": "Space Exploration Technologies Corp. Class A Common Stock",
+        "token": "0x4a0E65A3EcceC6dBe60AE065F2e7bb85Fae35eEa",
+        "canonical": true,
+        "raw": "1316156479874",
+        "shares_ui": "0.00000131",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0xB265810950ba6c5C0Ff821c9963014a56fD8Bffb",
+        "feed_answer": "15783838732",
+        "feed_updated_at": "2026-10-14T02:04:14.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "1316156479874",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 8,
+      "univ4": 0,
+      "other_unparsed": 0
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": "0.00",
+    "mdd_usd": null,
+    "gaps": [
+      "unknown_cost_lots",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0x69E7778d46713e17572D610bDaca3943aa4e6219",
+        "symbol_raw": "SPY",
+        "name_raw": "Spy Chip",
+        "imitates": "SPY",
+        "reasons": [
+          "symbol_copies_stock_token",
+          "code_hash_differs",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "received",
+        "counterparty": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+        "mimics": null,
+        "first_seen_block": 87803849,
+        "tx": "0xfdabd91e6796f9d626391b4f09104cfeec79c84084f1a5c33dab06ad6eea1523",
+        "amount_raw": "2088232135907767245066664",
+        "transfers_seen": 2,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 88080137,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 17,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0xcd9465a6e2585751e627f9f6e149917b638aa58f724f6a97060d262bc8e2478d",
+        "0xc0dbd97537ad8c0d1b4e10c5fecd01b138fe877db2e1f9082d65c9ac8c12f4c5",
+        "0x75622316c26c680c2a1b72efba42e2333003ec2c3ed9b831719a9cc3315b4f0d",
+        "0xb114916f8f82bce14a8ee4aaf00d67b62314a28d36d6f7cad50191e5a0b0027f",
+        "0xfe1494764168b5df1000c2241b836a32caf93743c03803f975adc45be9c87ed8",
+        "0x0789dc1d55d5412d5c89f5e984eb51ba3b29e2771e6c2c4dcb43f68bc7d90a26",
+        "0xbe0eb2bd00aacf6a0f21ffb392d0009a7502f44e2c374cbe6f82157cd7494d6c",
+        "0x035695bfaae40b244de2257fce3bf5a7e4b886f3d408a5ab556c69a88fa2330a"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

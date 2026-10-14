@@ -1,0 +1,361 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0xdc4d15a2c10b6258a5d0219a7947c90b19391937?chain=4663",
+  "http_status": 200,
+  "reason": "",
+  "x_facts_hash": "0xbcb2e08321eb77b54789178c518cffe7d4d44e6ce083377a6003013e698ca9c7",
+  "facts": {
+    "address": "0xDC4d15a2C10B6258a5d0219a7947C90b19391937",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T04:27:38.000Z",
+    "as_of_block": 88080341,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "COST",
+        "MRVL",
+        "NVDA",
+        "PLTR",
+        "SNAP",
+        "SNDK",
+        "TSM"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "PLTR",
+        "name": "Palantir Technologies",
+        "token": "0x894E1EC2D74FFE5AEF8Dc8A9e84686acCB964F2A",
+        "canonical": true,
+        "raw": "792463582889",
+        "shares_ui": "0.00000079",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x820ABedFF239034956B7A9d2F0a331f9F075eB4c",
+        "feed_answer": "20913952863",
+        "feed_updated_at": "2026-10-14T03:59:13.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "792463582889",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "SNDK",
+        "name": "Sandisk Corporation",
+        "token": "0xB90A19fF0Af67f7779afF50A882A9CfF42446400",
+        "canonical": true,
+        "raw": "79733870352",
+        "shares_ui": "0.00000007",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0xfb133Fa4B7b385802B693a293606682Df47109A3",
+        "feed_answer": "146773017937",
+        "feed_updated_at": "2026-10-14T04:16:51.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "79733870352",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "TSM",
+        "name": "Taiwan Semiconductor Manufacturing",
+        "token": "0x58FfE4a942d3885bAa22D7520691F611EF09e7AA",
+        "canonical": true,
+        "raw": "850424030515",
+        "shares_ui": "0.00000085",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x874cF94aa8eC88Fd9560094dD065f2fB3E41Fc2F",
+        "feed_answer": "44808646144",
+        "feed_updated_at": "2026-10-13T20:57:47.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "850424030515",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 64062939,
+            "time": "2026-09-16T00:00:56.000Z",
+            "effective_at": "2026-09-16T00:10:33.000Z",
+            "tx": "0x53888b0500828784f8eb5e98b22e2becf1e5d9b00d4e48c26d0b440e08f34037",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1001463024159690554",
+            "ratio": "1.001463024159690554",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          },
+          {
+            "block": 80347763,
+            "time": "2026-10-05T00:03:01.000Z",
+            "effective_at": "2026-10-05T00:12:31.000Z",
+            "tx": "0x3ec41fca900ab92c68ff37c424fe16f0840ccb64fd62d14b1a05172b27dae3fd",
+            "multiplier_before": "1001463024159690554",
+            "multiplier_after": "1002728577037771211",
+            "ratio": "1.001263704048526963",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "COST",
+        "name": "Costco",
+        "token": "0x4EA005168D7F09a7A0Ba9D1DEf21a479950E44C2",
+        "canonical": true,
+        "raw": "132705018538",
+        "shares_ui": "0.00000013",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "132705018538",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 32889913,
+            "time": "2026-08-10T15:01:06.000Z",
+            "effective_at": "2026-08-10T15:10:24.000Z",
+            "tx": "0x728a9545a0d36b55ef5b4c12a9b9a3565e22167abe78f4453efb78d1292fcf62",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000612040296259656",
+            "ratio": "1.000612040296259656",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "MRVL",
+        "name": "Marvell Technology",
+        "token": "0x62fd0668e10D8B72339BE2DCF7643001688ff13B",
+        "canonical": true,
+        "raw": "734704219352",
+        "shares_ui": "0.00000073",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "734704219352",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 83720133,
+            "time": "2026-10-09T00:01:21.000Z",
+            "effective_at": "2026-10-09T00:10:33.000Z",
+            "tx": "0x6456a1f0869c075f1b797ac9139376c0a8b59e42941becc3e9006db31d4e62c1",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000151336736428647",
+            "ratio": "1.000151336736428647",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "SNAP",
+        "name": "Snap",
+        "token": "0xF6589F11Bc40b669e584073F428B05562F568733",
+        "canonical": true,
+        "raw": "46476607724263",
+        "shares_ui": "0.00004647",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "46476607724263",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "NVDA",
+        "name": "NVIDIA",
+        "token": "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC",
+        "canonical": true,
+        "raw": "0",
+        "shares_ui": "0.00000000",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x379EC4f7C378F34a1B47E4F3cbeBCbAC3E8E9F15",
+        "feed_answer": "22935264710",
+        "feed_updated_at": "2026-10-13T20:03:51.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "0",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 58952659,
+            "time": "2026-09-09T23:50:42.000Z",
+            "effective_at": "2026-09-10T00:00:30.000Z",
+            "tx": "0x4ac23f2e58e2c4962dcd701c2beff581e87f3995152a29d527c07a3afd67d956",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000775159164630595",
+            "ratio": "1.000775159164630595",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 14,
+      "univ4": 0,
+      "other_unparsed": 0
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": null,
+    "mdd_usd": null,
+    "gaps": [
+      "unknown_cost_lots",
+      "no_feed",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0x69E7778d46713e17572D610bDaca3943aa4e6219",
+        "symbol_raw": "SPY",
+        "name_raw": "Spy Chip",
+        "imitates": "SPY",
+        "reasons": [
+          "symbol_copies_stock_token",
+          "code_hash_differs",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "received",
+        "counterparty": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+        "mimics": null,
+        "first_seen_block": 87804015,
+        "tx": "0xd27afa57ef502a13859fe2d167a4d578f65c05985404bed53b485267c81aa584",
+        "amount_raw": "2548209878910809252660176",
+        "transfers_seen": 4,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 88080341,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 21,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0xd0591d45e29790c53d3f6209fd4f0dbd94a0444cc8bfc894ef03b4dc1c86a560",
+        "0xffbf662f5c56720406cafff1f15cb449b9470ba556aeb5f059a6df4de44679dc",
+        "0x160f5d115605d5dc9fbc2d7066e19db9febee7c54e664666304eeed34d1f2e99",
+        "0x32a041012a65a001fc044fe9af99c5fc9bbe7cbbb834f4c791eda0738aa2f4f8",
+        "0xb67dd1ab96ba7515352d55cf7b648fc19c26568f2cd54c8e64b14d9c9adf0483",
+        "0x25cfdbce402d25bc6ae7089e5e6631259f200ce957513e9cc25714c71a629aa7",
+        "0xe41981446f8b824a3ef7cec6007888681a2c4b0f57c17aeb13060806b2998aed",
+        "0xfdd1a59b38c3de79a96a56ec73b3aff71b96d1dd80276152ae3e5a62b8aebdf4",
+        "0xe087f1568a2ba616e6345cfd2edbe8a16daedd22808ddc8b5b45a65808226d2f",
+        "0xc40e8e13586afd59a0c0db664d93022b66cdea73777a99613614701b278bf2a8",
+        "0xa947460df6e20d4f535cece29784ca2cf7b59c011e33ef822555e89804afa1f5",
+        "0xfe7d13a001c5e34245b92e7310f0e5ee53780fc563e4e63209d50f00bb9af662",
+        "0x645fd10190178976cccbd5e394998c4228dc9b35b9e412727544d0cba7b435a2",
+        "0x8b7e3ecd55c60f64e2eb56dad9c95886021be1b019f69f308d4dbf6bf9eb148e"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}
