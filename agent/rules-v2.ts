@@ -429,6 +429,12 @@ export function otherName(token: string, names: ChainNames, recordName: string):
 	return symbol ? `(no name; symbol ${symbol})` : '(no name)'
 }
 
+/** The ticker a token named by the record reads as, when the record does not say which listed ticker it imitates: its own symbol() without invisible characters, upper case, or '?'. */
+function symbolOf(token: string, names: ChainNames): string {
+	const sym = shown(names[token]?.symbol ?? '').replace(/⟨U\+[0-9A-F]+⟩/g, '').trim().toUpperCase()
+	return sym || '?'
+}
+
 /**
  * What each moved token is. In this order: USDG and WETH by address, the CRE token-check's
  * reading of the chain when its results name the token, the tokens the vet402 record names
@@ -457,10 +463,10 @@ export function movedTokens(facts: any, transfers: { token: string }[], decimals
 			if (cre.issuer_token && listed) out.push(row('stock', listed.symbol, listed.name, 'cre'))
 			else if (!cre.issuer_token && cre.reasons.some((r) => LISTED_MARKS.includes(r))) {
 				// Which listed ticker it reads as: USDG, what the record says, or its own symbol without the marks of invisible characters.
-				const reads = cre.reasons.includes('TICKER_OR_NAME_READS_AS_USDG') ? 'USDG' : named ? String(named.imitates) : String(cre.ticker ?? '').replace(/\[U\+[0-9A-F]+\]/g, '').toUpperCase()
+				const reads = cre.reasons.includes('TICKER_OR_NAME_READS_AS_USDG') ? 'USDG' : named?.imitates ? String(named.imitates) : String(cre.ticker ?? '').replace(/\[U\+[0-9A-F]+\]/g, '').toUpperCase()
 				out.push(row('same_ticker', reads, nameOf, 'cre'))
 			} else out.push(row('unknown', '?', '', 'cre'))
-		} else if (named) out.push(row('same_ticker', String(named.imitates), nameOf, 'record'))
+		} else if (named) out.push(row('same_ticker', named.imitates ? String(named.imitates) : symbolOf(token, names), nameOf, 'record'))
 		else if (listed) out.push(row('stock', listed.symbol, listed.name, 'list'))
 		else out.push(row('unknown', '?', '', 'none'))
 	}

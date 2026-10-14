@@ -814,11 +814,15 @@ export function movedTokensFrom(facts, transfers, decimals, list, check, names =
 			if (cre.issuer_token && listed) out.push(make('stock', listed.symbol, listed.name, 'cre'))
 			else if (!cre.issuer_token && cre.reasons.some((r) => MARKS.has(r))) {
 				let reads = String(cre.ticker ?? '').replace(/\[U\+[0-9A-F]+\]/g, '').toUpperCase()
-				if (named) reads = String(named.imitates)
+				if (named?.imitates) reads = String(named.imitates)
 				if (cre.reasons.includes('TICKER_OR_NAME_READS_AS_USDG')) reads = 'USDG'
 				out.push(make('same_ticker', reads, name, 'cre'))
 			} else out.push(make('unknown', '?', '', 'cre'))
-		} else if (named) out.push(make('same_ticker', String(named.imitates), name, 'record'))
+		} else if (named) {
+			// The record names the token but not which ticker it imitates: its own symbol(), without invisible characters.
+			const own = markInvisible(names?.[token]?.symbol ?? '').replace(/⟨U\+[0-9A-F]+⟩/g, '').trim().toUpperCase()
+			out.push(make('same_ticker', named.imitates ? String(named.imitates) : own || '?', name, 'record'))
+		}
 		else if (listed) out.push(make('stock', listed.symbol, listed.name, 'list'))
 		else out.push(make('unknown', '?', '', 'none'))
 	}

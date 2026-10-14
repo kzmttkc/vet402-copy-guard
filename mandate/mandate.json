@@ -24,7 +24,7 @@
     "id": "copy-guard",
     "version": 2,
     "source_keccak": "0x2abeff7f6a488b520e458445381413f81507fc545c1dc466fe27d54250e93b12",
-    "limits_rules_keccak": "0xd4e4165e27060a949e0a7ea8aabe90f20e54fc221e367779e8d4512faf0683e1"
+    "limits_rules_keccak": "0x051a62dba089081c35bb258185b9dd410b7c36055506974d42cfc8582514cf18"
   },
   "limits_keccak": "0x1e7624863e095cbdb3475e8f01b8e6befbe53ed24389a2b51c3dcb479d72c2cf",
   "chain_id": 4663,

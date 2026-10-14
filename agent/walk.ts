@@ -343,7 +343,8 @@ async function main() {
 	// The last swap of each such pool at or before the mark block: what the token was worth there, in the pool's other asset.
 	for (const [id, from] of poolFirst) {
 		let lastLog: any = null
-		let span = markBlock - from + 1
+		// The public RPC allows at most 10,000,000 blocks a query.
+		let span = Math.min(10_000_000, markBlock - from + 1)
 		for (let a = from; a <= markBlock; ) {
 			const b = Math.min(markBlock, a + span - 1)
 			try {
@@ -351,8 +352,9 @@ async function main() {
 				if (logs.length) lastLog = logs[logs.length - 1]
 				a = b + 1
 			} catch (e) {
-				if (!/exceeds limit|limit of/i.test(String(e))) throw e
-				span = Math.floor(span / 2)
+				if (!/exceeds limit|limit of|are allowed|narrow the block range|timed out|timeout/i.test(String(e))) throw e
+				if (/timed out|timeout/i.test(String(e))) await sleep(3000)
+				span = Math.max(1, Math.floor(span / 2))
 			}
 		}
 		if (lastLog) context.pool_marks[id] = { block: Number(BigInt(lastLog.blockNumber)), tx: lc(lastLog.transactionHash), log_index: Number(BigInt(lastLog.logIndex)), sqrt_price_x96: BigInt(`0x${lastLog.data.slice(2 + 128, 2 + 192)}`).toString() } satisfies PoolMark
