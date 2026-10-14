@@ -7,9 +7,10 @@
 // again after any of them changes, and the principal signs again: the old signature
 // stops matching, which is the point.
 //
-// The real mandate is never signed by this script. The principal signs the one line in
-// mandate/mandate.message.txt with their own wallet and puts the signature in
-// mandate/mandate.sig. The sample is signed with the testnet-only key in
+// The real mandate is never signed by this script. The principal (PRINCIPAL below, not the
+// vet402 wallet that is paid) signs the one line in mandate/mandate.message.txt with their own
+// key, as an EIP-191 personal message, and puts the signature in mandate/mandate.sig:
+//   cast wallet sign --private-key "$(cat <principal key file>)" "$(cat mandate/mandate.message.txt)" > mandate/mandate.sig The sample is signed with the testnet-only key in
 // $BLI_TESTNET_KEY_FILE (default ~/.vet402/bli-testnet.key), which is read and never printed.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
@@ -65,7 +66,14 @@ function write(dir: string, m: Mandate) {
 	console.log(`${dir}/mandate.json  keccak256 ${mandateKeccak(m)}  principal ${m.principal}`)
 }
 
-write('mandate', mandate(PAY_TO, 'vet402 copy-guard practice mandate'))
+/**
+ * The principal: the person the agent acts for. A key of its own, kept apart from the vet402 wallet
+ * that receives the evidence payments (PAY_TO), so that the one who authorizes and the one who is
+ * paid are not the same address. The principal signs mandate/mandate.message.txt with that key.
+ */
+export const PRINCIPAL = '0x2FFbAeAD3Acb0f99c851A5CE683B5E578C7eAE9e'
+
+write('mandate', mandate(PRINCIPAL, 'vet402 copy-guard practice mandate'))
 
 if (process.argv.includes('--sample')) {
 	const keyFile = process.env.BLI_TESTNET_KEY_FILE ?? join(homedir(), '.vet402/bli-testnet.key')
