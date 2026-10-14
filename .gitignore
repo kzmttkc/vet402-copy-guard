@@ -9,3 +9,7 @@ contracts/lib/
 .cre_build_tmp.*
 *.key
 agent/state/
+
+# The walk keeps these two gzipped (docs/walk/*.gz, docs/verify/compressed.json). A plain copy is never committed.
+docs/walk/trails.jsonl
+docs/walk/chain.json

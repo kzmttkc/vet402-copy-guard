@@ -5,7 +5,7 @@
 #   scripts/token-check-batch.sh [tokens.json]
 #
 # tokens.json: an array of token addresses. Default: docs/walk/tokens.json. When that
-# file does not exist yet, the list is built from the saved walk (docs/walk/trails.jsonl
+# file does not exist yet, the list is built from the saved walk (docs/walk/trails.jsonl.gz
 # and docs/ledger.json) into docs/token-check/tokens.json.
 #
 # Writes, under docs/token-check/:

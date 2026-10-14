@@ -4,14 +4,17 @@
 // token of a position in docs/ledger.json. Addresses in lower case, in order of
 // first appearance.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { gunzipSync } from 'node:zlib'
 
 const root = new URL('..', import.meta.url).pathname
 const seen = new Set()
 const add = (a) => typeof a === 'string' && /^0x[0-9a-fA-F]{40}$/.test(a) && seen.add(a.toLowerCase())
 
 const trails = `${root}docs/walk/trails.jsonl`
-if (existsSync(trails)) {
-	for (const line of readFileSync(trails, 'utf8').split('\n')) {
+// The walk keeps this file gzipped (trails.jsonl.gz). Either form is read.
+const trailsText = existsSync(`${trails}.gz`) ? gunzipSync(readFileSync(`${trails}.gz`)).toString('utf8') : existsSync(trails) ? readFileSync(trails, 'utf8') : null
+if (trailsText) {
+	for (const line of trailsText.split('\n')) {
 		if (!line.trim()) continue
 		const t = JSON.parse(line)
 		for (const tr of t.inputs?.movement?.transfers ?? []) add(tr.token)

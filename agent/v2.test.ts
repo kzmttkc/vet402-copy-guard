@@ -25,6 +25,7 @@ import { type Mandate, mandateMessage, mandateRef, mandateSigner, personalHash, 
 import { arrival, type DecisionInputsV2, decideV2, type MovedToken, type Price, type Venue } from './rules-v2'
 import { CRE_MATCH, DRY_PURCHASE, FAKE_NVDA, FAKE_USDG, inputs, LIVE, liveRecord, profitableRecord, QQQ_BUY, WALLET } from './test-helpers'
 import { buildTrailV2, recheckTrail, type TrailV2 } from './trail'
+import { readWalkText, walkFileExists } from './walk-files'
 import { MAX_SPEND_ATOMIC, permit2TypedData } from './x402'
 import { movedTokens } from './rules-v2'
 import { USDG } from './rules'
@@ -415,9 +416,9 @@ describe('the size a decision ends in', () => {
 
 describe('the ledger walk', () => {
 	const walk = join(REPO, 'docs/walk')
-	const have = existsSync(join(walk, 'trails.jsonl')) && existsSync(join(walk, 'context.json')) && existsSync(join(REPO, 'docs/ledger.json'))
+	const have = walkFileExists(join(walk, 'trails.jsonl')) && existsSync(join(walk, 'context.json')) && existsSync(join(REPO, 'docs/ledger.json'))
 	test.skipIf(!have)('the saved walk: both writings rebuild docs/ledger.json from the trails and the feed values, row for row, with the same root', () => {
-		const trails = readFileSync(join(walk, 'trails.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l)) as TrailV2[]
+		const trails = readWalkText(join(walk, 'trails.jsonl')).split('\n').filter(Boolean).map((l) => JSON.parse(l)) as TrailV2[]
 		const feeds = JSON.parse(readFileSync(join(walk, 'feeds.json'), 'utf8'))
 		const context = JSON.parse(readFileSync(join(walk, 'context.json'), 'utf8'))
 		const saved = JSON.parse(readFileSync(join(REPO, 'docs/ledger.json'), 'utf8'))

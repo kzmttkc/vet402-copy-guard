@@ -31,11 +31,18 @@
 // copy of the rules, the decision cards and the ledger, so it cannot repeat a mistake by
 // reusing the agent's code. agent/verify.test.ts and agent/verify-v2.test.ts run the two
 // implementations against each other on a few thousand cases.
+import { createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync, realpathSync } from 'node:fs'
 import { basename, dirname, join, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { gunzipSync } from 'node:zlib'
 
 const REPO = dirname(fileURLToPath(import.meta.url))
+
+/** The two largest files of a walk are kept gzipped (`name.gz`). Read the .gz when it is there, else the plain file. */
+export function readWalkFile(path) {
+	return existsSync(`${path}.gz`) ? gunzipSync(readFileSync(`${path}.gz`)) : readFileSync(path)
+}
 
 // ---------------------------------------------------------------- what this repo claims
 
@@ -60,6 +67,10 @@ export const CLAIMS = {
 	/** The practice ledger: every version 2 decision, copy-guard next to a ticker copy. */
 	ledger: 'docs/ledger.json',
 	walkDir: 'docs/walk',
+	/** The sha256 of the walk files that are kept gzipped, taken before they were gzipped. */
+	compressed: 'docs/verify/compressed.json',
+	/** The decisions of the ledger, one file per wallet, which the page loads when asked. */
+	pageRowsDir: 'docs/rows',
 	/** The page a person reads without a terminal. It carries the ledger. */
 	page: 'docs/index.html',
 	/** The user's limits and the mandate the principal signs. */
@@ -1906,8 +1917,15 @@ async function verifyLedger(rep, main, test, deep) {
 	let ledger = null
 	let context = null
 	let selection = null
+	if (existsSync(join(REPO, CLAIMS.compressed))) {
+		await rep.check('gzipped', () => {
+			const list = readJson(join(REPO, CLAIMS.compressed)).files
+			const bad = list.filter((f) => createHash('sha256').update(readWalkFile(join(REPO, f.file))).digest('hex') !== f.sha256)
+			return [list.length > 0 && bad.length === 0, bad.length ? `${bad.map((f) => `${f.file}.gz`).join(', ')} does not unpack to the sha256 in ${CLAIMS.compressed}` : `${list.map((f) => `${basename(f.file)}.gz`).join(' and ')} unpack to the bytes whose sha256 ${CLAIMS.compressed} recorded before they were gzipped (${list.map((f) => `${(f.bytes / 1e6).toFixed(1)} MB`).join(' and ')})`]
+		})
+	}
 	await rep.check('decisions', () => {
-		trails = readFileSync(join(dir, 'trails.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l))
+		trails = readWalkFile(join(dir, 'trails.jsonl')).toString('utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l))
 		const bad = []
 		for (const [i, t] of trails.entries()) {
 			const { problems } = trailProblems(t)
@@ -2018,10 +2036,46 @@ async function verifyLedger(rep, main, test, deep) {
 	if (!ledger) return
 	await rep.check('page', () => {
 		const html = readFileSync(join(REPO, CLAIMS.page), 'utf8')
-		const m = html.match(/<script type="application\/json" id="ledger-data">([\s\S]*?)<\/script>/)
-		if (!m) return [false, `${CLAIMS.page} carries no ledger`]
-		const same = canonicalJson(JSON.parse(m[1])) === canonicalJson(ledger)
-		return [same, same ? `${CLAIMS.page} carries this ledger, and builds its cards and its tables from it in the browser` : `the ledger inside ${CLAIMS.page} is not ${CLAIMS.ledger}`]
+		const block = (id) => {
+			const m = html.match(new RegExp(`<script type="application/json" id="${id}">([\\s\\S]*?)</script>`))
+			return m ? JSON.parse(m[1]) : null
+		}
+		const head = block('ledger-data')
+		const carried = block('rows-data')
+		if (!head || !carried) return [false, `${CLAIMS.page} carries no ledger`]
+		const { rows, ...rest } = ledger
+		const bad = []
+		if (canonicalJson(head) !== canonicalJson(rest)) bad.push(`the totals, books and positions inside ${CLAIMS.page} are not those of ${CLAIMS.ledger}`)
+		// the cards at the top: full rows, exactly as the ledger has them
+		for (const r of carried.featured) if (canonicalJson(r) !== canonicalJson(rows[r.n - 1])) bad.push(`card ${r.n} on the page is not row ${r.n} of the ledger`)
+		// the short form of every decision in which a position opened, a different token under a listed ticker moved, or the size was not NONE
+		const shortRow = (r) => ({ n: r.n, wallet: r.wallet, cohort: r.cohort, move_tx: r.move_tx, move_time: r.move_time, tier: r.tier, main: r.main ?? null, copy_guard: { opened: r.copy_guard.opened }, blind_copy: { opened: r.blind_copy.opened }, card: { headline: r.card.headline } })
+		const other = (r) => (r.main ? ['same_ticker', 'fake'].includes(r.main.kind) : r.failed.includes('C1'))
+		const want = rows.filter((r) => Boolean(r.copy_guard.opened || r.blind_copy.opened) || r.tier !== 'NONE' || other(r)).map(shortRow)
+		if (canonicalJson(carried.short) !== canonicalJson(want)) bad.push(`the decisions listed in ${CLAIMS.page} are not the ${want.length} rows of the ledger in which a position opened, another token moved or the size was not NONE`)
+		// one file per wallet: exactly its rows, and one line per wallet with the counts and the file's hash
+		const files = existsSync(join(REPO, CLAIMS.pageRowsDir)) ? readdirSync(join(REPO, CLAIMS.pageRowsDir)).filter((f) => f.endsWith('.js')) : []
+		let inFiles = 0
+		for (const w of carried.wallets) {
+			const mine = rows.filter((r) => lc(r.wallet) === lc(w.wallet))
+			const path = join(REPO, CLAIMS.pageRowsDir, `${lc(w.wallet)}.js`)
+			if (w.file !== `${CLAIMS.pageRowsDir}/${lc(w.wallet)}.js` || !existsSync(path)) {
+				bad.push(`no ${CLAIMS.pageRowsDir}/${lc(w.wallet)}.js`)
+				continue
+			}
+			const bytes = readFileSync(path)
+			const text = bytes.toString('utf8')
+			const m = text.match(/^vet402Rows\(([\s\S]*)\)\n$/)
+			if (!m || canonicalJson(JSON.parse(m[1])) !== canonicalJson(mine)) bad.push(`${CLAIMS.pageRowsDir}/${lc(w.wallet)}.js does not hold the ${mine.length} rows of that wallet`)
+			if (keccak256(new Uint8Array(bytes)) !== w.keccak || bytes.length !== w.bytes) bad.push(`${CLAIMS.pageRowsDir}/${lc(w.wallet)}.js is not the file the page names`)
+			const count = (f) => mine.filter(f).length
+			const got = [w.decisions, w.full, w.reduced, w.none, w.other_token_moves, w.copy_guard_opened, w.ticker_copy_opened, w.ticker_copy_in_other_tokens]
+			const exp = [mine.length, count((r) => r.tier === 'FULL'), count((r) => r.tier === 'REDUCED'), count((r) => r.tier === 'NONE'), count(other), count((r) => r.copy_guard.opened), count((r) => r.blind_copy.opened), count((r) => r.blind_copy.opened && (r.blind_copy.opened.asset === 'same_ticker' || r.blind_copy.opened.fake === true))]
+			if (canonicalJson(got) !== canonicalJson(exp)) bad.push(`the page's line for ${shortAddr(lc(w.wallet))} does not give the counts of its rows`)
+			inFiles += mine.length
+		}
+		if (inFiles !== rows.length || files.length !== carried.wallets.length) bad.push(`${CLAIMS.pageRowsDir} holds ${files.length} files with ${inFiles} rows; the ledger has ${rows.length} rows`)
+		return [bad.length === 0, bad.length ? bad.slice(0, 3).join('; ') : `${CLAIMS.page} carries the totals, both books with every position, the ${carried.featured.length} cards at the top as full rows and ${carried.short.length} decisions in short form (every one that opened a position, moved a different token under a listed ticker or was not NONE), all as ${CLAIMS.ledger} has them. The other decisions are in ${files.length} files of ${CLAIMS.pageRowsDir}, one per wallet, which hold the ${rows.length} rows exactly and give the page's counts per wallet`]
 	})
 	await rep.check('limits', () => {
 		const limits = readJson(join(REPO, CLAIMS.limits))

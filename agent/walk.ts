@@ -22,10 +22,11 @@
 //   records/<wallet>.json   the record as read, with the X-Facts-Hash that came with it,
 //                           or the HTTP status when there is none
 //   feeds.json              every feed value used, with the tx that published it
-//   chain.json              the chain answers the decisions rest on (for the tests)
+//   chain.json.gz           the chain answers the decisions rest on (for the tests), gzipped
 //   context.json            which wallet is in the walk for which reason, the window, the pool marks
 //   tokens.json             every token that moved, once (the input of the CRE token-check)
-//   trails.jsonl            one version 2 trail per decision, in walk order
+//   trails.jsonl.gz         one version 2 trail per decision, in walk order, gzipped
+//                           (agent/walk-files.ts; docs/verify/compressed.json keeps each sha256)
 //   ../ledger.json          the ledger: rows, both books, totals and the Merkle root
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
@@ -44,6 +45,7 @@ import { type CreInputs, type Movement, type RecordInputs, USDG } from './rules'
 import { arrival, type DecisionInputsV2, movedTokens, stockLegV2, type Venue } from './rules-v2'
 import { buildTrailV2, type Purchase, recheckTrailV2, type TrailV2 } from './trail'
 import { ISSUER_LIST, loadTokenCheck, NO_RECORD, poolEntryOf, receiptFacts, V4_SWAP_TOPIC } from './tokens'
+import { readWalkText, walkFileExists, writeWalkGz } from './walk-files'
 import { decodeRequired, loadLedger, MAX_SPEND_ATOMIC, pickAccept, spentAtomic, termsOf } from './x402'
 
 const VET402 = 'https://vet402.com'
@@ -146,8 +148,8 @@ async function main() {
 	}
 	// Chain answers saved by an earlier walk are read from the file. A transaction, a block time, a token's decimals and a pool's factory do not change.
 	const chainFile = join(out, 'chain.json')
-	const chain: { receipts: Record<string, any>; blocks: Record<string, string>; decimals: Record<string, number>; venues: Record<string, Venue['kind']> } = existsSync(chainFile)
-		? JSON.parse(readFileSync(chainFile, 'utf8'))
+	const chain: { receipts: Record<string, any>; blocks: Record<string, string>; decimals: Record<string, number>; venues: Record<string, Venue['kind']> } = walkFileExists(chainFile)
+		? JSON.parse(readWalkText(chainFile))
 		: { receipts: {}, blocks: {}, decimals: {}, venues: {} }
 	let lastFacts = 0
 	let factsCalls = 0
@@ -227,7 +229,7 @@ async function main() {
 			moves.push({ wallet, mv, time: new Date(Number(BigInt(chain.blocks[mv.block])) * 1000).toISOString(), signer: lc(r.from), value: r.value, to: r.to, selector: r.selector, swaps: r.swaps ?? [], liquidity: r.liquidity, swap_emitters: r.swap_emitters, token_senders: r.token_senders })
 			n++
 		}
-		writeFileSync(chainFile, `${JSON.stringify(chain)}\n`)
+		writeWalkGz(REPO, chainFile, `${JSON.stringify(chain)}\n`)
 		say(`  ${wallet} ${w.cohort}${w.rank ? ` ${w.rank}` : ''}: ${saved.facts ? `record ${record.r1_status}, realized ${record.realized_usd ?? 'unknown'}, ${anchor ? `anchor ${cre.verdict}` : 'no anchor'}` : `NO RECORD (HTTP ${http})`}, ${n} moves of ${txs.length} listed txs`)
 	}
 
@@ -350,7 +352,7 @@ async function main() {
 		if (JSON.stringify(r.book) !== JSON.stringify(trails[i].inputs.book)) throw new Error(`row ${r.n}: the book the decision read is not the book the ledger walk gives`)
 	})
 
-	writeFileSync(join(out, 'trails.jsonl'), `${trails.map((t) => JSON.stringify(t)).join('\n')}\n`)
+	writeWalkGz(REPO, join(out, 'trails.jsonl'), `${trails.map((t) => JSON.stringify(t)).join('\n')}\n`)
 	writeFileSync(join(out, 'feeds.json'), `${JSON.stringify(feeds, null, 1)}\n`)
 	writeFileSync(join(out, 'context.json'), `${JSON.stringify(context, null, 1)}\n`)
 	const allTokens = [...new Set(moves.flatMap((mo) => mo.mv.transfers.map((t) => lc(t.token))))].sort()
@@ -361,7 +363,7 @@ async function main() {
 	const pick = <T,>(o: Record<string, T>, keep: (k: string) => boolean) => Object.fromEntries(Object.entries(o).filter(([k]) => keep(k)))
 	const tokens = new Set(allTokens)
 	const venues = new Set(trails.flatMap((t) => t.inputs.venue.map((v) => v.address)))
-	writeFileSync(chainFile, `${JSON.stringify({ receipts: pick(chain.receipts, (k) => walked.has(k)), blocks: pick(chain.blocks, (k) => blocks.has(k)), decimals: pick(chain.decimals, (k) => tokens.has(k)), venues: pick(chain.venues, (k) => venues.has(k)) })}\n`)
+	writeWalkGz(REPO, chainFile, `${JSON.stringify({ receipts: pick(chain.receipts, (k) => walked.has(k)), blocks: pick(chain.blocks, (k) => blocks.has(k)), decimals: pick(chain.decimals, (k) => tokens.has(k)), venues: pick(chain.venues, (k) => venues.has(k)) })}\n`)
 	writeFileSync(join(REPO, 'docs/ledger.json'), `${JSON.stringify(ledger, null, 1)}\n`)
 	// One write for the whole walk: the CRE workflow recomputes the Merkle root from the leaves and delivers it.
 	const anchored = simulate<{ root: string; ledgerTx: string }>(

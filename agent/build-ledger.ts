@@ -9,9 +9,10 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { buildLedger } from './ledger'
 import type { TrailV2 } from './trail'
+import { readWalkText } from './walk-files'
 
 const REPO = join(import.meta.dir, '..')
-const trails = readFileSync(join(REPO, 'docs/walk/trails.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l) as TrailV2)
+const trails = readWalkText(join(REPO, 'docs/walk/trails.jsonl')).split('\n').filter(Boolean).map((l) => JSON.parse(l) as TrailV2)
 const feeds = JSON.parse(readFileSync(join(REPO, 'docs/walk/feeds.json'), 'utf8'))
 const before = JSON.parse(readFileSync(join(REPO, 'docs/ledger.json'), 'utf8'))
 const context = JSON.parse(readFileSync(join(REPO, 'docs/walk/context.json'), 'utf8'))

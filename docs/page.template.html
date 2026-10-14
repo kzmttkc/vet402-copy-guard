@@ -74,6 +74,7 @@ td.r,th.r{text-align:right;white-space:nowrap}
 .filters{margin:10px 0}
 .filters button{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--ink);background:#fff;color:var(--ink);margin:0 6px 6px 0;cursor:pointer}
 .filters button[aria-pressed=true]{background:var(--ink);color:#fff}
+button.show{font:inherit;font-size:13px;padding:4px 8px;border:1px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;white-space:nowrap}
 tr.row{cursor:pointer}
 tr.detail td{background:var(--soft)}
 .note{border:1px solid var(--line);background:var(--soft);padding:12px 14px;font-size:14.5px}
@@ -91,8 +92,8 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 <h1>Before it would copy a wallet, this agent checks which token really moved.</h1>
 <p class="lede">Anyone can make a token and name it NVDA. copy-guard looks at which token moved, who signed for it and what the person it acts for allows. Then it writes down what it did and why, in plain sentences.</p>
 <div class="story" id="story">
-<div><b>1. It saw</b><span>25 tokens named NVDA arrive in a wallet that people might copy.</span></div>
-<div><b>2. It checked</b><span>They are not the NVDA Stock Token that Robinhood's issuer made. Another address sent them. The wallet did not sign for them.</span></div>
+<div><b>1. It saw</b><span><span class="st-amount"></span> tokens named <span class="st-ticker"></span> arrive in a wallet that people might copy.</span></div>
+<div><b>2. It checked</b><span>They are not the <span class="st-ticker"></span> Stock Token that Robinhood's issuer made. Another address sent them. The wallet did not sign for them.</span></div>
 <div><b>3. It did</b><span>It opened no position, and wrote down why. <a href="#cards">Read the card</a>.</span></div>
 </div>
 <p class="jump"><span class="mute">Judging one bounty?</span> <a href="#chainlink">Chainlink CRE</a> <a href="#ryo">RYO-CHAN</a> <a href="#bli">BLI: who the agent acts for</a> <a href="#verify">Check it yourself</a></p>
@@ -101,7 +102,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 <blockquote><p>&ldquo;$600 out the window in seconds&rdquo;</p><span class="small mute">@DCA_Sean, a Robinhood Chain user, after a coin that Protos reports as a scam appeared in the sell screen of the wallet app. Quoted by <a href="https://protos.com/robinhood-chain-scams-are-already-costing-users-dearly/">Protos, 2026-07-10</a>.</span></blockquote>
 <blockquote><p>&ldquo;I was asleep when the losses accumulated.&rdquo;</p><span class="small mute">crypto_chris, writing about an AI agent that was left to trade alone. <a href="https://blockeden.xyz/forum/t/my-ai-agent-lost-12k-in-a-weekend-a-cautionary-tale-about-autonomous-defi/368">BlockEden forum, 2026-02-06</a>.</span></blockquote>
 </div>
-<p class="small mute">Those two people wrote about tokens and agents in general. The move in the three steps above is my own observation of 2026-09-27 at 12:52, and I have found no account of anyone losing money to a stock ticker this way. This page accuses no one. It shows that a ticker is not unique.</p>
+<p class="small mute">Those two people wrote about tokens and agents in general. The move in the three steps above is my own observation of <span id="st-when"></span>, and I have found no account of anyone losing money to a stock ticker this way. This page accuses no one. It shows that a ticker is not unique.</p>
 
 <div class="nums" id="nums"></div>
 <p class="note" id="note"></p>
@@ -121,10 +122,14 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 <div><h3>copy-guard</h3><p class="sum" id="guardsum"></p><details><summary>Every position</summary><div class="scroll"><table id="guard"></table></div></details></div>
 <div><h3>Ticker copy</h3><p class="sum" id="blindsum"></p><details><summary>Every position</summary><div class="scroll"><table id="blind"></table></div></details></div>
 </div>
+<h3>Wallet by wallet</h3>
+<p class="small mute" id="walletsnote"></p>
+<div class="scroll tall"><table id="wallets"></table></div>
 <h3>Every decision</h3>
 <div class="filters" id="filters"></div>
+<p class="small mute" id="rowsnote" aria-live="polite"></p>
 <div class="scroll tall"><table id="rows"></table></div>
-<p class="small mute">Select a row to read its card. Declined moves stay in the ledger with their reasons.</p>
+<p class="small mute">Select a row to read its card. Declined moves stay in the ledger with their reasons. Every decision is also in <a href="ledger.json"><code>docs/ledger.json</code></a>.</p>
 <div id="others"></div>
 
 <h2 id="bli">Who set the limits, and who the agent acts for</h2>
@@ -207,28 +212,32 @@ node verify.mjs</pre><span id="verifyresult" class="small mute"></span></li>
 <li>This is not legal advice and not investment advice. vet402 reports what public chain data shows and is not affiliated with Robinhood, Chainlink, RYO or any token issuer.</li>
 </ul>
 <p class="last">A ticker is a string that anyone can reuse. This page says which contract moved, who signed for it and who allowed the agent to act. Don't take my word for it. <a href="#verify">Run it.</a></p>
-<footer>vet402 copy-guard. MIT license. This page is one static file: it loads nothing from the network and builds every table from the ledger it carries.</footer>
+<footer>vet402 copy-guard. MIT license. This page loads nothing from the network. It carries the totals, both books and every decision that opened a position, and builds its cards and tables from them. The other decisions are in <code>docs/rows/</code> next to it, one file per wallet, read only when you ask for them.</footer>
 </main>
 <script type="application/json" id="ledger-data">/*LEDGER*/</script>
+<script type="application/json" id="rows-data">/*ROWS*/</script>
 <script type="application/json" id="page-data">/*EXTRA*/</script>
-<!-- Which cards stand at the top, and in which order. The page takes, for each slot in turn:
-     the row whose move_tx starts with "tx" when the ledger has it, otherwise the first row
-     (lowest n) that fits "match". With "same_ticker_as" it prefers a row with the ticker of
-     that earlier slot. A slot no row fits is left out. docs/handoff/C-to-A.md has the reasons. -->
+<!-- Which cards stand at the top, and in which order. scripts/build-page.mjs takes, for each
+     slot in turn: the row whose move_tx starts with "tx" when the ledger has it, otherwise the
+     first row (lowest n) that fits "match". With "same_ticker_as" it prefers a row with the
+     ticker of that earlier slot. A slot no row fits is left out, and a row is used once.
+     "arrival" lists the words of ledger version 3 (rows[].main.arrival) and of version 2.
+     The order: what a first-time reader can follow in one reading comes first. The three
+     steps at the top are shown only when slot 1 holds the move 0x1b838f40. -->
 <script type="application/json" id="page-config">
 {
  "cards": [
-  { "slot": "arrived", "caption": "1. A token arrived that the wallet never signed for", "tx": "0x1b838f40", "match": { "asset": "same_ticker", "arrival": ["received_unsigned"] } },
+  { "slot": "arrived", "caption": "1. A token arrived that the wallet never signed for", "tx": "0x1b838f40", "match": { "asset": "same_ticker", "arrival": ["received", "received_unsigned"] } },
   { "slot": "small_buy", "caption": "2. The wallet bought the issuer's Stock Token: a small practice position", "match": { "opened": true }, "same_ticker_as": "arrived" },
-  { "slot": "bought_other", "caption": "3. The wallet itself bought a different token under a stock ticker", "match": { "asset": "same_ticker", "arrival": ["bought", "in_signed"] } },
+  { "slot": "bought_other", "caption": "3. The wallet itself bought a different token under a stock ticker", "match": { "asset": "same_ticker", "arrival": ["purchase", "bought", "in_signed"] } },
   { "slot": "logged_out", "caption": "4. A log names the wallet as the sender of a payment it never signed", "tx": "0xf7cb51a2", "match": { "asset": "same_ticker", "invisible_characters": true } }
  ]
 }
 </script>
 <script>
 const L = JSON.parse(document.getElementById('ledger-data').textContent)
+const R = JSON.parse(document.getElementById('rows-data').textContent)
 const X = JSON.parse(document.getElementById('page-data').textContent)
-const CFG = JSON.parse(document.getElementById('page-config').textContent)
 const $ = (id) => document.getElementById(id)
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c])
 const short = (h) => `${h.slice(0, 8)}…${h.slice(-4)}`
@@ -238,6 +247,7 @@ const addr = (a) => `<a class="mono" href="https://robinhoodchain.blockscout.com
 const when = (t) => t.slice(0, 16).replace('T', ' ')
 const money = (s) => `<span class="${s.startsWith('-') ? 'neg' : Number(s) > 0 ? 'pos' : ''}">${esc(s)}</span>`
 const plural = (n, one, many) => `${n} ${Number(n) === 1 ? one : many}`
+const kB = (b) => (b >= 1e6 ? `${(b / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(b / 1e3))} kB`)
 const T = L.totals
 const lim = L.limits
 const M = L.mandate
@@ -246,23 +256,46 @@ const M = L.mandate
 // Version 3 says what each row is about in row.main and how each position is valued.
 // Version 2 (the walk of 2026-10-14) did not, so the same facts are read from what it has.
 const OTHER_KIND = ['same_ticker', 'fake']
-const isOtherRow = (r) => (r.main ? OTHER_KIND.includes(r.main.kind) : r.failed.includes('C1'))
-const arrivalOf = (r) => {
-	if (r.main) return r.main.arrival
-	const h = r.card.happened
-	return /from this wallet|The wallet sent/.test(h) ? 'out' : /did not sign/.test(h) ? 'received_unsigned' : 'in_signed'
-}
-const guardPos = new Map(L.copy_guard_positions.map((p) => [p.n, p]))
-const tickerOf = (r) => r.main?.ticker ?? guardPos.get(r.n)?.symbol ?? r.card.headline.split(' ').pop()
+const isOtherRow = (r) => (r.main ? OTHER_KIND.includes(r.main.kind) : (r.failed ?? []).includes('C1'))
 const isOtherPos = (p) => p.asset === 'same_ticker' || p.fake === true
-const measured = (p) => (isOtherPos(p) ? p.valued_by === 'pool' && p.result_usd !== null : p.result_usd !== null && p.result_usd !== undefined)
+const measured = (p) => (isOtherPos(p) ? p.valued_by === 'pool' && p.result_usd !== null : p.result_usd != null)
 const isOtherOpen = (b) => b && (b.asset === 'same_ticker' || b.fake === true)
 const mandateStatus = { signed_by_principal: 'signed', sample: 'sample', not_signed: 'unsigned' }[M.status] ?? (!M.signed_by_principal ? 'unsigned' : (M.sample ?? X.sample_mandate) ? 'sample' : 'signed')
 const MANDATE_WORDS = { signed: 'Mandate signed by the principal', sample: 'Sample mandate (not yet signed by the principal)', unsigned: 'No signed mandate' }
 const otherMoves = T.other_tokens?.moves ?? T.fakes_named
 const otherTokens = T.other_tokens?.tokens ?? null
 const blindOther = T.blind_copy.in_other_tokens?.count ?? T.blind_copy.fakes
-const totalChecks = L.rows[0]?.checks.total
+const totalChecks = R.featured[0]?.checks.total
+
+// ---- rows: the full ones this page carries, and the rest read from docs/rows/ when asked
+const full = new Map(R.featured.map((r) => [r.n, r]))
+const loaded = new Set()
+const waiting = new Map()
+window.vet402Rows = (rows) => {
+	for (const r of rows) full.set(r.n, r)
+	const w = rows[0]?.wallet
+	if (!w) return
+	loaded.add(w)
+	for (const p of waiting.get(w) ?? []) p.resolve()
+	waiting.delete(w)
+}
+function loadWallet(w) {
+	if (loaded.has(w)) return Promise.resolve()
+	return new Promise((resolve, reject) => {
+		if (!waiting.has(w)) {
+			waiting.set(w, [])
+			const s = document.createElement('script')
+			s.src = `rows/${w}.js`
+			s.onerror = () => {
+				for (const p of waiting.get(w) ?? []) p.reject(new Error(`rows/${w}.js could not be read`))
+				waiting.delete(w)
+				s.remove()
+			}
+			document.head.appendChild(s)
+		}
+		waiting.get(w).push({ resolve, reject })
+	})
+}
 
 // ---- the first screen ----------------------------------------------------------------
 $('nums').innerHTML = [
@@ -294,25 +327,18 @@ function card(r) {
 <dt>Red flags (${c.flags.length})</dt><dd>${c.flags.length ? c.flags.map((id) => `<span class="mark bad">▲ ${esc(RULE[id] ?? id)} <span class="mono">${esc(id)}</span></span>`).join(' &nbsp; ') : 'none'}</dd>
 <dt>Suggested action</dt><dd><b>${esc(r.card.so.replace(/^So copy-guard /, 'copy-guard '))}</b></dd></dl></article>`
 }
-function fits(r, m) {
-	if (m.opened !== undefined && Boolean(r.copy_guard.opened) !== m.opened) return false
-	if (m.asset === 'same_ticker' && !isOtherRow(r)) return false
-	if (m.arrival && !m.arrival.includes(arrivalOf(r))) return false
-	if (m.invisible_characters && !r.card.happened.includes('⟨U+')) return false
-	return true
-}
-const chosen = []
-for (const slot of CFG.cards) {
-	const free = L.rows.filter((r) => !chosen.some((x) => x.row === r))
-	const earlier = chosen.find((x) => x.slot === slot.same_ticker_as)
-	const pool = free.filter((r) => fits(r, slot.match ?? {}))
-	const row = (slot.tx && free.find((r) => r.move_tx.startsWith(slot.tx))) || (earlier && pool.find((r) => tickerOf(r) === tickerOf(earlier.row))) || pool[0]
-	if (row) chosen.push({ slot: slot.slot, caption: slot.caption, row })
-}
+const chosen = X.cards.map((c) => ({ ...c, row: full.get(c.n) })).filter((c) => c.row)
 $('featured').innerHTML = chosen.map((x) => `<p class="slot">${esc(x.caption)}</p>${card(x.row)}`).join('')
 const first = chosen.find((x) => x.slot === 'arrived')
-if (!first || !first.row.move_tx.startsWith('0x1b838f40')) $('story').hidden = true
-else $('story').querySelector('a').href = `#card-${first.row.n}`
+// The three steps tell the move of slot 1, with the numbers of its own card.
+const seen = first?.row.card.happened.match(/sent this wallet ([\d,.]+) tokens with the ticker (\S+?) /)
+if (!first || !first.row.move_tx.startsWith('0x1b838f40') || !seen) $('story').hidden = true
+else {
+	$('story').querySelector('a').href = `#card-${first.row.n}`
+	for (const e of document.querySelectorAll('.st-amount')) e.textContent = seen[1]
+	for (const e of document.querySelectorAll('.st-ticker')) e.textContent = seen[2]
+	$('st-when').textContent = `${first.row.move_time.slice(0, 10)} at ${first.row.move_time.slice(11, 16)}`
+}
 
 // ---- the two books -------------------------------------------------------------------
 const same = T.same_size
@@ -353,27 +379,57 @@ $('blindsum').innerHTML = `<b>${T.blind_copy.opened}</b> practice positions. <sp
 $('guard').innerHTML = positions(L.copy_guard_positions, true)
 $('blind').innerHTML = positions(L.blind_copy_positions, false)
 
-const FILTERS = { 'All': () => true, 'Positions opened': (r) => r.copy_guard.opened || r.blind_copy.opened, 'Same ticker, different token': isOtherRow, 'Reduced or full': (r) => r.tier !== 'NONE' }
+// ---- wallet by wallet ------------------------------------------------------------------
+const GROUP = { top_buyers: 'largest buyers', same_ticker_buyers: 'bought a token under a stock ticker at another address', watched: 'demo wallet' }
+$('walletsnote').textContent = `Each wallet in the walk, with what both books did with its moves. ${plural(R.wallets.length, 'wallet', 'wallets')}. Its decisions are read from docs/rows/ when you ask for them.`
+$('wallets').innerHTML = `<tr><th>Wallet</th><th>Why it is in the walk</th><th class="r">Moves</th><th class="r">copy-guard opened</th><th class="r">Ticker copy opened</th><th class="r">Of them in other tokens</th><th></th></tr>` + R.wallets.map((w) => `<tr><td>${addr(w.wallet)}</td><td>${esc(GROUP[w.cohort] ?? w.cohort)}${w.rank ? `, rank ${w.rank}` : ''}</td><td class="r">${w.decisions}</td><td class="r">${w.copy_guard_opened}</td><td class="r">${w.ticker_copy_opened}</td><td class="r">${w.ticker_copy_in_other_tokens ? `<span class="other">${w.ticker_copy_in_other_tokens}</span>` : 0}</td><td><button class="show" data-w="${esc(w.wallet)}">Show its ${w.decisions} decisions</button> <span class="small mute">${kB(w.bytes)}</span></td></tr>`).join('')
+
+// ---- every decision ---------------------------------------------------------------------
+const FILTERS = { 'Positions opened': (r) => r.copy_guard.opened || r.blind_copy.opened, 'Same ticker, different token': isOtherRow, 'Reduced or full': (r) => r.tier !== 'NONE', All: () => true }
 let current = 'Positions opened'
+let walletOnly = null
+const rowsOf = () => (walletOnly ? [...full.values()].filter((r) => r.wallet === walletOnly) : current === 'All' ? [...full.values()] : R.short.filter(FILTERS[current])).sort((a, b) => a.n - b.n)
 function rows() {
-	const list = L.rows.filter(FILTERS[current])
+	const list = rowsOf()
 	$('rows').innerHTML = `<tr><th>#</th><th>Move (UTC)</th><th>Wallet</th><th>copy-guard</th><th>Ticker copy</th><th>Reason</th></tr>` + list.map((r) => {
 		const g = r.copy_guard.opened
 		const b = r.blind_copy.opened
-		return `<tr class="row" data-n="${r.n}"><td>${r.n}</td><td>${when(r.move_time)}<br>${tx(r.move_tx)}</td><td>${addr(r.wallet)}</td><td><span class="tag ${r.tier}">${r.tier}</span>${g ? `${esc(g.notional_usd)} USD at ${esc(g.entry_price_usd)}` : ''}</td><td>${b ? `${esc(b.notional_usd)} USD${isOtherOpen(b) ? ' <span class="other">in a different token under the ticker</span>' : ` at ${esc(b.entry_price_usd)}`}` : '<span class="mute">nothing</span>'}</td><td>${esc(r.card.headline)}</td></tr>`
+		return `<tr class="row" data-n="${r.n}" data-w="${esc(r.wallet)}"><td>${r.n}</td><td>${when(r.move_time)}<br>${tx(r.move_tx)}</td><td>${addr(r.wallet)}</td><td><span class="tag ${r.tier}">${r.tier}</span>${g ? `${esc(g.notional_usd)} USD at ${esc(g.entry_price_usd)}` : ''}</td><td>${b ? `${esc(b.notional_usd)} USD${isOtherOpen(b) ? ' <span class="other">in a different token under the ticker</span>' : ` at ${esc(b.entry_price_usd)}`}` : '<span class="mute">nothing</span>'}</td><td>${esc(r.card.headline)}</td></tr>`
 	}).join('')
-	$('filters').innerHTML = Object.keys(FILTERS).map((k) => `<button aria-pressed="${k === current}" data-f="${esc(k)}">${esc(k)} (${L.rows.filter(FILTERS[k]).length})</button>`).join('')
+	const count = (k) => (k === 'All' ? T.decisions : R.short.filter(FILTERS[k]).length)
+	$('filters').innerHTML = Object.keys(FILTERS).map((k) => `<button aria-pressed="${!walletOnly && k === current}" data-f="${esc(k)}">${esc(k)} (${count(k)})</button>`).join('') + (walletOnly ? `<button aria-pressed="true" data-f="">Wallet ${esc(walletOnly.slice(0, 6))}…${esc(walletOnly.slice(-4))} (${list.length})</button>` : '')
+	$('rowsnote').textContent = current === 'All' && !walletOnly ? '' : walletOnly ? '' : `${plural(list.length, 'decision', 'decisions')} carried in this page. "All" reads the other ${T.decisions - R.short.length} from docs/rows/ (${kB(X.all_rows_bytes)}).`
 }
 rows()
-$('filters').addEventListener('click', (e) => { const f = e.target.dataset?.f; if (f) { current = f; rows() } })
+function show(promise, label) {
+	$('rowsnote').textContent = `Reading ${label} from docs/rows/ …`
+	promise.then(rows, (e) => { $('rowsnote').textContent = `${e.message}. Open docs/ledger.json for every decision.` })
+}
+$('filters').addEventListener('click', (e) => {
+	const f = e.target.dataset?.f
+	if (!f) return
+	walletOnly = null
+	current = f
+	if (f === 'All') show(Promise.all(R.wallets.map((w) => loadWallet(w.wallet))), `all ${T.decisions} decisions (${kB(X.all_rows_bytes)})`)
+	else rows()
+})
+$('wallets').addEventListener('click', (e) => {
+	const w = e.target.dataset?.w
+	if (!w || !e.target.classList.contains('show')) return
+	walletOnly = w
+	show(loadWallet(w), `the decisions of ${w.slice(0, 6)}…${w.slice(-4)}`)
+	$('rows').scrollIntoView({ block: 'nearest' })
+})
 $('rows').addEventListener('click', (e) => {
 	if (e.target.closest('a')) return
 	const tr = e.target.closest('tr.row')
 	if (!tr) return
 	const next = tr.nextElementSibling
 	if (next && next.classList.contains('detail')) return next.remove()
-	const r = L.rows.find((x) => String(x.n) === tr.dataset.n)
-	tr.insertAdjacentHTML('afterend', `<tr class="detail"><td colspan="6">${card(r)}</td></tr>`)
+	const n = Number(tr.dataset.n)
+	const open = () => tr.insertAdjacentHTML('afterend', `<tr class="detail"><td colspan="6">${card(full.get(n))}</td></tr>`)
+	if (full.has(n)) return open()
+	loadWallet(tr.dataset.w).then(open, (err) => tr.insertAdjacentHTML('afterend', `<tr class="detail"><td colspan="6">${esc(err.message)}. Open docs/ledger.json for this decision.</td></tr>`))
 })
 
 // ---- tokens that share a ticker (version 3 carries the list) -------------------------
@@ -419,7 +475,8 @@ const root = X.anchor && X.anchor.ledger_tx ? `${ttx(X.anchor.ledger_tx)} on Rob
 $('roottx').innerHTML = root
 $('rootlink').innerHTML = root
 $('verifyresult').textContent = X.verify ? `Last saved run: ${X.verify}` : ''
-$('tokencheck').textContent = X.token_check ?? ''
+const C = X.token_check
+$('tokencheck').innerHTML = C ? `Checked through CRE so far: ${C.tokens} tokens that moved in the walk, in ${C.runs} runs, ${C.issuer_tokens} of them the issuer's Stock Tokens. The hash of the results file is in ${ttx(C.anchor_tx)} on Robinhood Testnet, and every decision names that file.${C.recheck ? ` A second program read every row again without CRE: ${C.recheck.agree} of ${C.recheck.of} agree.` : ''}` : ''
 </script>
 </body>
 </html>
