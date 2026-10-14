@@ -7,13 +7,16 @@
 //
 //   VERIFY         docs/verify/verify-output.txt, whole                    (kept, same name)
 //   VERIFY_TAIL    its last two lines
-//   FACTS          the walk in one paragraph: counts and names, no money
+//   JUMP           the table for judges at the top, with the link to the recheck's heading
+//   VERIFY_HEAD    the recheck's heading: the slowest saved quick run, or "with one command"
+//   VERIFY_RUN     step 1 of the recheck: --quick first when verify.mjs has it, then the whole run
+//   FACTS          the walk in one paragraph: names and counts first, the groups apart, no money
 //   CARD           one decision card, the first card of the page
 //   LEDGER         the two books side by side, then both at one size       (kept, new body)
 //   OTHER_TOKENS   every token under a listed ticker at another address, by address
 //   LIMITS         limits.json as a table
 //   MANDATE        which mandate the walk used, and whether the principal has signed
-//   WALLETS        how the wallets were chosen, and how large the followed purchases were
+//   WALLETS        how the wallets were chosen, and what copy-guard followed, group by group
 //   STORY          the move told at the top, from the card's own row
 //   CHANGES        what changes, with times read from the saved logs and docs/verify/verify-five-runs.txt
 //   CRE_SIMULATE   the `cre workflow simulate` lines and what they printed      docs/token-check/batch/, docs/simulate-match.txt
@@ -23,7 +26,8 @@
 //
 // It reads ledger_version 3 (agent/ledger.ts after A's change) and still reads version 2.
 // Where a field is missing the block says "not measured" or leaves the sentence out.
-// It never fills in a guess.
+// It never fills in a guess. What it says about groups, arrivals, the selection and the
+// recheck's times comes from scripts/groups.mjs, which the page reads too.
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -34,6 +38,7 @@ while (!existsSync(join(REPO, 'verify.mjs'))) {
 	REPO = dirname(REPO)
 }
 const { canonicalJson, keccak256, readWalkFile } = await import(pathToFileURL(join(REPO, 'verify.mjs')).href)
+const { arrivalsOf, concentration, followedSentence, groupsBrief, groupsOf, observedToken, secondsWords, selectionSentence, slug, usdRange, usdWords, verifyTimes } = await import(pathToFileURL(join(REPO, 'scripts/groups.mjs')).href)
 
 const has = (p) => existsSync(join(REPO, p))
 const read = (p) => readFileSync(join(REPO, p), 'utf8')
@@ -69,6 +74,7 @@ const mandateStatus = { signed_by_principal: 'signed', sample: 'sample', not_sig
 const OTHER = new Set(['fake', 'same_ticker'])
 const HOW = {
 	bought: 'bought by the wallet, which signed and paid',
+	bought_off_venue: 'bought by the wallet outside the official venues',
 	received_unpaid: 'came in a transaction the wallet signed, and the wallet paid nothing in it',
 	received_unsigned: 'sent to the wallet, which did not sign',
 	in_signed: 'came in a transaction the wallet signed',
@@ -76,7 +82,7 @@ const HOW = {
 	out: 'a log names the wallet as the sender',
 }
 // Version 3 names how a token came in rows[].main.arrival with the words of FIELDS.md.
-const V3_HOW = { purchase: 'bought', swapped_unpaid: 'received_unpaid', liquidity: 'received_unpaid', rotation: 'received_unpaid' }
+const V3_HOW = { purchase: 'bought', purchase_off_venue: 'bought_off_venue', swapped_unpaid: 'received_unpaid', liquidity: 'received_unpaid', rotation: 'received_unpaid' }
 const others = new Map()
 const note = (token, ticker, name, how) => {
 	const e = others.get(token) ?? { token, ticker, name, moves: 0, how: {} }
@@ -107,10 +113,13 @@ const lastMove = t.last_move_time ?? moveTimes[moveTimes.length - 1]
 const opened = t.copy_guard.opened
 const sizes = t.full && t.reduced ? `${t.full} at the full size and ${t.reduced} at the reduced size` : t.full ? 'all at the full size' : "each at the reduced size the user's limits give for weaker evidence"
 const o = t.other_tokens
+// A ledger that knows purchases outside the official venues counts them apart in by_arrival.
+const offVenue = o?.by_arrival && 'purchase_off_venue' in o.by_arrival
 const howSentence = o
 	? [
 			[o.sent_to_the_wallet, 'sent to a wallet that did not sign'],
-			[o.bought_by_the_wallet, 'bought by the wallet itself (it signed and paid)'],
+			[offVenue ? o.by_arrival.purchase : o.bought_by_the_wallet, offVenue ? 'bought by the wallet itself at an official venue' : 'bought by the wallet itself (it signed and paid)'],
+			[offVenue ? o.by_arrival.purchase_off_venue : 0, 'bought by the wallet outside the official venues'],
 			[o.received_unpaid, 'received in a transaction the wallet signed without paying'],
 			[o.logged_as_sent_by_the_wallet, 'logged with the wallet as the sender'],
 		]
@@ -122,7 +131,12 @@ const howSentence = o
 const chosenForIt = t.wallets_by_cohort?.same_ticker_buyers ?? 0
 const notARate = chosenForIt ? ` ${chosenForIt} of the ${t.wallets} wallets are in the walk because they bought such a token, so these counts are not a rate.` : ''
 
-const facts = `**The walk of ${day(L.decided_at)}, practice only.** copy-guard looked at ${t.decisions} moves of ${t.wallets} wallets. It opened ${plural(opened, 'practice position', 'practice positions')}, ${sizes}. It declined ${t.none}, each with a reason in plain sentences. ${otherMoves} of the moves were in ${otherTokens ? plural(otherTokens, 'token', 'tokens') : 'tokens'} that carry the ticker of a Stock Token or of USDG at an address the issuer did not list.${howSentence ? ` How they reached the wallet: ${howSentence}.` : ''} Each token is [named by address](#tokens-that-share-a-ticker).${notARate}`
+// Names and counts lead. Money stays in the ledger's tables, and copy-guard's positions are told group by group.
+const G = groupsOf(L, selection)
+const guardInOther = L.copy_guard_positions.filter((p) => p.asset === 'same_ticker' || p.fake === true).length
+const blindInOther = t.blind_copy.in_other_tokens?.count ?? t.blind_copy.fakes
+const inOther = guardInOther ? `copy-guard opened ${guardInOther} positions in them and the ticker copy opened ${blindInOther}.` : `copy-guard opened no position in any of them. The ticker copy opened ${blindInOther}.`
+const facts = `**The walk of ${day(L.decided_at)}, practice only.** copy-guard looked at ${t.decisions} moves of ${t.wallets} wallets. ${otherMoves} of them were in ${otherTokens ? plural(otherTokens, 'token', 'tokens') : 'tokens'} that carry the ticker of a Stock Token or of USDG at an address the issuer did not list, and each of those tokens is [named by address](#tokens-that-share-a-ticker).${howSentence ? ` How they reached the wallet: ${howSentence}.` : ''} ${inOther}${notARate} ${groupsBrief(G)} In all it opened ${opened}, ${sizes}, and declined ${t.none}, each with a reason in plain sentences.`.replace(/  +/g, ' ')
 
 const reasons = {}
 for (const r of L.rows) if (r.tier === 'NONE') reasons[r.card.headline.replace('No position: ', '')] = (reasons[r.card.headline.replace('No position: ', '')] ?? 0) + 1
@@ -137,21 +151,33 @@ const sameSize = s
 
 | | Positions | Put in | Result at the exit or the mark |
 |---|---|---|---|
-| Opened by both books | ${s.opened_by_both.count} | ${s.opened_by_both.put_in_usd} USD | ${s.opened_by_both.result_usd} USD, the same in both books |
+${G.filter((g) => g.same_size).map((g) => `| Opened by both books, following ${g.of} | ${g.same_size.count} | ${g.same_size.put_in_usd} USD | ${g.same_size.result_usd} USD |`).join('\n')}${G.some((g) => g.same_size) ? '\n' : ''}| Opened by both books${G.some((g) => g.same_size) ? ', all groups' : ''} | ${s.opened_by_both.count} | ${s.opened_by_both.put_in_usd} USD | ${s.opened_by_both.result_usd} USD, the same in both books |
 | Opened by the ticker copy only, in Stock Tokens | ${s.opened_by_ticker_copy_only_stock.count} | ${s.opened_by_ticker_copy_only_stock.put_in_usd} USD | ${s.opened_by_ticker_copy_only_stock.result_usd} USD |
 | Opened by the ticker copy only, in other tokens under a listed ticker | ${s.opened_by_ticker_copy_only_other.count} | ${s.opened_by_ticker_copy_only_other.put_in_usd} USD | ${otherResult(s.opened_by_ticker_copy_only_other)} |`
 	: `**At one size.** copy-guard's positions in this walk are ${limits.size.reduced_usd} USD each. At that size the ticker copy would have put in ${usd(t.blind_copy.opened * Number(limits.size.reduced_usd))} USD. What its ${blindOther} positions in other tokens were worth afterwards is not measured in this walk, so no result in USD is compared here.`
 
-const COHORT = { top_buyers: 'The largest buyers of Stock Tokens', same_ticker_buyers: 'Wallets chosen because they bought a token under a listed ticker at another address', watched: 'The demo wallet' }
-const bc = t.by_cohort
-const byCohort = bc
+const most = (g) => (g.top_wallet ? `${g.top_wallet.opened} of ${g.opened} (${g.top_share_pct}%)` : 'none')
+const followedCell = (g) => (!g.followed ? (g.opened ? 'not measured' : 'none') : g.followed.count === 1 ? usdWords(g.followed.median) : `${usdRange(g.followed)}, median ${usdWords(g.followed.median)}`)
+const byCohort = G.length
 	? `
 
-**The same counts by group of wallets**, because one group was chosen for what it bought.
+**The same moves by group of wallets.** The groups were chosen in different ways, so each is shown apart and the totals above are only their sum.
 
-| Group | Wallets | Moves | copy-guard opened | Ticker copy opened | Of them in other tokens |
+| Group | Wallets | Moves | copy-guard opened | Declined | Most in one wallet | Purchases it followed | Ticker copy opened | Of them in other tokens |
+|---|---|---|---|---|---|---|---|---|
+${G.map((g) => `| ${g.name} | ${g.wallets} | ${g.decisions} | ${g.opened} | ${g.declined} | ${most(g)} | ${followedCell(g)} | ${g.ticker_copy_opened ?? 'not counted'} | ${g.ticker_copy_in_other_tokens ?? 'not counted'} |`).join('\n')}
+
+${concentration(G)}`.trimEnd()
+	: ''
+
+// How each token reached the wallet, with what each book opened on it
+const ARR = arrivalsOf(L)
+const arrivals = ARR.length
+	? `**How each token reached the wallet.** Every move is one of these kinds, read from the transaction alone ([\`docs/walk/SELECTION.md\`](docs/walk/SELECTION.md), section 2). Stock Tokens are counted per incoming token, the books per decision.
+
+| How it arrived | What that means | Incoming Stock Tokens | Moves in other tokens under a listed ticker | copy-guard opened | Ticker copy opened |
 |---|---|---|---|---|---|
-${Object.keys(COHORT).filter((k) => bc[k]?.wallets).map((k) => `| ${COHORT[k]} | ${bc[k].wallets} | ${bc[k].decisions} | ${bc[k].copy_guard_opened} | ${bc[k].ticker_copy_opened} | ${bc[k].ticker_copy_in_other_tokens} |`).join('\n')}`
+${ARR.map((a) => `| ${a.label} | ${a.means} | ${a.stock} | ${a.other} | ${a.copy_guard_opened} | ${a.ticker_copy_opened} |`).join('\n')}`
 	: ''
 
 const ledger = `Walked ${when(L.decided_at)}, marked at Robinhood Chain block ${L.mark_block}. Moves from ${when(firstMove)} to ${when(lastMove)}.
@@ -165,7 +191,7 @@ const ledger = `Walked ${when(L.decided_at)}, marked at Robinhood Chain block ${
 | Declined, each with a reason | ${t.none} | 0. It has no rule to decline by |
 | Closed / still open at the mark | ${t.copy_guard.closed} / ${t.copy_guard.open} | ${t.blind_copy.closed} / ${t.blind_copy.open} |${byCohort}
 
-${sameSize}
+${sameSize}${arrivals ? `\n\n${arrivals}` : ''}
 
 These are practice (paper) positions on past public moves. The tables are not a forecast and not a track record. A position in a token that is not the issuer's is valued only where the price of its own pool could be read from public logs. Otherwise it is listed as not measured and left out of every sum. Nothing is assumed to be worth zero. A pool value compares the pool's last swap with the swap the wallet bought in. It leaves out the move of the pool's other asset in USD, and it does not say that a position of that size could have been sold there.
 
@@ -228,29 +254,52 @@ const mandate =
 
 const c = t.wallets_by_cohort
 const f = t.copy_guard.followed_purchases_usd
-const days = selection?.window?.days
-const list = (xs) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`)
-const cohorts = c
-	? list(
-			[
-				[c.top_buyers, `picked by one rule and not by hand (the largest buyers of Stock Tokens${days ? ` over ${days} days` : ''}, largest first)`],
-				[c.same_ticker_buyers, 'that bought a token under a listed ticker at an address the issuer did not list'],
-				[c.watched, c.watched === 1 ? 'demo wallet, the only one vet402 has anchored a record for' : 'watched by hand'],
-			]
-				.filter(([n]) => n > 0)
-				.map(([n, why]) => `${n} ${why}`),
-		)
-	: ''
+const gSel = G.find((g) => g.key === 'selected')
+const gObs = G.find((g) => g.key === 'observed_other_token_buyers')
+const gDemo = G.find((g) => g.key === 'demo')
 const wallets = [
-	c ? `The walk follows ${t.wallets} wallets: ${cohorts}.` : `The walk follows the ${t.wallets} wallets listed in [\`docs/walk/wallets.json\`](docs/walk/wallets.json). Each entry says why the wallet is there.`,
+	G.length ? `The walk follows ${t.wallets} wallets in ${plural(G.length, 'group', 'groups')}, and every count is kept per group.` : `The walk follows the ${t.wallets} wallets listed in [\`docs/walk/wallets.json\`](docs/walk/wallets.json). Each entry says why the wallet is there.`,
+	gSel ? selectionSentence(selection, G) : '',
+	gObs ? `${gObs.wallets} more are observed apart: the first buyers of ${observedToken(selection)}.` : '',
+	gDemo ? `${gDemo.wallets === 1 ? 'One demo wallet is' : `${gDemo.wallets} demo wallets are`} in the walk too, ${gDemo.wallets === 1 ? 'the only one' : 'the only ones'} vet402 has anchored a record for.` : '',
 	selection ? 'The rule, the window and every purchase counted are in [`docs/walk/selection.json`](docs/walk/selection.json).' : '',
-	f?.count ? `The ${plural(f.count, 'purchase', 'purchases')} copy-guard followed with a practice position were worth between ${f.min} and ${f.max} USD each, with a median of ${f.median} USD.` : '',
+	followedSentence(G),
+	!G.some((g) => g.followed) && f?.count ? `The ${plural(f.count, 'purchase', 'purchases')} copy-guard followed with a practice position were worth between ${f.min} and ${f.max} USD each.` : '',
 ]
 	.filter(Boolean)
 	.join(' ')
 
 const verifyOut = has('docs/verify/verify-output.txt') ? read('docs/verify/verify-output.txt').trimEnd() : null
 const fence = (body) => `\`\`\`\n${body}\n\`\`\``
+
+// ---- the recheck: its heading, the judges' table that links to it, and step 1 ------------
+const VT = verifyTimes((p) => (has(p) ? read(p) : null), read('verify.mjs'))
+const jump = `| If you are judging | Start here |
+|---|---|
+| **Chainlink**, Best workflow with CRE | [Chainlink: Best workflow with CRE](#chainlink-best-workflow-with-cre). The one \`cre workflow simulate\` line, the bounty text line by line, the CRE code guide |
+| **RYO-CHAN**, Autonomous Agents | [RYO-CHAN: Autonomous Agents](#ryo-chan-autonomous-agents). The bounty text phrase by phrase, the practice trade ledger, one sentence turned into limits |
+| **BLI**, LegalTech and RegTech | [BLI: LegalTech and RegTech](#bli-legaltech-and-regtech). Who the agent acts for, two questions from BLI's own stage, the regulators' words |
+| Any of them | [${VT.heading}](#${slug(VT.heading)}), [Details](#details), [What it does not claim](#what-it-does-not-claim) |`
+const clone = 'git clone https://github.com/kzmttkc/vet402-copy-guard && cd vet402-copy-guard'
+const quickTail = VT.quickOutput ? VT.quickOutput.trimEnd().split('\n').slice(-2).join('\n') : null
+const fullTimes = VT.full ? `, ${secondsWords(VT.full)} in ${plural(VT.full.runs, 'saved run', 'saved runs')}${VT.full.day ? ` of ${VT.full.day}` : ''}` : ''
+const verifyRun = VT.hasQuick
+	? `\`\`\`bash
+${clone}
+node verify.mjs --quick
+\`\`\`
+
+\`--quick\` rechecks the payment, the anchors, the CRE verdicts, the first four cards of the page and the ledger's root against both chains${VT.quick ? `, in ${secondsWords(VT.quick)} (${plural(VT.quick.runs, 'saved run', 'saved runs')}${VT.quick.day ? ` of ${VT.quick.day}` : ''})` : ''}.${quickTail ? ` Its last two lines:\n\n${fence(quickTail)}` : ''}
+
+The whole ledger, every decision and every rule, is one more line${fullTimes}. Most of that time is waiting on the public RPC.
+
+\`\`\`bash
+node verify.mjs
+\`\`\``
+	: `\`\`\`bash
+${clone}
+node verify.mjs
+\`\`\``
 
 // ---- CRE: the one line, what it printed, what it checked, where in the code ---------
 // Everything below is read from the saved simulate logs, docs/token-check/ and the
@@ -356,7 +405,7 @@ const changes = `The last column holds only times read from saved runs on this m
 |---|---|---|---|
 | A person opens a block explorer and compares a token's contract with the issuer's list by eye, if they think of it | \`token-check\` reads the code hash, the beacon and the official list from the chain | the check runs before the agent acts and returns a reason code a machine can read | ${tcSecs !== null ? `${tcSecs} s for ${plural((tcLog.match(/\] (NOT_)?ISSUER_TOKEN /g) ?? []).length, 'token', 'tokens')} at one block ([\`${batchFile.replace('.payload.json', '.cre.txt')}\`](${batchDir}/${batchFile.replace('.payload.json', '.cre.txt')}))` : 'not measured'} |
 | A reader trusts the site that shows a wallet's record | \`rwa-verify\` recomputes the record's hash and reads its anchor | MATCH or MISMATCH with one bit per failed check, as an event | ${rwaSecs !== null ? `${rwaSecs} s ([\`${rwaLogPath}\`](${rwaLogPath}))` : 'not measured'} |
-| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | ${runTimes.length ? `${range(runTimes.map((r) => r.s))} s for \`node verify.mjs\` on this walk, ${runTimes.length} runs back to back${fiveDay ? ` on ${fiveDay}` : ''}${allMatch ? ', each RESULT: MATCH' : ''} ([\`docs/verify/verify-five-runs.txt\`](docs/verify/verify-five-runs.txt)). Most of it is waiting on the public RPC` : 'not measured'} |`
+| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | ${VT.quick ? `${secondsWords(VT.quick)} for \`node verify.mjs --quick\`, ` : ''}${runTimes.length ? `${range(runTimes.map((r) => r.s))} s for \`node verify.mjs\` on this walk, ${runTimes.length} runs back to back${fiveDay ? ` on ${fiveDay}` : ''}${allMatch ? ', each RESULT: MATCH' : ''} ([\`docs/verify/verify-five-runs.txt\`](docs/verify/verify-five-runs.txt)). Most of it is waiting on the public RPC` : 'not measured'} |`
 
 const creSimulate = [
 	'Both lines run from the root of the repo, after `cre login` and `bun install` in the workflow\'s folder. No key is needed. The time at the start of each saved log line is the machine\'s local clock printed with a `Z` (row 3 of the notes below), so the excerpts leave it out.',
@@ -444,6 +493,9 @@ const swap = (text, name, body) => {
 	return `${text.slice(0, text.indexOf(a) + a.length)}\n${body}\n${text.slice(text.indexOf(b))}`
 }
 const blocks = [
+	['JUMP', jump],
+	['VERIFY_HEAD', `## ${VT.heading}`],
+	['VERIFY_RUN', verifyRun],
 	['VERIFY', fence(verifyOut ?? '(run `node verify.mjs` to see it)')],
 	['VERIFY_TAIL', fence(verifyOut ? verifyOut.split('\n').slice(-2).join('\n') : '(run `node verify.mjs` to see it)')],
 	['FACTS', facts],

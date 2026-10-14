@@ -62,6 +62,12 @@ table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:ta
 th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);border-bottom:1px solid var(--ink)}
 td.r,th.r{text-align:right;white-space:nowrap}
+th{overflow-wrap:normal;word-break:normal}
+th.r{white-space:normal}
+td a.mono{white-space:nowrap;word-break:normal}
+table.groups{min-width:720px}
+.scroll+p.small{margin-top:8px}
+table.groups td:first-child{min-width:220px}
 .scroll{overflow-x:auto;border:1px solid var(--line)}
 .scroll table{min-width:560px}
 .scroll.fit table{min-width:0}
@@ -81,9 +87,13 @@ tr.detail td{background:var(--soft)}
 ol.steps{padding-left:20px}
 ol.steps li{margin-bottom:10px}
 pre{background:var(--ink);color:#f3f3f3;padding:12px 14px;overflow-x:auto;font:13px/1.5 var(--mono)}
+.totals{font-size:14.5px;margin:0 0 12px;max-width:860px}
+.legend dl{display:grid;grid-template-columns:230px 1fr;gap:4px 12px;margin:6px 0 0;font-size:14px}
+.legend dt{font-weight:600}
+.legend dd{margin:0}
 .last{font-size:19px;margin-top:40px;max-width:760px}
 footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13.5px;color:var(--mute)}
-@media (max-width:720px){.voices,.two,.story{grid-template-columns:minmax(0,1fr)}.story div{border-right:0;border-bottom:1px solid var(--line)}.story div:last-child{border-bottom:0}.nums{grid-template-columns:1fr 1fr}.nums div:nth-child(2){border-right:0}.nums div:nth-child(-n+2){border-bottom:1px solid var(--line)}.card dl{grid-template-columns:1fr}h1{font-size:25px}.lede{font-size:17px}.story span{font-size:16px}.nums b{font-size:26px}}
+@media (max-width:720px){.voices,.two,.story{grid-template-columns:minmax(0,1fr)}.story div{border-right:0;border-bottom:1px solid var(--line)}.story div:last-child{border-bottom:0}.nums{grid-template-columns:1fr 1fr}.nums div:nth-child(2){border-right:0}.nums div:nth-child(-n+2){border-bottom:1px solid var(--line)}.card dl{grid-template-columns:1fr}h1{font-size:25px}.legend dl{grid-template-columns:1fr}.legend dd{margin-bottom:6px}.lede{font-size:17px}.story span{font-size:16px}.nums b{font-size:26px}}
 </style>
 </head>
 <body>
@@ -105,10 +115,12 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 <p class="small mute">Those two people wrote about tokens and agents in general. The move in the three steps above is my own observation of <span id="st-when"></span>, and I have found no account of anyone losing money to a stock ticker this way. This page accuses no one. It shows that a ticker is not unique.</p>
 
 <div class="nums" id="nums"></div>
+<p class="totals" id="totals"></p>
 <p class="note" id="note"></p>
 
 <h2 id="cards">What it decided, one card per move</h2>
 <p class="mute">Each card starts with a score, the number of checks that passed, and a mark for each group of checks. A red flag is a check that did not pass. It describes the move and says nothing about any person. Each card is built from fixed sentences filled with the values the rules read. No language model writes or decides anything, so the same inputs always give the same card. The card is part of the record whose hash is onchain.</p>
+<details class="legend"><summary>How a token can reach a wallet, the words the cards use</summary><dl id="legend"></dl></details>
 <div id="featured"></div>
 
 <h2 id="ledger">The practice ledger</h2>
@@ -116,8 +128,11 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 <p class="small mute" id="baseline"></p>
 <div class="scroll"><table id="compare"></table></div>
 <p class="note" id="paper"><b>Practice (paper) positions. This is not a forecast and not a track record.</b> A position in a token that is not the issuer's is valued only where the price of its own pool could be read from public logs. Otherwise it is listed as not measured and left out of every sum. Nothing is assumed to be worth zero. A pool value compares the pool's last swap with the swap the wallet bought in. It leaves out the move of the pool's other asset in USD, and it does not say that a position of that size could have been sold there.</p>
+<h3>How the wallets were chosen</h3>
+<p id="selection"></p>
 <div id="bycohort"></div>
 <div id="samesize"></div>
+<div id="arrivals"></div>
 <div class="two">
 <div><h3>copy-guard</h3><p class="sum" id="guardsum"></p><details><summary>Every position</summary><div class="scroll"><table id="guard"></table></div></details></div>
 <div><h3>Ticker copy</h3><p class="sum" id="blindsum"></p><details><summary>Every position</summary><div class="scroll"><table id="blind"></table></div></details></div>
@@ -193,7 +208,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 
 <h2 id="verify">Check it yourself</h2>
 <ol class="steps">
-<li><b>Run the recheck.</b> Node 20 or newer, no key, no account, nothing to install. It rebuilds every hash, reruns every rule, replays the whole ledger and compares the result with two public chains.<pre>git clone https://github.com/kzmttkc/vet402-copy-guard &amp;&amp; cd vet402-copy-guard
+<li id="verifystep"><b>Run the recheck.</b> Node 20 or newer, no key, no account, nothing to install. It rebuilds every hash, reruns every rule, replays the whole ledger and compares the result with two public chains.<pre>git clone https://github.com/kzmttkc/vet402-copy-guard &amp;&amp; cd vet402-copy-guard
 node verify.mjs</pre><span id="verifyresult" class="small mute"></span></li>
 <li><b>Open the ledger's root</b> on Robinhood Testnet: <span id="rootlink"></span>. One <code>LedgerAnchored</code> event carries the Merkle root of every decision on this page.</li>
 <li><b>Open the payment</b> on Robinhood Chain: <a href="https://robinhoodchain.blockscout.com/tx/0x65c314bd758a59dfc79c78d8da76e557450fa1144726ddc4bfc77e183287af61">0x65c314bd…87af61</a>. 0.01 USDG from the agent's wallet to vet402's wallet, 2026-10-08. I paid it myself as a test. Both wallets are mine.</li>
@@ -208,6 +223,8 @@ node verify.mjs</pre><span id="verifyresult" class="small mute"></span></li>
 <li>The principal is an address. Nothing here ties it to a legal identity.</li>
 <li>The walk is a replay. Each wallet's record was read once, after the moves, so the rules judge a wallet with what is known now.</li>
 <li>Feed values arrive a few times a day. An entry price can be hours older than the move, within the age limit the user set.</li>
+<li>&ldquo;Sent to the wallet&rdquo; and &ldquo;bought outside the official venues&rdquo; are different kinds of arrival and are never added together. The first is a token the wallet paid nothing for. In the second the wallet paid, somewhere other than the Uniswap v4 PoolManager or an official v3 pool. copy-guard follows neither. A ticker copy follows the second.</li>
+<li>The groups of wallets were chosen in different ways, so their counts are shown apart and are not a sample of the chain. A group whose positions all follow one wallet says how the rules treat that wallet.</li>
 <li>No customer yet. The one payment so far is my own test.</li>
 <li>This is not legal advice and not investment advice. vet402 reports what public chain data shows and is not affiliated with Robinhood, Chainlink, RYO or any token issuer.</li>
 </ul>
@@ -230,7 +247,8 @@ node verify.mjs</pre><span id="verifyresult" class="small mute"></span></li>
   { "slot": "arrived", "caption": "1. A token arrived that the wallet never signed for", "tx": "0x1b838f40", "match": { "asset": "same_ticker", "arrival": ["received", "received_unsigned"] } },
   { "slot": "small_buy", "caption": "2. The wallet bought the issuer's Stock Token: a small practice position", "match": { "opened": true }, "same_ticker_as": "arrived" },
   { "slot": "bought_other", "caption": "3. The wallet itself bought a different token under a stock ticker", "match": { "asset": "same_ticker", "arrival": ["purchase", "bought", "in_signed"] } },
-  { "slot": "logged_out", "caption": "4. A log names the wallet as the sender of a payment it never signed", "tx": "0xf7cb51a2", "match": { "asset": "same_ticker", "invisible_characters": true } }
+  { "slot": "logged_out", "caption": "4. A log names the wallet as the sender of a payment it never signed", "tx": "0xf7cb51a2", "match": { "asset": "same_ticker", "invisible_characters": true } },
+  { "slot": "off_venue", "caption": "5. The wallet bought outside the official venues: a ticker copy follows, copy-guard does not", "match": { "arrival": ["purchase_off_venue"] } }
  ]
 }
 </script>
@@ -298,14 +316,25 @@ function loadWallet(w) {
 }
 
 // ---- the first screen ----------------------------------------------------------------
+// Names and counts lead: the tokens that share a ticker, what each book opened in them, then
+// copy-guard's positions group by group. The totals stay, in one smaller line.
+const G = X.groups ?? []
+const thousands = (v) => { const [i, d] = String(v).split('.'); return `${i.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}${d !== undefined ? `.${d}` : ''}` }
+const short4 = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`
+const groupTile = (g) => {
+	const all = g.top_wallet && g.top_wallet.opened === g.opened && g.opened > 1
+	const f = g.followed && g.followed.count > 1 ? `, on purchases of ${thousands(g.followed.min)} to ${thousands(g.followed.max)} USD` : ''
+	return [g.opened, `practice positions following ${g.of}${f}${all ? `. All of them follow one wallet, ${short4(g.top_wallet.wallet)}` : ''}`]
+}
 $('nums').innerHTML = [
-	[T.decisions, `moves of ${T.wallets} wallets looked at`],
-	[T.copy_guard.opened, 'practice positions opened, each sized by the evidence'],
-	[T.none, 'declined, each with a reason you can read'],
-	[otherMoves, `moves in ${otherTokens ? plural(otherTokens, 'token', 'tokens') : 'tokens'} that share a ticker but are not the issuer's`],
+	[otherMoves, `moves in ${otherTokens ? plural(otherTokens, 'token', 'tokens') : 'tokens'} that share a ticker with a Stock Token or USDG, each named by address`],
+	[`${X.copy_guard_in_other_tokens ?? 0} / ${blindOther}`, 'positions opened in those tokens: copy-guard / a ticker copy'],
+	...G.filter((g) => g.opened).slice(0, 2).map(groupTile),
 ].map(([b, s]) => `<div><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join('')
-const chosenForIt = T.wallets_by_cohort?.same_ticker_buyers ?? 0
+$('totals').textContent = `In all: ${T.decisions} moves of ${T.wallets} wallets looked at, ${T.copy_guard.opened} practice positions opened, ${T.none} declined, each with a reason you can read.`
+const chosenForIt = T.wallets_by_cohort?.same_ticker_buyers ?? (G.find((g) => g.key === 'observed_other_token_buyers')?.wallets ?? 0)
 $('note').textContent = `${L.note}${chosenForIt ? ` ${chosenForIt} of the ${T.wallets} wallets are in the walk because they bought a token under a listed ticker at another address, so the counts above are not a rate.` : ''} Decided ${when(L.decided_at)}, marked at Robinhood Chain block ${L.mark_block}.`
+$('legend').innerHTML = (X.arrival_words ?? []).map((a) => `<dt>${esc(a.label)}</dt><dd>${esc(a.means)}</dd>`).join('')
 $('baseline').textContent = L.baseline
 
 // ---- cards ---------------------------------------------------------------------------
@@ -350,20 +379,29 @@ $('compare').innerHTML = [
 	['Declined, each with a reason', T.none, '0. It has no rule to decline by'],
 	['Closed / still open at the mark', `${T.copy_guard.closed} / ${T.copy_guard.open}`, `${T.blind_copy.closed} / ${T.blind_copy.open}`],
 ].map((row, i) => `<tr>${row.map((c, j) => (i === 0 ? `<th>${esc(c)}</th>` : j === 0 ? `<td>${esc(c)}</td>` : `<td>${String(c).startsWith('<') ? c : esc(c)}</td>`)).join('')}</tr>`).join('')
-const COHORT = { top_buyers: 'The largest buyers of Stock Tokens', same_ticker_buyers: 'Wallets chosen because they bought a token under a stock ticker at another address', watched: 'The demo wallet' }
-const BC = T.by_cohort
-$('bycohort').innerHTML = BC
-	? `<h3>The same counts by group of wallets</h3><p class="small mute">One group was chosen for what it bought, so the groups are shown apart.</p><div class="scroll"><table><tr><th>Group</th><th class="r">Wallets</th><th class="r">Moves</th><th class="r">copy-guard opened</th><th class="r">Ticker copy opened</th><th class="r">Of them in other tokens</th></tr>${Object.keys(COHORT).filter((k) => BC[k]?.wallets).map((k) => `<tr><td>${esc(COHORT[k])}</td><td class="r">${BC[k].wallets}</td><td class="r">${BC[k].decisions}</td><td class="r">${BC[k].copy_guard_opened}</td><td class="r">${BC[k].ticker_copy_opened}</td><td class="r">${BC[k].ticker_copy_in_other_tokens}</td></tr>`).join('')}</table></div>`
+const gObs = G.find((g) => g.key === 'observed_other_token_buyers')
+const gDemo = G.find((g) => g.key === 'demo')
+$('selection').textContent = [X.selection_sentence, gObs ? `${gObs.wallets} more are observed apart: the first buyers of ${X.observed_token}.` : '', gDemo ? `${gDemo.wallets === 1 ? 'One demo wallet is' : `${gDemo.wallets} demo wallets are`} in the walk too, ${gDemo.wallets === 1 ? 'the only one' : 'the only ones'} vet402 has anchored a record for.` : ''].filter(Boolean).join(' ')
+const most = (g) => (g.top_wallet ? `${g.top_wallet.opened} of ${g.opened} (${g.top_share_pct}%)` : 'none')
+const followedCell = (g) => (!g.followed ? (g.opened ? 'not measured' : 'none') : g.followed.count === 1 ? `${esc(g.followed.median)} USD` : `${esc(thousands(g.followed.min))} to ${esc(thousands(g.followed.max))} USD, median ${esc(thousands(g.followed.median))}`)
+$('bycohort').innerHTML = G.length
+	? `<h3>The same moves by group of wallets</h3><p class="small mute">The groups were chosen in different ways, so each is shown apart and the totals above are only their sum.</p><div class="scroll"><table class="groups"><tr><th>Group</th><th class="r">Wallets</th><th class="r">Moves</th><th class="r">copy-guard opened</th><th class="r">Declined</th><th class="r">Most in one wallet</th><th class="r">Ticker copy opened</th><th class="r">Of them in other tokens</th></tr>${G.map((g) => `<tr><td><b>${esc(g.name)}</b><br><span class="small mute">Purchases copy-guard followed: ${followedCell(g)}</span></td><td class="r">${g.wallets}</td><td class="r">${g.decisions}</td><td class="r">${g.opened}</td><td class="r">${g.declined}</td><td class="r">${most(g)}</td><td class="r">${g.ticker_copy_opened ?? 'not counted'}</td><td class="r">${g.ticker_copy_in_other_tokens === null || g.ticker_copy_in_other_tokens === undefined ? 'not counted' : g.ticker_copy_in_other_tokens ? `<span class="other">${g.ticker_copy_in_other_tokens}</span>` : 0}</td></tr>`).join('')}</table></div>${X.concentration ? `<p class="small">${esc(X.concentration)}</p>` : ''}`
 	: ''
 const otherResult = (x) => [x.measured ? `${plural(x.measured, 'position', 'positions')} measured at the pool's own price: ${money(x.result_measured_usd)} USD` : '', x.not_measured ? `${plural(x.not_measured, 'position', 'positions')} not measured` : ''].filter(Boolean).join('. ') || 'none'
 $('samesize').innerHTML = same
 	? `<h3>The same positions at one size, ${esc(same.size_usd)} USD each</h3><p class="small mute">Both books at one size, so that size cannot make the difference.</p><div class="scroll"><table>
 <tr><th></th><th class="r">Positions</th><th class="r">Put in</th><th>Result at the exit or the mark</th></tr>
-<tr><td>Opened by both books</td><td class="r">${same.opened_by_both.count}</td><td class="r">${esc(same.opened_by_both.put_in_usd)} USD</td><td>${money(same.opened_by_both.result_usd)} USD, the same in both books</td></tr>
+${G.filter((g) => g.same_size).map((g) => `<tr><td>Opened by both books, following ${esc(g.of)}</td><td class="r">${g.same_size.count}</td><td class="r">${esc(g.same_size.put_in_usd)} USD</td><td>${money(g.same_size.result_usd)} USD</td></tr>`).join('')}
+<tr><td>Opened by both books${G.some((g) => g.same_size) ? ', all groups' : ''}</td><td class="r">${same.opened_by_both.count}</td><td class="r">${esc(same.opened_by_both.put_in_usd)} USD</td><td>${money(same.opened_by_both.result_usd)} USD, the same in both books</td></tr>
 <tr><td>Opened by the ticker copy only, in Stock Tokens</td><td class="r">${same.opened_by_ticker_copy_only_stock.count}</td><td class="r">${esc(same.opened_by_ticker_copy_only_stock.put_in_usd)} USD</td><td>${money(same.opened_by_ticker_copy_only_stock.result_usd)} USD</td></tr>
 <tr><td>Opened by the ticker copy only, in other tokens under a stock ticker</td><td class="r">${same.opened_by_ticker_copy_only_other.count}</td><td class="r">${esc(same.opened_by_ticker_copy_only_other.put_in_usd)} USD</td><td>${otherResult(same.opened_by_ticker_copy_only_other)}</td></tr>
 </table></div>`
 	: `<p class="small mute">At one size: copy-guard's positions in this walk are ${esc(lim.size.reduced_usd)} USD each. At that size the ticker copy would have put in ${(T.blind_copy.opened * Number(lim.size.reduced_usd)).toFixed(2)} USD. What its ${blindOther} positions in other tokens were worth afterwards is not measured in this walk, so no result in USD is compared here.</p>`
+
+const A = X.arrivals ?? []
+$('arrivals').innerHTML = A.length
+	? `<h3>How each token reached the wallet</h3><p class="small mute">Every move is one of these kinds, read from the transaction alone. Stock Tokens are counted per incoming token, the books per decision. Only a purchase at an official venue can open a copy-guard position.</p><div class="scroll"><table><tr><th>How it arrived</th><th class="r">Incoming Stock Tokens</th><th class="r">Moves in other tokens under a stock ticker</th><th class="r">copy-guard opened</th><th class="r">Ticker copy opened</th></tr>${A.map((a) => `<tr><td><b>${esc(a.label)}</b><br><span class="small mute">${esc(a.means)}</span></td><td class="r">${a.stock}</td><td class="r">${a.other ? `<span class="other">${a.other}</span>` : 0}</td><td class="r">${a.copy_guard_opened}</td><td class="r">${a.ticker_copy_opened}</td></tr>`).join('')}</table></div>`
+	: ''
 
 function positions(ps, guard) {
 	const head = `<tr><th>#</th><th>Token</th>${guard ? '<th>Size</th>' : ''}<th class="r">Put in</th><th class="r">Entry</th><th>Left</th><th class="r">Result</th></tr>`
@@ -380,7 +418,7 @@ $('guard').innerHTML = positions(L.copy_guard_positions, true)
 $('blind').innerHTML = positions(L.blind_copy_positions, false)
 
 // ---- wallet by wallet ------------------------------------------------------------------
-const GROUP = { top_buyers: 'largest buyers', same_ticker_buyers: 'bought a token under a stock ticker at another address', watched: 'demo wallet' }
+const GROUP = X.group_names ?? { top_buyers: 'largest buyers', same_ticker_buyers: 'bought a token under a stock ticker at another address', watched: 'demo wallet' }
 $('walletsnote').textContent = `Each wallet in the walk, with what both books did with its moves. ${plural(R.wallets.length, 'wallet', 'wallets')}. Its decisions are read from docs/rows/ when you ask for them.`
 $('wallets').innerHTML = `<tr><th>Wallet</th><th>Why it is in the walk</th><th class="r">Moves</th><th class="r">copy-guard opened</th><th class="r">Ticker copy opened</th><th class="r">Of them in other tokens</th><th></th></tr>` + R.wallets.map((w) => `<tr><td>${addr(w.wallet)}</td><td>${esc(GROUP[w.cohort] ?? w.cohort)}${w.rank ? `, rank ${w.rank}` : ''}</td><td class="r">${w.decisions}</td><td class="r">${w.copy_guard_opened}</td><td class="r">${w.ticker_copy_opened}</td><td class="r">${w.ticker_copy_in_other_tokens ? `<span class="other">${w.ticker_copy_in_other_tokens}</span>` : 0}</td><td><button class="show" data-w="${esc(w.wallet)}">Show its ${w.decisions} decisions</button> <span class="small mute">${kB(w.bytes)}</span></td></tr>`).join('')
 
@@ -435,7 +473,7 @@ $('rows').addEventListener('click', (e) => {
 // ---- tokens that share a ticker (version 3 carries the list) -------------------------
 const O = T.other_tokens
 $('others').innerHTML = O?.list?.length
-	? `<h3>Tokens that share a ticker</h3><p class="small mute">Every token in the walk that carries the ticker of a Stock Token or of USDG at an address the issuer did not list. This is a record that tickers are not unique. It does not call any token, or anyone behind one, a scam.${[[O.sent_to_the_wallet, 'sent to a wallet that did not sign'], [O.bought_by_the_wallet, 'bought by the wallet itself, which signed and paid'], [O.received_unpaid, 'received in a transaction the wallet signed without paying'], [O.logged_as_sent_by_the_wallet, 'logged with the wallet as the sender']].filter(([n]) => n > 0).map(([n, s], i) => `${i ? ', ' : ' Of the moves: '}${n} ${s}`).join('')}${O.sent_to_the_wallet || O.bought_by_the_wallet ? '.' : ''}</p><div class="scroll"><table><tr><th>Ticker it carries</th><th>Contract</th><th>Name it carries</th><th class="r">Moves</th></tr>${O.list.map((o) => `<tr><td>${esc(o.ticker)}</td><td>${addr(o.token)}</td><td>${esc(o.name)}</td><td class="r">${o.moves}</td></tr>`).join('')}</table></div>`
+	? `<h3>Tokens that share a ticker</h3><p class="small mute">Every token in the walk that carries the ticker of a Stock Token or of USDG at an address the issuer did not list. This is a record that tickers are not unique. It does not call any token, or anyone behind one, a scam.${[[O.sent_to_the_wallet, 'sent to a wallet that did not sign'], ...(O.by_arrival && 'purchase_off_venue' in O.by_arrival ? [[O.by_arrival.purchase, 'bought by the wallet itself at an official venue'], [O.by_arrival.purchase_off_venue, 'bought by the wallet outside the official venues']] : [[O.bought_by_the_wallet, 'bought by the wallet itself, which signed and paid']]), [O.received_unpaid, 'received in a transaction the wallet signed without paying'], [O.logged_as_sent_by_the_wallet, 'logged with the wallet as the sender']].filter(([n]) => n > 0).map(([n, s], i) => `${i ? ', ' : ' Of the moves: '}${n} ${s}`).join('')}${O.sent_to_the_wallet || O.bought_by_the_wallet ? '.' : ''}</p><div class="scroll"><table><tr><th>Ticker it carries</th><th>Contract</th><th>Name it carries</th><th class="r">Moves</th></tr>${O.list.map((o) => `<tr><td>${esc(o.ticker)}</td><td>${addr(o.token)}</td><td>${esc(o.name)}</td><td class="r">${o.moves}</td></tr>`).join('')}</table></div>`
 	: ''
 
 // ---- limits and mandate --------------------------------------------------------------
@@ -474,7 +512,14 @@ $('mandatestate').innerHTML = {
 const root = X.anchor && X.anchor.ledger_tx ? `${ttx(X.anchor.ledger_tx)} on Robinhood Testnet, root <span class="mono">${esc(short(L.root))}</span>` : `root <span class="mono">${esc(L.root)}</span> (simulated, not written onchain)`
 $('roottx').innerHTML = root
 $('rootlink').innerHTML = root
-$('verifyresult').textContent = X.verify ? `Last saved run: ${X.verify}` : ''
+const VT = X.verify_times ?? {}
+const secs = (x) => (x ? (x.min === x.max ? `${x.min} s` : `${x.min} to ${x.max} s`) : null)
+if (VT.has_quick) {
+	$('verify').textContent = VT.promise ? `Check it yourself in ${VT.promise} seconds` : 'Check it yourself'
+	$('verifystep').innerHTML = `<b>Run the recheck.</b> Node 20 or newer, no key, no account, nothing to install.<pre>git clone https://github.com/kzmttkc/vet402-copy-guard &amp;&amp; cd vet402-copy-guard
+node verify.mjs --quick</pre><p class="small"><code>--quick</code> rechecks the payment, the anchors, the CRE verdicts, the first four cards and the ledger's root against both chains${VT.quick ? `, in ${secs(VT.quick)} (${plural(VT.quick.runs, 'saved run', 'saved runs')})` : ''}.${VT.quick_tail ? ` Last lines: ${esc(VT.quick_tail)}` : ''}</p><pre>node verify.mjs</pre><p class="small">The whole ledger, every decision and every rule${VT.full ? `, in ${secs(VT.full)} (${plural(VT.full.runs, 'saved run', 'saved runs')})` : ''}. Most of that time is waiting on the public RPC.</p><span id="verifyresult" class="small mute"></span>`
+}
+$('verifyresult').textContent = X.verify ? `Last saved run of node verify.mjs: ${X.verify}` : ''
 const C = X.token_check
 $('tokencheck').innerHTML = C ? `Checked through CRE so far: ${C.tokens} tokens that moved in the walk, in ${C.runs} runs, ${C.issuer_tokens} of them the issuer's Stock Tokens. The hash of the results file is in ${ttx(C.anchor_tx)} on Robinhood Testnet, and every decision names that file.${C.recheck ? ` A second program read every row again without CRE: ${C.recheck.agree} of ${C.recheck.of} agree.` : ''}` : ''
 </script>

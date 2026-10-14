@@ -91,9 +91,9 @@ The testnet receivers trust CRE's simulation forwarder, which accepts reports fr
 ## A walk, step by step
 
 1. `bun agent/walk.ts` reads each wallet's record once from vet402's free route and lists the moves the record names as evidence.
-2. For each move, in block order, it reads the receipt, the block time, the venue the Stock Token came from and the Chainlink feed's last value at or before that block.
+2. For each move, in block order, it reads the receipt, the block time, the venue the Stock Token came from and the Chainlink feed's last value at or before that block. From the transaction alone it names how the token arrived: bought at an official venue, bought outside the official venues, swapped for another Stock Token, part of a liquidity operation, swapped in without the wallet paying, sent to the wallet, or left it.
 3. The rules give a size. The practice book opens, or does not open, a position. Earlier positions leave when the copied wallet sells, when the feed crosses the stop or the target, or when the time limit passes.
 4. Each decision becomes one JSON trail with a card. Its keccak256 is a leaf.
 5. The CRE workflow `trail-anchor` recomputes the Merkle root from the leaves and writes it once to `LedgerRootReceiver`.
 6. `node scripts/build-page.mjs` puts the ledger into `docs/index.html`.
-7. `node verify.mjs` reruns all of it from the saved files and compares with both chains.
+7. `node verify.mjs` reruns all of it from the saved files and compares with both chains. `node verify.mjs --quick` checks the payment, the anchors, the CRE verdicts, the first four cards and the ledger's root first, for a reader who has a minute.

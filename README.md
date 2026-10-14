@@ -2,12 +2,14 @@
 
 Anyone can deploy a token called NVDA. copy-guard is an agent that checks which token really moved before it would copy a wallet, and it leaves a record that anyone can recheck.
 
+<!-- JUMP:BEGIN -->
 | If you are judging | Start here |
 |---|---|
 | **Chainlink**, Best workflow with CRE | [Chainlink: Best workflow with CRE](#chainlink-best-workflow-with-cre). The one `cre workflow simulate` line, the bounty text line by line, the CRE code guide |
 | **RYO-CHAN**, Autonomous Agents | [RYO-CHAN: Autonomous Agents](#ryo-chan-autonomous-agents). The bounty text phrase by phrase, the practice trade ledger, one sentence turned into limits |
 | **BLI**, LegalTech and RegTech | [BLI: LegalTech and RegTech](#bli-legaltech-and-regtech). Who the agent acts for, two questions from BLI's own stage, the regulators' words |
 | Any of them | [Verify it yourself with one command](#verify-it-yourself-with-one-command), [Details](#details), [What it does not claim](#what-it-does-not-claim) |
+<!-- JUMP:END -->
 
 > "$600 out the window in seconds"
 > @DCA_Sean, a Robinhood Chain user, after a coin that Protos reports as a scam appeared in the sell screen of the wallet app. Quoted by [Protos, 2026-07-10](https://protos.com/robinhood-chain-scams-are-already-costing-users-dearly/).
@@ -24,21 +26,25 @@ copy-guard is an autonomous agent that checks a move before it would copy it. It
 Nobody has to take my word for this, or the agent's, or a server's. One command with no key, no account and nothing to install rechecks the payment, the records, every decision and the whole practice ledger against two public chains. Without a terminal, [`docs/index.html`](docs/index.html) shows the same ledger as one page.
 
 <!-- FACTS:BEGIN -->
-**The walk of 2026-10-14, practice only.** copy-guard looked at 4200 moves of 40 wallets. It opened 54 practice positions, each at the reduced size the user's limits give for weaker evidence. It declined 4146, each with a reason in plain sentences. 64 of the moves were in 34 tokens that carry the ticker of a Stock Token or of USDG at an address the issuer did not list. How they reached the wallet: 36 sent to a wallet that did not sign, 20 bought by the wallet itself (it signed and paid), 8 logged with the wallet as the sender. Each token is [named by address](#tokens-that-share-a-ticker). 20 of the 40 wallets are in the walk because they bought such a token, so these counts are not a rate.
+**The walk of 2026-10-14, practice only.** copy-guard looked at 4200 moves of 40 wallets. 64 of them were in 34 tokens that carry the ticker of a Stock Token or of USDG at an address the issuer did not list, and each of those tokens is [named by address](#tokens-that-share-a-ticker). How they reached the wallet: 36 sent to a wallet that did not sign, 20 bought by the wallet itself (it signed and paid), 8 logged with the wallet as the sender. copy-guard opened no position in any of them. The ticker copy opened 20. 20 of the 40 wallets are in the walk because they bought such a token, so these counts are not a rate. The practice positions copy-guard did open come from 2 groups, counted apart. 18 follow purchases of 3,995.44 to 446,442.61 USD by the selected wallets, all of them by one wallet, 0xb712…bc5c. 36 follow purchases of 0.21 to 0.48 USD by the wallets observed buying the other SPY. In all it opened 54, each at the reduced size the user's limits give for weaker evidence, and declined 4146, each with a reason in plain sentences.
 <!-- FACTS:END -->
 
+<!-- VERIFY_HEAD:BEGIN -->
 ## Verify it yourself with one command
+<!-- VERIFY_HEAD:END -->
 
 Step 1 needs Node 20 or newer and a copy of this repo. Steps 2 to 4 need only a browser. Every date and time in this README is UTC.
 
 **1. Run the recheck** from the root of the repo.
 
+<!-- VERIFY_RUN:BEGIN -->
 ```bash
 git clone https://github.com/kzmttkc/vet402-copy-guard && cd vet402-copy-guard
 node verify.mjs
 ```
+<!-- VERIFY_RUN:END -->
 
-It recomputes every hash from the files in this repo with its own code, reruns every rule, replays the practice ledger and compares the results with what Robinhood Chain and Robinhood Testnet hold. The last two lines of the last saved run:
+`node verify.mjs` recomputes every hash from the files in this repo with its own code, reruns every rule, replays the practice ledger and compares the results with what Robinhood Chain and Robinhood Testnet hold. The last two lines of its last saved run:
 
 <!-- VERIFY_TAIL:BEGIN -->
 ```
@@ -328,7 +334,7 @@ RYO-CHAN protects investors with an anti-rug scanner. copy-guard does a neighbou
 | Multi-KOL Narrative Agent (the spotlight) | Not attempted. There is no X, Discord or Telegram input |
 
 <!-- WALLETS:BEGIN -->
-The walk follows 40 wallets: 19 picked by one rule and not by hand (the largest buyers of Stock Tokens over 30 days, largest first), 20 that bought a token under a listed ticker at an address the issuer did not list and 1 demo wallet, the only one vet402 has anchored a record for. The rule, the window and every purchase counted are in [`docs/walk/selection.json`](docs/walk/selection.json). The 54 purchases copy-guard followed with a practice position were worth between 0.21 and 446442.61 USD each, with a median of 0.45 USD.
+The walk follows 40 wallets in 3 groups, and every count is kept per group. The 19 selected wallets were ranked by what the official venues sent them of Stock Tokens, largest first, over 30 days, and picked by that rule, not by hand. 20 more are observed apart: the first buyers of a token with the ticker SPY at an address the issuer did not list. One demo wallet is in the walk too, the only one vet402 has anchored a record for. The rule, the window and every purchase counted are in [`docs/walk/selection.json`](docs/walk/selection.json). copy-guard opened 18 positions following the selected wallets, on purchases of 3,995.44 to 446,442.61 USD (median 49,700.15 USD) and 36 positions following the wallets observed buying the other SPY, on purchases of 0.21 to 0.48 USD (median 0.36 USD).
 <!-- WALLETS:END -->
 
 ### The practice ledger
@@ -352,21 +358,36 @@ Walked 2026-10-14 05:09 UTC, marked at Robinhood Chain block 88105125. Moves fro
 | Declined, each with a reason | 4146 | 0. It has no rule to decline by |
 | Closed / still open at the mark | 53 / 1 | 204 / 26 |
 
-**The same counts by group of wallets**, because one group was chosen for what it bought.
+**The same moves by group of wallets.** The groups were chosen in different ways, so each is shown apart and the totals above are only their sum.
 
-| Group | Wallets | Moves | copy-guard opened | Ticker copy opened | Of them in other tokens |
-|---|---|---|---|---|---|
-| The largest buyers of Stock Tokens | 19 | 3897 | 18 | 107 | 0 |
-| Wallets chosen because they bought a token under a listed ticker at another address | 20 | 210 | 36 | 76 | 20 |
-| The demo wallet | 1 | 93 | 0 | 47 | 0 |
+| Group | Wallets | Moves | copy-guard opened | Declined | Most in one wallet | Purchases it followed | Ticker copy opened | Of them in other tokens |
+|---|---|---|---|---|---|---|---|---|
+| Selected: the largest buyers | 19 | 3897 | 18 | 3879 | 18 of 18 (100%) | 3,995.44 to 446,442.61 USD, median 49,700.15 USD | 107 | 0 |
+| Observed: buyers of the other SPY | 20 | 210 | 36 | 174 | 5 of 36 (14%) | 0.21 to 0.48 USD, median 0.36 USD | 76 | 20 |
+| Demo wallet | 1 | 93 | 0 | 93 | none | none | 47 | 0 |
+
+All 18 positions copy-guard opened for the selected wallets follow one wallet, 0xb712…bc5c, so that group's result is one wallet's result. Of the 36 positions copy-guard opened for the wallets observed buying the other SPY, the busiest wallet, 0x63e1…0986, has 5 (14%).
 
 **The same positions at one size, 25.00 USD each**, so that size cannot make the difference.
 
 | | Positions | Put in | Result at the exit or the mark |
 |---|---|---|---|
-| Opened by both books | 54 | 1350.00 USD | 6.04 USD, the same in both books |
+| Opened by both books, following the selected wallets | 18 | 450.00 USD | 4.29 USD |
+| Opened by both books, following the wallets observed buying the other SPY | 36 | 900.00 USD | 1.75 USD |
+| Opened by both books, all groups | 54 | 1350.00 USD | 6.04 USD, the same in both books |
 | Opened by the ticker copy only, in Stock Tokens | 156 | 3900.00 USD | 24.43 USD |
 | Opened by the ticker copy only, in other tokens under a listed ticker | 20 | 500.00 USD | 20 positions measured at the pool's own price: -460.61 USD |
+
+**How each token reached the wallet.** Every move is one of these kinds, read from the transaction alone ([`docs/walk/SELECTION.md`](docs/walk/SELECTION.md), section 2). Stock Tokens are counted per incoming token, the books per decision.
+
+| How it arrived | What that means | Incoming Stock Tokens | Moves in other tokens under a listed ticker | copy-guard opened | Ticker copy opened |
+|---|---|---|---|---|---|
+| bought at an official venue | The wallet paid, and the Uniswap v4 PoolManager or an official v3 pool put the token out. | 263 | 20 | 54 | 230 |
+| swapped for another Stock Token | Another Stock Token left the wallet in the same transaction. | 0 | 0 | 0 | 0 |
+| part of a liquidity operation | A liquidity log is in the transaction. | 2872 | 0 | 0 | 0 |
+| swapped in, not paid by the wallet | An official venue put it out, and the payment did not leave this wallet. | 0 | 0 | 0 | 0 |
+| sent to the wallet | No official venue put it out and the wallet paid nothing for it: a transfer, an airdrop or a bridge delivery. | 283 | 36 | 0 | 0 |
+| left the wallet | A sale or a transfer out. | 718 | 8 | 0 | 0 |
 
 These are practice (paper) positions on past public moves. The tables are not a forecast and not a track record. A position in a token that is not the issuer's is valued only where the price of its own pool could be read from public logs. Otherwise it is listed as not measured and left out of every sum. Nothing is assumed to be worth zero. A pool value compares the pool's last swap with the swap the wallet bought in. It leaves out the move of the pool's other asset in USD, and it does not say that a position of that size could have been sold there.
 
@@ -465,7 +486,7 @@ Each row reads the same way: a rule maker or regulator has asked in these words,
 
 On a permissionless chain anyone can give a token any ticker. This table lists every token in the walk that carries the ticker of a Robinhood Stock Token or of USDG at an address the issuer did not list. It is a record that tickers are not unique. It does not call any of these tokens, or the people behind them, a scam, and it says nothing about who made a token or why.
 
-The table separates two things that a ticker-only view mixes up. A token can be sent to a wallet in a transaction the wallet never signed. A wallet can also buy such a token itself, by signing and paying. Only the first can be planted by a stranger.
+The table separates things that a ticker-only view mixes up. A token can be sent to a wallet in a transaction the wallet never signed. A wallet can also buy such a token itself and pay for it, at an official venue or outside the official venues. Only the first can be planted by a stranger. A purchase outside the official venues is counted apart from both: copy-guard does not follow it, because rule V1 asks for an official venue, and a ticker copy does.
 
 <!-- OTHER_TOKENS:BEGIN -->
 | Ticker it carries | Contract | Name it carries | Moves in this walk | How it reached the wallet |
@@ -667,6 +688,8 @@ bun agent/main.ts --mandate mandate/sample --gate http://127.0.0.1:4021/v1/workf
 - The walk is a replay. Each wallet's record was read once, after the moves, so the rules judge a wallet with what is known now.
 - Feed values arrive a few times a day. An entry price can be hours older than the move, within the age limit the user set.
 - The ticker copy is a baseline I defined, stated in the ledger. A real copier may be less naive.
+- "Sent to the wallet" and "bought outside the official venues" are different kinds of arrival and are never added together. The first is a token the wallet paid nothing for. In the second the wallet paid, somewhere other than the Uniswap v4 PoolManager or an official v3 pool. copy-guard follows neither. A ticker copy follows the second.
+- The groups of wallets were chosen in different ways, so their counts are shown apart and are not a sample of the chain. A group whose positions all follow one wallet says how the rules treat that wallet.
 - The one payment so far is my own test. I own the agent's wallet and the wallet that was paid. The gate has not been paid.
 - Nothing is deployed to a DON. All testnet receivers trust CRE's simulation forwarder, as described above.
 - The rules are a policy. Anyone can read, rerun or disagree with every row.
