@@ -7,6 +7,10 @@
 //   node verify.mjs 73953009             only the decision about the wallet's move in that block
 //   node verify.mjs path/to/trail.json   only that decision
 //
+//   --only paid-run       sections 1 to 4: the paid run of 2026-10-08
+//   --only ledger         section 5: the practice ledger, the mandate and the user's limits
+//   --only gate           section 6: the x402 gate in front of the CRE workflow
+//   --deep                check every decision of the ledger against the chain, not a sample
 //   --offline             skip the chain reads; those lines are reported as not checked
 //   --rpc URL             another RPC for Robinhood Chain (4663)
 //   --testnet-rpc URL     another RPC for Robinhood Testnet (46630)
@@ -23,11 +27,12 @@
 //   3         RESULT: NOT CHECKED    nothing failed, but some checks could not reach an RPC
 //
 // This file imports nothing from the agent and has no dependency. It carries its own
-// keccak256, its own canonical JSON and its own copy of the 13 rules, so it cannot
-// repeat a mistake by reusing the agent's code. agent/verify.test.ts runs the two
+// keccak256, its own canonical JSON, its own secp256k1 signature recovery and its own
+// copy of the rules, the decision cards and the ledger, so it cannot repeat a mistake by
+// reusing the agent's code. agent/verify.test.ts and agent/verify-v2.test.ts run the two
 // implementations against each other on a few thousand cases.
 import { existsSync, readdirSync, readFileSync, realpathSync } from 'node:fs'
-import { basename, dirname, join, relative } from 'node:path'
+import { basename, dirname, join, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const REPO = dirname(fileURLToPath(import.meta.url))
@@ -52,7 +57,23 @@ export const CLAIMS = {
 	priceAtomic: '10000',
 	/** Block of the wallet's move, and what the agent concluded about it. */
 	decisions: { 68837431: 'DO_NOT_COPY', 73953009: 'DO_NOT_COPY', 81262132: 'DO_NOT_COPY' },
+	/** The practice ledger: every version 2 decision, copy-guard next to a blind copy. */
+	ledger: 'docs/ledger.json',
+	walkDir: 'docs/walk',
+	/** The page a person reads without a terminal. It carries the ledger. */
+	page: 'docs/index.html',
+	/** The user's limits and the mandate the principal signs. */
+	limits: 'limits.json',
+	mandate: 'mandate/mandate.json',
+	sampleMandate: 'mandate/sample/mandate.json',
+	/** The 402 exchange with the gate in front of the CRE workflow, saved from a dry run. */
+	gateDryRun: 'docs/agent/gate-dry-run/x402-gate-dry-run.json',
+	agentCard: 'agent.json',
+	skill: 'SKILL.md',
 }
+
+const PERMIT2 = '0x000000000022d473030f116ddee9f6b43ac78ba3'
+const X402_PERMIT2_PROXY = '0x402085c248eea27d92e8b30b2c58ed07f9e20001'
 
 export const CHAINS = {
 	mainnet: { id: 4663, name: 'Robinhood Chain', rpcs: ['https://rpc.mainnet.chain.robinhood.com', 'https://robinhood-rpc.publicnode.com'] },
@@ -395,8 +416,15 @@ export const CONCLUSION_CODE = { HOLD: 0, DO_NOT_COPY: 1, COPY: 2 }
 
 /** Rerun the rules on the trail's own inputs. An empty list means the trail says what the rules give. */
 export function trailProblems(trail) {
+	if (trail.trail_version === 2) {
+		try {
+			return trailProblemsV2(trail)
+		} catch (e) {
+			return { problems: [`not a readable version 2 trail: ${String(e?.message ?? e).slice(0, 120)}`], again: { rule_results: [], conclusion: 'HOLD', decisive: [], paper_trade: null } }
+		}
+	}
 	const problems = []
-	if (trail.trail_version !== 1) problems.push(`trail_version ${trail.trail_version}, this file reads 1`)
+	if (trail.trail_version !== 1) problems.push(`trail_version ${trail.trail_version}, this file reads 1 and 2`)
 	if (trail.rules?.id !== RULES_ID || trail.rules?.version !== RULES_VERSION) problems.push(`rules ${trail.rules?.id} v${trail.rules?.version}, this file has ${RULES_ID} v${RULES_VERSION}`)
 	const again = decide(trail.inputs)
 	const said = trail.decision ?? {}
@@ -409,6 +437,638 @@ export function trailProblems(trail) {
 	if (paid && !/^0x[0-9a-fA-F]{64}$/.test(trail.purchase.payment_tx ?? '')) problems.push('the trail says paid but names no payment tx')
 	if (trail.purchase?.mode === 'dry-run' && trail.purchase.payment_tx !== null) problems.push('the trail says dry-run but names a payment tx')
 	return { problems, again }
+}
+
+// ---------------------------------------------------------------- copy-guard v2: mandate, limits, cards, ledger
+// A second, separate writing of agent/mandate.ts, agent/limits.ts, agent/rules-v2.ts,
+// agent/card.ts and agent/ledger.ts. Version 2 keeps the 13 rules above and adds three:
+// M1 (a mandate signed by the principal covers the decision), L1 and L2 (the user's limits).
+
+// secp256k1, y^2 = x^3 + 7 over the prime field P (SEC 2, section 2.4.1), and public key
+// recovery (SEC 1, section 4.1.6). Written for this file. Jacobian coordinates.
+const EC_P = 2n ** 256n - 2n ** 32n - 977n
+const EC_N = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141n
+const EC_G = [0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798n, 0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8n, 1n]
+const modp = (a, m) => ((a % m) + m) % m
+function powMod(b, e, m) {
+	let r = 1n
+	let x = modp(b, m)
+	for (let k = e; k > 0n; k >>= 1n) {
+		if (k & 1n) r = (r * x) % m
+		x = (x * x) % m
+	}
+	return r
+}
+function ecDouble([x, y, z]) {
+	if (y === 0n) return [0n, 1n, 0n]
+	const s = modp(4n * x * y * y, EC_P)
+	const m = modp(3n * x * x, EC_P)
+	const x2 = modp(m * m - 2n * s, EC_P)
+	return [x2, modp(m * (s - x2) - 8n * y * y * y * y, EC_P), modp(2n * y * z, EC_P)]
+}
+function ecAdd(a, b) {
+	if (a[2] === 0n) return b
+	if (b[2] === 0n) return a
+	const z1 = modp(a[2] * a[2], EC_P)
+	const z2 = modp(b[2] * b[2], EC_P)
+	const u1 = modp(a[0] * z2, EC_P)
+	const u2 = modp(b[0] * z1, EC_P)
+	const s1 = modp(a[1] * b[2] * z2, EC_P)
+	const s2 = modp(b[1] * a[2] * z1, EC_P)
+	if (u1 === u2) return s1 === s2 ? ecDouble(a) : [0n, 1n, 0n]
+	const h = modp(u2 - u1, EC_P)
+	const r = modp(s2 - s1, EC_P)
+	const h2 = modp(h * h, EC_P)
+	const h3 = modp(h * h2, EC_P)
+	const x3 = modp(r * r - h3 - 2n * u1 * h2, EC_P)
+	return [x3, modp(r * (u1 * h2 - x3) - s1 * h3, EC_P), modp(h * a[2] * b[2], EC_P)]
+}
+function ecMul(k, p) {
+	let r = [0n, 1n, 0n]
+	let q = p
+	for (let e = modp(k, EC_N); e > 0n; e >>= 1n) {
+		if (e & 1n) r = ecAdd(r, q)
+		q = ecDouble(q)
+	}
+	return r
+}
+
+/** The address whose key made this 65-byte signature over a 32-byte hash, or null. */
+export function recoverSigner(hash, signature) {
+	if (!/^0x[0-9a-fA-F]{64}$/.test(hash ?? '') || !/^0x[0-9a-fA-F]{130}$/.test(signature ?? '')) return null
+	const r = BigInt(`0x${signature.slice(2, 66)}`)
+	const s = BigInt(`0x${signature.slice(66, 130)}`)
+	let v = Number.parseInt(signature.slice(130, 132), 16)
+	if (v >= 27) v -= 27
+	if ((v !== 0 && v !== 1) || r <= 0n || r >= EC_N || s <= 0n || s >= EC_N) return null
+	const y2 = modp(r * r * r + 7n, EC_P)
+	let y = powMod(y2, (EC_P + 1n) / 4n, EC_P)
+	if (modp(y * y, EC_P) !== y2) return null
+	if (Number(y & 1n) !== v) y = EC_P - y
+	const rInv = powMod(r, EC_N - 2n, EC_N)
+	const q = ecAdd(ecMul(modp(-BigInt(hash) * rInv, EC_N), EC_G), ecMul(modp(s * rInv, EC_N), [r, y, 1n]))
+	if (q[2] === 0n) return null
+	const zi = powMod(q[2], EC_P - 2n, EC_P)
+	const zi2 = modp(zi * zi, EC_P)
+	const pub = modp(q[0] * zi2, EC_P).toString(16).padStart(64, '0') + modp(q[1] * zi2 * zi, EC_P).toString(16).padStart(64, '0')
+	return `0x${keccak256(hexToBytes(pub)).slice(-40)}`
+}
+
+/** EIP-191, what a wallet's "sign message" hashes. */
+export function personalHash(message) {
+	const bytes = new TextEncoder().encode(message)
+	const prefix = new TextEncoder().encode(`\x19Ethereum Signed Message:\n${bytes.length}`)
+	const all = new Uint8Array(prefix.length + bytes.length)
+	all.set(prefix)
+	all.set(bytes, prefix.length)
+	return keccak256(all)
+}
+
+/** The one line the principal signs. */
+export function mandateLine(m) {
+	return `vet402 copy-guard mandate v${m.mandate_version}: I, ${m.principal}, authorize the agent whose payment key is ${m.agent.payment_key} to act for me under the mandate with keccak256 ${keccak256(canonicalJson(m))}. Practice trades only: ${m.scope.practice_only ? 'yes' : 'no'}. Valid from ${m.valid_from} until ${m.valid_until}.`
+}
+const signerCache = new Map()
+export function signerOfMandate(m, signature) {
+	if (!signature) return null
+	const key = `${keccak256(canonicalJson(m))} ${String(signature).trim()}`
+	if (!signerCache.has(key)) signerCache.set(key, recoverSigner(personalHash(mandateLine(m)), String(signature).trim()))
+	return signerCache.get(key)
+}
+
+const toCents = (s) => {
+	const [whole, frac = ''] = String(s).split('.')
+	return BigInt(whole) * 100n + BigInt(frac.padEnd(2, '0').slice(0, 2))
+}
+const fromCents = (c) => `${c < 0n ? '-' : ''}${(c < 0n ? -c : c) / 100n}.${((c < 0n ? -c : c) % 100n).toString().padStart(2, '0')}`
+const ISO_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/
+
+function gapInMandate(inp) {
+	const m = inp.mandate
+	const d = m.document
+	if (!m.signature || !m.signer) return 'the mandate is not signed'
+	if (lc(m.signer) !== lc(d.principal)) return `the signature is from ${lc(m.signer)}, not from the principal`
+	if (d.scope.practice_only !== true || inp.limits.practice_only !== true) return 'the mandate or the limits do not say practice only'
+	if (lc(d.limits_keccak) !== lc(inp.limits_keccak)) return 'the mandate names other limits'
+	if (canonicalJson(d.rules) !== canonicalJson(inp.rules)) return 'the mandate names other rules'
+	if (lc(d.agent.payment_key) !== lc(inp.payer)) return 'the mandate names another payment key'
+	if (d.chain_id !== inp.movement.chain_id) return 'the mandate is for another chain'
+	if (!ISO_TIME.test(inp.decided_at) || !ISO_TIME.test(d.valid_from) || !ISO_TIME.test(d.valid_until)) return 'a date cannot be read'
+	const t = Date.parse(inp.decided_at)
+	if (t < Date.parse(d.valid_from) || t > Date.parse(d.valid_until)) return `decided ${inp.decided_at}, outside ${d.valid_from} to ${d.valid_until}`
+	return ''
+}
+
+const movedKind = (inp, token) => inp.tokens_moved.find((m) => m.token === lc(token))
+const stockLeg2 = (inp) => inp.movement.transfers.find((t) => movedKind(inp, t.token)?.kind === 'stock')
+
+/** The feed's answer as a USD price with four decimals, or null. */
+const feedUsd = (p) => (!p || !/^\d+$/.test(p.answer) || BigInt(p.answer) <= 0n ? null : (Number(p.answer) / 10 ** p.decimals).toFixed(4))
+
+function gapInPrice(inp) {
+	const p = inp.price
+	if (!p || feedUsd(p) === null) return 'no feed value'
+	if (p.update_block > inp.movement.block) return 'the feed value is from after the move'
+	const ageHours = (Date.parse(inp.move.time) - Date.parse(p.updated_at)) / 3_600_000
+	if (!(ageHours <= inp.limits.evidence.max_price_age_hours)) return `the feed value is ${Math.floor(ageHours)} hours old, the limit is ${inp.limits.evidence.max_price_age_hours}`
+	return ''
+}
+
+function dayRoom(inp) {
+	const left = toCents(inp.limits.size.max_usd_per_day) - toCents(inp.book.used_usd_today)
+	return left > 0n ? left : 0n
+}
+
+function practicePosition(inp, tier, room) {
+	const leg = stockLeg2(inp)
+	const token = movedKind(inp, leg.token)
+	const price = Number(feedUsd(inp.price))
+	const want = toCents(tier === 'FULL' ? inp.limits.size.full_usd : inp.limits.size.reduced_usd)
+	const notional = fromCents(want < room ? want : room)
+	const ex = inp.limits.exit
+	const stopLoss = (price * (1 - Number(ex.stop_loss_pct) / 100)).toFixed(4)
+	const takeProfit = (price * (1 + Number(ex.take_profit_pct) / 100)).toFixed(4)
+	const closeBy = new Date(Date.parse(inp.move.time) + ex.max_holding_days * 86_400_000).toISOString()
+	return {
+		side: 'buy',
+		tier,
+		token: token.token,
+		symbol: token.ticker,
+		price_usd: price.toFixed(4),
+		price_round_id: inp.price.round_id,
+		notional_usd: notional,
+		shares: (Number(notional) / price).toFixed(6),
+		exit: {
+			when_wallet_sells: ex.when_wallet_sells,
+			stop_loss_usd: stopLoss,
+			take_profit_usd: takeProfit,
+			close_by: closeBy,
+			rule: `leave ${ex.when_wallet_sells ? 'when the wallet sells or sends the token, ' : ''}when the feed is at or under ${stopLoss} USD (${ex.stop_loss_pct}% under the entry), at or over ${takeProfit} USD (${ex.take_profit_pct}% over) or on ${closeBy.slice(0, 10)} (${ex.max_holding_days} days), whichever comes first`,
+		},
+	}
+}
+
+/**
+ * copy-guard v2: one decision that ends in a size. The v1 rows without C5, then M1, V1,
+ * D1, P1, L1 and L2. A failed A4 (no anchor), C3 or C4 makes the size smaller or none as
+ * the user's limits say. Any other failed row makes it none.
+ */
+export function decideV2(inp) {
+	const ev = inp.limits.evidence
+	const graded = (r) => {
+		if (r.id === 'A4' && inp.cre.verdict === 'NO_ANCHOR') return ev.record_not_anchored
+		if (r.id === 'C3') return ev.history_partial
+		if (r.id === 'C4') return inp.record.realized_usd === null ? ev.wallet_result_unknown : ev.wallet_at_a_loss
+		return 'none'
+	}
+	const rule_results = decide(inp)
+		.rule_results.filter((r) => r.id !== 'C5')
+		.map((r) => ({ ...r, effect: r.ok ? 'ok' : graded(r) }))
+	const add = (id, ok, rule, detail) => rule_results.push({ id, group: id[0], ok, rule, detail, effect: ok ? 'ok' : 'none' })
+	const d = inp.mandate.document
+	const gap = gapInMandate(inp)
+	add('M1', gap === '', 'a mandate signed by the principal covers this decision (signer, practice only, these rules, these limits, this payment key, these dates)', `principal ${lc(d.principal)} signer ${lc(inp.mandate.signer) || '(none)'} mandate ${lc(inp.mandate.keccak)}${gap ? `: ${gap}` : ''}`)
+	const leg = stockLeg2(inp)
+	const unofficial = inp.venue.filter((v) => v.kind === 'other')
+	add(
+		'V1',
+		Boolean(leg) && inp.venue.length > 0 && unofficial.length === 0,
+		'the Stock Token came from an official venue (the Uniswap v4 PoolManager or a pool of the official Uniswap v3 factory)',
+		!leg ? 'no Stock Token moved' : inp.venue.length === 0 ? 'no counterparty to judge' : inp.venue.map((v) => `${lc(v.address)} ${v.kind}`).join(', '),
+	)
+	const own = lc(inp.move.signer) === lc(inp.wallet)
+	add('D1', Boolean(leg) && leg?.direction === 'in' && own, 'the wallet itself bought: it received the Stock Token in a transaction it signed', !leg ? 'no Stock Token moved' : `${leg.direction === 'in' ? 'received' : 'sent'}, signed by ${own ? 'the wallet' : lc(inp.move.signer)}`)
+	const pg = leg ? gapInPrice(inp) : 'no Stock Token moved'
+	add('P1', pg === '', "a Chainlink feed gives the token's price at the block of the move", pg === '' && inp.price ? `${feedUsd(inp.price)} USD, round ${inp.price.round_id}, updated ${inp.price.updated_at} in block ${inp.price.update_block}` : pg)
+	const room = dayRoom(inp)
+	add('L1', room > 0n, "the user's daily limit leaves room for a practice position", `${inp.limits.size.max_usd_per_day} USD per day, ${inp.book.used_usd_today} USD used on ${inp.book.day}, room ${fromCents(room)} USD`)
+	add('L2', inp.book.open_positions < inp.limits.size.max_open_positions, 'fewer practice positions are open than the user allows', `${inp.book.open_positions} open, limit ${inp.limits.size.max_open_positions}`)
+	const none = rule_results.filter((r) => r.effect === 'none').map((r) => r.id)
+	const reduced = rule_results.filter((r) => r.effect === 'reduced').map((r) => r.id)
+	if (none.length) {
+		const evidence = rule_results.some((r) => r.effect === 'none' && ['A', 'B', 'M'].includes(r.group))
+		return { rule_results, tier: 'NONE', conclusion: evidence ? 'HOLD' : 'DO_NOT_COPY', decisive: none, paper_trade: null }
+	}
+	const tier = reduced.length ? 'REDUCED' : 'FULL'
+	return { rule_results, tier, conclusion: 'COPY', decisive: reduced, paper_trade: practicePosition(inp, tier, room) }
+}
+
+/** What each moved token is, rebuilt from the saved record. `decimals` maps token to its decimals(). */
+export function movedTokensFrom(facts, transfers, decimals) {
+	const seen = new Set()
+	const out = []
+	for (const t of transfers) {
+		const token = lc(t.token)
+		if (seen.has(token)) continue
+		seen.add(token)
+		const fake = (facts.lookalikes ?? []).find((l) => lc(l.token) === token)
+		const stock = (facts.tokens ?? []).find((k) => k.canonical === true && lc(k.token) === token)
+		const dec = decimals[token] ?? 18
+		if (fake) out.push({ token, kind: 'fake', ticker: String(fake.imitates), name: String(fake.name_raw ?? ''), decimals: dec })
+		else if (token === USDG) out.push({ token, kind: 'usdg', ticker: 'USDG', name: 'Global Dollar', decimals: dec })
+		else if (stock) out.push({ token, kind: 'stock', ticker: String(stock.symbol), name: String(stock.name ?? ''), decimals: dec })
+		else out.push({ token, kind: 'unknown', ticker: '?', name: '', decimals: dec })
+	}
+	return out
+}
+
+// The decision card. Fixed sentences filled from the trail. No language model.
+
+const cardAddr = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`
+function showAmount(raw, decimals) {
+	const base = 10n ** BigInt(decimals)
+	const v = BigInt(raw)
+	const whole = (v / base).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+	const frac = (v % base).toString().padStart(decimals, '0').slice(0, 6).replace(/0+$/, '')
+	return frac ? `${whole}.${frac}` : whole
+}
+function cardLeg(inp) {
+	const legs = inp.movement.transfers.map((t) => ({ t, m: movedKind(inp, t.token) })).filter((l) => l.m)
+	return legs.find((l) => l.m.kind === 'fake') ?? legs.find((l) => l.m.kind === 'stock') ?? legs[0] ?? null
+}
+const sumRaw = (inp, pick) => inp.movement.transfers.filter(pick).reduce((s, t) => s + BigInt(t.amount_raw), 0n)
+const legTotal = (inp, leg) => sumRaw(inp, (t) => lc(t.token) === lc(leg.t.token) && t.direction === leg.t.direction).toString()
+function usdgOtherWay(inp, leg) {
+	const other = leg.t.direction === 'in' ? 'out' : 'in'
+	const sum = sumRaw(inp, (t) => lc(t.token) === USDG && t.direction === other)
+	return sum > 0n ? showAmount(sum.toString(), 6) : ''
+}
+
+const NONE_HEAD = {
+	A1: 'payment terms not as published',
+	A2: 'record does not match its hash',
+	A3: 'record is about another wallet',
+	A4: 'record not confirmed against its anchor',
+	A5: 'record does not replay',
+	A6: 'look-alike still under review',
+	B1: 'record older than the move',
+	B2: 'a moved token is not classified',
+	M1: 'no signed mandate covers it',
+	C2: 'no Stock Token moved',
+	C3: 'track record incomplete',
+	C4: 'wallet not in profit',
+	V1: 'not bought on an official venue',
+	D1: 'not a buy by the wallet',
+	P1: 'no Chainlink price at the block',
+	L1: 'daily limit reached',
+	L2: 'position limit reached',
+}
+const CARD_PRIORITY = ['A2', 'A3', 'A1', 'A5', 'A6', 'B1', 'B2', 'M1', 'D1', 'C2', 'V1', 'P1', 'A4', 'C3', 'C4', 'L1', 'L2']
+
+function cardReason(id, inp) {
+	const r = inp.record
+	const leg = stockLeg2(inp)
+	if (id === 'A1') return ['The payment terms offered for the evidence were not the published ones (0.01 USDG on Robinhood Chain, paid to vet402), so the evidence was not trusted.']
+	if (id === 'A2') return ['The record did not match the hash that came with it, so it may have been changed on the way.']
+	if (id === 'A3') return ['The record is about another wallet or another chain.']
+	if (id === 'A4') {
+		if (inp.cre.verdict === 'NO_ANCHOR') return ['vet402 has not anchored a record for this wallet onchain, so the Chainlink CRE workflow had nothing to check its record against.']
+		if (inp.cre.verdict === 'MISMATCH') return [`The Chainlink CRE workflow found that the wallet's anchored record does not match its onchain hash (reason bits ${inp.cre.reason_bits}).`]
+		return ["The Chainlink CRE workflow did not confirm the wallet's anchored record."]
+	}
+	if (id === 'A5') return ['The record does not replay to the balances it reports.']
+	if (id === 'A6') return ['A look-alike token in this wallet is still counted in its figures or waits for review.']
+	if (id === 'B1') return [`The record was built at block ${r.as_of_block}, before this move in block ${inp.movement.block}, so it says nothing about it.`]
+	if (id === 'B2') return ['The record does not say what one of the moved tokens is.']
+	if (id === 'M1') return [`No signed mandate covers this decision: ${gapInMandate(inp)}.`]
+	if (id === 'C1') {
+		return inp.tokens_moved
+			.filter((m) => m.kind === 'fake')
+			.map((m) => {
+				const real = m.ticker === 'USDG' ? USDG : lc(r.tokens.find((k) => k.canonical && k.symbol === m.ticker)?.token)
+				return `The token is not ${m.ticker}. It is a look-alike at ${cardAddr(m.token)} that copies the ticker.${real ? ` The real ${m.ticker} is the token at ${cardAddr(real)}.` : ''}`
+			})
+	}
+	if (id === 'C2') return ['No real Robinhood Stock Token moved, so there is nothing to copy.']
+	if (id === 'C3') return [`The wallet's history could only be rebuilt in part (status: ${r.r1_status}), so its track record is not fully known.`]
+	if (id === 'C4') {
+		if (r.realized_usd === null) return ['The record gives no realized result for this wallet, so it is not known whether its closed trades made or lost money.']
+		if (r.realized_usd.startsWith('-')) return [`The wallet's closed trades add up to a loss of ${r.realized_usd.slice(1)} USD.`]
+		return [`The wallet's closed trades add up to ${r.realized_usd} USD, which is not a profit.`]
+	}
+	if (id === 'V1') {
+		const others = inp.venue.filter((v) => v.kind === 'other').map((v) => cardAddr(lc(v.address)))
+		return [`The Stock Token did not come from an official venue (${others.join(', ') || 'no counterparty'} is neither the Uniswap v4 PoolManager nor an official Uniswap v3 pool).`]
+	}
+	if (id === 'D1') {
+		if (leg && leg.direction !== 'in') return ['The wallet sold or sent the Stock Token. That opens nothing. It closes a practice position copied from this wallet in the same token, if one is open.']
+		return ['The wallet received the Stock Token in a transaction it did not sign, so this is not a buy the wallet chose.']
+	}
+	if (id === 'P1') return [`No Chainlink feed value can be used as the price at the block of the move (${gapInPrice(inp)}), so a practice position cannot be entered.`]
+	if (id === 'L1') return [`The limit of ${inp.limits.size.max_usd_per_day} USD per day leaves no room (${inp.book.used_usd_today} USD used on ${inp.book.day}).`]
+	if (id === 'L2') return [`${inp.book.open_positions} practice positions are open, which is the limit the user set.`]
+	return [`Rule ${id} failed.`]
+}
+
+function cardLimitNote(ids, inp, effect) {
+	const graded = ids.filter((id) => (id === 'A4' && inp.cre.verdict === 'NO_ANCHOR') || id === 'C3' || id === 'C4')
+	if (!graded.length) return []
+	return [effect === 'reduced' ? `The user's limits allow a reduced position on this evidence (${graded.join(', ')}).` : `The user's limits say to open nothing on this evidence (${graded.join(', ')}).`]
+}
+
+export function cardOf(inp, d) {
+	const leg = cardLeg(inp)
+	const own = lc(inp.move.signer) === lc(inp.wallet)
+	const sig = own ? 'The wallet signed the transaction.' : `The wallet did not sign the transaction (${cardAddr(lc(inp.move.signer))} did).`
+	let happened = 'The transaction holds no token transfer that names this wallet.'
+	let blind_view = 'A bot that copies this wallet sees nothing to copy.'
+	if (leg) {
+		const { t, m } = leg
+		const amt = showAmount(legTotal(inp, leg), m.decimals)
+		const against = usdgOtherWay(inp, leg)
+		const n = inp.movement.transfers.length
+		if (m.kind === 'fake') {
+			const named = m.name && m.name !== m.ticker ? `, under the name "${m.name}"` : ''
+			const marks = `${m.name}${m.ticker}`.includes('⟨U+') ? ' The marks ⟨U+…⟩ stand for invisible characters in the name.' : ''
+			happened =
+				t.direction === 'in'
+					? `${cardAddr(t.from)} sent this wallet ${amt} tokens that a block explorer lists as ${m.ticker}${named}. ${sig}${own ? '' : ' It did not buy them.'}${marks}`
+					: `A token that a block explorer lists as ${m.ticker}${named} logged a transfer of ${amt} from this wallet to ${cardAddr(t.to)}. ${sig}${own ? '' : ' It never made this payment.'}${marks}`
+			blind_view = t.direction === 'in' ? `A bot that trusts tickers sees this wallet receive ${amt} ${m.ticker}.` : `A bot that trusts logs sees this wallet pay ${amt} ${m.ticker} to ${cardAddr(t.to)}.`
+		} else if (m.kind === 'stock') {
+			const label = m.name ? `${m.ticker} (${m.name})` : m.ticker
+			if (t.direction === 'in') {
+				happened = `The wallet received ${amt} ${label}${against ? ` and paid ${against} USDG` : ''}. ${sig}`
+				blind_view = against ? `A bot that copies this wallet sees a ${m.ticker} buy for ${against} USDG.` : `A bot that copies this wallet sees ${amt} ${m.ticker} arrive.`
+			} else {
+				happened = `The wallet sent ${amt} ${label}${against ? ` and received ${against} USDG` : ''}. ${sig}`
+				blind_view = against ? `A bot that copies this wallet sees a ${m.ticker} sale for ${against} USDG.` : `A bot that copies this wallet sees ${amt} ${m.ticker} leave.`
+			}
+		} else {
+			happened =
+				m.kind === 'usdg'
+					? `The wallet ${t.direction === 'in' ? 'received' : 'sent'} ${amt} USDG and no Stock Token moved. ${sig}`
+					: `The wallet ${t.direction === 'in' ? 'received' : 'sent'} ${amt} of a token at ${cardAddr(m.token)} that the record does not classify. ${sig}`
+			blind_view = `A bot that copies this wallet sees ${n} token transfer${n === 1 ? '' : 's'}.`
+		}
+	}
+	if (d.paper_trade) {
+		const p = d.paper_trade
+		const full = d.tier === 'FULL'
+		return {
+			headline: `Practice buy, ${full ? 'full' : 'reduced'} size: ${p.notional_usd} USD of ${p.symbol}`,
+			happened,
+			blind_view,
+			why: [
+				`${p.symbol} is the real Robinhood Stock Token at ${cardAddr(p.token)}. No look-alike is part of the move, the wallet bought it itself, and it came from an official Uniswap venue.`,
+				full
+					? `The record matches its hash, the Chainlink CRE workflow confirmed the wallet's anchored record (MATCH), the wallet's full history could be rebuilt and its closed trades add up to a profit of ${inp.record.realized_usd} USD.`
+					: 'The record matches its hash, but the evidence about the wallet is weaker:',
+				...(full ? [] : [...d.decisive.flatMap((id) => cardReason(id, inp)), ...cardLimitNote(d.decisive, inp, 'reduced')]),
+				`A mandate signed by ${cardAddr(lc(inp.mandate.document.principal))} covers the decision.`,
+			],
+			so: `So copy-guard opened a practice buy of ${p.notional_usd} USD: ${p.shares} ${p.symbol} at ${p.price_usd} USD, the Chainlink feed's value at the block of the move. It will ${p.exit.rule}. No real trade was placed.`,
+		}
+	}
+	const fake = d.decisive.includes('C1')
+	const rank = (id) => CARD_PRIORITY.indexOf(id) + 1 || 99
+	const lead = fake ? ['C1'] : d.decisive.filter((id) => !(d.decisive.includes('C2') && ['V1', 'D1', 'P1'].includes(id))).sort((x, y) => rank(x) - rank(y))
+	const rest = d.decisive.filter((id) => !lead.includes(id))
+	return {
+		headline: fake ? `No position: fake ${inp.tokens_moved.find((m) => m.kind === 'fake')?.ticker ?? ''}` : `No position: ${NONE_HEAD[lead[0]] ?? 'a rule failed'}`,
+		happened,
+		blind_view,
+		why: [...lead.flatMap((id) => cardReason(id, inp)), ...cardLimitNote(lead, inp, 'none'), ...(rest.length ? [`${rest.length === 1 ? 'Rule' : 'Rules'} ${rest.join(', ')} failed as well. The rule rows show each one.`] : [])],
+		so: 'So copy-guard opened no position. No real trade was placed.',
+	}
+}
+
+// The practice ledger: a walk through the decisions with two books, copy-guard and a blind copy.
+
+export const BLIND_BASELINE =
+	'Blind copy opens the full size on every move in which something that looks like a Stock Token arrives in the wallet: a real one, or a look-alike that copies a stock ticker. It trusts the ticker and the log. It buys no record, checks no venue or signature, and has no daily or open-position limit. It uses the same entry price and the same exit rules as copy-guard.'
+export const LEDGER_NOTE =
+	'Practice (paper) trades only. No real trade was placed. The two columns compare two policies on past public moves. This is not a forecast, not a record of real trading and not advice.'
+
+const pointUsd = (series, pt) => (Number(pt.answer) / 10 ** series.decimals).toFixed(4)
+const lastPoint = (series, block) => {
+	let hit = null
+	for (const pt of series?.points ?? []) {
+		if (pt.block > block) break
+		hit = pt
+	}
+	return hit
+}
+const gain = (notional, entry, exit) => BigInt(Math.round(Number(toCents(notional)) * (Number(exit) / Number(entry) - 1)))
+
+/** One book of practice positions. Plain objects and four functions, walked forward block by block. */
+function newBook(feeds, limits) {
+	const positions = []
+	const close = (p, reason, block, price, atDecision) => {
+		p.status = 'closed'
+		p.exit = { reason, block, price_usd: price, at_decision: atDecision }
+		p.result_usd = p.fake || !price || !p.entry_price_usd ? fromCents(-toCents(p.notional_usd)) : fromCents(gain(p.notional_usd, p.entry_price_usd, price))
+	}
+	return {
+		positions,
+		advance(toBlock) {
+			for (const p of positions) {
+				const series = feeds[p.token]
+				if (p.status !== 'open' || !series) continue
+				for (; p._cursor < series.points.length && series.points[p._cursor].block <= toBlock; p._cursor++) {
+					const pt = series.points[p._cursor]
+					if (pt.block <= p.opened_block) continue
+					const price = Number(pointUsd(series, pt))
+					const reason = price <= p._stop ? 'stop loss' : price >= p._take ? 'take profit' : Date.parse(pt.updated_at) >= p._closeBy ? 'time limit' : null
+					if (reason) {
+						close(p, reason, pt.block, pointUsd(series, pt), null)
+						break
+					}
+				}
+			}
+		},
+		walletSold(wallet, token, block, n) {
+			const closed = []
+			if (!limits.exit.when_wallet_sells) return closed
+			for (const p of positions) {
+				if (p.status !== 'open' || p.wallet !== wallet || p.token !== token || p.opened_block >= block) continue
+				const pt = lastPoint(feeds[token], block)
+				if (!pt) continue
+				close(p, 'wallet sold', block, pointUsd(feeds[token], pt), n)
+				closed.push(p.n)
+			}
+			return closed
+		},
+		state(day) {
+			const used = positions.filter((p) => p.opened_time.slice(0, 10) === day).reduce((s, p) => s + toCents(p.notional_usd), 0n)
+			return { day, used_usd_today: fromCents(used), open_positions: positions.filter((p) => p.status === 'open').length }
+		},
+		open(n, inp, o) {
+			const entry = o.entry === null ? Number.NaN : Number(o.entry)
+			const p = {
+				n,
+				wallet: lc(inp.wallet),
+				token: o.token,
+				symbol: o.symbol,
+				tier: o.tier,
+				fake: o.fake,
+				notional_usd: o.notional,
+				entry_price_usd: o.entry,
+				opened_block: inp.movement.block,
+				opened_time: inp.move.time,
+				status: 'open',
+				exit: null,
+				mark: null,
+				result_usd: '0.00',
+				_stop: entry * (1 - Number(limits.exit.stop_loss_pct) / 100),
+				_take: entry * (1 + Number(limits.exit.take_profit_pct) / 100),
+				_closeBy: Date.parse(inp.move.time) + limits.exit.max_holding_days * 86_400_000,
+				_cursor: 0,
+			}
+			positions.push(p)
+			if (o.fake) close(p, 'look-alike, written off', inp.movement.block, null, n)
+		},
+		finish(markBlock) {
+			this.advance(markBlock)
+			for (const p of positions) {
+				const pt = lastPoint(feeds[p.token], markBlock)
+				if (p.status !== 'open' || !pt || !p.entry_price_usd) continue
+				p.mark = { block: pt.block, price_usd: pointUsd(feeds[p.token], pt) }
+				p.result_usd = fromCents(gain(p.notional_usd, p.entry_price_usd, p.mark.price_usd))
+			}
+			return positions.map((p) => Object.fromEntries(Object.entries(p).filter(([k]) => !k.startsWith('_'))))
+		},
+	}
+}
+
+function blindOpens(inp) {
+	const leg = cardLeg(inp)
+	if (!leg || leg.t.direction !== 'in') return null
+	if (leg.m.kind === 'fake') return leg.m.ticker === 'USDG' ? null : { token: leg.m.token, symbol: leg.m.ticker, entry: null, fake: true }
+	if (leg.m.kind === 'stock' && gapInPrice(inp) === '') return { token: leg.m.token, symbol: leg.m.ticker, entry: feedUsd(inp.price), fake: false }
+	return null
+}
+
+/** A binary Merkle root over the leaves in order. An odd last node moves up unchanged. */
+export function merkleRootOf(leaves) {
+	if (leaves.length === 0) return keccak256('')
+	let level = leaves.map((l) => l.toLowerCase())
+	while (level.length > 1) {
+		const next = []
+		for (let i = 0; i < level.length; i += 2) next.push(i + 1 < level.length ? keccak256(hexToBytes(level[i].slice(2) + level[i + 1].slice(2))) : level[i])
+		level = next
+	}
+	return level[0]
+}
+
+/** The whole ledger from the trails in walk order, the saved feed values and the block it is marked at. */
+export function ledgerOf(trails, feeds, markBlock) {
+	const first = trails[0].inputs
+	const limits = first.limits
+	const guard = newBook(feeds, limits)
+	const blind = newBook(feeds, limits)
+	const rows = trails.map((t, i) => {
+		const n = i + 1
+		const inp = t.inputs
+		const block = inp.movement.block
+		guard.advance(block)
+		blind.advance(block)
+		const leg = stockLeg2(inp)
+		const sold = leg && leg.direction === 'out' && lc(inp.move.signer) === lc(inp.wallet) ? lc(leg.token) : null
+		const closedGuard = sold ? guard.walletSold(lc(inp.wallet), sold, block, n) : []
+		const closedBlind = sold ? blind.walletSold(lc(inp.wallet), sold, block, n) : []
+		const book = guard.state(inp.move.time.slice(0, 10))
+		const p = t.decision.paper_trade
+		if (p) guard.open(n, inp, { token: p.token, symbol: p.symbol, tier: p.tier, notional: p.notional_usd, entry: p.price_usd, fake: false })
+		const b = blindOpens(inp)
+		if (b) blind.open(n, inp, { ...b, tier: 'BLIND', notional: limits.size.full_usd })
+		return {
+			n,
+			wallet: lc(inp.wallet),
+			move_tx: lc(inp.movement.tx),
+			move_block: block,
+			move_time: inp.move.time,
+			tier: t.decision.tier,
+			failed: t.decision.decisive,
+			card: t.card,
+			book,
+			copy_guard: { opened: p ? { tier: p.tier, notional_usd: p.notional_usd, entry_price_usd: p.price_usd, shares: p.shares } : null, closed_here: closedGuard },
+			blind_copy: { opened: b ? { notional_usd: limits.size.full_usd, entry_price_usd: b.entry, fake: b.fake } : null, closed_here: closedBlind },
+			leaf: keccak256(canonicalJson(t)),
+		}
+	})
+	const guardPositions = guard.finish(markBlock)
+	const blindPositions = blind.finish(markBlock)
+	const signed = (s) => toCents(s.replace('-', '')) * (s.startsWith('-') ? -1n : 1n)
+	const sum = (ps, pick) => fromCents(ps.reduce((s, p) => s + signed(pick(p)), 0n))
+	const side = (ps) => ({ opened: ps.length, closed: ps.filter((p) => p.status === 'closed').length, open: ps.filter((p) => p.status === 'open').length, put_in_usd: sum(ps, (p) => p.notional_usd), result_usd: sum(ps, (p) => p.result_usd) })
+	const count = (tier) => rows.filter((r) => r.tier === tier).length
+	const m = first.mandate
+	const bs = side(blindPositions)
+	return {
+		ledger_version: 2,
+		note: LEDGER_NOTE,
+		baseline: BLIND_BASELINE,
+		decided_at: trails[0].decided_at,
+		mark_block: markBlock,
+		limits,
+		limits_keccak: lc(first.limits_keccak),
+		mandate: {
+			keccak: lc(m.keccak),
+			principal: lc(m.document.principal),
+			agent_payment_key: lc(m.document.agent.payment_key),
+			signed_by_principal: Boolean(m.signer) && lc(m.signer) === lc(m.document.principal),
+			valid_from: m.document.valid_from,
+			valid_until: m.document.valid_until,
+		},
+		rules: trails[0].rules,
+		root: merkleRootOf(rows.map((r) => r.leaf)),
+		rows,
+		copy_guard_positions: guardPositions,
+		blind_copy_positions: blindPositions,
+		totals: {
+			decisions: rows.length,
+			wallets: new Set(rows.map((r) => r.wallet)).size,
+			full: count('FULL'),
+			reduced: count('REDUCED'),
+			none: count('NONE'),
+			fakes_named: trails.filter((t) => t.decision.rule_results.some((r) => r.id === 'C1' && !r.ok)).length,
+			copy_guard: side(guardPositions),
+			blind_copy: { opened: bs.opened, fakes: blindPositions.filter((p) => p.fake).length, closed: bs.closed, open: bs.open, put_in_usd: bs.put_in_usd, result_usd: bs.result_usd },
+		},
+	}
+}
+
+/** Rerun everything a version 2 trail says about itself. An empty list means it holds. */
+export function trailProblemsV2(trail) {
+	const problems = []
+	const inp = trail.inputs
+	if (trail.rules?.id !== RULES_ID || trail.rules?.version !== 2) problems.push(`rules ${trail.rules?.id} v${trail.rules?.version}, expected ${RULES_ID} v2`)
+	if (canonicalJson(trail.rules) !== canonicalJson(inp.rules)) problems.push('the rules named by the trail and by its inputs differ')
+	if (trail.decided_at !== inp.decided_at) problems.push('decided_at differs between the trail and its inputs')
+	if (lc(trail.purchase?.payer) !== lc(inp.payer)) problems.push('the payer of the purchase is not the payer the rules read')
+	if (keccak256(canonicalJson(inp.limits)) !== lc(inp.limits_keccak)) problems.push('limits_keccak is not the hash of the limits in the trail')
+	const m = inp.mandate
+	if (keccak256(canonicalJson(m.document)) !== lc(m.keccak)) problems.push('the mandate keccak is not the hash of the mandate in the trail')
+	if (lc(signerOfMandate(m.document, m.signature)) !== lc(m.signer)) problems.push('the mandate signature does not recover to the signer the trail names')
+	const again = decideV2(inp)
+	const said = trail.decision ?? {}
+	if (again.tier !== said.tier || again.conclusion !== said.conclusion) problems.push(`the trail says ${said.tier} (${said.conclusion}), the rules give ${again.tier} (${again.conclusion})`)
+	const saidRows = said.rule_results ?? []
+	const differ = again.rule_results.filter((r, i) => canonicalJson(r) !== canonicalJson(saidRows[i] ?? null)).map((r) => r.id)
+	if (differ.length || saidRows.length !== again.rule_results.length) problems.push(`rule rows differ from what the rules give: ${differ.join(' ') || 'extra rows'}`)
+	if (canonicalJson({ d: again.decisive, p: again.paper_trade }) !== canonicalJson({ d: said.decisive, p: said.paper_trade })) problems.push('decisive rules or practice position differ from what the rules give')
+	if (canonicalJson(cardOf(inp, again)) !== canonicalJson(trail.card ?? null)) problems.push('the decision card is not the one its inputs give')
+	const paid = trail.purchase?.mode === 'paid'
+	if (paid && !/^0x[0-9a-fA-F]{64}$/.test(trail.purchase.payment_tx ?? '')) problems.push('the trail says paid but names no payment tx')
+	if (trail.purchase?.mode === 'dry-run' && trail.purchase.payment_tx !== null) problems.push('the trail says dry-run but names a payment tx')
+	return { problems, again }
+}
+
+// EIP-712 for the one message the agent signs to pay: Permit2's PermitWitnessTransferFrom
+// with the x402 witness. Used to recheck the digest in a saved 402 exchange.
+const word32 = (v) => BigInt(v).toString(16).padStart(64, '0')
+const PERMIT2_TYPE = 'PermitWitnessTransferFrom(TokenPermissions permitted,address spender,uint256 nonce,uint256 deadline,Witness witness)TokenPermissions(address token,uint256 amount)Witness(address to,uint256 validAfter)'
+export function permit2Digest(typed) {
+	const k = (hex) => keccak256(hexToBytes(hex)).slice(2)
+	const kt = (text) => keccak256(text).slice(2)
+	const d = typed.domain
+	const m = typed.message
+	const domain = k(kt('EIP712Domain(string name,uint256 chainId,address verifyingContract)') + kt(d.name) + word32(d.chainId) + word32(d.verifyingContract))
+	const permitted = k(kt('TokenPermissions(address token,uint256 amount)') + word32(m.permitted.token) + word32(m.permitted.amount))
+	const witness = k(kt('Witness(address to,uint256 validAfter)') + word32(m.witness.to) + word32(m.witness.validAfter))
+	const main = k(kt(PERMIT2_TYPE) + permitted + word32(m.spender) + word32(m.nonce) + word32(m.deadline) + witness)
+	return `0x${k(`1901${domain}${main}`)}`
 }
 
 // ---------------------------------------------------------------- reading the chains
@@ -591,7 +1251,7 @@ const short = (h) => (h ? `${h.slice(0, 10)}…${h.slice(-6)}` : '(none)')
 const shortAddr = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`
 const usdg = (atomic) => `${(Number(atomic) / 1e6).toString()} USDG`
 const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'))
-const rel = (path) => relative(REPO, path) || '.'
+const rel = (path) => (relative(REPO, path) || '.').split(sep).join('/')
 
 /** Collects rows, prints each as it is decided. */
 export class Report {
@@ -731,12 +1391,18 @@ async function checkTrail(rep, main, test, file, { record, expected } = {}) {
 		const { problems, again } = trailProblems(trail)
 		if (expected && again.conclusion !== expected) problems.push(`this repo claims ${expected}`)
 		const pass = again.rule_results.filter((r) => r.ok).length
-		return [problems.length === 0, problems.length ? problems.join('; ') : `${again.rule_results.length} rules rerun give ${again.conclusion}${again.decisive.length ? ` (failed: ${again.decisive.join(' ')})` : ''}, ${pass} pass, every row as the trail has it`]
+		const v2 = trail.trail_version === 2 ? ', and the mandate, the limits and the card are the ones its inputs give' : ''
+		return [problems.length === 0, problems.length ? problems.join('; ') : `${again.rule_results.length} rules rerun give ${again.conclusion}${again.decisive.length ? ` (failed: ${again.decisive.join(' ')})` : ''}, ${pass} pass, every row as the trail has it${v2}`]
 	})
 	if (record) {
 		await rep.check('record fields', () => {
 			const rebuilt = recordFields(record.json, { source_url: trail.inputs.record.source_url, x_facts_hash: trail.inputs.record.x_facts_hash })
-			const same = canonicalJson(rebuilt) === canonicalJson(trail.inputs.record)
+			let same = canonicalJson(rebuilt) === canonicalJson(trail.inputs.record)
+			if (same && trail.trail_version === 2) {
+				// What each moved token is called comes from the record too. The decimals are checked on chain below.
+				const decimals = Object.fromEntries(trail.inputs.tokens_moved.map((m) => [m.token, m.decimals]))
+				same = canonicalJson(movedTokensFrom(record.json, trail.inputs.movement.transfers, decimals)) === canonicalJson(trail.inputs.tokens_moved)
+			}
 			return [same, same ? `what the rules read is what ${rel(record.path)} holds` : `the trail's record fields differ from ${rel(record.path)} (it hashes to ${rebuilt.recomputed_facts_hash})`]
 		})
 	}
@@ -746,7 +1412,23 @@ async function checkTrail(rep, main, test, file, { record, expected } = {}) {
 		if (!r) return [false, `${short(lc(mv.tx))} is not on Robinhood Chain`]
 		const onchain = r.status === '0x1' ? movementFromLogs(trail.inputs.wallet, mv.tx, r.logs ?? []) : null
 		const same = onchain !== null && canonicalJson(onchain) === canonicalJson(mv)
-		return [same, same ? `${short(lc(mv.tx))} in block ${mv.block}: ${mv.transfers.length} transfer${mv.transfers.length === 1 ? '' : 's'} of the wallet, as the trail lists` : `Robinhood Chain shows ${onchain ? `${onchain.transfers.length} transfers in block ${onchain.block}` : 'no transfer of the wallet'} for ${mv.tx}; the trail lists ${mv.transfers.length} in block ${mv.block}`]
+		if (!same) return [false, `Robinhood Chain shows ${onchain ? `${onchain.transfers.length} transfers in block ${onchain.block}` : 'no transfer of the wallet'} for ${mv.tx}; the trail lists ${mv.transfers.length} in block ${mv.block}`]
+		let more = ''
+		if (trail.trail_version === 2) {
+			// Version 2 also says when the move happened, who signed it and how many decimals each token has.
+			const bad = []
+			if (lc(r.from) !== lc(trail.inputs.move.signer)) bad.push(`the tx was signed by ${lc(r.from)}, the trail says ${trail.inputs.move.signer}`)
+			const block = await main('eth_getBlockByNumber', [`0x${mv.block.toString(16)}`, false])
+			const time = block ? new Date(Number(BigInt(block.timestamp)) * 1000).toISOString() : '(no block)'
+			if (time !== trail.inputs.move.time) bad.push(`the block is from ${time}, the trail says ${trail.inputs.move.time}`)
+			for (const m of trail.inputs.tokens_moved) {
+				const d = Number(BigInt(await main('eth_call', [{ to: m.token, data: '0x313ce567' }, 'latest'])))
+				if (d !== m.decimals) bad.push(`${m.token} has ${d} decimals, the trail says ${m.decimals}`)
+			}
+			if (bad.length) return [false, bad.join('; ')]
+			more = `, at ${trail.inputs.move.time}, signed by ${lc(r.from) === lc(trail.inputs.wallet) ? 'the wallet' : `${shortAddr(lc(r.from))} (not the wallet)`}`
+		}
+		return [true, `${short(lc(mv.tx))} in block ${mv.block}: ${mv.transfers.length} transfer${mv.transfers.length === 1 ? '' : 's'} of the wallet, as the trail lists${more}`]
 	})
 	await rep.check('trail onchain', async () => {
 		if (!file.trail_tx) return [false, 'the file names no trail tx (a simulated run writes nothing onchain)']
@@ -775,14 +1457,14 @@ function loadTrails(dir) {
 }
 
 /** agent/rules.ts is the file the trails name by hash. A Windows checkout may have turned LF into CRLF. */
-function rulesSourceHash() {
-	const bytes = readFileSync(join(REPO, 'agent/rules.ts'))
+function rulesSourceHash(file = 'agent/rules.ts') {
+	const bytes = readFileSync(join(REPO, file))
 	return [keccak256(new Uint8Array(bytes)), keccak256(bytes.toString('utf8').replace(/\r\n/g, '\n'))]
 }
 
 // ---------------------------------------------------------------- the two ways to run it
 
-async function verifyAll(rep, main, test) {
+async function verifyPaidRun(rep, main, test) {
 	const dir = join(REPO, CLAIMS.runDir)
 	let trails = []
 	rep.say(`1. The record the agent bought`)
@@ -822,6 +1504,221 @@ async function verifyAll(rep, main, test) {
 	}
 }
 
+const LEDGER_RECEIVER = '0xe3f0ca4f474e15364017ee3f6fc0d0949e5af0c9'
+const LEDGER_TOPIC = keccak256('LedgerAnchored(bytes32,bytes32,bytes32,bytes32,uint32,uint32,uint32,uint32,uint64,bytes32,bytes10,address)')
+const ANSWER_TOPIC = keccak256('AnswerUpdated(int256,uint256,uint256)')
+const V4_POOL_MANAGER = '0x8366a39cc670b4001a1121b8f6a443a643e40951'
+const V3_FACTORY = '0x1f7d7550b1b028f7571e69a784071f0205fd2efa'
+/** The three moves of the demo wallet the paid run decided. They are always among the decisions checked on chain. */
+const SHOWCASE = ['0x0eac7685', '0x1b838f40', '0xf7cb51a2']
+
+/** One decision of the walk against the chain: the transfers, the time, the signer, the decimals, the venue and the feed value. */
+async function chainFacts(main, t) {
+	const inp = t.inputs
+	const mv = inp.movement
+	const bad = []
+	const r = await main('eth_getTransactionReceipt', [mv.tx])
+	if (!r || r.status !== '0x1') return [false, `${short(lc(mv.tx))} is not a successful tx on Robinhood Chain`]
+	const onchain = movementFromLogs(inp.wallet, mv.tx, r.logs ?? [])
+	if (onchain === null || canonicalJson(onchain) !== canonicalJson(mv)) bad.push('the transfers differ from what the trail lists')
+	if (lc(r.from) !== lc(inp.move.signer)) bad.push(`signed by ${lc(r.from)}, the trail says ${inp.move.signer}`)
+	const block = await main('eth_getBlockByNumber', [`0x${mv.block.toString(16)}`, false])
+	const time = block ? new Date(Number(BigInt(block.timestamp)) * 1000).toISOString() : '(no block)'
+	if (time !== inp.move.time) bad.push(`the block is from ${time}, the trail says ${inp.move.time}`)
+	for (const m of inp.tokens_moved) {
+		const d = Number(BigInt(await main('eth_call', [{ to: m.token, data: '0x313ce567' }, 'latest'])))
+		if (d !== m.decimals) bad.push(`${m.token} has ${d} decimals, the trail says ${m.decimals}`)
+	}
+	for (const v of inp.venue) {
+		let kind = 'other'
+		if (lc(v.address) === V4_POOL_MANAGER) kind = 'uniswap-v4-pool-manager'
+		else {
+			const f = await main('eth_call', [{ to: v.address, data: '0xc45a0155' }, 'latest']).catch((e) => (e instanceof Unreachable ? Promise.reject(e) : '0x'))
+			if (typeof f === 'string' && f.length === 66 && addrOf(f) === V3_FACTORY) kind = 'uniswap-v3-pool'
+		}
+		if (kind !== v.kind) bad.push(`${v.address} is ${kind}, the trail says ${v.kind}`)
+	}
+	const p = inp.price
+	if (p) {
+		if (addrOf(await main('eth_call', [{ to: p.feed, data: '0x245a7bfc' }, 'latest'])) !== lc(p.aggregator)) bad.push('the feed names another aggregator')
+		const u = await main('eth_getTransactionReceipt', [p.update_tx])
+		const log = (u?.logs ?? []).find((l) => l.address.toLowerCase() === lc(p.aggregator) && l.topics?.[0]?.toLowerCase() === ANSWER_TOPIC && BigInt(l.topics[2]).toString() === p.round_id)
+		if (!log || BigInt(log.topics[1]).toString() !== p.answer || Number(BigInt(log.blockNumber)) !== p.update_block) bad.push('the feed value is not the one its update tx published')
+		const later = await main('eth_getLogs', [{ address: p.aggregator, fromBlock: `0x${(p.update_block + 1).toString(16)}`, toBlock: `0x${mv.block.toString(16)}`, topics: [ANSWER_TOPIC] }])
+		if (p.update_block < mv.block && (later ?? []).length) bad.push('the feed published a newer value before the move')
+	}
+	if (bad.length) return [false, `${short(lc(mv.tx))}: ${bad.join('; ')}`]
+	const signer = lc(r.from) === lc(inp.wallet) ? 'the wallet' : `${shortAddr(lc(r.from))}, not the wallet`
+	return [true, `${short(lc(mv.tx))} in block ${mv.block} (${inp.move.time}): ${mv.transfers.length} transfer${mv.transfers.length === 1 ? '' : 's'} as listed, signed by ${signer}${inp.venue.length ? `, venue ${inp.venue.map((v) => v.kind).join(' and ')}` : ''}${p ? `, feed value ${feedUsd(p)} USD from round ${p.round_id}` : ''}`]
+}
+
+/** 5. The practice ledger: every decision of the walk, both books, the mandate, the user's limits, the root and the page. */
+async function verifyLedger(rep, main, test, deep) {
+	rep.say(`5. The practice ledger: a walk through every decision, copy-guard next to a blind copy`)
+	const dir = join(REPO, CLAIMS.walkDir)
+	let trails = []
+	let feeds = {}
+	let ledger = null
+	await rep.check('decisions', () => {
+		trails = readFileSync(join(dir, 'trails.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l))
+		const bad = []
+		for (const [i, t] of trails.entries()) {
+			const { problems } = trailProblems(t)
+			if (problems.length) bad.push(`decision ${i + 1}: ${problems[0]}`)
+		}
+		const tier = (x) => trails.filter((t) => t.decision.tier === x).length
+		return [trails.length > 0 && bad.length === 0, bad.length ? bad.slice(0, 3).join('; ') : `${trails.length} decisions rerun, ${trails[0].decision.rule_results.length} rules each: FULL ${tier('FULL')}, REDUCED ${tier('REDUCED')}, NONE ${tier('NONE')}. Every row, card, mandate and limits hash is the one its inputs give`]
+	})
+	await rep.check('records', () => {
+		const wallets = [...new Set(trails.map((t) => lc(t.inputs.wallet)))]
+		for (const w of wallets) {
+			const saved = readJson(join(dir, 'records', `${w}.json`))
+			if (factsHash(saved.facts) !== lc(saved.x_facts_hash)) return [false, `records/${w}.json does not hash to the X-Facts-Hash saved with it`]
+			const fields = canonicalJson(recordFields(saved.facts, { source_url: saved.source_url, x_facts_hash: saved.x_facts_hash }))
+			for (const t of trails.filter((x) => lc(x.inputs.wallet) === w)) {
+				if (canonicalJson(t.inputs.record) !== fields) return [false, `a decision about ${w} read record fields that records/${w}.json does not give`]
+				const decimals = Object.fromEntries(t.inputs.tokens_moved.map((m) => [m.token, m.decimals]))
+				if (canonicalJson(movedTokensFrom(saved.facts, t.inputs.movement.transfers, decimals)) !== canonicalJson(t.inputs.tokens_moved)) return [false, `a decision about ${w} names a moved token differently from the record`]
+			}
+		}
+		return [wallets.length > 0, `${wallets.length} records in ${CLAIMS.walkDir}/records hash to the X-Facts-Hash vet402 sent with them, and give the fields and the token names every decision read`]
+	})
+	await rep.check('prices', () => {
+		feeds = readJson(join(dir, 'feeds.json'))
+		let priced = 0
+		for (const [i, t] of trails.entries()) {
+			const leg = stockLeg2(t.inputs)
+			const series = leg ? feeds[lc(leg.token)] : null
+			const pt = series ? lastPoint(series, t.inputs.movement.block) : null
+			const want = pt ? { feed: series.feed, aggregator: series.aggregator, answer: pt.answer, decimals: series.decimals, round_id: pt.round_id, updated_at: pt.updated_at, update_block: pt.block, update_tx: pt.tx } : null
+			if (canonicalJson(want) !== canonicalJson(t.inputs.price)) return [false, `decision ${i + 1}: the price it read is not the last feed value at or before block ${t.inputs.movement.block} in ${CLAIMS.walkDir}/feeds.json`]
+			if (want) priced++
+		}
+		const n = Object.values(feeds).reduce((s, f) => s + f.points.length, 0)
+		return [true, `${priced} decisions read a price, each the last Chainlink feed value at or before the block of the move, out of ${n} values of ${Object.keys(feeds).length} feeds saved in ${CLAIMS.walkDir}/feeds.json`]
+	})
+	await rep.check('ledger', () => {
+		ledger = readJson(join(REPO, CLAIMS.ledger))
+		const rebuilt = ledgerOf(trails, feeds, ledger.mark_block)
+		const i = rebuilt.rows.findIndex((r, k) => canonicalJson(r) !== canonicalJson(ledger.rows?.[k] ?? null))
+		if (i >= 0) return [false, `row ${i + 1} of ${CLAIMS.ledger} is not what the walk gives`]
+		if (canonicalJson(rebuilt) !== canonicalJson(ledger)) return [false, `${CLAIMS.ledger} differs from what the walk gives outside its rows (a position, a total, the root, the limits or the mandate)`]
+		const k = trails.findIndex((t, j) => canonicalJson(t.inputs.book) !== canonicalJson(rebuilt.rows[j].book))
+		if (k >= 0) return [false, `decision ${k + 1} read a practice book that the walk up to it does not give`]
+		const t = rebuilt.totals
+		return [true, `${CLAIMS.ledger} is what the walk gives: ${t.decisions} decisions about ${t.wallets} wallets, ${t.fakes_named} look-alikes named. copy-guard opened ${t.copy_guard.opened} practice positions (${t.copy_guard.put_in_usd} USD), result ${t.copy_guard.result_usd} USD. A blind copy opened ${t.blind_copy.opened} (${t.blind_copy.put_in_usd} USD), ${t.blind_copy.fakes} of them look-alikes, result ${t.blind_copy.result_usd} USD`]
+	})
+	if (!ledger) return
+	await rep.check('page', () => {
+		const html = readFileSync(join(REPO, CLAIMS.page), 'utf8')
+		const m = html.match(/<script type="application\/json" id="ledger-data">([\s\S]*?)<\/script>/)
+		if (!m) return [false, `${CLAIMS.page} carries no ledger`]
+		const same = canonicalJson(JSON.parse(m[1])) === canonicalJson(ledger)
+		return [same, same ? `${CLAIMS.page} carries this ledger, and builds its cards and its tables from it in the browser` : `the ledger inside ${CLAIMS.page} is not ${CLAIMS.ledger}`]
+	})
+	await rep.check('limits', () => {
+		const limits = readJson(join(REPO, CLAIMS.limits))
+		const h = keccak256(canonicalJson(limits))
+		const named = [...new Set(trails.flatMap((t) => [lc(t.inputs.limits_keccak), lc(t.inputs.mandate.document.limits_keccak)]))]
+		const ok = named.length === 1 && named[0] === h
+		return [ok, ok ? `${CLAIMS.limits} hashes to ${short(h)}, the limits every decision and the mandate name: full ${limits.size.full_usd} USD, reduced ${limits.size.reduced_usd} USD, ${limits.size.max_usd_per_day} USD per day, a wallet at a loss opens ${limits.evidence.wallet_at_a_loss === 'none' ? 'nothing' : 'a reduced position'}` : `${CLAIMS.limits} hashes to ${h}; the decisions and the mandate name ${named.join(', ') || '(none)'}`]
+	})
+	await rep.check('rules files', () => {
+		const v1 = rulesSourceHash('agent/rules.ts')
+		const v2 = rulesSourceHash('agent/rules-v2.ts')
+		const named = [...new Set(trails.flatMap((t) => [canonicalJson([t.rules.source_keccak, t.rules.limits_rules_keccak]), canonicalJson([t.inputs.mandate.document.rules.source_keccak, t.inputs.mandate.document.rules.limits_rules_keccak])]))]
+		const ok = named.length === 1 && [canonicalJson([v1[0], v2[0]]), canonicalJson([v1[1], v2[1]])].includes(named[0])
+		return [ok, ok ? `agent/rules.ts hashes to ${short(v1[0])}, the file the paid run's trails name, and agent/rules-v2.ts to ${short(v2[0])}, as every decision and the mandate say` : `agent/rules.ts hashes to ${v1[0]} and agent/rules-v2.ts to ${v2[0]}; the decisions and the mandate name ${named.join(', ') || '(none)'}`]
+	})
+	await rep.check('mandate', () => {
+		const refs = [...new Set(trails.map((t) => lc(t.inputs.mandate.keccak)))]
+		if (refs.length !== 1) return [false, `the decisions name ${refs.length} mandates`]
+		const m = trails[0].inputs.mandate
+		if (!trails.every((t) => lc(t.inputs.mandate.signature) === lc(m.signature))) return [false, 'the decisions carry different signatures for the same mandate']
+		const real = readJson(join(REPO, CLAIMS.mandate))
+		const samplePath = join(REPO, CLAIMS.sampleMandate)
+		const isReal = keccak256(canonicalJson(real)) === refs[0]
+		const isSample = existsSync(samplePath) && keccak256(canonicalJson(readJson(samplePath))) === refs[0]
+		if (!isReal && !isSample) return [false, `the decisions name mandate ${refs[0]}, which is neither ${CLAIMS.mandate} nor ${CLAIMS.sampleMandate}`]
+		const signer = signerOfMandate(m.document, m.signature)
+		const byPrincipal = signer !== null && signer === lc(m.document.principal)
+		if (isReal) {
+			if (lc(real.principal) !== CLAIMS.payee) return [false, `the principal of ${CLAIMS.mandate} is ${real.principal}`]
+			return [true, byPrincipal ? `${CLAIMS.mandate} hashes to ${short(refs[0])}, and the signature in every decision recovers to its principal ${shortAddr(signer)}: practice only, payment key ${shortAddr(lc(real.agent.payment_key))}, valid ${real.valid_from} to ${real.valid_until}` : `${CLAIMS.mandate} hashes to ${short(refs[0])}. Its principal had not signed it when these decisions were made, so rule M1 made every one of them NONE`]
+		}
+		return [byPrincipal, byPrincipal ? `SAMPLE mandate ${CLAIMS.sampleMandate} (${short(refs[0])}): the signature in every decision recovers to its principal ${shortAddr(signer)}, a testnet-only key that stands in for the principal. The real mandate, ${CLAIMS.mandate}, is not signed yet` : `the sample mandate is not signed by its principal`]
+	})
+	await rep.check('root onchain', async () => {
+		const anchor = readJson(join(dir, 'anchor.json'))
+		if (lc(anchor.root) !== lc(ledger.root)) return [false, `${CLAIMS.walkDir}/anchor.json names root ${anchor.root}, the ledger gives ${ledger.root}`]
+		if (!anchor.ledger_tx) return [false, 'the walk was only simulated: its root is not onchain']
+		const r = await test('eth_getTransactionReceipt', [anchor.ledger_tx])
+		const log = (r?.logs ?? []).find((l) => l.address.toLowerCase() === LEDGER_RECEIVER && l.topics?.[0]?.toLowerCase() === LEDGER_TOPIC)
+		if (!log || r.status !== '0x1') return [false, `no LedgerAnchored from LedgerRootReceiver in ${short(anchor.ledger_tx)}`]
+		const t = ledger.totals
+		const bad = []
+		if (lc(log.topics[1]) !== lc(ledger.root)) bad.push(`onchain root ${lc(log.topics[1])}`)
+		if (lc(log.topics[2]) !== ledger.mandate.keccak) bad.push('another mandate')
+		if (lc(log.topics[3]) !== ledger.limits_keccak) bad.push('other limits')
+		if (word(log.data, 0) !== keccak256(canonicalJson(ledger.rules))) bad.push('other rules')
+		const n = (i) => Number(BigInt(word(log.data, i)))
+		if (n(1) !== t.decisions || n(2) !== t.full || n(3) !== t.reduced || n(4) !== t.none) bad.push(`counts ${n(1)}/${n(2)}/${n(3)}/${n(4)}`)
+		if (n(5) !== ledger.mark_block) bad.push(`mark block ${n(5)}`)
+		return [bad.length === 0, bad.length ? `LedgerAnchored in ${short(anchor.ledger_tx)} differs: ${bad.join('; ')}` : `LedgerAnchored in ${short(anchor.ledger_tx)} on Robinhood Testnet has the Merkle root ${short(lc(ledger.root))} of all ${t.decisions} decisions, the same mandate, limits and rules, and the same counts`]
+	})
+	const seenVerdict = new Set()
+	for (const t of trails) {
+		const vtx = lc(t.inputs.cre.verdict_tx)
+		if (!vtx || seenVerdict.has(vtx)) continue
+		seenVerdict.add(vtx)
+		await checkVerdict(rep, test, t, null)
+	}
+	const picked = new Set()
+	if (deep) trails.forEach((_, i) => picked.add(i))
+	else {
+		const take = (test, max) => trails.forEach((t, i) => void (test(t) && [...picked].filter((k) => test(trails[k])).length < max && picked.add(i)))
+		take((t) => SHOWCASE.some((h) => t.inputs.movement.tx.startsWith(h)), 3)
+		take((t) => t.decision.paper_trade !== null, 4)
+		take((t) => t.decision.decisive.includes('C1'), 4)
+	}
+	rep.say(deep ? `  every decision against Robinhood Chain` : `  ${picked.size} of the ${trails.length} decisions against Robinhood Chain (--deep checks every one)`)
+	for (const i of [...picked].sort((a, b) => a - b)) await rep.check(`decision ${i + 1}`, () => chainFacts(main, trails[i]))
+}
+
+/** 6. The gate: the saved 402 exchange, the payment the agent built and did not sign, and the agent card. No chain read. */
+async function verifyGate(rep) {
+	rep.say(`6. The x402 gate in front of the CRE workflow (a dry run: nothing signed, nothing paid)`)
+	let x = null
+	await rep.check('gate 402', () => {
+		x = readJson(join(REPO, CLAIMS.gateDryRun))
+		const a = x.accepted ?? {}
+		const ok = x.status === 402 && a.scheme === 'exact' && a.network === 'eip155:4663' && lc(a.asset) === USDG && lc(a.payTo) === CLAIMS.payee && String(a.amount) === CLAIMS.priceAtomic && a.extra?.assetTransferMethod === 'permit2' && /\/v1\/workflows\/rwa-verify$/.test(x.resource ?? '')
+		return [ok, ok ? `the gate answered 402 for ${new URL(x.resource).pathname}: exact, eip155:4663, ${usdg(a.amount)} to ${shortAddr(lc(a.payTo))} (vet402), Permit2` : `the saved 402 does not carry the published terms: ${canonicalJson(a)}`]
+	})
+	if (!x) return
+	await rep.check('unsigned payment', () => {
+		const t = x.permit2_typed_data
+		const m = t.message
+		const bad = []
+		if (x.signed !== false) bad.push('the file says a payment was signed')
+		if (lc(t.domain.verifyingContract) !== PERMIT2 || Number(t.domain.chainId) !== 4663) bad.push('the typed data is not for Permit2 on Robinhood Chain')
+		if (lc(m.permitted.token) !== USDG || String(m.permitted.amount) !== CLAIMS.priceAtomic) bad.push('it is not for 0.01 USDG')
+		if (lc(m.spender) !== X402_PERMIT2_PROXY) bad.push('the spender is not the x402 Permit2 proxy')
+		if (lc(m.witness.to) !== CLAIMS.payee) bad.push('the recipient is not the vet402 wallet')
+		if (BigInt(m.deadline) - BigInt(m.witness.validAfter) > 180n) bad.push('it would be valid for more than 120 s')
+		const d = permit2Digest(t)
+		if (d !== lc(x.permit2_digest)) bad.push(`the typed data hashes to ${d}, the file says ${x.permit2_digest}`)
+		return [bad.length === 0, bad.length ? bad.join('; ') : `the payment the agent built and did not sign hashes to ${short(d)}: 0.01 USDG, spender the x402 Permit2 proxy, recipient pinned to ${shortAddr(CLAIMS.payee)}, valid 120 s`]
+	})
+	await rep.check('agent card', () => {
+		const c = readJson(join(REPO, CLAIMS.agentCard))
+		const p = c.payment ?? {}
+		const front = /^---\nname: \S.*\ndescription: \S.*\n---\n/.test(readFileSync(join(REPO, CLAIMS.skill), 'utf8').replace(/\r\n/g, '\n'))
+		const ok = p.protocol === 'x402' && p.network === 'eip155:4663' && lc(p.asset_address) === USDG && lc(p.pay_to) === CLAIMS.payee && p.atomic === CLAIMS.priceAtomic && (c.skills ?? []).some((k) => k.id === 'rwa-verify') && front
+		return [ok, ok ? `${CLAIMS.agentCard} and ${CLAIMS.skill} offer the workflow rwa-verify under the same terms: 0.01 USDG on eip155:4663 to ${shortAddr(CLAIMS.payee)}` : `${CLAIMS.agentCard} or ${CLAIMS.skill} does not carry the gate's terms`]
+	})
+}
+
 async function verifyOne(rep, main, test, path) {
 	const file = readJson(path)
 	const trail = file.trail ?? file
@@ -836,9 +1733,10 @@ async function verifyOne(rep, main, test, path) {
 }
 
 export class Usage extends Error {}
+const SECTIONS = ['paid-run', 'ledger', 'gate']
 
 export function parseArgs(argv) {
-	const a = { offline: false, target: null, rpc: null, testnetRpc: null }
+	const a = { offline: false, target: null, rpc: null, testnetRpc: null, only: null, deep: false }
 	for (let i = 0; i < argv.length; i++) {
 		const k = argv[i]
 		const value = () => {
@@ -848,6 +1746,11 @@ export function parseArgs(argv) {
 		if (k === '--offline') a.offline = true
 		else if (k === '--rpc') a.rpc = value()
 		else if (k === '--testnet-rpc') a.testnetRpc = value()
+		else if (k === '--deep') a.deep = true
+		else if (k === '--only') {
+			a.only = argv[++i]
+			if (!SECTIONS.includes(a.only)) throw new Usage(`--only takes one of: ${SECTIONS.join(', ')}`)
+		}
 		else if (k === '-h' || k === '--help') throw new Usage('')
 		else if (k.startsWith('--')) throw new Usage(`unknown option ${k}`)
 		else if (a.target === null) a.target = k
@@ -868,8 +1771,8 @@ export function resolveTarget(target) {
 	return target
 }
 
-const USAGE = `usage: node verify.mjs [trail.json | block number] [--offline] [--rpc URL] [--testnet-rpc URL]
-  no argument    recheck the paid run in ${CLAIMS.runDir}
+const USAGE = `usage: node verify.mjs [trail.json | block number] [--only paid-run|ledger|gate] [--deep] [--offline] [--rpc URL] [--testnet-rpc URL]
+  no argument    recheck the paid run in ${CLAIMS.runDir}, the practice ledger ${CLAIMS.ledger} and the gate
   block number   one of ${Object.keys(CLAIMS.decisions).join(', ')}
 exit code: 0 MATCH, 1 MISMATCH, 2 usage, 3 NOT CHECKED (an RPC could not be reached and nothing failed)`
 
@@ -894,7 +1797,11 @@ export async function run(argv, { print = console.log, fetchImpl = fetch, sleep,
 	rep.say(args.offline ? '  chains  not read (--offline)' : `  chains  ${mainChain.name} ${mainChain.id} at ${new URL(mainChain.rpcs[0]).host}, ${testChain.name} ${testChain.id} at ${new URL(testChain.rpcs[0]).host}`)
 	await rep.check('keccak256', () => [checkKeccak(), checkKeccak() ? 'the built-in hash gives the published test values' : 'the built-in hash is broken; no other line can be trusted'])
 	if (path) await verifyOne(rep, main, test, path)
-	else await verifyAll(rep, main, test)
+	else {
+		if (!args.only || args.only === 'paid-run') await verifyPaidRun(rep, main, test)
+		if (!args.only || args.only === 'ledger') await verifyLedger(rep, main, test, args.deep)
+		if (!args.only || args.only === 'gate') await verifyGate(rep)
+	}
 	const res = rep.result()
 	const count = (s) => rep.rows.filter((r) => r.status === s).length
 	rep.say('')
