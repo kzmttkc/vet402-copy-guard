@@ -11,7 +11,7 @@
 //   --only ledger         section 5: the practice ledger, the mandate and the user's limits
 //   --only gate           section 6: the x402 gate in front of the CRE workflow
 //   --quick               only the payment, the anchor, the CRE verdicts, the four cards at the top of the
-//                         page and the ledger root, in about 20 seconds (the full run takes about 90)
+//                         page and the ledger root, in about 15 seconds (the full run takes about 3 minutes)
 //   --deep                check every decision of the ledger against the chain, not a sample
 //   --offline             skip the chain reads; those lines are reported as not checked
 //   --rpc URL             another RPC for Robinhood Chain (4663)
@@ -2331,6 +2331,7 @@ async function verifyLedger(rep, main, test, deep) {
 		take((t) => t.decision.decisive.includes('C1'), 6)
 		take((t) => t.inputs.move.liquidity.length > 0, 1)
 		take((t) => stockLeg2(t.inputs) && howItCame(t.inputs, stockLeg2(t.inputs)) === 'rotation', 1)
+		take((t) => stockLeg2(t.inputs) && howItCame(t.inputs, stockLeg2(t.inputs)) === 'purchase_off_venue', 2)
 	}
 	rep.say(deep ? `  every decision against Robinhood Chain` : `  ${picked.size} of the ${trails.length} decisions against Robinhood Chain (--deep checks every one)`)
 	for (const i of [...picked].sort((a, b) => a - b)) await rep.check(`decision ${i + 1}`, () => chainFacts(main, trails[i]))
@@ -2524,7 +2525,7 @@ export async function run(argv, { print = console.log, fetchImpl = fetch, sleep,
 	rep.say('')
 	rep.say(`${count('OK')} OK, ${count('FAIL')} FAIL, ${count('NOT CHECKED')} not checked${session.retries ? ` (an RPC was busy: asked again ${session.retries} ${session.retries === 1 ? 'time' : 'times'})` : ''}`)
 	rep.say(`RESULT: ${res.text}`)
-	if (args.quick && !path) rep.say('To check every decision, the selection, the page and the gate: node verify.mjs (about 90 seconds)')
+	if (args.quick && !path) rep.say('To check every decision, the selection, the page and the gate: node verify.mjs (about 3 minutes)')
 	return res.code
 }
 

@@ -1,7 +1,7 @@
 // Checks every token of a list with the CRE workflow `token-check` and writes
 // docs/token-check/results.json.
 //
-//   bun scripts/token-check-batch.ts <tokens.json> [--out docs/token-check] [--dry]
+//   bun scripts/token-check-batch.ts <tokens.json> [--out docs/token-check] [--dry] [--max-per-run N]
 //
 // <tokens.json> is an array of token addresses (or an object with a `tokens` array).
 //
@@ -33,7 +33,7 @@ import { MAX_ANCHOR_RUNS } from '../token-check/workflow'
 const argv = process.argv.slice(2)
 const flag = (name: string) => argv.includes(name)
 const opt = (name: string, dflt: string) => (argv.includes(name) ? argv[argv.indexOf(name) + 1] : dflt)
-const input = argv.find((a, i) => !a.startsWith('--') && argv[i - 1] !== '--out')
+const input = argv.find((a, i) => !a.startsWith('--') && argv[i - 1] !== '--out' && argv[i - 1] !== '--max-per-run')
 if (!input) {
 	console.error('usage: bun scripts/token-check-batch.ts <tokens.json> [--out docs/token-check] [--dry]')
 	process.exit(2)
@@ -105,7 +105,9 @@ const tokens = readTokens(resolve(input))
 const at = await head()
 let itemsPerCall = await measureItemsPerCall()
 // Planned a little ahead of the head, so a run that starts later needs no more log windows than planned.
-const plan = (list: string[]) => planRuns(list, at + 100_000, separate, itemsPerCall)
+// --max-per-run N caps the tokens of one run below what the planner allows, when a busy RPC makes the planned runs fail and split.
+const maxPerRun = Number(opt('--max-per-run', '0'))
+const plan = (list: string[]) => planRuns(list, at + 100_000, separate, itemsPerCall).flatMap((run) => (maxPerRun > 0 && run.length > maxPerRun ? Array.from({ length: Math.ceil(run.length / maxPerRun) }, (_, i) => run.slice(i * maxPerRun, (i + 1) * maxPerRun)) : [run]))
 let queue = plan(tokens)
 console.log(`${tokens.length} tokens, ${queue.length} run${queue.length === 1 ? '' : 's'} planned (head ${at}, state from ${config.stateRpc ?? config.robinhoodRpc}, logs from ${config.robinhoodRpc}, ${itemsPerCall} items per request to it)`)
 

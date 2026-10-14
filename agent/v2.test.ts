@@ -155,13 +155,15 @@ describe('the mandate signature', () => {
 		expect(mandateSigner({ ...m, valid_until: '2027-12-31T23:59:59Z' }, sig)).not.toBe(PRINCIPAL.address.toLowerCase())
 		expect(mandateSigner(m, null)).toBeNull()
 	})
-	test('the sample mandate in the repo is signed by its own principal, and the real one names the vet402 operator', () => {
+	test('the sample mandate in the repo is signed by its own principal, and the real one names a principal apart from the vet402 wallet that is paid', () => {
 		const sample = JSON.parse(readFileSync(join(REPO, 'mandate/sample/mandate.json'), 'utf8'))
 		const sig = readFileSync(join(REPO, 'mandate/sample/mandate.sig'), 'utf8').trim()
 		expect(mandateSigner(sample, sig)).toBe(sample.principal.toLowerCase())
 		expect(sample.title).toMatch(/^SAMPLE/)
 		const real = JSON.parse(readFileSync(join(REPO, 'mandate/mandate.json'), 'utf8'))
-		expect(real.principal.toLowerCase()).toBe(V.CLAIMS.payee)
+		expect(real.principal.toLowerCase()).toBe(V.CLAIMS.principal)
+		expect(real.principal.toLowerCase()).not.toBe(V.CLAIMS.payee)
+		expect(real.scope.may_not).toContain(`pay any address other than 0x973cD8a91A771C2C04C6036888F8175D6b4F6227`)
 		expect(readFileSync(join(REPO, 'mandate/mandate.message.txt'), 'utf8')).toBe(mandateMessage(real))
 	})
 })
