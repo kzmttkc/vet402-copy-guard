@@ -1,0 +1,7 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x16b58403d2768988c82eada42330785e1c1aa4e2?chain=4663",
+  "http_status": 422,
+  "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x16B58403d2768988C82EaDA42330785e1c1aA4e2\",\"chain_id\":4663,\"as_of_block\":88158933,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":39,\"held\":[\"AAOI\",\"AMC\",\"APP\",\"ASML\",\"BULL\",\"CCL\",\"F\",\"FICO\",\"FIG\",\"FIS",
+  "x_facts_hash": "",
+  "facts": null
+}

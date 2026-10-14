@@ -1,5 +1,5 @@
 wallet selection, Robinhood Chain 4663, blocks 62420751 to 87977834 (2026-09-14T01:33:25.000Z to 2026-10-14T01:33:25.000Z, 30 days)
-rule: Rank every address by what official Uniswap venues (the v4 PoolManager and the pools of the official v3 factory) sent it of the Stock Tokens that have a Chainlink feed, in the window, each transfer at the feed's value at its block. From the top, ask vet402's free route once per address. An address it can build a record for is selected. Any other is listed with the reason and not walked. Stop at the number to select, or at the number of addresses to ask.
+rule: Rank every address by what official Uniswap venues (the v4 PoolManager and the pools of the official v3 factory) sent it of the Stock Tokens that have a Chainlink feed, in the window, directly or through a listed router in the same transaction, each transfer at the feed's value at its block. From the top: a router or another contract is not a wallet and is listed as such without asking; every other address is asked about once on vet402's free route. An address it can build a record for is selected. Any other is listed with the reason and not walked. Stop at the number to select, or at the number of addresses asked.
 tokens with a Chainlink feed: 33; official v3 pools holding one of them: 1901; plus the v4 PoolManager
   AAPL: 381624 transfers out of 124 venues
   AMD: 148079 transfers out of 10 venues
@@ -34,108 +34,270 @@ tokens with a Chainlink feed: 33; official v3 pools holding one of them: 1901; p
   TSLA: 250356 transfers out of 238 venues
   TSM: 45463 transfers out of 16 venues
   USO: 100834 transfers out of 20 venues
-transfers out of an official venue: 9651160; receivers: 55090; transfers with no feed value yet at their block: 0
+transfers out of an official venue: 9651160; transfers out of the 3 routers: 302472, of which 57919 passed on what a venue sent the router in the same transaction; receivers: 59449 (4766 received through a router); transfers with no feed value yet at their block: 0
 feeds: 33 of 33 aggregators have an answer before the window starts
-  #1 0x51c72848c68a965f66fa7a88855f9f7784502a7f bound 311868484.64 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x51C72848c68a965f66FA7a88855F9f7784502a7F","chain_
-  #2 0x3c82eb1863a021a27ca72d638ac1b33331869a71 bound 196091667.08 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x3c82EB1863A021a27ca72d638Ac1B33331869a71","chain_
-  #3 0x65050a9b7e5075a2ba5ced7b1b64ee66262c40dc bound 152796001.24 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x65050A9b7E5075A2bA5cED7b1b64EE66262c40Dc","chain_
-  #4 0x6aa80dbbed9ae5ab45fbf61f9644fada3b29326e bound 128670938.68 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x6aa80DbBed9ae5aB45FbF61f9644faDA3b29326E","chain_
-  #5 0xd7572f7ed161d3c46ca86d7da52d94d4b2d104a9 bound 118556723.18 USD: record partial, 449 transactions listed: SELECTED (1)
-  #6 0x278d858f05b94576c1e6f73285886876ff6ef8d2 bound 87595400.69 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x278d858f05b94576C1E6f73285886876ff6eF8D2","chain_
-  #7 0xfa686b40541334a8983b3d28902f832e23f9cd1f bound 85842508.44 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xFa686B40541334a8983b3D28902f832e23F9Cd1F","chain_
-  #8 0xcef7501b9b060a599a81735bead6641c0e6baf46 bound 85554862.14 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xCef7501b9B060a599a81735bEAD6641C0E6bAF46","chain_
-  #9 0x8f10b468b06c6fd214b65f87778827f7d113f996 bound 81917865.41 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x8F10B468b06c6FD214B65F87778827F7D113f996","chain_
-  #10 0x203bffa697bee74d39d255c1c028e3efa689b5f7 bound 68320676.63 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x203BFFa697beE74d39D255C1C028e3efA689B5F7","chain_
-  #11 0x9689992f5b5c09447f15906d8d11214944488341 bound 63412142.29 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x9689992f5b5C09447f15906d8d11214944488341","chain_
-  #12 0x3d90f66b534dd8482b181e24655a9e8265316be9 bound 57514376.50 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x3d90f66B534Dd8482b181e24655A9e8265316BE9","chain_
-  #13 0xaeb83c45e9bd22abd37853058e2a032d5d008600 bound 54656195.80 USD: record partial, 207 transactions listed: SELECTED (2)
-  #14 0xc33acc93942105c57602e59e8e448c20ba718a85 bound 42199381.10 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xc33AcC93942105c57602e59E8E448C20ba718a85","chain_
-  #15 0x1521027b665fa38fa4a642991607ad708376dd7b bound 41600136.29 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x1521027B665FA38Fa4a642991607ad708376dD7b","chain_
-  #16 0xd750615e5900f2aa09083e95c0dbb4958b173800 bound 40504232.03 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xd750615E5900f2AA09083E95c0dbB4958b173800","chain_
-  #17 0xfe12d3d09e2ba45590c8484876b17dad9492f2f4 bound 35526500.26 USD: record reconstructed, 4 transactions listed: SELECTED (3)
-  #18 0x2f4579ca81717d3d61bf8b6f06571877bbe54a07 bound 31816718.76 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x2F4579Ca81717d3D61BF8b6f06571877Bbe54A07","chain_
+  #1 0x51c72848c68a965f66fa7a88855f9f7784502a7f bound 311868484.64 USD: not asked, a contract (it has code at the head of the chain, 20099 bytes): not a wallet
+  #2 0x3c82eb1863a021a27ca72d638ac1b33331869a71 bound 196091667.08 USD: not asked, a contract (it has code at the head of the chain, 17196 bytes): not a wallet
+  #3 0x65050a9b7e5075a2ba5ced7b1b64ee66262c40dc bound 152796001.24 USD: not asked, a contract (it has code at the head of the chain, 752 bytes): not a wallet
+  #4 0x6aa80dbbed9ae5ab45fbf61f9644fada3b29326e bound 128670938.68 USD: not asked, a contract (it has code at the head of the chain, 19872 bytes): not a wallet
+  #5 0xd7572f7ed161d3c46ca86d7da52d94d4b2d104a9 bound 118556723.18 USD: not asked, a contract (it has code at the head of the chain, 24429 bytes): not a wallet
+  #6 0x278d858f05b94576c1e6f73285886876ff6ef8d2 bound 87595400.69 USD: not asked, a contract (it has code at the head of the chain, 609 bytes): not a wallet
+  #7 0xfa686b40541334a8983b3d28902f832e23f9cd1f bound 85842508.44 USD: not asked, a contract (it has code at the head of the chain, 16054 bytes): not a wallet
+  #8 0xcef7501b9b060a599a81735bead6641c0e6baf46 bound 85554862.14 USD: not asked, a contract (it has code at the head of the chain, 171 bytes): not a wallet
+  #9 0x8f10b468b06c6fd214b65f87778827f7d113f996 bound 81917865.41 USD: not asked, a contract (it has code at the head of the chain, 13529 bytes): not a wallet
+  #10 0x203bffa697bee74d39d255c1c028e3efa689b5f7 bound 68320676.63 USD: not asked, a contract (it has code at the head of the chain, 126 bytes): not a wallet
+  #11 0x9689992f5b5c09447f15906d8d11214944488341 bound 63412142.29 USD: not asked, a contract (it has code at the head of the chain, 100 bytes): not a wallet
+  #12 0x3d90f66b534dd8482b181e24655a9e8265316be9 bound 57514376.50 USD: not asked, a router (a router measured on the chain): what it receives it passes on, and what it passed on to a wallet is counted for that wallet
+  #13 0xaeb83c45e9bd22abd37853058e2a032d5d008600 bound 54656195.80 USD: not asked, a contract (it has code at the head of the chain, 16473 bytes): not a wallet
+  #14 0xc33acc93942105c57602e59e8e448c20ba718a85 bound 42199381.10 USD: not asked, a contract (it has code at the head of the chain, 10346 bytes): not a wallet
+  #15 0x1521027b665fa38fa4a642991607ad708376dd7b bound 41600136.29 USD: not asked, a contract (it has code at the head of the chain, 141 bytes): not a wallet
+  #16 0xd750615e5900f2aa09083e95c0dbb4958b173800 bound 40504232.03 USD: not asked, a contract (it has code at the head of the chain, 17504 bytes): not a wallet
+  #17 0xfe12d3d09e2ba45590c8484876b17dad9492f2f4 bound 35526500.26 USD: not asked, a contract (it has code at the head of the chain, 1034 bytes): not a wallet
+  #18 0x2f4579ca81717d3d61bf8b6f06571877bbe54a07 bound 31816718.76 USD: not asked, a contract (it has code at the head of the chain, 5914 bytes): not a wallet
   #19 0x8aeaca1e2ba7d75cc60a3e1fa834958c877a1fbd bound 29477307.37 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x8AeaCa1E2ba7d75CC60a3e1fa834958c877A1fbD","chain_
-  #20 0x8876789976decbfcbbbe364623c63652db8c0904 bound 28924479.77 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x8876789976dEcBfCbBbe364623C63652db8C0904","chain_
-  #21 0x6e2a35a7ad683cf634d91492d73bb7ff774c6919 bound 28252923.59 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x6e2A35A7AD683cF634D91492d73bb7FF774c6919","chain_
-  #22 0x66b570d1b419209c54cf9a85c04c64557c038edf bound 26236060.23 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x66b570D1b419209C54cF9a85c04C64557c038eDF","chain_
-  #23 0x0005ea38eb0a69d1253508ebdbdb9ea8cb26b5ef bound 23162859.50 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x0005Ea38EB0a69D1253508EBDBdB9eA8Cb26B5Ef","chain_
-  #24 0xcedb799b8eed839b10add695e7c7803dd82b79c8 bound 23123475.80 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xCeDb799B8eed839b10AdD695e7C7803Dd82B79c8","chain_
-  #25 0xec261798f56440dc243aa3696b635cf3077b9fb6 bound 19285389.51 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xeC261798F56440DC243Aa3696B635Cf3077b9fb6","chain_
-  #26 0x006102b16a04c20306a28b652745d3973d7d24fa bound 19134828.83 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x006102b16A04c20306A28b652745D3973D7D24fa","chain_
-  #27 0x204faca1764b154221e35c0d20abb3c525710498 bound 19130349.28 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x204FAca1764B154221e35c0d20aBb3c525710498","chain_
-  #28 0xdda569baedf25a26b2dc1017e563a7c548b2c6db bound 18973003.19 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xdDa569bAEdf25A26B2dC1017E563a7c548b2C6Db","chain_
+  #20 0x8876789976decbfcbbbe364623c63652db8c0904 bound 28924479.77 USD: not asked, a router (Uniswap UniversalRouter): what it receives it passes on, and what it passed on to a wallet is counted for that wallet
+  #21 0x6e2a35a7ad683cf634d91492d73bb7ff774c6919 bound 28252923.59 USD: not asked, a contract (it has code at the head of the chain, 13322 bytes): not a wallet
+  #22 0x66b570d1b419209c54cf9a85c04c64557c038edf bound 26236060.23 USD: not asked, a contract (it has code at the head of the chain, 130 bytes): not a wallet
+  #23 0x0005ea38eb0a69d1253508ebdbdb9ea8cb26b5ef bound 23162859.50 USD: not asked, a contract (it has code at the head of the chain, 163 bytes): not a wallet
+  #24 0xcedb799b8eed839b10add695e7c7803dd82b79c8 bound 23123475.80 USD: not asked, a contract (it has code at the head of the chain, 130 bytes): not a wallet
+  #25 0xec261798f56440dc243aa3696b635cf3077b9fb6 bound 19285389.51 USD: not asked, a contract (it has code at the head of the chain, 16054 bytes): not a wallet
+  #26 0x006102b16a04c20306a28b652745d3973d7d24fa bound 19134828.83 USD: not asked, a contract (it has code at the head of the chain, 130 bytes): not a wallet
+  #27 0x204faca1764b154221e35c0d20abb3c525710498 bound 19130349.28 USD: not asked, a contract (it has code at the head of the chain, 24380 bytes): not a wallet
+  #28 0xdda569baedf25a26b2dc1017e563a7c548b2c6db bound 18973003.19 USD: not asked, a contract (it has code at the head of the chain, 371 bytes): not a wallet
   #29 0x8f612edf9bb0e3ca8719341ed7c896fc46e54b66 bound 18525273.60 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x8F612eDF9bb0e3ca8719341ED7C896Fc46E54B66","chain_
-  #30 0xff737c78f1ee4667019fe1d09607c0c1f2d44b2f bound 17516443.30 USD: record partial, 289 transactions listed: SELECTED (4)
+  #30 0xff737c78f1ee4667019fe1d09607c0c1f2d44b2f bound 17516443.30 USD: not asked, a contract (it has code at the head of the chain, 10505 bytes): not a wallet
   #31 0xc216bfa5da000965e820845c32e6fd88db275743 bound 16948000.53 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xC216BfA5dA000965E820845c32e6FD88DB275743","chain_
-  #32 0x9b169052ee1569ec5bdf51dbf48d2962526cf6d9 bound 15363767.48 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x9b169052Ee1569Ec5bDF51DbF48D2962526cF6D9","chain_
+  #32 0x9b169052ee1569ec5bdf51dbf48d2962526cf6d9 bound 15363767.48 USD: not asked, a contract (it has code at the head of the chain, 171 bytes): not a wallet
   #33 0x3b52de48a9457cd662485dc5e7971e02e9c2bee1 bound 15335752.36 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x3B52DE48a9457CD662485dc5e7971E02E9c2BEE1","chain_
-  #34 0xfb5fec1459616fc525e0ecbe5b5c62aa36ede673 bound 14566878.03 USD: record partial, 191 transactions listed: SELECTED (5)
-  #35 0x7ab338fde039feb0da5a38d90d1a08fff1c31af0 bound 13283758.61 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x7Ab338fdE039fEB0da5a38d90D1A08fFf1C31aF0","chain_
-  #36 0x2ca37ff95caf25366ef16fc2e655b78a165d125f bound 12524191.58 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x2Ca37ff95caF25366eF16fc2E655b78a165D125F","chain_
-  #37 0x97b524cdd66ca3d2e74b6db923daf8873db50416 bound 11363827.63 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x97b524cdD66Ca3d2E74b6dB923DAF8873dB50416","chain_
+  #34 0xfb5fec1459616fc525e0ecbe5b5c62aa36ede673 bound 14566878.03 USD (0.00 through a router): record partial, 191 transactions listed: SELECTED (1)
+  #35 0x7ab338fde039feb0da5a38d90d1a08fff1c31af0 bound 13283758.61 USD: not asked, a contract (it has code at the head of the chain, 34256 bytes): not a wallet
+  #36 0x2ca37ff95caf25366ef16fc2e655b78a165d125f bound 12524191.58 USD: not asked, a contract (it has code at the head of the chain, 12513 bytes): not a wallet
+  #37 0x97b524cdd66ca3d2e74b6db923daf8873db50416 bound 11363827.63 USD: not asked, a contract (it has code at the head of the chain, 371 bytes): not a wallet
   #38 0xdf24400adbb93a0838a3b69a58d9e349d9a0d650 bound 11244974.02 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xdF24400aDBb93a0838A3b69a58d9e349d9A0D650","chain_
-  #39 0xe492912f37c2a4eca45d42dc67548f4c6cd7ce2b bound 10978468.31 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xe492912F37C2A4eCa45D42DC67548F4C6Cd7ce2B","chain_
-  #40 0x302a6e0ce29361cbcc10dede65998283dd8a17ac bound 10222134.14 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x302A6e0cE29361cBcc10DEdE65998283DD8A17AC","chain_
-  #41 0x88a0641c1fbff74b99d460c440369f44dd432af9 bound 9633356.05 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x88a0641c1FBfF74B99D460C440369f44dD432Af9","chain_
-  #42 0x09ad820aac5779683b481c4674208a4e1b024afa bound 9294617.42 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x09AD820aaC5779683B481c4674208A4e1B024Afa","chain_
-  #43 0x79fab311c8c6cf0a39d9d8296cf2a26c5ca84de6 bound 8973103.07 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x79faB311C8C6Cf0A39d9D8296Cf2a26C5CA84dE6","chain_
-  #44 0x73991a25c818bf1f1128deaab1492d45638de0d3 bound 8219543.47 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x73991a25C818Bf1f1128dEAaB1492D45638DE0D3","chain_
-  #45 0x74ab4f44d753a7926c58bd012203f9f715d7a149 bound 8098279.03 USD: record reconstructed, 2 transactions listed: SELECTED (6)
-  #46 0x48a097df16c7844a33b1c3d11ab353457846e13f bound 8043162.37 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x48A097DF16c7844a33B1c3d11aB353457846e13F","chain_
-  #47 0xf11135c440c1782af2b0b766e756deae2210a43e bound 7439744.95 USD: record partial, 309 transactions listed: SELECTED (7)
-  #48 0xef161b8b000810944017a69af3b4bb28c87ae318 bound 7105043.50 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xeF161b8b000810944017a69Af3B4bb28c87Ae318","chain_
+  #39 0xe492912f37c2a4eca45d42dc67548f4c6cd7ce2b bound 10978468.31 USD: not asked, a contract (it has code at the head of the chain, 784 bytes): not a wallet
+  #40 0x302a6e0ce29361cbcc10dede65998283dd8a17ac bound 10222134.14 USD: not asked, a contract (it has code at the head of the chain, 33832 bytes): not a wallet
+  #41 0x88a0641c1fbff74b99d460c440369f44dd432af9 bound 9727949.40 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x88a0641c1FBfF74B99D460C440369f44dD432Af9","chain_
+  #42 0x09ad820aac5779683b481c4674208a4e1b024afa bound 9294617.42 USD: not asked, a contract (it has code at the head of the chain, 7570 bytes): not a wallet
+  #43 0x79fab311c8c6cf0a39d9d8296cf2a26c5ca84de6 bound 8982317.48 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x79faB311C8C6Cf0A39d9D8296Cf2a26C5CA84dE6","chain_
+  #44 0x73991a25c818bf1f1128deaab1492d45638de0d3 bound 8219543.47 USD: not asked, a contract (it has code at the head of the chain, 24384 bytes): not a wallet
+  #45 0x74ab4f44d753a7926c58bd012203f9f715d7a149 bound 8098279.03 USD: not asked, a contract (it has code at the head of the chain, 5413 bytes): not a wallet
+  #46 0x48a097df16c7844a33b1c3d11ab353457846e13f bound 8043162.37 USD: not asked, a contract (it has code at the head of the chain, 2650 bytes): not a wallet
+  #47 0xf11135c440c1782af2b0b766e756deae2210a43e bound 7439744.95 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #48 0xef161b8b000810944017a69af3b4bb28c87ae318 bound 7105043.50 USD: not asked, a contract (it has code at the head of the chain, 33832 bytes): not a wallet
   #49 0xcf84e6c387e074f73e8c86bc9cff774f32b35604 bound 6636906.94 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xcf84e6C387E074F73E8c86bc9CfF774F32b35604","chain_
-  #50 0xe647df965dc7ebee27fdd8840a7fc907540eb3d3 bound 6517011.58 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xE647Df965Dc7EBEE27fDd8840a7fc907540EB3D3","chain_
-  #51 0xec9aa0a6c2372131a0502aba6188269ab52cacb5 bound 6336111.00 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xEC9Aa0a6c2372131a0502ABA6188269Ab52CACb5","chain_
-  #52 0xc94135b63772b91d79d0a2daab2a8801f32359bd bound 5951726.05 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xC94135b63772b91D79d0A2DaAb2a8801f32359bD","chain_
-  #53 0x260e2b479f2e6a5d9b638e540641527acf3e0011 bound 5457439.88 USD: record partial, 230 transactions listed: SELECTED (8)
-  #54 0xe5e702641ea86f4ae6cc3cdaed2b886f976be044 bound 5356095.97 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xE5e702641Ea86F4ae6cC3cDaeD2B886f976Be044","chain_
-  #55 0xe2ed71633b1918de6e796d9bbafa3aa4432973a5 bound 5310425.22 USD: record partial, 572 transactions listed: SELECTED (9)
-  #56 0x0e867974275cd31c25015c2753c9d75f9f355379 bound 5172762.13 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x0e867974275Cd31C25015C2753C9d75F9f355379","chain_
-  #57 0x656111ac221ac16a6d6094f759a6a2228114c871 bound 5154578.95 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x656111aC221ac16a6d6094f759a6a2228114c871","chain_
-  #58 0x2815c10740f4d738b20fdc13167c865380156623 bound 5133340.88 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x2815c10740F4D738b20FDC13167c865380156623","chain_
-  #59 0x28c14d5d39752f65f645681c1e22cb9993f075e5 bound 5037501.79 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x28c14d5d39752f65F645681c1e22cb9993F075e5","chain_
-  #60 0x62fc80823e766e4cc7cce3ca745d6bb39fbcf4ca bound 5034942.38 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x62FC80823e766e4Cc7ccE3ca745d6Bb39fbcF4cA","chain_
-  #61 0xe9f89a769f234f6cc75e1c1c6b1fd9963d72c652 bound 4998728.00 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xE9F89A769F234F6cc75e1C1C6b1fD9963D72c652","chain_
-  #62 0xe4a609a6f6ff07ee2a93d99cae32246b25552151 bound 4935866.72 USD: record reconstructed, 1 transactions listed: SELECTED (10)
-  #63 0x1149133ed99dd48a2029eb27c15edbb38f572fb1 bound 4915145.54 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x1149133eD99Dd48a2029Eb27c15eDBB38f572Fb1","chain_
-  #64 0xdba25059630011211971098c07981d6c49dff3f8 bound 4782765.92 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xdbA25059630011211971098c07981d6c49dFf3f8","chain_
-  #65 0x07da9da197d89c8cc5d8b9a8230a181bdd2541ae bound 4670385.35 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x07DA9DA197d89c8CC5D8b9a8230A181bDd2541ae","chain_
-  #66 0xf0b7eaaf868191adc00065ca13391ef436ce8faf bound 4668381.72 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xF0B7EaaF868191aDc00065Ca13391Ef436ce8faF","chain_
-  #67 0x1632d06045396fc34bc05fe2900dfe3e09fe41d5 bound 4482292.50 USD: record reconstructed, 1 transactions listed: SELECTED (11)
-  #68 0x1195c074f898b7644ba732407619c9804dfe6dce bound 4382433.36 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x1195C074F898b7644bA732407619c9804dFE6DCE","chain_
-  #69 0xbea6edfb4cd1196a0d5f486432ec6020fb407369 bound 4336877.82 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xBEA6EDFB4cd1196a0D5F486432eC6020Fb407369","chain_
-  #70 0x6f02324d20cc679d0e585290caa6b16bacbc0f77 bound 4091311.70 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x6f02324d20CC679d0E585290CAa6b16baCbC0F77","chain_
-  #71 0xbc7682bb94dd84d88020449e4a67263d22ed9a6a bound 3925801.51 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xBc7682bB94DD84d88020449e4A67263d22ed9A6A","chain_
-  #72 0x01779b73f3bc23d5ffa03938fcffc2c3f56afea6 bound 3766578.19 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x01779b73f3Bc23d5ffa03938FCFFC2C3F56Afea6","chain_
-  #73 0x73743818b1a84dcc902e49fe33f8a99b9781187b bound 3585805.37 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x73743818B1a84DCC902E49Fe33F8A99B9781187b","chain_
-  #74 0x498752d5fa0600cbd613074c151abe15b3fec7cb bound 3576487.02 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x498752D5fa0600CBd613074C151Abe15B3FeC7CB","chain_
-  #75 0x00000000e91fc5bad977c0cc4ad60557c06886a2 bound 3542383.69 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x00000000e91fc5BAd977C0cc4Ad60557c06886a2","chain_
-  #76 0x40720e9af240e24fc64340474fee1c9123c2d9c3 bound 3523102.17 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x40720E9Af240E24fC64340474FEe1c9123C2D9C3","chain_
-  #77 0x8a500099568729030547d503f3d5aaf75b0ce509 bound 3412554.03 USD: record partial, 285 transactions listed: SELECTED (12)
-  #78 0xb7124430f4d51d93f038ac793faa46767403bc5c bound 3370637.69 USD: record partial, 108 transactions listed: SELECTED (13)
-  #79 0x4e3468951d49f2eea976ed0d6e75ffcb44a9a544 bound 3255422.43 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x4e3468951D49f2EEa976eD0D6e75fFCb44a9a544","chain_
-  #80 0x7690ea2bab2f6c906240f7c35fd636515d2eb969 bound 3175885.08 USD: record partial, 130 transactions listed: SELECTED (14)
-  #81 0x2312b5480f7e3d1894ed046af15b23186ff0f53c bound 3103630.70 USD: record partial, 154 transactions listed: SELECTED (15)
-  #82 0x7ee56a614196be0d5174e7950cb6f3968564efdd bound 3003297.36 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x7ee56a614196BE0D5174e7950cb6f3968564EfDd","chain_
-  #83 0x47516269845068017e312096dceeb4896cdd9141 bound 2959855.48 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x47516269845068017E312096dCeeB4896CDD9141","chain_
-  #84 0x6454725396dad1166dddd28af694701ad0775685 bound 2871706.25 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x6454725396DAd1166DddD28Af694701ad0775685","chain_
-  #85 0x68ee3ec0c6278408d35d33ec360693317ad25b37 bound 2841816.20 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x68eE3EC0C6278408D35D33eC360693317AD25b37","chain_
-  #86 0x03b95224bbb5ce0d923d1bfdafa6306f969d99cd bound 2826625.14 USD: record partial, 317 transactions listed: SELECTED (16)
-  #87 0xd8e68548b6bde6b67b38a3726a1500ec40003af5 bound 2799128.22 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xD8e68548B6bDe6B67b38a3726A1500ec40003af5","chain_
-  #88 0xb802ff2094e27f4d5ae6f4ab9a0ed64bbc361d59 bound 2781653.70 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xB802Ff2094E27f4D5Ae6f4Ab9A0eD64Bbc361D59","chain_
-  #89 0x9f6d8cd05ffb7b157668e7d403b88b227c1b3750 bound 2750074.71 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x9f6d8cd05FfB7b157668e7d403b88B227C1B3750","chain_
-  #90 0x876d4ae08ef35b91c340680b784812da7eafa643 bound 2704723.86 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x876d4Ae08ef35B91C340680b784812DA7EAFA643","chain_
-  #91 0x323d552f1594eefcd7f19561cb95806afb0b60bb bound 2704492.74 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x323D552F1594EeFCd7f19561Cb95806AfB0b60bB","chain_
-  #92 0x8b6da881baf895eeec2e9f8b6887a1e79a55a9fe bound 2679783.91 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0x8b6da881baf895eeec2E9F8B6887A1e79a55a9fE","chain_
-  #93 0xe5764a0855c5609263be9bc0ef1e640e3fc9490c bound 2628392.44 USD: record partial, 13 transactions listed: SELECTED (17)
-  #94 0xbb75f6e4bde3dfa3716239e02274175f37892cc7 bound 2627145.58 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xBb75F6e4bDE3DFA3716239e02274175f37892Cc7","chain_
-  #95 0xe4d3b90ab2279a871b0db517446a9f854ab4b962 bound 2587344.36 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xE4d3B90Ab2279a871b0Db517446A9f854aB4B962","chain_
-  #96 0x60caa4bcba5dda11ba26dc0e7632c106fabdddae bound 2568813.76 USD: record partial, 368 transactions listed: SELECTED (18)
-  #97 0xae12249727017ba3b1b556c202c3ffe8a9531fef bound 2493312.48 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xAe12249727017Ba3b1B556c202c3FfE8A9531FeF","chain_
-  #98 0x8b6d974142fe732169b4c7910cb1737679a35ade bound 2492518.65 USD: record partial, 226 transactions listed: SELECTED (19)
-  #99 0xb5e643d7e30846c45ac605aa92eecbce88f19cf5 bound 2461033.42 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xB5E643d7E30846c45AC605AA92EECBcE88f19CF5","chain_
-  #100 0xc1552b02672894287c7016a0e214bfa54eef7c03 bound 2454447.91 USD (a contract): no record, HTTP 422 {"error":"wallet_too_large","address":"0xc1552b02672894287C7016a0e214Bfa54eEF7c03","chain_
-asked 100 addresses from the top of the ranking: 19 selected, 81 with no record. Stopped because 100 addresses had been asked
-same-ticker token 0x69e7778d46713e17572d610bdaca3943aa4e6219 (SPY, "Spy Chip"): 441 transfers out of the v4 PoolManager to 224 receivers in the window; left out as first minter or its signer: 0x71fbed34b030fdd5489e4de8c630d8e1999b2957; the first 20 wallets that bought it are the observation group
+  #50 0xe647df965dc7ebee27fdd8840a7fc907540eb3d3 bound 6531541.32 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xE647Df965Dc7EBEE27fDd8840a7fc907540EB3D3","chain_
+  #51 0xa32f7d7672b9ec46bf72ec7d51b003521a8fc8f6 bound 6420290.73 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xA32F7D7672b9eC46bf72eC7D51b003521a8fC8f6","chain_
+  #52 0xec9aa0a6c2372131a0502aba6188269ab52cacb5 bound 6336111.00 USD: not asked, a contract (it has code at the head of the chain, 15922 bytes): not a wallet
+  #53 0xc94135b63772b91d79d0a2daab2a8801f32359bd bound 5951726.05 USD: not asked, a contract (it has code at the head of the chain, 24232 bytes): not a wallet
+  #54 0x260e2b479f2e6a5d9b638e540641527acf3e0011 bound 5457439.88 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #55 0xe5e702641ea86f4ae6cc3cdaed2b886f976be044 bound 5356095.97 USD: not asked, a contract (it has code at the head of the chain, 15167 bytes): not a wallet
+  #56 0xe2ed71633b1918de6e796d9bbafa3aa4432973a5 bound 5310425.22 USD (0.00 through a router): record partial, 572 transactions listed: SELECTED (2)
+  #57 0x0e867974275cd31c25015c2753c9d75f9f355379 bound 5172762.13 USD: not asked, a contract (it has code at the head of the chain, 20486 bytes): not a wallet
+  #58 0x656111ac221ac16a6d6094f759a6a2228114c871 bound 5154578.95 USD: not asked, a contract (it has code at the head of the chain, 23927 bytes): not a wallet
+  #59 0x2815c10740f4d738b20fdc13167c865380156623 bound 5141336.98 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x2815c10740F4D738b20FDC13167c865380156623","chain_
+  #60 0x28c14d5d39752f65f645681c1e22cb9993f075e5 bound 5037501.79 USD: not asked, a contract (it has code at the head of the chain, 21729 bytes): not a wallet
+  #61 0x62fc80823e766e4cc7cce3ca745d6bb39fbcf4ca bound 5034942.38 USD: not asked, a contract (it has code at the head of the chain, 41737 bytes): not a wallet
+  #62 0xe9f89a769f234f6cc75e1c1c6b1fd9963d72c652 bound 4998728.00 USD: not asked, a contract (it has code at the head of the chain, 761 bytes): not a wallet
+  #63 0xe4a609a6f6ff07ee2a93d99cae32246b25552151 bound 4935866.72 USD: not asked, a contract (it has code at the head of the chain, 5413 bytes): not a wallet
+  #64 0x1149133ed99dd48a2029eb27c15edbb38f572fb1 bound 4915145.54 USD: not asked, a contract (it has code at the head of the chain, 541 bytes): not a wallet
+  #65 0xdba25059630011211971098c07981d6c49dff3f8 bound 4782765.92 USD: not asked, a contract (it has code at the head of the chain, 3557 bytes): not a wallet
+  #66 0x07da9da197d89c8cc5d8b9a8230a181bdd2541ae bound 4670385.35 USD: not asked, a contract (it has code at the head of the chain, 32425 bytes): not a wallet
+  #67 0xf0b7eaaf868191adc00065ca13391ef436ce8faf bound 4668381.72 USD: not asked, a contract (it has code at the head of the chain, 33121 bytes): not a wallet
+  #68 0x1632d06045396fc34bc05fe2900dfe3e09fe41d5 bound 4482292.50 USD: not asked, a contract (it has code at the head of the chain, 6147 bytes): not a wallet
+  #69 0x1195c074f898b7644ba732407619c9804dfe6dce bound 4382433.36 USD: not asked, a contract (it has code at the head of the chain, 1831 bytes): not a wallet
+  #70 0xc17c2e2f01cc30f347cc202ea4c57bad1720ede4 bound 4355565.74 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xc17C2E2F01cC30f347CC202ea4C57bad1720eDe4","chain_
+  #71 0xbea6edfb4cd1196a0d5f486432ec6020fb407369 bound 4336877.82 USD: not asked, a contract (it has code at the head of the chain, 31869 bytes): not a wallet
+  #72 0x6f02324d20cc679d0e585290caa6b16bacbc0f77 bound 4091311.70 USD: not asked, a contract (it has code at the head of the chain, 14564 bytes): not a wallet
+  #73 0xbc7682bb94dd84d88020449e4a67263d22ed9a6a bound 3925801.51 USD: not asked, a contract (it has code at the head of the chain, 19630 bytes): not a wallet
+  #74 0x01779b73f3bc23d5ffa03938fcffc2c3f56afea6 bound 3766578.19 USD: not asked, a contract (it has code at the head of the chain, 19630 bytes): not a wallet
+  #75 0x73743818b1a84dcc902e49fe33f8a99b9781187b bound 3585805.37 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x73743818B1a84DCC902E49Fe33F8A99B9781187b","chain_
+  #76 0x498752d5fa0600cbd613074c151abe15b3fec7cb bound 3576487.02 USD: not asked, a contract (it has code at the head of the chain, 171 bytes): not a wallet
+  #77 0x00000000e91fc5bad977c0cc4ad60557c06886a2 bound 3542383.69 USD: not asked, a contract (it has code at the head of the chain, 734 bytes): not a wallet
+  #78 0x40720e9af240e24fc64340474fee1c9123c2d9c3 bound 3523102.17 USD: not asked, a contract (it has code at the head of the chain, 19630 bytes): not a wallet
+  #79 0x8a500099568729030547d503f3d5aaf75b0ce509 bound 3412554.03 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #80 0xb7124430f4d51d93f038ac793faa46767403bc5c bound 3370637.69 USD (0.00 through a router): record partial, 108 transactions listed: SELECTED (3)
+  #81 0x4e3468951d49f2eea976ed0d6e75ffcb44a9a544 bound 3255422.43 USD: not asked, a contract (it has code at the head of the chain, 25533 bytes): not a wallet
+  #82 0x7690ea2bab2f6c906240f7c35fd636515d2eb969 bound 3175885.08 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #83 0x62108ad2d37b8f3cc541ef2a885576e5cd7fd005 bound 3163993.42 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x62108aD2D37B8f3CC541eF2A885576E5cD7fd005","chain_
+  #84 0x2312b5480f7e3d1894ed046af15b23186ff0f53c bound 3103630.70 USD (0.00 through a router): record partial, 154 transactions listed: SELECTED (4)
+  #85 0x7ee56a614196be0d5174e7950cb6f3968564efdd bound 3003297.36 USD: not asked, a contract (it has code at the head of the chain, 28028 bytes): not a wallet
+  #86 0x47516269845068017e312096dceeb4896cdd9141 bound 2959855.48 USD: not asked, a contract (it has code at the head of the chain, 19630 bytes): not a wallet
+  #87 0x48fe5b95c8e705dd7651f8ffaf0d10d277c7b26b bound 2924165.44 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x48FE5b95C8e705DD7651F8fFAf0D10D277C7b26b","chain_
+  #88 0xb802ff2094e27f4d5ae6f4ab9a0ed64bbc361d59 bound 2920273.25 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xB802Ff2094E27f4D5Ae6f4Ab9A0eD64Bbc361D59","chain_
+  #89 0x6454725396dad1166dddd28af694701ad0775685 bound 2871706.25 USD: not asked, a contract (it has code at the head of the chain, 371 bytes): not a wallet
+  #90 0x68ee3ec0c6278408d35d33ec360693317ad25b37 bound 2841816.20 USD: not asked, a contract (it has code at the head of the chain, 3557 bytes): not a wallet
+  #91 0x03b95224bbb5ce0d923d1bfdafa6306f969d99cd bound 2826625.14 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #92 0xd8e68548b6bde6b67b38a3726a1500ec40003af5 bound 2799128.22 USD: not asked, a contract (it has code at the head of the chain, 16459 bytes): not a wallet
+  #93 0x9f6d8cd05ffb7b157668e7d403b88b227c1b3750 bound 2750074.71 USD: not asked, a contract (it has code at the head of the chain, 19630 bytes): not a wallet
+  #94 0x876d4ae08ef35b91c340680b784812da7eafa643 bound 2704723.86 USD: not asked, a contract (it has code at the head of the chain, 371 bytes): not a wallet
+  #95 0x323d552f1594eefcd7f19561cb95806afb0b60bb bound 2704492.74 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x323D552F1594EeFCd7f19561Cb95806AfB0b60bB","chain_
+  #96 0x8b6da881baf895eeec2e9f8b6887a1e79a55a9fe bound 2679783.91 USD: not asked, a contract (it has code at the head of the chain, 13555 bytes): not a wallet
+  #97 0xa7b474644912d08210c8962564e2f53fd0a7d5cf bound 2637679.62 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xa7b474644912D08210c8962564E2f53fD0A7d5Cf","chain_
+  #98 0xe5764a0855c5609263be9bc0ef1e640e3fc9490c bound 2628392.44 USD (0.00 through a router): record partial, 13 transactions listed: SELECTED (5)
+  #99 0xbb75f6e4bde3dfa3716239e02274175f37892cc7 bound 2627145.58 USD: not asked, a contract (it has code at the head of the chain, 18752 bytes): not a wallet
+  #100 0xe4d3b90ab2279a871b0db517446a9f854ab4b962 bound 2587344.36 USD: not asked, a contract (it has code at the head of the chain, 19630 bytes): not a wallet
+  #101 0x60caa4bcba5dda11ba26dc0e7632c106fabdddae bound 2568813.76 USD: not asked, a contract (it has code at the head of the chain, 15802 bytes): not a wallet
+  #102 0x8b6d974142fe732169b4c7910cb1737679a35ade bound 2552447.64 USD (59928.99 through a router): record partial, 226 transactions listed: SELECTED (6)
+  #103 0xae12249727017ba3b1b556c202c3ffe8a9531fef bound 2493312.48 USD: not asked, a contract (it has code at the head of the chain, 24597 bytes): not a wallet
+  #104 0xb5e643d7e30846c45ac605aa92eecbce88f19cf5 bound 2461033.42 USD: not asked, a contract (it has code at the head of the chain, 23111 bytes): not a wallet
+  #105 0xc1552b02672894287c7016a0e214bfa54eef7c03 bound 2454447.91 USD: not asked, a contract (it has code at the head of the chain, 86052 bytes): not a wallet
+  #106 0x38453c115607463ac284820ce959831042f3df4e bound 2426254.51 USD: not asked, a contract (it has code at the head of the chain, 21609 bytes): not a wallet
+  #107 0xb44c388f6548f967958afd97cda417f75a44982d bound 2419863.97 USD: not asked, a contract (it has code at the head of the chain, 19630 bytes): not a wallet
+  #108 0x683aef20fce9ba3b2c56b6126433a2ba0404ae39 bound 2409976.73 USD: not asked, a contract (it has code at the head of the chain, 15922 bytes): not a wallet
+  #109 0x60b41bcd67e8e346a20ed497105d637ffeee3d0b bound 2397868.17 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x60b41BcD67E8E346A20ED497105D637FfEEE3d0b","chain_
+  #110 0xcbcf8fef0896add2e0f95980253ecf9be88fed8c bound 2395559.42 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xCBCF8Fef0896add2E0f95980253eCf9Be88FED8C","chain_
+  #111 0xd756ef199aaf352a33e264149ac9ec43040b7c8e bound 2378715.34 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #112 0x172ba7ca96b662a0723c6ab87fae9565fd31ea91 bound 2375745.16 USD: not asked, a contract (it has code at the head of the chain, 21729 bytes): not a wallet
+  #113 0x636d3380a2742b090670a1a3160f6c30637b3d78 bound 2340186.29 USD: not asked, a contract (it has code at the head of the chain, 72 bytes): not a wallet
+  #114 0x54f7302b6537f1d749eff03bd27f7a26e9bb4840 bound 2337175.82 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #115 0xfab1e5a778048c54695a8381ff1a996c1c83c9d4 bound 2331031.46 USD (12379.09 through a router): record partial, 377 transactions listed: SELECTED (7)
+  #116 0xaab4e0dc49e0b56240f5e04d9463527981e9b423 bound 2324137.53 USD: not asked, a contract (it has code at the head of the chain, 31652 bytes): not a wallet
+  #117 0x1c744b1405915652d9a656349443bc7e74d2bb3d bound 2316277.84 USD (0.00 through a router): record partial, 141 transactions listed: SELECTED (8)
+  #118 0xc6db68d10bb73cc92a4f8e7be7fc597aade5b621 bound 2299193.73 USD: not asked, a contract (it has code at the head of the chain, 24357 bytes): not a wallet
+  #119 0xe6869b26136c3192ec3af0932597fd3777bab872 bound 2284985.10 USD: not asked, a contract (it has code at the head of the chain, 28028 bytes): not a wallet
+  #120 0x794c44d963ec3644aceffc40d7591f907066f74a bound 2271026.28 USD: not asked, a contract (it has code at the head of the chain, 19793 bytes): not a wallet
+  #121 0xa18dd1bd636b63a2c880a000b0a4635ead7e0de1 bound 2260002.60 USD: not asked, a contract (it has code at the head of the chain, 19793 bytes): not a wallet
+  #122 0x51b83f8e3bc0d2e2ecd7755cc0c5e01a1c86bd62 bound 2242387.35 USD: not asked, a contract (it has code at the head of the chain, 7275 bytes): not a wallet
+  #123 0x4d1fed1d3597bff8dc74024cfbaf86adced00874 bound 2237690.76 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x4D1fED1d3597BFf8dc74024cfBaf86AdcED00874","chain_
+  #124 0x114d574247342eafea95b7a9234e62984d48cd9e bound 2231638.60 USD: not asked, a contract (it has code at the head of the chain, 22123 bytes): not a wallet
+  #125 0xe4147aaea0f869f8f389b4c1cf54c2686b864e26 bound 2230217.85 USD (19900.99 through a router): record partial, 260 transactions listed: SELECTED (9)
+  #126 0x00000989e9d7e7c156eeb0795324d1fcf643e2d3 bound 2220577.08 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x00000989E9D7e7C156EEB0795324d1FCf643E2d3","chain_
+  #127 0x0f3f4f9b9c58c066958a0781d30fb55a52ce2eec bound 2181496.30 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #128 0x72655b3926db3afbe914a53b0604905af7ce11a5 bound 2162316.10 USD (0.00 through a router): record partial, 5 transactions listed: SELECTED (10)
+  #129 0x47832c2fc98a4e884555407aeabc5ce519d4e70e bound 2160127.33 USD (0.00 through a router): record partial, 126 transactions listed: SELECTED (11)
+  #130 0x8ca86ea297ff3270155cc0e911bf7099c2395e22 bound 2151602.05 USD: not asked, a contract (it has code at the head of the chain, 1435 bytes): not a wallet
+  #131 0x55c20f86d1aac3282782ab7646e704cdbaf36599 bound 2145304.92 USD: not asked, a contract (it has code at the head of the chain, 21584 bytes): not a wallet
+  #132 0x7cd483f2d477559c115208e861d2435ab833b12f bound 2144553.67 USD: not asked, a contract (it has code at the head of the chain, 8507 bytes): not a wallet
+  #133 0x350fd9b90679371862ea2d03f284edde622f2d7b bound 2143709.09 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #134 0xf2c69db0311b3ded8ec7f39e80f555a200cc2839 bound 2115583.58 USD: not asked, a contract (it has code at the head of the chain, 76 bytes): not a wallet
+  #135 0xa85c0c61b80189213c74c160f0ac213e78bd03d0 bound 2102252.71 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #136 0xac7ebd89c38dcb5cb5f90703b3ddfca17822d9e9 bound 2102099.03 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #137 0xbd2ce4178e357d27f7cca6ba8f8c878d6952ab33 bound 2099597.98 USD: not asked, a contract (it has code at the head of the chain, 50233 bytes): not a wallet
+  #138 0x947c84a189ec771125735ca2e52bf32a35610900 bound 2044945.73 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #139 0xcd03d71d8bc8199efc767d61cae6e353768dc47d bound 2024865.93 USD: not asked, a contract (it has code at the head of the chain, 19630 bytes): not a wallet
+  #140 0x4e67c4bb8e7da63fdb2f47d99504693655232257 bound 2019274.52 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x4e67c4BB8E7dA63fDb2F47D99504693655232257","chain_
+  #141 0x055f8ab2b3fba6ca0a9552f9c3ddf7cd45b62115 bound 1985489.60 USD: not asked, a contract (it has code at the head of the chain, 14652 bytes): not a wallet
+  #142 0x064a804e338083693b8efb4a7f440de608a72a3a bound 1974481.41 USD: not asked, a contract (it has code at the head of the chain, 13730 bytes): not a wallet
+  #143 0xaa521f74ebc6695cbd5ffc0a34797f41658261ea bound 1971230.04 USD: not asked, a contract (it has code at the head of the chain, 25894 bytes): not a wallet
+  #144 0x7470e65c1e3513599d23fefaceb0d59d9ec09292 bound 1970940.43 USD: not asked, a contract (it has code at the head of the chain, 19630 bytes): not a wallet
+  #145 0x2986d8641219ef5a788a2ac9eedbed61fb7e5ef4 bound 1941183.17 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x2986d8641219EF5A788a2Ac9Eedbed61fb7E5EF4","chain_
+  #146 0xd22ac13eb45a59477744318e1ae2acb0ec1769ab bound 1930458.69 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xD22AC13eB45a59477744318e1ae2ACb0ec1769Ab","chain_
+  #147 0x083e6b3c3ba32e0ec1101226dadf97c7ca5d976c bound 1929063.68 USD: not asked, a contract (it has code at the head of the chain, 18777 bytes): not a wallet
+  #148 0x81da6bcd98ae46621a1e9743a3f51b10b7e16d97 bound 1916440.00 USD: not asked, a contract (it has code at the head of the chain, 2227 bytes): not a wallet
+  #149 0x4310f163e2ea551aad8f3711ade4e815b6d9fbb9 bound 1882520.18 USD: not asked, a contract (it has code at the head of the chain, 19630 bytes): not a wallet
+  #150 0x6ed60864fb8fb610a65af5d16cef272548bc64d6 bound 1877945.60 USD: not asked, a contract (it has code at the head of the chain, 21475 bytes): not a wallet
+  #151 0x7b874e9e6029197dd287910f9b3edd27c10db51e bound 1876281.40 USD (0.00 through a router): record partial, 57 transactions listed: SELECTED (12)
+  #152 0x09215a470bd585e59eb3f4b612fbd2678131ff9e bound 1874009.14 USD: not asked, a contract (it has code at the head of the chain, 22390 bytes): not a wallet
+  #153 0x83e6905b94a0379fb8a6800adfd2f3a3858cefb8 bound 1870072.12 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x83e6905B94A0379fB8a6800aDfd2f3A3858ceFb8","chain_
+  #154 0x6da432f6f7ec0eab9f6b619a7099bec60140c4e9 bound 1864329.60 USD: not asked, a contract (it has code at the head of the chain, 72 bytes): not a wallet
+  #155 0xbe65ad8160057f2483eb3130b19a6ccf3b190be5 bound 1857844.69 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #156 0x0f02afcb1550fbeafaf001251b06ba73c68a5384 bound 1820492.80 USD (0.00 through a router): record partial, 359 transactions listed: SELECTED (13)
+  #157 0x6a000f20005980200259b80c5102003040001068 bound 1813714.33 USD: not asked, a contract (it has code at the head of the chain, 24562 bytes): not a wallet
+  #158 0xc04ed89ad96130283fddd646575d6a48440c299f bound 1807482.65 USD: not asked, a contract (it has code at the head of the chain, 33012 bytes): not a wallet
+  #159 0x612b56357a5d9f1de67f11c873517257dffa32c3 bound 1775100.38 USD (23477.02 through a router): record partial, 507 transactions listed: SELECTED (14)
+  #160 0x53e078910c9617f3958179fa199dfc03bf17d7b6 bound 1767390.99 USD: not asked, a contract (it has code at the head of the chain, 24058 bytes): not a wallet
+  #161 0x8731ce3a79a63acc73675dd9dbe6fd35b5f157b4 bound 1748953.84 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x8731Ce3a79a63acc73675Dd9DBE6FD35B5f157B4","chain_
+  #162 0x6caa002ae04ad997c8bb8973d7bb52061c4bb4fa bound 1736301.46 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x6Caa002aE04AD997C8Bb8973d7bb52061C4Bb4Fa","chain_
+  #163 0x1bd8b5fb6305aa64036d3a4dd90cea5b9efe8e96 bound 1730702.58 USD (1717621.21 through a router): record partial, 263 transactions listed: SELECTED (15)
+  #164 0x42d15089d8d6da2a0849a728bfecc77dd7b27171 bound 1725728.69 USD (68947.63 through a router): record partial, 353 transactions listed: SELECTED (16)
+  #165 0xe2f57f59c42406fb8005524cba3bf4d9177ac4fa bound 1708999.70 USD: not asked, a contract (it has code at the head of the chain, 371 bytes): not a wallet
+  #166 0x01edaf0067a10d18c88d2876c0a85ee0096a5ac0 bound 1704014.67 USD: not asked, a contract (it has code at the head of the chain, 24454 bytes): not a wallet
+  #167 0x0e4d5871541e2e29030031e6f277ba8126baf6f9 bound 1679856.33 USD: not asked, a contract (it has code at the head of the chain, 19630 bytes): not a wallet
+  #168 0x8e36d9aad5b9fa591761a366276faac29025f7b8 bound 1650476.94 USD: not asked, a contract (it has code at the head of the chain, 72 bytes): not a wallet
+  #169 0x05e146f995aa70d0bf8481ee3d27368a537a8e0d bound 1646850.40 USD: not asked, a contract (it has code at the head of the chain, 21063 bytes): not a wallet
+  #170 0x56fa7200217f1c86f4066406d4aae3bdf249c00a bound 1636638.17 USD: not asked, a contract (it has code at the head of the chain, 19793 bytes): not a wallet
+  #171 0x9b934766c7599af6f234e95ace31b3fd39b623de bound 1633215.85 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x9B934766C7599Af6f234E95ace31b3FD39b623DE","chain_
+  #172 0x663dc15d3c1ac63ff12e45ab68fea3f0a883c251 bound 1620821.60 USD: not asked, a contract (it has code at the head of the chain, 1159 bytes): not a wallet
+  #173 0xb4acbc082b5e7ded571c98ee4257778a9d784b36 bound 1612966.85 USD: not asked, a contract (it has code at the head of the chain, 24351 bytes): not a wallet
+  #174 0x66ce9ebe99f35261119a32d4264f7fa2eae10dc5 bound 1606889.25 USD: not asked, a contract (it has code at the head of the chain, 19630 bytes): not a wallet
+  #175 0x5aae05c3977726a93fa2775151b68e7469508238 bound 1574547.63 USD: not asked, a contract (it has code at the head of the chain, 20705 bytes): not a wallet
+  #176 0x7ae9e74632ebb0fe15cd0a043a876ffb84ac76f6 bound 1547557.54 USD: not asked, a contract (it has code at the head of the chain, 18326 bytes): not a wallet
+  #177 0xab8ea60885ed62e64704f81d95edc960884b2350 bound 1545118.74 USD (0.00 through a router): record partial, 322 transactions listed: SELECTED (17)
+  #178 0xd63848e5436ec5e20452168c49807e4c13ffd55e bound 1539710.78 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xd63848E5436EC5e20452168c49807e4C13ffd55E","chain_
+  #179 0x98ec492942090364ac0736ef1a741ae6c92ec790 bound 1518909.23 USD: not asked, a contract (it has code at the head of the chain, 20076 bytes): not a wallet
+  #180 0xc309604beffc1b5399d18da6562fef1f41060178 bound 1517793.13 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #181 0x6d23c71a0f92ca2f3bd7c4f0352ca4c0451e1eec bound 1511235.55 USD: not asked, a contract (it has code at the head of the chain, 19630 bytes): not a wallet
+  #182 0xe1190f2f16c6d7163328376818044b517dd95d82 bound 1491843.52 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xe1190F2f16c6D7163328376818044b517dd95D82","chain_
+  #183 0xce57dad4ac59bc93172ae1282b3eee5af6a00205 bound 1491184.28 USD (0.00 through a router): record partial, 119 transactions listed: SELECTED (18)
+  #184 0x30ce12193e609283abec6dc223eb398705b26576 bound 1491153.15 USD (42616.06 through a router): record partial, 547 transactions listed: SELECTED (19)
+  #185 0x62c214f52b065f56caa7bc1834c20d09f8d41f85 bound 1473686.83 USD (0.00 through a router): record partial, 45 transactions listed: SELECTED (20)
+  #186 0x0d9187d447dd0387ad6cd0e04309e5ce4d8ec6f3 bound 1459824.24 USD: not asked, a contract (it has code at the head of the chain, 28610 bytes): not a wallet
+  #187 0x0d86129112bc7f6193240b668b527fa520119530 bound 1458286.87 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #188 0xacd6b4da1c342f2edff810e288221c257c662a34 bound 1424743.05 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xaCd6b4Da1C342f2edff810E288221c257c662A34","chain_
+  #189 0x7cf30960aa891c4d47cc3f17f33f5679a8985774 bound 1416822.48 USD: not asked, a contract (it has code at the head of the chain, 34480 bytes): not a wallet
+  #190 0x2b833798b5f8988583bd3aff2aa1a88cbe9206bf bound 1416057.75 USD: not asked, a contract (it has code at the head of the chain, 32216 bytes): not a wallet
+  #191 0x3cb8bd96db0ab3eb589335cbffe5b15b838c65ff bound 1409116.20 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x3cB8bd96db0AB3EB589335CBFfE5b15b838C65ff","chain_
+  #192 0x5500e69d58d8f80b236c8a72fd52c538a5d5237f bound 1392957.91 USD (0.00 through a router): record partial, 594 transactions listed: SELECTED (21)
+  #193 0x4b4b05acaca64490cfcb51c3f2a77579584f606a bound 1390541.05 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #194 0xc26f352da76b63fcc3654b0caa5f0037ae34d87a bound 1387451.40 USD: not asked, a contract (it has code at the head of the chain, 24515 bytes): not a wallet
+  #195 0x2f3cdfb60d06247f209766167c35b7a76cf9f4ca bound 1387147.69 USD: not asked, a contract (it has code at the head of the chain, 8847 bytes): not a wallet
+  #196 0x53e68553ca08f512423628d64c01b0a14dfcda99 bound 1369430.11 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x53E68553ca08f512423628d64C01B0a14dfCDA99","chain_
+  #197 0xdd79a3d74045c04de70a43401478ffe289220129 bound 1349500.07 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #198 0x9ff3e26f3b585540a2c9c72a4c562eb482bb3c99 bound 1312370.15 USD: not asked, a contract (it has code at the head of the chain, 23927 bytes): not a wallet
+  #199 0xed4728d89bd4ef81177d8f5448f9bd1bae4e23e3 bound 1308995.74 USD: not asked, a contract (it has code at the head of the chain, 24319 bytes): not a wallet
+  #200 0xd6149af49f544233932122408ccef6c281029da1 bound 1307801.40 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xd6149aF49f544233932122408CceF6C281029da1","chain_
+  #201 0xbd665831a520182e944af92b23a317791c5d8efa bound 1300717.26 USD: not asked, a contract (it has code at the head of the chain, 4612 bytes): not a wallet
+  #202 0x111eaa31b2a1484191cf7eaf495beddc12469f38 bound 1279580.33 USD (0.00 through a router): record partial, 248 transactions listed: SELECTED (22)
+  #203 0x0b5748af9a52e09cd7bb2d66b2318b3b22c21295 bound 1267106.03 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x0b5748Af9a52e09cD7bb2d66B2318b3B22c21295","chain_
+  #204 0x7356d9f3e5491b3c3280b0bc6a96eb3009be5633 bound 1266447.36 USD: not asked, a contract (it has code at the head of the chain, 21466 bytes): not a wallet
+  #205 0xe460536bd39f1a8a35cb52f8ac55f7e263a6d484 bound 1261351.32 USD (1261351.32 through a router): record partial, 248 transactions listed: SELECTED (23)
+  #206 0x9af8beae27e8a4908f077adb98e237be1ff60958 bound 1205129.95 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x9Af8bEaE27E8a4908f077adB98E237BE1FF60958","chain_
+  #207 0x533dbff781c9c9b6e320b6d01f3330455b80889c bound 1194309.54 USD: not asked, a contract (it has code at the head of the chain, 24304 bytes): not a wallet
+  #208 0x00000d62edfcc80b487ed585b326168e0ed9996b bound 1188532.15 USD: not asked, a contract (it has code at the head of the chain, 5315 bytes): not a wallet
+  #209 0xb1000000096bd2f8ca9b6883182eccaf31e7c3fd bound 1180343.57 USD: not asked, a contract (it has code at the head of the chain, 1323 bytes): not a wallet
+  #210 0x16b58403d2768988c82eada42330785e1c1aa4e2 bound 1176694.71 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x16B58403d2768988C82EaDA42330785e1c1aA4e2","chain_
+  #211 0xdf28f6a0412a2d831ea0518e155788abbd6b2190 bound 1174489.66 USD: not asked, a contract (it has code at the head of the chain, 19630 bytes): not a wallet
+  #212 0x4c70ca9a61b31f6e6befbe4faf3ca7bcf3346ce2 bound 1171976.07 USD: not asked, a contract (it has code at the head of the chain, 19793 bytes): not a wallet
+  #213 0x08eacd81007413edb1d9b5dc15e5c4c685075640 bound 1168803.18 USD (64946.85 through a router): record partial, 339 transactions listed: SELECTED (24)
+  #214 0x222477c9bd907eabc1a8dc939cc75ff9e7886c33 bound 1168418.50 USD: not asked, a contract (it has code at the head of the chain, 38377 bytes): not a wallet
+  #215 0xce6ea5df9cf0d0529328690dcf84af647cc5d2c2 bound 1167983.50 USD: not asked, a contract (it has code at the head of the chain, 3454 bytes): not a wallet
+  #216 0x6373adf77931746e20d03a972bb43e64ee41d0c2 bound 1162412.76 USD: not asked, a contract (it has code at the head of the chain, 23834 bytes): not a wallet
+  #217 0x2745b31cdc3d874f3f85f624e622fe53919c5393 bound 1159258.99 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x2745b31cDC3D874f3f85F624e622Fe53919c5393","chain_
+  #218 0x9982538f41f2ae29ddb9d3d9307010052984fdbb bound 1155502.24 USD: not asked, a contract (it has code at the head of the chain, 17609 bytes): not a wallet
+  #219 0xa633c73658857d5241fe21d43f854a82e2d0592c bound 1145068.09 USD: not asked, a contract (it has code at the head of the chain, 387 bytes): not a wallet
+  #220 0x0aea9504aff416b29ccedd3c3f9b7d142629ad82 bound 1139507.07 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x0aEA9504aff416B29cCedd3c3F9B7d142629ad82","chain_
+  #221 0x399acc46b32145ddda5b1ae6117d7b85f30f710e bound 1129905.14 USD: not asked, a contract (it has code at the head of the chain, 35509 bytes): not a wallet
+  #222 0x6dab263ad061ad1302f7305fe27d645f35061cd5 bound 1128939.43 USD: not asked, a contract (it has code at the head of the chain, 6627 bytes): not a wallet
+  #223 0x81902740ce67f686ee351161a3e17a3e42f1bf8c bound 1127652.89 USD: not asked, a contract (it has code at the head of the chain, 19077 bytes): not a wallet
+  #224 0xbd071a4ba75bfc08ab980c4fc39f3c141b360dc1 bound 1124447.72 USD: not asked, a contract (it has code at the head of the chain, 12140 bytes): not a wallet
+  #225 0xc6b15c04d75fc257df6bd7f18bcb035b0949d06d bound 1103747.21 USD (0.00 through a router): record partial, 182 transactions listed: SELECTED (25)
+  #226 0xc87b51c71707cfdd08cd374a596a6946cb1d6a66 bound 1101729.91 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xC87b51C71707CFdD08Cd374A596a6946cB1D6a66","chain_
+  #227 0x2b5f704ab7061fb4dbfc5876b024f4bdb2f5e8b6 bound 1082855.44 USD: not asked, a contract (it has code at the head of the chain, 18372 bytes): not a wallet
+  #228 0x0000000071647c6c1ae028daf9f80c000beac2cc bound 1071077.17 USD: not asked, a contract (it has code at the head of the chain, 130 bytes): not a wallet
+  #229 0x71f483152db55b3a7070dd5b923ccf62ecbb4c53 bound 1070234.60 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x71f483152db55b3a7070dd5b923CCF62Ecbb4C53","chain_
+  #230 0x7f2d67d5048c3187a9b7afd867736e0074559fae bound 1069545.16 USD: not asked, a contract (it has code at the head of the chain, 6805 bytes): not a wallet
+  #231 0xb4c42a6efb057f32430582ba17a47f2888e1f8ca bound 1066663.53 USD: not asked, a contract (it has code at the head of the chain, 38447 bytes): not a wallet
+  #232 0x28df563f52cd1e94c25cecb8947aed5ac091d181 bound 1055040.13 USD: not asked, a contract (it has code at the head of the chain, 13847 bytes): not a wallet
+  #233 0xe275df7eb65994b5a678bca5216094fa22b3a2e5 bound 1051437.14 USD: not asked, a contract (it has code at the head of the chain, 32412 bytes): not a wallet
+  #234 0x92503c9be8f19d7500c86125b59b4174a3a8ec75 bound 1050420.23 USD (0.00 through a router): record partial, 509 transactions listed: SELECTED (26)
+  #235 0x8d043633cb06616409e3137f9bfef8fc16de7b47 bound 1044608.96 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x8d043633Cb06616409E3137F9BFEF8FC16de7b47","chain_
+  #236 0x24776b26702970a0017cb41b47568604b318a5b0 bound 1042612.87 USD: not asked, a contract (it has code at the head of the chain, 2598 bytes): not a wallet
+  #237 0xf301471a51988bfa0597dfd04837d3a02c65b209 bound 1029285.83 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xF301471a51988BFA0597dFd04837D3a02c65B209","chain_
+  #238 0x1b998fb2345c4f0a1564afaf78c50f237bbaccc7 bound 1028829.27 USD: not asked, a contract (it has code at the head of the chain, 48884 bytes): not a wallet
+  #239 0x0656b1ebbf99a4e8c3318451c11af1425ccb491f bound 1028270.79 USD: not asked, a contract (it has code at the head of the chain, 22669 bytes): not a wallet
+  #240 0x1e7f0968bf0ad273d4edc75debc8bae037b0ad2c bound 1023697.28 USD: not asked, a contract (it has code at the head of the chain, 55289 bytes): not a wallet
+  #241 0xd322dc8f96004d2a92a2ae821b99d25ebb2a3ea4 bound 1015470.74 USD: not asked, a contract (it has code at the head of the chain, 20162 bytes): not a wallet
+  #242 0x62da8f588cff901046307abe7c5baddc90d4dbcd bound 1008709.52 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x62dA8f588Cff901046307abE7C5BADdc90D4dbcd","chain_
+  #243 0x8626e04608b1b82bf31ac36446e4e6067ba3bc88 bound 1005781.23 USD: not asked, a contract (it has code at the head of the chain, 19793 bytes): not a wallet
+  #244 0x1119c4ce8f56d96a51b5a38260fede037c7126f5 bound 1000558.62 USD (0.00 through a router): record partial, 187 transactions listed: SELECTED (27)
+  #245 0x4acf00dbec856bb888fe96e69a04c8ac254a2b44 bound 988917.55 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x4acf00dbEc856bB888fe96e69A04C8ac254A2B44","chain_
+  #246 0x010bf90a544a42c8ca31d977a322326228a1bde4 bound 966268.11 USD: not asked, a contract (it has code at the head of the chain, 17835 bytes): not a wallet
+  #247 0x66f709d6850f8ab0692f50f0af85406c23dd8d7a bound 963000.94 USD: not asked, a contract (it has code at the head of the chain, 22255 bytes): not a wallet
+  #248 0xe36cfff4312e6790843d1770b723f48ba4641f01 bound 960424.18 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xE36cFFF4312e6790843d1770B723F48ba4641f01","chain_
+  #249 0x6c9c7c9cb0995b018cb19065db44f85da39c16af bound 959073.02 USD: not asked, a contract (it has code at the head of the chain, 12292 bytes): not a wallet
+  #250 0xc5faa3a60b8d29d7d31f8586eca2f90dc86bfaa5 bound 958253.54 USD: not asked, a contract (it has code at the head of the chain, 212 bytes): not a wallet
+  #251 0x3c28cf138b494ce468a59cc29662f07ded8ce05a bound 950070.86 USD (0.00 through a router): record partial, 585 transactions listed: SELECTED (28)
+  #252 0xe7eba9327678c5c997d93b5874e1ac611a19ff20 bound 949729.63 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #253 0xee620a4eb7248ca5b9c68d46e9a133b4a2697d4f bound 943269.81 USD: not asked, a contract (it has code at the head of the chain, 45 bytes): not a wallet
+  #254 0x11f823e9eedb8bafe062235ea38a9b04b36d34f3 bound 936601.36 USD (46881.41 through a router): record partial, 223 transactions listed: SELECTED (29)
+  #255 0x50a176770ed597c09d465cb8672b2cae115ca6f1 bound 934593.69 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0x50A176770ed597c09d465Cb8672b2Cae115CA6F1","chain_
+  #256 0xccb4b74388d1574c7b89b86aa466b4a39aadbfa6 bound 929532.30 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xCCb4B74388D1574C7B89b86aA466b4a39AADbFA6","chain_
+  #257 0xbb594904f65ce50fd3b3b4fe666d0f413bbe6442 bound 915336.85 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #258 0x724b83d5fb39faeebf0b92bd1ea36c3423059b98 bound 913089.05 USD: not asked, a contract (it has code at the head of the chain, 283 bytes): not a wallet
+  #259 0xae69b93e150b959a6c88c5a8545451127b1478c4 bound 911797.62 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xAE69b93e150B959A6c88c5a8545451127b1478c4","chain_
+  #260 0xa3eb3822ba0db206739f38a994cb8a5a1a01bca0 bound 910126.90 USD: no record, HTTP 422 {"error":"wallet_too_large","address":"0xA3eB3822Ba0dB206739F38A994cB8A5a1A01Bca0","chain_
+  #261 0xcff957290b79968e3f20139c683e5fc479e16eef bound 894186.80 USD: not asked, a contract (it has code at the head of the chain, 20915 bytes): not a wallet
+  #262 0xace64dbf9b86975756a79a28a8614e9e97c707a6 bound 886982.41 USD (0.00 through a router): record partial, 126 transactions listed: SELECTED (30)
+went down the ranking 262 places: 2 routers and 179 other contracts not asked; 81 addresses asked, 30 selected, 51 with no record. Stopped because 30 addresses were selected
+same-ticker token 0x69e7778d46713e17572d610bdaca3943aa4e6219 (symbol() "SPY", name() "Spy Chip"): 441 transfers out of the v4 PoolManager to 224 receivers in the window; left out as first minter or its signer: 0x71fbed34b030fdd5489e4de8c630d8e1999b2957; the first 20 wallets that bought it are the observation group
 observations: 21 wallets asked, 1 with no record

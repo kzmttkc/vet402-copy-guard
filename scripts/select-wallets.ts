@@ -27,6 +27,8 @@ import { appendFileSync, createReadStream, existsSync, mkdirSync, readFileSync, 
 import { createInterface } from 'node:readline'
 import { join } from 'node:path'
 import { type FeedSeries, feedSeries, pointAt, V3_FACTORY, V4_POOL_MANAGER } from '../agent/facts'
+import { shown } from '../agent/rules-v2'
+import { abiText } from '../agent/tokens'
 import snapshot from '../token-check/registry-snapshot.json'
 
 const RPC = 'https://rpc.mainnet.chain.robinhood.com'
@@ -54,9 +56,21 @@ const LIQUIDITY_TOPICS = new Set([
 	'0xf208f4912782fd25c7f114ca3723a2d5dd6f3bcc3ac8db5af63baa85f711d5ec',
 ])
 
+/**
+ * Routers: contracts that take a Stock Token from an official venue and pass it on to the buyer in
+ * the same transaction. What a router passes on of what a venue sent it in that transaction is
+ * counted for the receiver (docs/walk/SELECTION.md, section 1, "Through a router").
+ */
+export const ROUTERS: { address: string; name: string; basis: string }[] = [
+	{ address: '0xcaf681a66d020601342297493863e78c959e5cb2', name: 'Uniswap SwapRouter02', basis: "Uniswap's deployment list for Robinhood Chain (4663), and a verified SwapRouter02 on robinhoodchain.blockscout.com" },
+	{ address: '0x8876789976decbfcbbbe364623c63652db8c0904', name: 'Uniswap UniversalRouter', basis: "Uniswap's deployment list for Robinhood Chain (4663), and a verified UniversalRouter on robinhoodchain.blockscout.com" },
+	{ address: '0x3d90f66b534dd8482b181e24655a9e8265316be9', name: 'a router measured on the chain', basis: 'measured: in sampled transactions it receives a Stock Token from the v4 PoolManager and sends the same amount to the signer, who paid USDG (agent/fixtures/move-routed-buy.json is one)' },
+]
+const ROUTER_SET = new Set(ROUTERS.map((r) => r.address))
+
 export const PURPOSE = 'The walk follows notable wallets whose record can be checked.'
 export const RULE =
-	"Rank every address by what official Uniswap venues (the v4 PoolManager and the pools of the official v3 factory) sent it of the Stock Tokens that have a Chainlink feed, in the window, each transfer at the feed's value at its block. From the top, ask vet402's free route once per address. An address it can build a record for is selected. Any other is listed with the reason and not walked. Stop at the number to select, or at the number of addresses to ask."
+	"Rank every address by what official Uniswap venues (the v4 PoolManager and the pools of the official v3 factory) sent it of the Stock Tokens that have a Chainlink feed, in the window, directly or through a listed router in the same transaction, each transfer at the feed's value at its block. From the top: a router or another contract is not a wallet and is listed as such without asking; every other address is asked about once on vet402's free route. An address it can build a record for is selected. Any other is listed with the reason and not walked. Stop at the number to select, or at the number of addresses asked."
 export const PURCHASE =
 	'Within one transaction a wallet bought a token when an official venue emitted a swap log and sent the token, the wallet ended the transaction with more of it, the wallet itself paid USDG or WETH or (as the signer) ETH, no liquidity log is in the transaction, and no other Stock Token left the wallet.'
 export const PRICE_SOURCE = "AnswerUpdated logs of the feed's aggregator: the last answer at or before the block, the last in log order within a block. The public RPC keeps no historical state, so latestRoundData() cannot be asked at a past block."
@@ -242,20 +256,52 @@ async function main() {
 		return { price, round: p.round_id, usd: (Number(BigInt(h.raw)) / 1e18) * price }
 	}
 	const bound = new Map<string, number>()
+	const direct = new Map<string, number>()
+	const routed = new Map<string, number>()
+	/** What official venues sent a router of a token in one transaction, not yet passed on: `${token}|${tx}|${router}` to the raw amount. */
+	const atRouter = new Map<string, bigint>()
 	let unpriced = 0
 	for (const f of files) {
 		for await (const h of saved(f.file)) {
 			if (venueSet.has(h.to)) continue
+			if (ROUTER_SET.has(h.to)) {
+				const k = `${f.token}|${h.tx}|${h.to}`
+				atRouter.set(k, (atRouter.get(k) ?? 0n) + BigInt(h.raw))
+			}
 			const s = sized({ token: f.token, raw: h.raw, block: h.block })
 			if (!s) {
 				unpriced++
 				continue
 			}
 			bound.set(h.to, (bound.get(h.to) ?? 0) + s.usd)
+			direct.set(h.to, (direct.get(h.to) ?? 0) + s.usd)
+		}
+	}
+	// 1b. What a router passed on in the same transaction, up to what venues sent it there of that token. Read from the logs, one query per token and router.
+	let routedTransfers = 0
+	let routedCounted = 0
+	for (const t of tokens) {
+		const token = t.token.toLowerCase()
+		const file = join(CACHE, `${t.symbol}.routed.jsonl`)
+		const n = await scan(token, ROUTERS.map((r) => r.address), win.from, win.to, file)
+		routedTransfers += n
+		console.error(`routed ${t.symbol} ${n}`)
+		for await (const h of saved(file)) {
+			if (venueSet.has(h.to) || ROUTER_SET.has(h.to)) continue
+			const k = `${token}|${h.tx}|${h.from}`
+			const left = atRouter.get(k) ?? 0n
+			if (left <= 0n) continue
+			const take = BigInt(h.raw) < left ? BigInt(h.raw) : left
+			atRouter.set(k, left - take)
+			const s = sized({ token, raw: take.toString(), block: h.block })
+			if (!s) continue
+			routedCounted++
+			bound.set(h.to, (bound.get(h.to) ?? 0) + s.usd)
+			routed.set(h.to, (routed.get(h.to) ?? 0) + s.usd)
 		}
 	}
 	const ranked = [...bound.entries()].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))
-	say(`transfers out of an official venue: ${transfersOut}; receivers: ${ranked.length}; transfers with no feed value yet at their block: ${unpriced}`)
+	say(`transfers out of an official venue: ${transfersOut}; transfers out of the ${ROUTERS.length} routers: ${routedTransfers}, of which ${routedCounted} passed on what a venue sent the router in the same transaction; receivers: ${ranked.length} (${routed.size} received through a router); transfers with no feed value yet at their block: ${unpriced}`)
 	if (process.argv.includes('--scan-only')) {
 		for (const [w, usd] of ranked.slice(0, 60)) say(`  ${w} bound ${usd.toFixed(2)} USD`)
 		return
@@ -304,29 +350,46 @@ async function main() {
 		return { http_status: status, facts, reason }
 	}
 	const maxAsked = Number(arg('--max-asked', '100'))
-	const selected: { wallet: string; bound_rank: number; bound_usd: string; has_code: boolean; r1_status: string; realized_usd: string | null; evidence_txs: number }[] = []
-	const noRecord: { wallet: string; bound_rank: number; bound_usd: string; has_code: boolean; http_status: number; reason: string }[] = []
+	type Parts = { bound_usd: string; direct_usd: string; routed_usd: string }
+	const parts = (w: string, total: number): Parts => ({ bound_usd: total.toFixed(2), direct_usd: (direct.get(w) ?? 0).toFixed(2), routed_usd: (routed.get(w) ?? 0).toFixed(2) })
+	const selected: ({ wallet: string; bound_rank: number; has_code: boolean; r1_status: string; realized_usd: string | null; evidence_txs: number } & Parts)[] = []
+	/** Every address passed over: a router or another contract (not asked), or an address vet402 could build no record for. */
+	const noRecord: ({ wallet: string; bound_rank: number; has_code: boolean; asked: boolean; not_a_wallet: null | 'router' | 'contract'; http_status: number | null; reason: string } & Parts)[] = []
 	let asked = 0
+	let considered = 0
 	for (let at = 0; at < ranked.length && selected.length < top && asked < maxAsked; at++) {
 		const [wallet, usdBound] = ranked[at]
-		asked++
+		considered++
 		const code = (await rpc('eth_getCode', [wallet, 'latest'])) as string
+		// An EIP-7702 delegation (0xef0100 and an address) is an account that signs its own transactions: a wallet.
 		const hasCode = code !== '0x' && !code.startsWith('0xef0100')
+		if (ROUTER_SET.has(wallet) || hasCode) {
+			const router = ROUTER_SET.has(wallet)
+			const reason = router ? `a router (${ROUTERS.find((r) => r.address === wallet)?.name}): what it receives it passes on, and what it passed on to a wallet is counted for that wallet` : `a contract (it has code at the head of the chain, ${(code.length - 2) / 2} bytes): not a wallet`
+			noRecord.push({ wallet, bound_rank: at + 1, ...parts(wallet, usdBound), has_code: hasCode, asked: false, not_a_wallet: router ? 'router' : 'contract', http_status: null, reason })
+			say(`  #${at + 1} ${wallet} bound ${usdBound.toFixed(2)} USD: not asked, ${reason}`)
+			continue
+		}
+		asked++
 		const a = await ask(wallet)
 		if (a.http_status === 200 && a.facts) {
-			selected.push({ wallet, bound_rank: at + 1, bound_usd: usdBound.toFixed(2), has_code: hasCode, r1_status: String(a.facts.r1_status), realized_usd: a.facts.realized_usd ?? null, evidence_txs: (a.facts.evidence?.txs ?? []).length })
-			say(`  #${at + 1} ${wallet} bound ${usdBound.toFixed(2)} USD: record ${a.facts.r1_status}, ${(a.facts.evidence?.txs ?? []).length} transactions listed: SELECTED (${selected.length})`)
+			selected.push({ wallet, bound_rank: at + 1, ...parts(wallet, usdBound), has_code: hasCode, r1_status: String(a.facts.r1_status), realized_usd: a.facts.realized_usd ?? null, evidence_txs: (a.facts.evidence?.txs ?? []).length })
+			say(`  #${at + 1} ${wallet} bound ${usdBound.toFixed(2)} USD (${(routed.get(wallet) ?? 0).toFixed(2)} through a router): record ${a.facts.r1_status}, ${(a.facts.evidence?.txs ?? []).length} transactions listed: SELECTED (${selected.length})`)
 		} else {
-			noRecord.push({ wallet, bound_rank: at + 1, bound_usd: usdBound.toFixed(2), has_code: hasCode, http_status: a.http_status, reason: a.reason })
-			say(`  #${at + 1} ${wallet} bound ${usdBound.toFixed(2)} USD${hasCode ? ' (a contract)' : ''}: no record, HTTP ${a.http_status} ${a.reason.slice(0, 90)}`)
+			noRecord.push({ wallet, bound_rank: at + 1, ...parts(wallet, usdBound), has_code: hasCode, asked: true, not_a_wallet: null, http_status: a.http_status, reason: a.reason })
+			say(`  #${at + 1} ${wallet} bound ${usdBound.toFixed(2)} USD: no record, HTTP ${a.http_status} ${a.reason.slice(0, 90)}`)
 		}
 	}
+	const notAsked = noRecord.filter((x) => !x.asked).length
 	const stop = selected.length >= top ? `${top} addresses were selected` : asked >= maxAsked ? `${maxAsked} addresses had been asked` : 'the ranking ran out'
-	say(`asked ${asked} addresses from the top of the ranking: ${selected.length} selected, ${noRecord.length} with no record. Stopped because ${stop}`)
+	say(`went down the ranking ${considered} places: ${noRecord.filter((x) => x.not_a_wallet === 'router').length} routers and ${noRecord.filter((x) => x.not_a_wallet === 'contract').length} other contracts not asked; ${asked} addresses asked, ${selected.length} selected, ${noRecord.length - notAsked} with no record. Stopped because ${stop}`)
 
 	// Observations (docs/walk/SELECTION.md, section 3): the watched wallet, and the first buyers of one token that uses the ticker SPY.
 	const WATCHED = '0xe9b08727131e34010b34006c660d4c1b436ec25f'
-	const SAME_TICKER = { token: '0x69e7778d46713e17572d610bdaca3943aa4e6219', ticker: 'SPY', name: 'Spy Chip', take: 20 }
+	const SAME_TICKER_TOKEN = '0x69e7778d46713e17572d610bdaca3943aa4e6219'
+	// The token's own name() and symbol(), read from the chain and shown with any invisible character marked.
+	const readText = async (data: string) => shown(abiText(await rpc('eth_call', [{ to: SAME_TICKER_TOKEN, data }, 'latest']).catch(() => '0x')))
+	const SAME_TICKER = { token: SAME_TICKER_TOKEN, ticker: 'SPY', symbol: await readText('0x95d89b41'), name: await readText('0x06fdde03'), take: 20 }
 	const ZERO_TOPIC = `0x${'0'.repeat(64)}`
 	let firstMint: any = null
 	for (let a = 0; a <= win.to && !firstMint; a += 10_000_000) {
@@ -371,7 +434,7 @@ async function main() {
 			sameTicker.push({ wallet: w, first_purchase: { tx: h.tx, block: h.block, amount_raw: got.toString(), paid: paidEth ? `${BigInt(tx.value)} wei of ETH` : `${paidToken?.raw} of ${paidToken?.token === USDG ? 'USDG' : 'WETH'}`, signer: String(tx.from).toLowerCase() } })
 		}
 	}
-	say(`same-ticker token ${SAME_TICKER.token} (${SAME_TICKER.ticker}, "${SAME_TICKER.name}"): ${stHits.length} transfers out of the v4 PoolManager to ${new Set(stHits.map((h) => h.to)).size} receivers in the window; left out as first minter or its signer: ${leftOut.join(', ') || 'none'}; the first ${sameTicker.length} wallets that bought it are the observation group`)
+	say(`same-ticker token ${SAME_TICKER.token} (symbol() "${SAME_TICKER.symbol}", name() "${SAME_TICKER.name}"): ${stHits.length} transfers out of the v4 PoolManager to ${new Set(stHits.map((h) => h.to)).size} receivers in the window; left out as first minter or its signer: ${leftOut.join(', ') || 'none'}; the first ${sameTicker.length} wallets that bought it are the observation group`)
 	const observed: { wallet: string; cohort: string; http_status: number; reason: string }[] = []
 	for (const w of [WATCHED, ...sameTicker.map((s) => s.wallet)]) {
 		const a = await ask(w)
@@ -396,14 +459,15 @@ async function main() {
 				tokens: tokens.map((t) => ({ symbol: t.symbol, token: t.token.toLowerCase(), feed: t.feed.toLowerCase() })),
 				feeds: feedCover,
 				venues: { v4_pool_manager: V4_POOL_MANAGER, v3_factory: V3_FACTORY, v3_pools: poolCount },
-				counts: { transfers_out_of_venues: transfersOut, transfers_with_no_feed_value: unpriced, receivers: ranked.length, asked, selected: selected.length, no_record: noRecord.length, route_calls: routeCalls },
-				stop: `Stopped because ${stop}: ${asked} addresses asked from the top of the ranking, ${selected.length} selected, ${noRecord.length} with no record.`,
+				routers: ROUTERS,
+				counts: { transfers_out_of_venues: transfersOut, transfers_out_of_routers: routedTransfers, routed_transfers_counted: routedCounted, transfers_with_no_feed_value: unpriced, receivers: ranked.length, receivers_through_a_router: routed.size, considered, not_asked_routers: noRecord.filter((x) => x.not_a_wallet === 'router').length, not_asked_contracts: noRecord.filter((x) => x.not_a_wallet === 'contract').length, asked, selected: selected.length, via_router: selected.filter((x) => Number(x.routed_usd) > 0).length, no_record: noRecord.length - notAsked, passed_over: noRecord.length, route_calls: routeCalls },
+				stop: `Stopped because ${stop}: ${considered} places of the ranking gone through, ${notAsked} of them routers or other contracts (not asked), ${asked} addresses asked, ${selected.length} selected, ${noRecord.length - notAsked} with no record.`,
 				wallets: selected.map((s, i) => ({ rank: i + 1, ...s })),
 				no_record: noRecord,
 				same_ticker_buyers: { ...SAME_TICKER, first_mint: firstMint ? { tx: String(firstMint.transactionHash).toLowerCase(), block: Number(BigInt(firstMint.blockNumber)), to: addr(firstMint.topics[2]), signer: mintTx ? String(mintTx.from).toLowerCase() : null } : null, left_out: leftOut, transfers_out_of_the_pool_manager: stHits.length, receivers: new Set(stHits.map((h) => h.to)).size, wallets: sameTicker },
 				watched: WATCHED,
 				observations: observed,
-				ranking_top: ranked.slice(0, Math.max(asked, 100)).map(([w, usd], i) => ({ bound_rank: i + 1, wallet: w, bound_usd: usd.toFixed(2) })),
+				ranking_top: ranked.slice(0, Math.max(considered, 100)).map(([w, usd], i) => ({ bound_rank: i + 1, wallet: w, ...parts(w, usd) })),
 				rpc_calls: rpcCalls,
 			},
 			null,
@@ -415,7 +479,7 @@ async function main() {
 		`${JSON.stringify(
 			[
 				{ wallet: WATCHED, cohort: 'watched', rank: null, purchases_usd: null, why: 'an observation: the wallet copy-guard was first pointed at, and the only wallet vet402 has anchored a record for' },
-				...selected.map((s, i) => ({ wallet: s.wallet, cohort: 'top_buyers', rank: i + 1, purchases_usd: s.bound_usd, why: `selected: number ${s.bound_rank} by what official venues sent it in the window (${s.bound_usd} USD at the feed, an upper bound of its purchases), and vet402 could build its record` })),
+				...selected.map((s, i) => ({ wallet: s.wallet, cohort: 'top_buyers', rank: i + 1, purchases_usd: s.bound_usd, why: `selected: number ${s.bound_rank} by what official venues sent it in the window, directly or through a router (${s.bound_usd} USD at the feed, ${s.routed_usd} of it through a router; an upper bound of its purchases), and vet402 could build its record` })),
 				...sameTicker.map((s, i) => ({ wallet: s.wallet, cohort: 'same_ticker_buyers', rank: i + 1, purchases_usd: null, why: `an observation: buyer ${i + 1} of the first ${SAME_TICKER.take} of the token ${SAME_TICKER.token}, which uses the ticker ${SAME_TICKER.ticker}` })),
 			],
 			null,

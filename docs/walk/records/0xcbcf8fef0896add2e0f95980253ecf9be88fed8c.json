@@ -1,0 +1,7 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0xcbcf8fef0896add2e0f95980253ecf9be88fed8c?chain=4663",
+  "http_status": 422,
+  "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xCBCF8Fef0896add2E0f95980253eCf9Be88FED8C\",\"chain_id\":4663,\"as_of_block\":88154369,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":1,\"held\":[\"AAPL\"],\"limit\":{\"kind\":\"transactions\",\"max\":600,\"found\":693}",
+  "x_facts_hash": "",
+  "facts": null
+}

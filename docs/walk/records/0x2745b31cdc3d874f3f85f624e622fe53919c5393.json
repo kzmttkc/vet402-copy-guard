@@ -1,0 +1,7 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x2745b31cdc3d874f3f85f624e622fe53919c5393?chain=4663",
+  "http_status": 422,
+  "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x2745b31cDC3D874f3f85F624e622Fe53919c5393\",\"chain_id\":4663,\"as_of_block\":88159139,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":5,\"held\":[\"AMD\",\"HIMS\",\"INTC\",\"PLTR\",\"TSM\"],\"limit\":{\"kind\":\"transactio",
+  "x_facts_hash": "",
+  "facts": null
+}

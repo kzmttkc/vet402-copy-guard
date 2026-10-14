@@ -1,0 +1,177 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x62c214f52b065f56caa7bc1834c20d09f8d41f85?chain=4663",
+  "http_status": 200,
+  "reason": "",
+  "x_facts_hash": "0x58575fea6bee5006c704d47b6a20d9181427c90a291a4d7193f4d882d84af631",
+  "facts": {
+    "address": "0x62c214f52B065F56CAa7BC1834c20D09F8D41F85",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T06:38:08.000Z",
+    "as_of_block": 88157689,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "QQQ"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "QQQ",
+        "name": "Invesco QQQ",
+        "token": "0xD5f3879160bc7c32ebb4dC785F8a4F505888de68",
+        "canonical": true,
+        "raw": "6238746849335727612",
+        "shares_ui": "6.24311890",
+        "usd": "4639.15",
+        "usd_reason": null,
+        "feed": "0x80901d846d5D7B030F26B480776EE3b29374C2ae",
+        "feed_answer": "74360306549",
+        "feed_updated_at": "2026-10-14T00:08:41.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "6238746849335727612",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 1,
+          "univ4": 2,
+          "other_unparsed": 44
+        },
+        "corporate_actions": [
+          {
+            "block": 69210998,
+            "time": "2026-09-22T00:00:50.000Z",
+            "effective_at": "2026-09-22T00:10:34.000Z",
+            "tx": "0x6331915e6ddac124b1ea59b0db720892615fbd8ffbbea59cc9772147e326bba6",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000700791241405425",
+            "ratio": "1.000700791241405425",
+            "held": true,
+            "wallet_raw_at": "3403192553071445377",
+            "wallet_shares_before": "3.40319255",
+            "wallet_shares_after": "3.40557748"
+          }
+        ]
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 1,
+      "univ4": 2,
+      "other_unparsed": 44
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": "4639.15",
+    "mdd_usd": null,
+    "gaps": [
+      "other_unparsed",
+      "unknown_cost_lots",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0xA3284897ad7c8FED700b04f573Cf64E4f6c10f2c",
+        "symbol_raw": "NVDA",
+        "name_raw": " NVIDIA Robinhood Token ",
+        "imitates": "NVDA",
+        "reasons": [
+          "symbol_copies_stock_token",
+          "name_copies_stock_token",
+          "name_claims_robinhood_stock_token",
+          "code_hash_differs",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "received",
+        "counterparty": "0xcbf0e9ccb0b1f6a0edc098c156259739798e8b4d",
+        "mimics": null,
+        "first_seen_block": 84172443,
+        "tx": "0x860f0d3d97c43c924337ef4985a9bb976c58bdf2542ba5af1ab2e6ffa6bcae90",
+        "amount_raw": "25000000000000000000",
+        "transfers_seen": 1,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 88157689,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 8,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0x8da6fc4d41d3e2462ae24593419653000c7055c29f209bd901d69a326e157a19",
+        "0x86900562b7ccdbb566ce6e2c9972d48f0245f787f0f7d6d5275a7e53615e164a",
+        "0xf89058bfa6dd2012f65b0f328d88f6bbf0e10272e9dfd3d0100315b5e5445351",
+        "0x98125a52ff4432c260b0dafa72e075f8575e873072e00699fef8d7a2359e403a",
+        "0x5dd9970d48b1a079e692b7a3a335d6056b41ccef9bf4cd9e82057e00f88bceb2",
+        "0x104bb61f24b59d5a0e11128c971763785bd26a28b18235698173040cdbad655b",
+        "0x6b5eb91feb7ac4aafc0e7db2863e893bb8fb9d5fba454277766d54da493633d8",
+        "0xfd6379b7439eef2379ed6b7aa5eca34536f14785150a5155c6b6ba8e5f5269b3",
+        "0x33fefe974822b8c16d632c45b75fb54186d4241a84a6c34b6033f96127c9898f",
+        "0xe302b125dfcc2d1f26f50b4378957d5de3d889bae371e088592135dd1893271f",
+        "0x154af9bd6241ed9ed8fe241c8f97ffe1667701d1ec773602ff5b4360d7a24313",
+        "0xfbcddc025fdac710b0c9842cc16e918735f6388ac59bf2614b7d6a5fb20bf7a1",
+        "0x1c95860ae8228d58658787c2f99287870288a28e311607382bbdda27b70d55fe",
+        "0x05819edbea6f2813168d2d6eae7cc836113d92e0df8b9d6a8799b36eb4e335d7",
+        "0xf539bf226acd16b96e9c6a522c545fe3d0c9af53dd584b8bdeb232c1543e8bfc",
+        "0x515f0184e7a778fe9bb61e52df8d4a6dd7087805f32c4bd801ee44a403f1a09a",
+        "0x1f14b8db43c442af0afb7a8225545d3728afa56f46deffeb8d1d8038c7ff9715",
+        "0x68cd5638841ce3ce7f8b5a0d3255ac6e6547b6bc46ac595a136be2e8e21d2a70",
+        "0x84e651a2d2e0867c5dea92f10fe6bff4a6bfa396ace9002ecac1a28220cae492",
+        "0x881f3b64ff663acbc6d33991221dd530bb26521a9161e5f7293b13666ffe28c2",
+        "0x1ce180d5ae1f9adedbd28edb7d8f5b521dc2cac4473f31e2ec186541086684e6",
+        "0x54e6a8a88c46bc7c3c938588ac086b36ea6a9450e179af3d4c18165d50828bdb",
+        "0x1816d7488cd7663ce6b522e113bc5c5f2d45d8968ff71aeac0474e8fd29967a5",
+        "0x095f1b1af85148f2ddb988d70fbe5f6e5f7a62141d581faf5f947ee7594e9bf3",
+        "0x08bc008156c1107428bd278f6b16daa4c5c86bee1f56b57ae19f0794d39d0779",
+        "0x6b98c575b26a713e09b93a974b6befb37eb9e3f39e3d58521b98ebe243cb54a8",
+        "0x693d826890cdf657143eff1d0fb6975e0fcd1397df45ad31fd41de1dc94ae989",
+        "0x95c03f935199325b266d7793f6ccef773a2b8e1b92e93214a57e96ec446bf273",
+        "0x59611c7860f4181ab5f4ba5eb970ec4ea3d18a4a9a55eab1f391369f014a271f",
+        "0x9976f74e213b18e2c96dfaf1aedfa1e130489ba27c42e0349f9719a68b24041d",
+        "0xdb1b0dec62cd27659fe43aa2c793d7c58b01820a9bf51c934bd74d6a9aa0293f",
+        "0xb78f580ea8da56f721e5c852a65ef11dc2b4b02d0dafa0903bb2074d3b963e08",
+        "0xe0ad738993c85c4cb435803a52515086d8e992ea52aa0a753b0dd61026ad4fe7",
+        "0xd685d2cd32c536e0d6a84da08e93f6a31b68805d28fcf5ba0d069b7baaae7afb",
+        "0xfa4e5601fa9a07072533f0c56478f43579d3feb76fb279fbbf3fd40dda0c09de",
+        "0x63c9b5a37c88180981fd02c4664667db3b97129920a9f0ff111d878ba317d438",
+        "0x31d092445c231ff147cc289adecabf510be596202baeaf28462833b97349c10d",
+        "0xb8102c604925d4110881266489451fdf4bae3eac31a01a792ae96c69653601c8",
+        "0x2ef7a05d7189c4e51eb311c6e902aac8e1e5db8a96e850da84761c1251859f19",
+        "0x671e9920800a382705c0d39a391d92ff7bd0fcee59e2a9ac0595eb38b08f376e",
+        "0xfd993a26eef1469f20b76d14f11dc0f0f1a5f4e85cd69fd39487d4b16e94ddfa",
+        "0x82d177e40b5ef848dc22103f885d1f76d3002b728cb2a76375f7839fa9e6d4fd",
+        "0xa8477b35641e5074620afeb74a7847b4d66179fdc310c638a7dbbe5e19122bad",
+        "0x378f597cfa9af5aa6e975446767ecc338b711a9297307673ca3118763afc14d8",
+        "0x449b0fa9925ce10a8d09ce1be40bb42a8cf6552ce03025bd6d63ea4989e174de"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

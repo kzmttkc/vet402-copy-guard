@@ -1,0 +1,7 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x62da8f588cff901046307abe7c5baddc90d4dbcd?chain=4663",
+  "http_status": 422,
+  "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x62dA8f588Cff901046307abE7C5BADdc90D4dbcd\",\"chain_id\":4663,\"as_of_block\":88159863,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":18,\"held\":[\"AMC\",\"AMD\",\"DJT\",\"HIMS\",\"IBM\",\"META\",\"MRNA\",\"MSTR\",\"MU\",\"NF",
+  "x_facts_hash": "",
+  "facts": null
+}

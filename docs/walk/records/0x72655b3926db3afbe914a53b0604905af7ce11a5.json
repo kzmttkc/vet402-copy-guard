@@ -1,0 +1,126 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x72655b3926db3afbe914a53b0604905af7ce11a5?chain=4663",
+  "http_status": 200,
+  "reason": "",
+  "x_facts_hash": "0x33029c6f1098392b5af053969f892c304be4361b48b9c6b15bd2c1a84b28379e",
+  "facts": {
+    "address": "0x72655B3926Db3aFbe914A53B0604905af7cE11a5",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T06:33:37.000Z",
+    "as_of_block": 88155000,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "CRCL",
+        "MSTR"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "CRCL",
+        "name": "Circle Internet Group",
+        "token": "0xdF0992E440dD0be65BD8439b609d6D4366bf1CB5",
+        "canonical": true,
+        "raw": "25757303013524182408251",
+        "shares_ui": "25757.30301352",
+        "usd": "2162666.86",
+        "usd_reason": null,
+        "feed": "0x6652eDf64bA3731C4F2D3ce821A0Fb1f1f6b482a",
+        "feed_answer": "8396324976",
+        "feed_updated_at": "2026-10-14T06:05:56.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "25757303013524182408251",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 0,
+          "univ4": 0,
+          "other_unparsed": 4
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "MSTR",
+        "name": "Strategy Inc.",
+        "token": "0xec262a75e413fAfD0dF80480274532C79D42da09",
+        "canonical": true,
+        "raw": "33062300344621396405",
+        "shares_ui": "33.06230034",
+        "usd": "5062.04",
+        "usd_reason": null,
+        "feed": "0x396118bdFB181e6240E74D243F266B061c0edc3D",
+        "feed_answer": "15310628120",
+        "feed_updated_at": "2026-10-14T05:57:34.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "33062300344621396405",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 0,
+          "univ4": 0,
+          "other_unparsed": 1
+        },
+        "corporate_actions": []
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 0,
+      "univ4": 0,
+      "other_unparsed": 5
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": "2167728.90",
+    "mdd_usd": null,
+    "gaps": [
+      "other_unparsed",
+      "unknown_cost_lots",
+      "mdd_pending"
+    ],
+    "lookalikes": [],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 88155000,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 5,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0x4a83b74585d5615f34420a75d96f39949a14899ac1f9db7b87c6f1a7b8b929e6",
+        "0x8493c841a52f90c52dd9d79a96e6797b0e9f1ba605fdb30f642a3e2707ed7683",
+        "0x0f6526d0c153aafc1230a9cc63ab70e5cb168ab3c6faef0c7b33d5e625fe8929",
+        "0x9602eefa873039fbeea54d7b2a6863eeb004d1328310a6f00e6374422190063c",
+        "0x1d730fb07391f3b7fbbddd52092abb00e788717529c979a0aba809bec76c0f60"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

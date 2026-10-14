@@ -1,0 +1,7 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x83e6905b94a0379fb8a6800adfd2f3a3858cefb8?chain=4663",
+  "http_status": 422,
+  "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0x83e6905B94A0379fB8a6800aDfd2f3A3858ceFb8\",\"chain_id\":4663,\"as_of_block\":88155481,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":17,\"held\":[\"AMZN\",\"BABA\",\"CRCL\",\"CRWV\",\"DJT\",\"GME\",\"HIMS\",\"META\",\"MSFT\"",
+  "x_facts_hash": "",
+  "facts": null
+}

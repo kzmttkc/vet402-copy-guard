@@ -1,0 +1,7 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0xd63848e5436ec5e20452168c49807e4c13ffd55e?chain=4663",
+  "http_status": 422,
+  "reason": "{\"error\":\"wallet_too_large\",\"address\":\"0xd63848E5436EC5e20452168c49807e4C13ffd55E\",\"chain_id\":4663,\"as_of_block\":88156899,\"method_version\":\"rwa-recon-0.3\",\"held_tokens\":10,\"held\":[\"AMZN\",\"CRCL\",\"HIMS\",\"INTC\",\"MSTR\",\"MU\",\"QCOM\",\"SLV\",\"SPCX\",",
+  "x_facts_hash": "",
+  "facts": null
+}

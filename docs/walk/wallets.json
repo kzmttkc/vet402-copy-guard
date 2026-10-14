@@ -7,137 +7,214 @@
   "why": "an observation: the wallet copy-guard was first pointed at, and the only wallet vet402 has anchored a record for"
  },
  {
-  "wallet": "0xd7572f7ed161d3c46ca86d7da52d94d4b2d104a9",
-  "cohort": "top_buyers",
-  "rank": 1,
-  "purchases_usd": "118556723.18",
-  "why": "selected: number 5 by what official venues sent it in the window (118556723.18 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
- },
- {
-  "wallet": "0xaeb83c45e9bd22abd37853058e2a032d5d008600",
-  "cohort": "top_buyers",
-  "rank": 2,
-  "purchases_usd": "54656195.80",
-  "why": "selected: number 13 by what official venues sent it in the window (54656195.80 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
- },
- {
-  "wallet": "0xfe12d3d09e2ba45590c8484876b17dad9492f2f4",
-  "cohort": "top_buyers",
-  "rank": 3,
-  "purchases_usd": "35526500.26",
-  "why": "selected: number 17 by what official venues sent it in the window (35526500.26 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
- },
- {
-  "wallet": "0xff737c78f1ee4667019fe1d09607c0c1f2d44b2f",
-  "cohort": "top_buyers",
-  "rank": 4,
-  "purchases_usd": "17516443.30",
-  "why": "selected: number 30 by what official venues sent it in the window (17516443.30 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
- },
- {
   "wallet": "0xfb5fec1459616fc525e0ecbe5b5c62aa36ede673",
   "cohort": "top_buyers",
-  "rank": 5,
+  "rank": 1,
   "purchases_usd": "14566878.03",
-  "why": "selected: number 34 by what official venues sent it in the window (14566878.03 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
- },
- {
-  "wallet": "0x74ab4f44d753a7926c58bd012203f9f715d7a149",
-  "cohort": "top_buyers",
-  "rank": 6,
-  "purchases_usd": "8098279.03",
-  "why": "selected: number 45 by what official venues sent it in the window (8098279.03 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
- },
- {
-  "wallet": "0xf11135c440c1782af2b0b766e756deae2210a43e",
-  "cohort": "top_buyers",
-  "rank": 7,
-  "purchases_usd": "7439744.95",
-  "why": "selected: number 47 by what official venues sent it in the window (7439744.95 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
- },
- {
-  "wallet": "0x260e2b479f2e6a5d9b638e540641527acf3e0011",
-  "cohort": "top_buyers",
-  "rank": 8,
-  "purchases_usd": "5457439.88",
-  "why": "selected: number 53 by what official venues sent it in the window (5457439.88 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
+  "why": "selected: number 34 by what official venues sent it in the window, directly or through a router (14566878.03 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
  },
  {
   "wallet": "0xe2ed71633b1918de6e796d9bbafa3aa4432973a5",
   "cohort": "top_buyers",
-  "rank": 9,
+  "rank": 2,
   "purchases_usd": "5310425.22",
-  "why": "selected: number 55 by what official venues sent it in the window (5310425.22 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
- },
- {
-  "wallet": "0xe4a609a6f6ff07ee2a93d99cae32246b25552151",
-  "cohort": "top_buyers",
-  "rank": 10,
-  "purchases_usd": "4935866.72",
-  "why": "selected: number 62 by what official venues sent it in the window (4935866.72 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
- },
- {
-  "wallet": "0x1632d06045396fc34bc05fe2900dfe3e09fe41d5",
-  "cohort": "top_buyers",
-  "rank": 11,
-  "purchases_usd": "4482292.50",
-  "why": "selected: number 67 by what official venues sent it in the window (4482292.50 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
- },
- {
-  "wallet": "0x8a500099568729030547d503f3d5aaf75b0ce509",
-  "cohort": "top_buyers",
-  "rank": 12,
-  "purchases_usd": "3412554.03",
-  "why": "selected: number 77 by what official venues sent it in the window (3412554.03 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
+  "why": "selected: number 56 by what official venues sent it in the window, directly or through a router (5310425.22 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
  },
  {
   "wallet": "0xb7124430f4d51d93f038ac793faa46767403bc5c",
   "cohort": "top_buyers",
-  "rank": 13,
+  "rank": 3,
   "purchases_usd": "3370637.69",
-  "why": "selected: number 78 by what official venues sent it in the window (3370637.69 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
- },
- {
-  "wallet": "0x7690ea2bab2f6c906240f7c35fd636515d2eb969",
-  "cohort": "top_buyers",
-  "rank": 14,
-  "purchases_usd": "3175885.08",
-  "why": "selected: number 80 by what official venues sent it in the window (3175885.08 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
+  "why": "selected: number 80 by what official venues sent it in the window, directly or through a router (3370637.69 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
  },
  {
   "wallet": "0x2312b5480f7e3d1894ed046af15b23186ff0f53c",
   "cohort": "top_buyers",
-  "rank": 15,
+  "rank": 4,
   "purchases_usd": "3103630.70",
-  "why": "selected: number 81 by what official venues sent it in the window (3103630.70 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
- },
- {
-  "wallet": "0x03b95224bbb5ce0d923d1bfdafa6306f969d99cd",
-  "cohort": "top_buyers",
-  "rank": 16,
-  "purchases_usd": "2826625.14",
-  "why": "selected: number 86 by what official venues sent it in the window (2826625.14 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
+  "why": "selected: number 84 by what official venues sent it in the window, directly or through a router (3103630.70 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
  },
  {
   "wallet": "0xe5764a0855c5609263be9bc0ef1e640e3fc9490c",
   "cohort": "top_buyers",
-  "rank": 17,
+  "rank": 5,
   "purchases_usd": "2628392.44",
-  "why": "selected: number 93 by what official venues sent it in the window (2628392.44 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
- },
- {
-  "wallet": "0x60caa4bcba5dda11ba26dc0e7632c106fabdddae",
-  "cohort": "top_buyers",
-  "rank": 18,
-  "purchases_usd": "2568813.76",
-  "why": "selected: number 96 by what official venues sent it in the window (2568813.76 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
+  "why": "selected: number 98 by what official venues sent it in the window, directly or through a router (2628392.44 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
  },
  {
   "wallet": "0x8b6d974142fe732169b4c7910cb1737679a35ade",
   "cohort": "top_buyers",
+  "rank": 6,
+  "purchases_usd": "2552447.64",
+  "why": "selected: number 102 by what official venues sent it in the window, directly or through a router (2552447.64 USD at the feed, 59928.99 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0xfab1e5a778048c54695a8381ff1a996c1c83c9d4",
+  "cohort": "top_buyers",
+  "rank": 7,
+  "purchases_usd": "2331031.46",
+  "why": "selected: number 115 by what official venues sent it in the window, directly or through a router (2331031.46 USD at the feed, 12379.09 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x1c744b1405915652d9a656349443bc7e74d2bb3d",
+  "cohort": "top_buyers",
+  "rank": 8,
+  "purchases_usd": "2316277.84",
+  "why": "selected: number 117 by what official venues sent it in the window, directly or through a router (2316277.84 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0xe4147aaea0f869f8f389b4c1cf54c2686b864e26",
+  "cohort": "top_buyers",
+  "rank": 9,
+  "purchases_usd": "2230217.85",
+  "why": "selected: number 125 by what official venues sent it in the window, directly or through a router (2230217.85 USD at the feed, 19900.99 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x72655b3926db3afbe914a53b0604905af7ce11a5",
+  "cohort": "top_buyers",
+  "rank": 10,
+  "purchases_usd": "2162316.10",
+  "why": "selected: number 128 by what official venues sent it in the window, directly or through a router (2162316.10 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x47832c2fc98a4e884555407aeabc5ce519d4e70e",
+  "cohort": "top_buyers",
+  "rank": 11,
+  "purchases_usd": "2160127.33",
+  "why": "selected: number 129 by what official venues sent it in the window, directly or through a router (2160127.33 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x7b874e9e6029197dd287910f9b3edd27c10db51e",
+  "cohort": "top_buyers",
+  "rank": 12,
+  "purchases_usd": "1876281.40",
+  "why": "selected: number 151 by what official venues sent it in the window, directly or through a router (1876281.40 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x0f02afcb1550fbeafaf001251b06ba73c68a5384",
+  "cohort": "top_buyers",
+  "rank": 13,
+  "purchases_usd": "1820492.80",
+  "why": "selected: number 156 by what official venues sent it in the window, directly or through a router (1820492.80 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x612b56357a5d9f1de67f11c873517257dffa32c3",
+  "cohort": "top_buyers",
+  "rank": 14,
+  "purchases_usd": "1775100.38",
+  "why": "selected: number 159 by what official venues sent it in the window, directly or through a router (1775100.38 USD at the feed, 23477.02 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x1bd8b5fb6305aa64036d3a4dd90cea5b9efe8e96",
+  "cohort": "top_buyers",
+  "rank": 15,
+  "purchases_usd": "1730702.58",
+  "why": "selected: number 163 by what official venues sent it in the window, directly or through a router (1730702.58 USD at the feed, 1717621.21 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x42d15089d8d6da2a0849a728bfecc77dd7b27171",
+  "cohort": "top_buyers",
+  "rank": 16,
+  "purchases_usd": "1725728.69",
+  "why": "selected: number 164 by what official venues sent it in the window, directly or through a router (1725728.69 USD at the feed, 68947.63 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0xab8ea60885ed62e64704f81d95edc960884b2350",
+  "cohort": "top_buyers",
+  "rank": 17,
+  "purchases_usd": "1545118.74",
+  "why": "selected: number 177 by what official venues sent it in the window, directly or through a router (1545118.74 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0xce57dad4ac59bc93172ae1282b3eee5af6a00205",
+  "cohort": "top_buyers",
+  "rank": 18,
+  "purchases_usd": "1491184.28",
+  "why": "selected: number 183 by what official venues sent it in the window, directly or through a router (1491184.28 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x30ce12193e609283abec6dc223eb398705b26576",
+  "cohort": "top_buyers",
   "rank": 19,
-  "purchases_usd": "2492518.65",
-  "why": "selected: number 98 by what official venues sent it in the window (2492518.65 USD at the feed, an upper bound of its purchases), and vet402 could build its record"
+  "purchases_usd": "1491153.15",
+  "why": "selected: number 184 by what official venues sent it in the window, directly or through a router (1491153.15 USD at the feed, 42616.06 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x62c214f52b065f56caa7bc1834c20d09f8d41f85",
+  "cohort": "top_buyers",
+  "rank": 20,
+  "purchases_usd": "1473686.83",
+  "why": "selected: number 185 by what official venues sent it in the window, directly or through a router (1473686.83 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x5500e69d58d8f80b236c8a72fd52c538a5d5237f",
+  "cohort": "top_buyers",
+  "rank": 21,
+  "purchases_usd": "1392957.91",
+  "why": "selected: number 192 by what official venues sent it in the window, directly or through a router (1392957.91 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x111eaa31b2a1484191cf7eaf495beddc12469f38",
+  "cohort": "top_buyers",
+  "rank": 22,
+  "purchases_usd": "1279580.33",
+  "why": "selected: number 202 by what official venues sent it in the window, directly or through a router (1279580.33 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0xe460536bd39f1a8a35cb52f8ac55f7e263a6d484",
+  "cohort": "top_buyers",
+  "rank": 23,
+  "purchases_usd": "1261351.32",
+  "why": "selected: number 205 by what official venues sent it in the window, directly or through a router (1261351.32 USD at the feed, 1261351.32 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x08eacd81007413edb1d9b5dc15e5c4c685075640",
+  "cohort": "top_buyers",
+  "rank": 24,
+  "purchases_usd": "1168803.18",
+  "why": "selected: number 213 by what official venues sent it in the window, directly or through a router (1168803.18 USD at the feed, 64946.85 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0xc6b15c04d75fc257df6bd7f18bcb035b0949d06d",
+  "cohort": "top_buyers",
+  "rank": 25,
+  "purchases_usd": "1103747.21",
+  "why": "selected: number 225 by what official venues sent it in the window, directly or through a router (1103747.21 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x92503c9be8f19d7500c86125b59b4174a3a8ec75",
+  "cohort": "top_buyers",
+  "rank": 26,
+  "purchases_usd": "1050420.23",
+  "why": "selected: number 234 by what official venues sent it in the window, directly or through a router (1050420.23 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x1119c4ce8f56d96a51b5a38260fede037c7126f5",
+  "cohort": "top_buyers",
+  "rank": 27,
+  "purchases_usd": "1000558.62",
+  "why": "selected: number 244 by what official venues sent it in the window, directly or through a router (1000558.62 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x3c28cf138b494ce468a59cc29662f07ded8ce05a",
+  "cohort": "top_buyers",
+  "rank": 28,
+  "purchases_usd": "950070.86",
+  "why": "selected: number 251 by what official venues sent it in the window, directly or through a router (950070.86 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0x11f823e9eedb8bafe062235ea38a9b04b36d34f3",
+  "cohort": "top_buyers",
+  "rank": 29,
+  "purchases_usd": "936601.36",
+  "why": "selected: number 254 by what official venues sent it in the window, directly or through a router (936601.36 USD at the feed, 46881.41 of it through a router; an upper bound of its purchases), and vet402 could build its record"
+ },
+ {
+  "wallet": "0xace64dbf9b86975756a79a28a8614e9e97c707a6",
+  "cohort": "top_buyers",
+  "rank": 30,
+  "purchases_usd": "886982.41",
+  "why": "selected: number 262 by what official venues sent it in the window, directly or through a router (886982.41 USD at the feed, 0.00 of it through a router; an upper bound of its purchases), and vet402 could build its record"
  },
  {
   "wallet": "0xf8725e806bdd1039daaa702e8618ff41557b1469",

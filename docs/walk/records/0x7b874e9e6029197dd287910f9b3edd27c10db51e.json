@@ -1,0 +1,209 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x7b874e9e6029197dd287910f9b3edd27c10db51e?chain=4663",
+  "http_status": 200,
+  "reason": "",
+  "x_facts_hash": "0x2519cd731e27f19c081044e080ccb0a2e035443d70d77e6ef8ba8346c560ff47",
+  "facts": {
+    "address": "0x7b874e9E6029197Dd287910F9B3EDd27C10Db51E",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T06:34:18.000Z",
+    "as_of_block": 88155411,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "SPY"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "SPY",
+        "name": "SPDR S&P 500 ETF Trust",
+        "token": "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+        "canonical": true,
+        "raw": "0",
+        "shares_ui": "0.00000000",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x319724394D3A0e3669269846abE664Cd621f9f6A",
+        "feed_answer": "77893965709",
+        "feed_updated_at": "2026-10-14T00:00:53.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "0",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 10,
+          "univ3": 0,
+          "univ4": 0,
+          "other_unparsed": 47
+        },
+        "corporate_actions": [
+          {
+            "block": 65779981,
+            "time": "2026-09-18T00:00:49.000Z",
+            "effective_at": "2026-09-18T00:10:33.000Z",
+            "tx": "0x2fe45ab24d1b3fa87883f8b08daf29dae969c5b43d0afe9ccca299c11a641025",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1001717991187472003",
+            "ratio": "1.001717991187472003",
+            "held": true,
+            "wallet_raw_at": "503817869349878599",
+            "wallet_shares_before": "0.50381786",
+            "wallet_shares_after": "0.50468342"
+          }
+        ]
+      }
+    ],
+    "events_summary": {
+      "transfer": 10,
+      "univ3": 0,
+      "univ4": 0,
+      "other_unparsed": 47
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": null,
+    "mdd_usd": null,
+    "gaps": [
+      "other_unparsed",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0x10DD80c6F962eB071BEed8433C7f3e68906eAcDb",
+        "symbol_raw": "U⟨U+17B5⟩S⟨U+17B5⟩DG",
+        "name_raw": "U⟨U+17B5⟩S⟨U+17B5⟩DG",
+        "imitates": "USDG",
+        "reasons": [
+          "imitates_usdg",
+          "hidden_characters",
+          "mimics_counterparty",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "sent",
+        "counterparty": "0x16183a932366926515bebc0e44cd15641eae9116",
+        "mimics": "0x161843b7a03d37742aeddd5a278ee460a4779116",
+        "first_seen_block": 59058731,
+        "tx": "0xbc7d215762e3522213158495302c9c7c21fff66bde446d90a36ccfb8d974e353",
+        "amount_raw": "1022654226",
+        "transfers_seen": 1,
+        "counted": false,
+        "found_by": "alchemy"
+      },
+      {
+        "token": "0xB4A2E4d7c9493A394aB8E48217D49E1808F7D5ac",
+        "symbol_raw": "U⟨U+17B5⟩S⟨U+17B5⟩DG",
+        "name_raw": "U⟨U+17B5⟩S⟨U+17B5⟩DG",
+        "imitates": "USDG",
+        "reasons": [
+          "imitates_usdg",
+          "hidden_characters",
+          "mimics_counterparty",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "sent",
+        "counterparty": "0x16183a932366926515bebc0e44cd15641eae9116",
+        "mimics": "0x161843b7a03d37742aeddd5a278ee460a4779116",
+        "first_seen_block": 68473154,
+        "tx": "0xb8b7f960ca1bf5807ac65cfd59962aa17379ae109852a0279efc71884a240060",
+        "amount_raw": "919801013",
+        "transfers_seen": 2,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 88155411,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 7,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0xbc2447824f52a0c52d88db5fd86b800e8cdee45aff8a25c6086ad5f83db9f472",
+        "0x0555e58987df292470b4a542d3faeb914f0aa4e7d3a80602d28c29183eaa5c60",
+        "0xe1eddb00e92e0c60743c156fc71ee0bccd3fa9b3ecd06a0259261da8c544c493",
+        "0x38c35ad926060c7fcecdb41569f90119e5276f42c143f473fdfa120623f9ae53",
+        "0x45dd65154f52d82fbed7527ed626625b15d01ce59153c445e92ba7176175388c",
+        "0xd4fd896ba9679f5784e1c74cb9432b6a662a19c508bdaad2c947b849482731d8",
+        "0x3d04784b0aa3535b23bce8565da0872309b3c36da6d223a1a3d652ea9f92ead7",
+        "0xb7cf858251bc6549ef32b5c52c309d6738a870de841a1ae47ce7c094412eb834",
+        "0x1dabb593aa0df6fb786ff363eb3d20432249f148b13fc439d664b5844bbf65cf",
+        "0x36d1243ebe8b705e1c72f4a302a2c930fd3f36e0a3bd36b478b7375984453593",
+        "0xdfdac9a0f557a6330d78a205281b80f7fc1d0c455603b54a0adb0f394c76e74f",
+        "0xa0db25a73bd8bef35c222d8797f8057a0c9a371d343c72d15731fee6e600ce7e",
+        "0x84d39c083fabc10e9df902e0e19579bf64ed3c4a748343a61d6858d770057005",
+        "0x2a84fde8f27c37f9ce6a1f0eefdd31cc03edf724bd0d70e963539099b944905e",
+        "0xc0fded0933c93394de01d8c7ff193737c4eddd349761d8fe1247d04eb3f5d6ee",
+        "0xf33d9bd5f9512fda042d26ffe9faad02aabe96afee9605b15afbc254d6aa26fb",
+        "0xe2c38a62230cfb9299abf09e6dfe44790be5515dd5e5200833dd851bbe4b0c39",
+        "0x90de1adb3bc8a82171b73832aebd4ca690bf70f48d8dfb5bad3d4710f21bfa14",
+        "0xb5d71d93796fb959d58ccf03ef9e0c3c7d4a53fa459929f39bbf9657038660d6",
+        "0x0c9449580cdfe05b5876b28fe6099d7295078e1311d10bcc68d67f9d9de5968e",
+        "0xe7b4dd93620ecc93ce1fb292c7e619b54df232abe34479936c6947fccf570f2f",
+        "0x4bbcd1abd4412ed07945fb0f3e86b6f63c24d2c74d2c74a3407dc96996f1f0ee",
+        "0x495f71580cebbb420be07081afcba96454b199e2092a14325cfcdbed282350ce",
+        "0x1cf398fa8e7dede72923dbb2c96c515642e795b7deefa85ec845af063ebaef4d",
+        "0xdea41caa1ef846765e1cbb8128134d32806126d30b38717ae5142089c8cd408c",
+        "0x687b407df801046465fa89fbc14216fc0d1358a7fc96a732df03edd5f831557b",
+        "0xbd8057686595ccebabd0a5933a0d6f6f09cbd7ed84100952f69d7e229faf97a9",
+        "0x24bbc6055972ff8fa3b1da7ce5003d6b239ec50613a26d8a39d011ddb4413fbf",
+        "0x490a84d8b83bc74082a3d3ae3047330585b89521f036c615afca99936e8c5101",
+        "0xf4b2250320fbecc694a1d73ca1c8d50c0ecb43b62eb15979dc22391961222047",
+        "0xcc1da96642d9b638747d200541c25ac5adaf0def4968859a4f0bcfb2c174bc05",
+        "0xce7c6ec27fa53bbd40a911247e9fd1966498ea819c1d9baabc9e4321ea7a0656",
+        "0x61bec03f59159bd77ab717cc0269fc2e5f589fdd8bf908482ac6b1a935252cc2",
+        "0x37a72ca263675575763ed717b31b230cae03810667eeca2fae78fb276eb7d657",
+        "0xfc53e764329d93bfc4a2c136d29161cc660601bf0a35794d0914db773ad16703",
+        "0xf883249585ecec1d8b04f3c48c05989d2abc897c04f78623e1e1d645d1f89923",
+        "0x676f523fe54aa89aac414998ecc0848463e533cc5f486c6eb6c6226f469abaa5",
+        "0xe572d1a72396f51ae35469c17ad80ab0070005249b34ee64840f99e5a38b6591",
+        "0xe684aaf1f251496ebfbdbab3ea147115d729f5678eecd4211b2a8eecbc632ca5",
+        "0xee865991517a8646ae1a44ae64a824b3f9625218926714f2567e0abe93d2e70d",
+        "0x15e77a199b4804aba7bc99feb2f9930e0707712148ec1ea2ea1a84d963fc8259",
+        "0x311b0debd0bb7cab261d745a50d4051a38bda61dc789f6d980b294f5490e4ba0",
+        "0x02cdeab119738776cdf0abe29b3a8fb8fce1bb09097ff66db554df060800f260",
+        "0x4be4a41c20a0e93643a83b70ca2a7fa115331718534b7fe69ff90b609bc18e7e",
+        "0xa2d869175e4f0914260596a3ca9fc71dc6928731e66dae4ed3033cdf27ef4475",
+        "0x48e6e23a0a599a467ea6be8e1ffeb03ecb66016fc19734d1bc379c86e8ab2780",
+        "0x684263d0f40813c34cf79aee43e36b7932f29d67f01164b8dbcda4575440c8b1",
+        "0x5886ed569d2bf6609f17299c16d9d4ad89665c0eb62da4eb4c2b70ae20439a51",
+        "0xcc62151f168cf39a48855ae4a3f9680870182bc0f5dbea20ad8887d4993835f5",
+        "0x65230bb65014c351d4c4defe293f877fd193a15d2ff810c85c43bd14df566f36",
+        "0x11af1753b85d3320c100d1e2efef052148915fa14c0fd02cfad6d38007e83405",
+        "0x25b9d4244163ec73248fdeaa807fd66f03724c31b8188e4d5de296a284950a54",
+        "0x46b9d577b7572c53da364418e2d7f78bcd5d49241d5431a1b8870dc063cfedf4",
+        "0x595bdc8b2dbe9af061f5a4c88edae6b5c83a8346eece813460d6daf0ee60cded",
+        "0x0cdf0270ad6bd6884b2d9058acf1b1d0f30ef97089bb534a5ce55e8b195a2861",
+        "0x5f9ea2a13f0cd3223e4ee3cc31896c26c537c7355f7677ea293e4d9be1230341",
+        "0x335890fa32ee1ebd16472efa26b8b18937c7bc8626a9b83329055df6a0f6e0e9"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}
