@@ -1,27 +1,38 @@
-copy-guard v2 walk, 40 wallets, decided 2026-10-14T05:09:33.618Z, marked at block 88105125
-  mandate  0x39388673fcd6e43659d250445e3e51ecfbbe31776a48d65e7983ba9b72e42229 principal 0xBB621a68f7C142CD340C5D5e71056Ecd42f8f48D signed by the principal (mandate/sample/)
+copy-guard v2 walk, 51 wallets, decided 2026-10-14T08:40:03.875Z, marked at block 88230479
+  mandate  0xdd7b06e179a356d69cc86ba99e0093f7bb37f6b2fac8da40753e7654503c4425 principal 0xBB621a68f7C142CD340C5D5e71056Ecd42f8f48D signed by the principal (mandate/sample/)
   limits   0x1e7624863e095cbdb3475e8f01b8e6befbe53ed24389a2b51c3dcb479d72c2cf full 100.00 USD, reduced 25.00 USD, 300.00 USD per day, 10 open
-  tokens   CRE token-check results 0x7d0ef98393644903ba187f643e08f3eacf5c417db5e4dd3e843f826c21ba0e41 (82 tokens)
+  tokens   CRE token-check results 0xe2fcacc3ae7ebf4e60cc2d18fa34c1b58e0f747aa3f919b8f87c20ba79535975 (143 tokens)
   0xe9b08727131e34010b34006c660d4c1b436ec25f watched: record partial, realized -81.19, anchor MATCH, 93 moves of 93 listed txs
-  0xd7572f7ed161d3c46ca86d7da52d94d4b2d104a9 top_buyers 1: record partial, realized unknown, no anchor, 450 moves of 450 listed txs
-  0xaeb83c45e9bd22abd37853058e2a032d5d008600 top_buyers 2: record partial, realized unknown, no anchor, 207 moves of 207 listed txs
-  0xfe12d3d09e2ba45590c8484876b17dad9492f2f4 top_buyers 3: record reconstructed, realized unknown, no anchor, 4 moves of 4 listed txs
-  0xff737c78f1ee4667019fe1d09607c0c1f2d44b2f top_buyers 4: record partial, realized unknown, no anchor, 291 moves of 291 listed txs
-  0xfb5fec1459616fc525e0ecbe5b5c62aa36ede673 top_buyers 5: record partial, realized unknown, no anchor, 191 moves of 191 listed txs
-  0x74ab4f44d753a7926c58bd012203f9f715d7a149 top_buyers 6: record reconstructed, realized unknown, no anchor, 2 moves of 2 listed txs
-  0xf11135c440c1782af2b0b766e756deae2210a43e top_buyers 7: record partial, realized -12495.78, no anchor, 310 moves of 310 listed txs
-  0x260e2b479f2e6a5d9b638e540641527acf3e0011 top_buyers 8: record partial, realized 33646.26, no anchor, 230 moves of 230 listed txs
-  0xe2ed71633b1918de6e796d9bbafa3aa4432973a5 top_buyers 9: record partial, realized unknown, no anchor, 583 moves of 583 listed txs
-  0xe4a609a6f6ff07ee2a93d99cae32246b25552151 top_buyers 10: record reconstructed, realized unknown, no anchor, 1 moves of 1 listed txs
-  0x1632d06045396fc34bc05fe2900dfe3e09fe41d5 top_buyers 11: record reconstructed, realized unknown, no anchor, 1 moves of 1 listed txs
-  0x8a500099568729030547d503f3d5aaf75b0ce509 top_buyers 12: record partial, realized 117.43, no anchor, 293 moves of 293 listed txs
-  0xb7124430f4d51d93f038ac793faa46767403bc5c top_buyers 13: record partial, realized unknown, no anchor, 110 moves of 110 listed txs
-  0x7690ea2bab2f6c906240f7c35fd636515d2eb969 top_buyers 14: record partial, realized 5669.86, no anchor, 130 moves of 130 listed txs
-  0x2312b5480f7e3d1894ed046af15b23186ff0f53c top_buyers 15: record partial, realized -50.16, no anchor, 154 moves of 154 listed txs
-  0x03b95224bbb5ce0d923d1bfdafa6306f969d99cd top_buyers 16: record partial, realized unknown, no anchor, 320 moves of 320 listed txs
-  0xe5764a0855c5609263be9bc0ef1e640e3fc9490c top_buyers 17: record partial, realized unknown, no anchor, 17 moves of 17 listed txs
-  0x60caa4bcba5dda11ba26dc0e7632c106fabdddae top_buyers 18: record partial, realized unknown, no anchor, 374 moves of 374 listed txs
-  0x8b6d974142fe732169b4c7910cb1737679a35ade top_buyers 19: record partial, realized -0.06, no anchor, 229 moves of 229 listed txs
+  0xfb5fec1459616fc525e0ecbe5b5c62aa36ede673 top_buyers 1: record partial, realized unknown, no anchor, 191 moves of 191 listed txs
+  0xe2ed71633b1918de6e796d9bbafa3aa4432973a5 top_buyers 2: record partial, realized unknown, no anchor, 583 moves of 583 listed txs
+  0xb7124430f4d51d93f038ac793faa46767403bc5c top_buyers 3: record partial, realized unknown, no anchor, 110 moves of 110 listed txs
+  0x2312b5480f7e3d1894ed046af15b23186ff0f53c top_buyers 4: record partial, realized -50.16, no anchor, 154 moves of 154 listed txs
+  0xe5764a0855c5609263be9bc0ef1e640e3fc9490c top_buyers 5: record partial, realized unknown, no anchor, 17 moves of 17 listed txs
+  0x8b6d974142fe732169b4c7910cb1737679a35ade top_buyers 6: record partial, realized -0.06, no anchor, 229 moves of 229 listed txs
+  0xfab1e5a778048c54695a8381ff1a996c1c83c9d4 top_buyers 7: record partial, realized -0.01, no anchor, 382 moves of 382 listed txs
+  0x1c744b1405915652d9a656349443bc7e74d2bb3d top_buyers 8: record partial, realized unknown, no anchor, 148 moves of 148 listed txs
+  0xe4147aaea0f869f8f389b4c1cf54c2686b864e26 top_buyers 9: record partial, realized unknown, no anchor, 266 moves of 266 listed txs
+  0x72655b3926db3afbe914a53b0604905af7ce11a5 top_buyers 10: record partial, realized unknown, no anchor, 5 moves of 5 listed txs
+  0x47832c2fc98a4e884555407aeabc5ce519d4e70e top_buyers 11: record partial, realized unknown, no anchor, 126 moves of 126 listed txs
+  0x7b874e9e6029197dd287910f9b3edd27c10db51e top_buyers 12: record partial, realized unknown, no anchor, 59 moves of 59 listed txs
+  0x0f02afcb1550fbeafaf001251b06ba73c68a5384 top_buyers 13: record partial, realized unknown, no anchor, 363 moves of 363 listed txs
+  0x612b56357a5d9f1de67f11c873517257dffa32c3 top_buyers 14: record partial, realized -2091.85, no anchor, 513 moves of 513 listed txs
+  0x1bd8b5fb6305aa64036d3a4dd90cea5b9efe8e96 top_buyers 15: record partial, realized unknown, no anchor, 268 moves of 268 listed txs
+  0x42d15089d8d6da2a0849a728bfecc77dd7b27171 top_buyers 16: record partial, realized -328.91, no anchor, 354 moves of 354 listed txs
+  0xab8ea60885ed62e64704f81d95edc960884b2350 top_buyers 17: record partial, realized -0.65, no anchor, 324 moves of 324 listed txs
+  0xce57dad4ac59bc93172ae1282b3eee5af6a00205 top_buyers 18: record partial, realized unknown, no anchor, 120 moves of 120 listed txs
+  0x30ce12193e609283abec6dc223eb398705b26576 top_buyers 19: record partial, realized 0.40, no anchor, 550 moves of 550 listed txs
+  0x62c214f52b065f56caa7bc1834c20d09f8d41f85 top_buyers 20: record partial, realized unknown, no anchor, 46 moves of 46 listed txs
+  0x5500e69d58d8f80b236c8a72fd52c538a5d5237f top_buyers 21: record partial, realized -0.01, no anchor, 602 moves of 602 listed txs
+  0x111eaa31b2a1484191cf7eaf495beddc12469f38 top_buyers 22: record partial, realized unknown, no anchor, 249 moves of 249 listed txs
+  0xe460536bd39f1a8a35cb52f8ac55f7e263a6d484 top_buyers 23: record partial, realized -308.68, no anchor, 252 moves of 252 listed txs
+  0x08eacd81007413edb1d9b5dc15e5c4c685075640 top_buyers 24: record partial, realized -778.52, no anchor, 341 moves of 341 listed txs
+  0xc6b15c04d75fc257df6bd7f18bcb035b0949d06d top_buyers 25: record partial, realized -1.61, no anchor, 188 moves of 188 listed txs
+  0x92503c9be8f19d7500c86125b59b4174a3a8ec75 top_buyers 26: record partial, realized -6.40, no anchor, 513 moves of 513 listed txs
+  0x1119c4ce8f56d96a51b5a38260fede037c7126f5 top_buyers 27: record partial, realized unknown, no anchor, 192 moves of 192 listed txs
+  0x3c28cf138b494ce468a59cc29662f07ded8ce05a top_buyers 28: record partial, realized unknown, no anchor, 592 moves of 592 listed txs
+  0x11f823e9eedb8bafe062235ea38a9b04b36d34f3 top_buyers 29: record partial, realized -0.02, no anchor, 223 moves of 223 listed txs
+  0xace64dbf9b86975756a79a28a8614e9e97c707a6 top_buyers 30: record partial, realized unknown, no anchor, 133 moves of 133 listed txs
   0xf8725e806bdd1039daaa702e8618ff41557b1469 same_ticker_buyers 1: NO RECORD (HTTP 404), 1 moves of 1 listed txs
   0x4cabff591fc360699fc299d454a3201288b2e1c1 same_ticker_buyers 2: record partial, realized unknown, no anchor, 11 moves of 11 listed txs
   0x63e165a2cc1cf9c4dde9f41d62f99035bd870986 same_ticker_buyers 3: record partial, realized unknown, no anchor, 15 moves of 15 listed txs
@@ -42,35 +53,43 @@ copy-guard v2 walk, 40 wallets, decided 2026-10-14T05:09:33.618Z, marked at bloc
   0x9a26c0dcd3d3f6f194301a17a66232b84cd1e5f3 same_ticker_buyers 18: record partial, realized unknown, no anchor, 6 moves of 6 listed txs
   0xa634f171b85c0c29df154d64b48edc0284cd05fd same_ticker_buyers 19: record partial, realized unknown, no anchor, 20 moves of 20 listed txs
   0xe845229cfed0b23e51ae6c41eb13ae1c61680878 same_ticker_buyers 20: record partial, realized unknown, no anchor, 11 moves of 11 listed txs
-  feed NVDA 640 values from block 23836458
-  feed QQQ 124 values from block 44356044
-  feed SPY 76 values from block 30210529
-  feed GME 206 values from block 77929684
-  feed TSLA 465 values from block 51807204
-  feed PLTR 126 values from block 79791955
-  feed META 680 values from block 42349116
-  feed AMZN 290 values from block 42350108
-  feed AAPL 288 values from block 36424598
-  feed MSFT 372 values from block 28045291
-  feed MU 851 values from block 47741200
-  feed DELL 207 values from block 80395947
-  feed TSM 321 values from block 45925600
-  feed AMD 539 values from block 60417187
-  feed CRCL 1682 values from block 47958285
-  feed SLV 657 values from block 40618633
-  feed SPCX 742 values from block 47738541
-  feed BABA 477 values from block 47951525
-  feed GOOGL 241 values from block 60415818
-  feed INTC 811 values from block 60416477
-  feed SNDK 223 values from block 79400947
-  feed MSTR 276 values from block 79810567
+  feed NVDA 974 values from block 5167202
+  feed QQQ 179 values from block 27388024
+  feed SPY 105 values from block 18871121
+  feed AMZN 278 values from block 44936792
+  feed META 663 values from block 45690442
+  feed TSM 362 values from block 41682031
+  feed CRCL 2969 values from block 26000474
+  feed SPCX 2651 values from block 6783716
+  feed MU 2698 values from block 18856595
+  feed BABA 484 values from block 47951525
+  feed TSLA 506 values from block 48143109
+  feed AAPL 270 values from block 41010201
+  feed GOOGL 764 values from block 6826227
+  feed MSFT 256 values from block 47072167
+  feed INTC 816 values from block 60416477
+  feed AMD 873 values from block 42402112
+  feed USO 1097 values from block 26928344
+  feed MSTR 2395 values from block 35934466
+  feed SLV 1085 values from block 11915891
+  feed CRWV 1477 values from block 47218278
+  feed RKLB 1206 values from block 51800858
+  feed COIN 1296 values from block 48151771
+  feed PLTR 628 values from block 48153262
+  feed GME 1090 values from block 11331735
+  feed SNDK 4624 values from block 16420942
+  feed DELL 193 values from block 81107809
 
-  CRE       root recomputed from 4200 leaves, LedgerAnchored tx 0x109ada373e1c23c912dfea0d7ba3a47725e469b22f5fad4be9bdb3b68ce201d0
-  decisions 4200 about 40 wallets (1 without a record, 1 decisions): FULL 0, REDUCED 54, NONE 4146
-  other tokens under a listed ticker: 64 moves in 34 tokens (NVDA, SPY, USDG): 36 sent to the wallet, 20 bought by it, 0 received unpaid, 8 logged as sent by it
-  copy-guard  opened 54 (1350.00 USD of practice money), closed 53, open 1, result 6.04 USD; the purchases it followed: median 0.45 USD, sum 1255468.54 USD
-  ticker copy opened 230: 210 in Stock Tokens (result 121.77 USD), 20 in 1 other tokens (20 valued at a pool: -1842.54 USD, 0 not measured)
-  same size   25.00 USD each: opened by both 54 (6.04 USD), by ticker copy only 156 Stock Token positions (24.43 USD)
-  root      0x08050cbff7c889dd21d0864ce242a479040035d892275e919f684b0a6cfb4040
-  read      0 records from the free route, 231 RPC calls
+  CRE       root recomputed from 8396 leaves, LedgerAnchored tx 0xb8f605d9825e4b41da68990bfcdfab20538e1c62db41990b309a6ebf45b76812
+  decisions 8396 about 51 wallets (1 without a record, 1 decisions): FULL 0, REDUCED 236, NONE 8160
+  other tokens under a listed ticker: 136 moves in 67 tokens (FLY, GME, IBM, NET, NVDA, SPY, USDG, WMETA, WTSM): 75 sent to the wallet, 22 bought by it on an official venue, 2 bought by it elsewhere, 0 received unpaid, 37 logged as sent by it
+  copy-guard  opened 236 (5900.00 USD of practice money), closed 229, open 7, result 26.62 USD; the purchases it followed: median 2680.11 USD, sum 2508223.60 USD
+  ticker copy opened 1565: 1541 in Stock Tokens (result 298.27 USD), 24 in 4 other tokens (21 valued at a pool: -1922.29 USD, 3 not measured)
+  selected                     30 wallets, 8093 decisions: copy-guard opened 212 (5300.00 USD, result 26.60 USD; at 25.00 USD each 26.60 USD), followed purchases median 3295.74 USD, 38.2% from 0x30ce12193e609283abec6dc223eb398705b26576
+  observed_other_token_buyers  20 wallets, 210 decisions: copy-guard opened 24 (600.00 USD, result 0.02 USD; at 25.00 USD each 0.02 USD), followed purchases median 0.40 USD, 16.7% from 0xa634f171b85c0c29df154d64b48edc0284cd05fd
+  demo                         1 wallets, 93 decisions: copy-guard opened 0 (0.00 USD, result 0.00 USD; at 25.00 USD each 0.00 USD), followed purchases median 0.00 USD
+  incoming Stock Tokens: purchase 1184, purchase_off_venue 565, rotation 3, liquidity 2217, swapped_unpaid 5, received 263, out 4029
+  same size   25.00 USD each: opened by both 236 (26.62 USD), by ticker copy only 1305 Stock Token positions (48.01 USD)
+  root      0x0829cd645caa979dbf725c34f519634060b4c116a71b10b25d5afb2848d8e3c1
+  read      0 records from the free route, 344 RPC calls
   saved     docs/walk/ and docs/ledger.json

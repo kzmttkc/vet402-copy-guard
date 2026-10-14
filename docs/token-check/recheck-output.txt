@@ -1,95 +1,161 @@
-recheck of docs/token-check/results.json: 82 tokens, over https://rpc.mainnet.chain.robinhood.com (no CRE)
-  the RPC no longer keeps the state of block 88092367 (historical state a47a9861a9f71d9f69baa1cb69f73de5b70548344d7): reading the state as it is now from here on
-AGREE   0x05a3d1cd21d0c88145e82600e62e7e496e0f222b  issuer token  "AMC"  updates 0  (state read as it is now)
-AGREE   0x05b37fb53a299a1b874a619e1c4c404d52c36f4c  issuer token  "RDDT"  updates 0  (state read as it is now)
-AGREE   0x0bd7d308f8e1639fab988df18a8011f41eacad73  not issuer   "WETH"  updates 0  (state read as it is now)
-AGREE   0x0c95df78d9f692beb3feaeceb2ef1e614513b1f7  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x0ef3fccbc4c73be8bb14411cfe801df141e309c0  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x116f00968269b7bfbad4109ce591d6e74c0601d4  issuer token  "NET"  updates 0  (state read as it is now)
-AGREE   0x117cc2133c37b721f49de2a7a74833232b3b4c0c  issuer token  "SPY"  updates 1  (state read as it is now)
-AGREE   0x12f190a9f9d7d37a250758b26824b97ce941bf54  issuer token  "AMZN"  updates 0  (state read as it is now)
-AGREE   0x147d436a2f253cc8e8d52efb18a6ba6f9e827e5a  not issuer   "USDC"  updates 0  (state read as it is now)
-AGREE   0x1b0e319c6a659f002271b69db8a7df2f911c153e  issuer token  "GME"  updates 0  (state read as it is now)
-AGREE   0x1d11f0496982706c5e14a514d4e79f2e6bde4516  issuer token  "DJT"  updates 0  (state read as it is now)
-AGREE   0x1dc878194328a96680c23b8d3c1186637b199eb3  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x1ee1a8fcc194a4fcdbce10f958aea8a18e831458  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x22b1137c0637bf8f7ac7fbcfa857604e4b89d8d7  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0  (state read as it is now)
-AGREE   0x2504cc3b84585a5cdf88f4c4f50b2afe9181150c  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x2ce3e396e069ac9fa62046f423267072e06e77af  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x2e0847e8910a9732eb3fb1bb4b70a580adad4fe3  issuer token  "GOOGL"  updates 1  (state read as it is now)
-AGREE   0x318f563dceddbe58625400d9f7ee27eecef5b1a3  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0  (state read as it is now)
-AGREE   0x322f0929c4625ed5bad873c95208d54e1c003b2d  issuer token  "TSLA"  updates 0  (state read as it is now)
-AGREE   0x36f4d7f0fa5c7348416282e04380ddff30ca4be2  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x38ebf2ab30cbff745e2db10aa17b6aaaad001885  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0  (state read as it is now)
-AGREE   0x39dbed3a2bd333467115de45665cc57f813c4571  not issuer   "PONS"  updates 0  (state read as it is now)
-AGREE   0x411efb0e7f985935daec3d4c3ebaea0d0ad7d89f  issuer token  "SLV"  updates 0  (state read as it is now)
-AGREE   0x4190ee598c2a69d35bef53c83d152ae0f25ea416  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0  (state read as it is now)
-AGREE   0x42b4fa90438ecb1a0c2676ff25a9f27355dd53c2  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x42e140c4b439c42dc01aa29be1fce2bc64d7f160  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x43b07d15ce533bec5476d70c22a78a1b2b662155  issuer token  "MRNA"  updates 0  (state read as it is now)
-AGREE   0x48e39e56acdba37b09020c0b734a613c9a2f100a  issuer token  "BB"  updates 0  (state read as it is now)
-AGREE   0x4a0e65a3eccec6dbe60ae065f2e7bb85fae35eea  issuer token  "SPCX"  updates 0  (state read as it is now)
-AGREE   0x4d3f37a965b21ab4122e92dd41d2693e742c883b  not issuer   "RIPE"  updates 0  (state read as it is now)
-AGREE   0x4ea005168d7f09a7a0ba9d1def21a479950e44c2  issuer token  "COST"  updates 1  (state read as it is now)
-AGREE   0x4ff7f19a6c4c7ebcba25248610dbe642bbd0b792  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x5411257cedf60bc40f4bead410bf8d02079056a2  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x58ffe4a942d3885baa22d7520691f611ef09e7aa  issuer token  "TSM"  updates 2  (state read as it is now)
-AGREE   0x5dd716fe12275b69f04b26beeca343843c8e3539  not issuer   "NVDA"  updates 0  (state read as it is now)
-AGREE   0x5e81213613b6b86eab4c6c50d718d34359459786  issuer token  "TTWO"  updates 0  (state read as it is now)
-AGREE   0x5fc5360d0400a0fd4f2af552add042d716f1d168  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x623613c0e9211a7215b4fd4ab80656fcbd1186e0  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x62fd0668e10d8b72339be2dcf7643001688ff13b  issuer token  "MRVL"  updates 1  (state read as it is now)
-AGREE   0x65abeb15f2fed8cccf979c9429f517f937bdc0d5  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x67f438bd18131f152b6387083628e8eeaa5fb8b2  not issuer   "USDG "  updates 0  (state read as it is now)
-AGREE   0x69e7778d46713e17572d610bdaca3943aa4e6219  not issuer   "SPY"  updates 0  (state read as it is now)
-AGREE   0x711681d447e8f53ac228f20afad1e179ab5e78f1  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x72ead0c700f07b645a8f91badd82be5c545b9d37  not issuer   "NVDA"  updates 0  (state read as it is now)
-AGREE   0x73acfc8352b6a9f0baacd02a266e58fde4b1c183  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0x75742c18bc1f1c5c5f448f4c9d9c6f66dafaaa38  issuer token  "SOXX"  updates 1  (state read as it is now)
-AGREE   0x8005d266423c7ea827372c9c864491e5786600ea  issuer token  "LLY"  updates 1  (state read as it is now)
-AGREE   0x83726b15b25013e95b56357c4795b848ab32c3bc  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0  (state read as it is now)
-AGREE   0x86923f96303d656e4aa86d9d42d1e57ad2023fdc  issuer token  "AMD"  updates 0  (state read as it is now)
-AGREE   0x87673a619fc4f3fc08068a0bb04f60aa2d04ca62  not issuer   "mooBeefyAlandaleRobinhoodWETH-SPY"  updates 0  (state read as it is now)
-AGREE   0x894e1ec2d74ffe5aef8dc8a9e84686accb964f2a  issuer token  "PLTR"  updates 0  (state read as it is now)
-AGREE   0x92fd66527192e3e61d4ddd13322aa222de86f9b5  issuer token  "SGOV"  updates 4  (state read as it is now)
-AGREE   0x941ae714ec6d8130c7b75d67160ca08f1e7d11dd  issuer token  "DELL"  updates 1  (state read as it is now)
-AGREE   0x980dcf6766fa79f5cf0c4aadb3ab477ff15a9619  issuer token  "IBM"  updates 0  (state read as it is now)
-AGREE   0x9909c4e8cae5ada810c7297943ae767f87d00a3e  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0xa913c4c2f28aa7b0b15a7c6008a6e19ff8bf85c0  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0xad25ac6c84d497db898fa1e8387bf6af3532a1c4  issuer token  "BABA"  updates 0  (state read as it is now)
-AGREE   0xaf3d76f1834a1d425780943c99ea8a608f8a93f9  issuer token  "AAPL"  updates 1  (state read as it is now)
-AGREE   0xb1bf26c1d20ff267a4f93550d1e0d06ac40a114b  issuer token  "RIVN"  updates 0  (state read as it is now)
-AGREE   0xb90a19ff0af67f7779aff50a882a9cff42446400  issuer token  "SNDK"  updates 0  (state read as it is now)
-AGREE   0xc0d6457c16cc70d6790dd43521c899c87ce02f35  issuer token  "META"  updates 1  (state read as it is now)
-AGREE   0xc4f85cebec3fe6c77df0f71f3a3e139d43bbb4a3  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0  (state read as it is now)
-AGREE   0xc6417224f693a0d8bf612bc6d7dcbbc268d5ad13  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0xc72b96e0e48ecd4dc75e1e45396e26300bc39681  issuer token  "INTC"  updates 0  (state read as it is now)
-AGREE   0xc9a981fee1f9dec688bb123ccdecc63d0debfc4e  issuer token  "GLD"  updates 0  (state read as it is now)
-AGREE   0xcb071fc69e4aebd512387316578752e5c20b92e0  not issuer   "U[U+206F]S[U+206F]DG"  updates 0  (state read as it is now)
-AGREE   0xccee82fe024c36fa15e1005ede3e9e4787e23d09  issuer token  "HIMS"  updates 0  (state read as it is now)
-AGREE   0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec  issuer token  "NVDA"  updates 1  (state read as it is now)
-AGREE   0xd5f3879160bc7c32ebb4dc785f8a4f505888de68  issuer token  "QQQ"  updates 1  (state read as it is now)
-AGREE   0xd6b8cecde770507fc46cde7ea82dde383ed7a7e5  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0xd9c6ee31275554006ca30abcde7b48188c4e2cf0  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0xdb81a12de6c0aebeddf2d85d531dd50cac7366ef  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0xdf0992e440dd0be65bd8439b609d6d4366bf1cb5  issuer token  "CRCL"  updates 0  (state read as it is now)
-AGREE   0xe0444ef8bf4ed74f74fd73686e2ddf4c1c5591e8  issuer token  "NFLX"  updates 0  (state read as it is now)
-AGREE   0xe7391e4047c7e5d48f31cd2b87004c10e875f288  not issuer   "U[U+206F]S[U+206F]DG"  updates 0  (state read as it is now)
-AGREE   0xe93237c50d904957cf27e7b1133b510c669c2e74  issuer token  "MSFT"  updates 1  (state read as it is now)
-AGREE   0xec262a75e413fafd0df80480274532c79d42da09  issuer token  "MSTR"  updates 0  (state read as it is now)
-AGREE   0xec90adc7157d68d9213a88627b66956950374a3e  not issuer   "USDG"  updates 0  (state read as it is now)
-AGREE   0xf0c4bf4c582cb3836e98394b1d4e7b7281101be8  issuer token  "RBLX"  updates 0  (state read as it is now)
-AGREE   0xf23250dac154d05bb671cb0d0ebef3c635c79ce2  issuer token  "UPS"  updates 1  (state read as it is now)
-AGREE   0xf6589f11bc40b669e584073f428b05562f568733  issuer token  "SNAP"  updates 0  (state read as it is now)
-AGREE   0xff080c8ce2e5feadaca0da81314ae59d232d4afd  issuer token  "MU"  updates 2  (state read as it is now)
-run 1  0xfa386a44268705425cc52115bf63badd8106e3e39ffc3b14c63eee71095eb77d  TokenBatchChecked found, counts match, block hash matches
-run 2  0xdbef8b0aeca1820e4a191c2f90edac9ccaf3be2d78ea28c711107fd96c518336  TokenBatchChecked found, counts match, block hash matches
-run 3  0x6cd511c78b0045af18171246be1d7ca8b92d2ec5e41b5aaf817e2c820fe3357e  TokenBatchChecked found, counts match, block hash matches
-run 4  0x1aaea557aad9af3d2a8129523ff0ca0aca62532bb254d2be19b2b13ed08f9842  TokenBatchChecked found, counts match, block hash matches
-run 5  0xf7b7484378d166b7b9d4b2ffbe97708fa3ddb1545c4e7d5c053b7cb2ef15fcb6  TokenBatchChecked found, counts match, block hash matches
-run 6  0xf04a9faefa83c3be99e70e902178e005a101fe50f471d795f5294c4a5609b320  TokenBatchChecked found, counts match, block hash matches
-run 7  0x3868b8e9d9bda1c340ce37c74eba35acbcee1ba00d2d55ce73f65db2446f4ae4  TokenBatchChecked found, counts match, block hash matches
-run 8  0x2b10033e7bf929064879346b65fd2dde82b45f429838375c3146eb64722eebb3  TokenBatchChecked found, counts match, block hash matches
-run 9  0x14338fa3c55cdf79c8238bcea3621a0828c59b3a1983d86d546b87e3bf9e2bea  TokenBatchChecked found, counts match, block hash matches
-anchor 0x175bf12ad77fd67d73490333b04ad1cc4c0c66d1ea7844836219f504a33fdb08  TokenCheckResultsAnchored found for keccak256(results.json) 0x7d0ef98393644903ba187f643e08f3eacf5c417db5e4dd3e843f826c21ba0e41
-RECHECK: 82 of 82 rows agree, 0 differ; state read at the checked block for 0, as it is now for 82; 0 problems with the onchain trail; 712 RPC requests
+recheck of docs/token-check/results.json: 143 tokens, over https://rpc.mainnet.chain.robinhood.com (no CRE)
+AGREE   0x008dd62dd934f3ffdc0986ba5316c78ae51cb1c9  not issuer   "PAPER"  updates 0
+AGREE   0x020bfc650a365f8bb26819deaabf3e21291018b4  not issuer   "CASHCAT"  updates 0
+AGREE   0x05a3d1cd21d0c88145e82600e62e7e496e0f222b  issuer token  "AMC"  updates 0
+AGREE   0x05b37fb53a299a1b874a619e1c4c404d52c36f4c  issuer token  "RDDT"  updates 0
+AGREE   0x0bd7d308f8e1639fab988df18a8011f41eacad73  not issuer   "WETH"  updates 0
+AGREE   0x0c95df78d9f692beb3feaeceb2ef1e614513b1f7  not issuer   "USDG"  updates 0
+AGREE   0x0d74c7103c690d861efd539916fde2db6d604c23  not issuer   "U[U+206F]S[U+206F]DG"  updates 0
+AGREE   0x0ef3fccbc4c73be8bb14411cfe801df141e309c0  not issuer   "USDG"  updates 0
+AGREE   0x10dd80c6f962eb071beed8433c7f3e68906eacdb  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0x116f00968269b7bfbad4109ce591d6e74c0601d4  issuer token  "NET"  updates 0
+AGREE   0x117cc2133c37b721f49de2a7a74833232b3b4c0c  issuer token  "SPY"  updates 1
+AGREE   0x12f190a9f9d7d37a250758b26824b97ce941bf54  issuer token  "AMZN"  updates 0
+AGREE   0x1383b43aed527485f191b60060f5b5471f71b1ca  not issuer   "USDG"  updates 0
+AGREE   0x147d436a2f253cc8e8d52efb18a6ba6f9e827e5a  not issuer   "USDC"  updates 0
+AGREE   0x156e175dd063a8ce274c50654ef40e0032b3fbcf  issuer token  "AVGO"  updates 1
+AGREE   0x17ca67ae8a0f0efe55b58721114f908903a40c06  not issuer   "wTSM"  updates 0
+AGREE   0x1b0e319c6a659f002271b69db8a7df2f911c153e  issuer token  "GME"  updates 0
+AGREE   0x1c8a973a8788c4a57371bed1611830a83fd580f4  not issuer   "GME"  updates 0
+AGREE   0x1d11f0496982706c5e14a514d4e79f2e6bde4516  issuer token  "DJT"  updates 0
+AGREE   0x22a68ae074150397c42d968ec050cd1ff3501a51  not issuer   "NVDA"  updates 0
+AGREE   0x22b1137c0637bf8f7ac7fbcfa857604e4b89d8d7  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0x2504cc3b84585a5cdf88f4c4f50b2afe9181150c  not issuer   "USDG"  updates 0
+AGREE   0x275fe81e2e5a8908f5cb7b5fa84d5b52680a1220  not issuer   "U[U+206F]S[U+206F]DG"  updates 0
+AGREE   0x2775c597f2500619993f5cdec034dff2dfe47a58  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0x2ce3e396e069ac9fa62046f423267072e06e77af  not issuer   "USDG"  updates 0
+AGREE   0x2d427692e928fa156ec22acfabafa0447c5805b7  issuer token  "GLXY"  updates 0
+AGREE   0x2e0847e8910a9732eb3fb1bb4b70a580adad4fe3  issuer token  "GOOGL"  updates 1
+AGREE   0x2e8c31162b855a2ffa90f6f8634643ad6f111e18  not issuer   "AI"  updates 0
+AGREE   0x2fc7f9e2911f20b2c4660d2aef808aa91bddb3d3  not issuer   "Fly"  updates 0
+AGREE   0x318f563dceddbe58625400d9f7ee27eecef5b1a3  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0x322f0929c4625ed5bad873c95208d54e1c003b2d  issuer token  "TSLA"  updates 0
+AGREE   0x34d537f53ea0a1333a5d7621e7f023ee6cfcb787  not issuer   "oPLATE"  updates 0
+AGREE   0x38ebf2ab30cbff745e2db10aa17b6aaaad001885  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0x39dbed3a2bd333467115de45665cc57f813c4571  not issuer   "PONS"  updates 0
+AGREE   0x3b14c39e89d60d627b42a1a4ca45b5bb45fc12e2  issuer token  "RKLB"  updates 0
+AGREE   0x3d1fef40fa8a20de967484436c8c527db9c78b6e  not issuer   "USDG"  updates 0
+AGREE   0x408c14038a04f7bd235329e26d2bf569ee20e250  issuer token  "NU"  updates 0
+AGREE   0x411efb0e7f985935daec3d4c3ebaea0d0ad7d89f  issuer token  "SLV"  updates 0
+AGREE   0x4190ee598c2a69d35bef53c83d152ae0f25ea416  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0x42b4fa90438ecb1a0c2676ff25a9f27355dd53c2  not issuer   "USDG"  updates 0
+AGREE   0x44318785554bf11ffd164a6f98d9a453e2fa74af  not issuer   "USDG"  updates 0
+AGREE   0x480be87734e52fbf56c089e1a4ddba6e5b39d607  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0x48e39e56acdba37b09020c0b734a613c9a2f100a  issuer token  "BB"  updates 0
+AGREE   0x4a0e65a3eccec6dbe60ae065f2e7bb85fae35eea  issuer token  "SPCX"  updates 0
+AGREE   0x4d3f37a965b21ab4122e92dd41d2693e742c883b  not issuer   "RIPE"  updates 0
+AGREE   0x4e62068525ab11fe768e29dfd00ef909b9803016  issuer token  "LULU"  updates 0
+AGREE   0x4ea005168d7f09a7a0ba9d1def21a479950e44c2  issuer token  "COST"  updates 1
+AGREE   0x4eb576e9c8a24b5fb11dd8eee5e5e2554ade1cf4  not issuer   "ANTHROPIC"  updates 0
+AGREE   0x4ff7f19a6c4c7ebcba25248610dbe642bbd0b792  not issuer   "USDG"  updates 0
+AGREE   0x5411257cedf60bc40f4bead410bf8d02079056a2  not issuer   "USDG"  updates 0
+AGREE   0x56cb52174592a72c570bd9980e3879fd768519f5  not issuer   "USDG"  updates 0
+AGREE   0x57b9b90610a4b9205c57fab92080e9cfbe7229f6  not issuer   "STEERUV46"  updates 0
+AGREE   0x58ffe4a942d3885baa22d7520691f611ef09e7aa  issuer token  "TSM"  updates 2
+AGREE   0x5b00c30098216a00905ee3fb5bda413006418bb6  not issuer   "PLATE"  updates 0
+AGREE   0x5baaec1b70864f01dbdb747358ff59f2e2ccf7d5  not issuer   "GIGA"  updates 0
+AGREE   0x5c283587a8a10fc14b0f4b3212ef4de97520b282  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0x5cb6f181081301b44905f3ae15419112ecabd8a6  not issuer   "PIPEDOG"  updates 0
+AGREE   0x5dd716fe12275b69f04b26beeca343843c8e3539  not issuer   "NVDA"  updates 0
+AGREE   0x5e81213613b6b86eab4c6c50d718d34359459786  issuer token  "TTWO"  updates 0
+AGREE   0x5eadcaa49e6cc1b7157d9983e62f5ccee0de89d6  not issuer   "USDG"  updates 0
+AGREE   0x5f10a1c971b69e47e059e1dc91901b59b3fb49c3  issuer token  "CRWV"  updates 0
+AGREE   0x5fc5360d0400a0fd4f2af552add042d716f1d168  not issuer   "USDG"  updates 0
+AGREE   0x6178406c433c70b006e2f81a79a5d98bf5b0af85  not issuer   "UNI-V2"  updates 0
+AGREE   0x623613c0e9211a7215b4fd4ab80656fcbd1186e0  not issuer   "USDG"  updates 0
+AGREE   0x62fd0668e10d8b72339be2dcf7643001688ff13b  issuer token  "MRVL"  updates 1
+AGREE   0x6330d8c3178a418788df01a47479c0ce7ccf450b  issuer token  "COIN"  updates 0
+AGREE   0x63ee32ac3077d1fbd8a77ebba2a6ed4b8e9c1e18  not issuer   "INU"  updates 0
+AGREE   0x642565e604cf64ca49098505e2b9d2fffec77936  not issuer   "USDG"  updates 0
+AGREE   0x650bf9154edfb41ad65e316be31fe489ccc76eb0  not issuer   "USDG"  updates 0
+AGREE   0x67f438bd18131f152b6387083628e8eeaa5fb8b2  not issuer   "USDG "  updates 0
+AGREE   0x69e7778d46713e17572d610bdaca3943aa4e6219  not issuer   "SPY"  updates 0
+AGREE   0x6cfe8050d64b02a21cf6cf2ef2a408489c86c10b  not issuer   "IBM"  updates 0
+AGREE   0x6e401929bb5bebb4807c462c8c9fb8c6b76e1e18  not issuer   "BEAVER"  updates 0
+AGREE   0x711681d447e8f53ac228f20afad1e179ab5e78f1  not issuer   "USDG"  updates 0
+AGREE   0x72ead0c700f07b645a8f91badd82be5c545b9d37  not issuer   "NVDA"  updates 0
+AGREE   0x73acfc8352b6a9f0baacd02a266e58fde4b1c183  not issuer   "USDG"  updates 0
+AGREE   0x73c4aae208080d94e97a0abe80f140a140846cc8  not issuer   "UNI-V2"  updates 0
+AGREE   0x75742c18bc1f1c5c5f448f4c9d9c6f66dafaaa38  issuer token  "SOXX"  updates 1
+AGREE   0x794a9a5975da82745a7165a5b91d2d27e9820aea  not issuer   "N[U+17B5]V[U+17B5]DA"  updates 0
+AGREE   0x7c651ee2f3c1c456ac3afc483b834c823649a0e2  not issuer   "DAM"  updates 0
+AGREE   0x7fa63d892faa245a91104873de0e79452cd208ac  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0x8005d266423c7ea827372c9c864491e5786600ea  issuer token  "LLY"  updates 1
+AGREE   0x822cc93ffd030293e9842c30bbd678f530701867  issuer token  "BE"  updates 0
+AGREE   0x829b217ad539ccc53b18e53c63873333650e60f9  not issuer   "cyberbeer"  updates 0
+AGREE   0x83726b15b25013e95b56357c4795b848ab32c3bc  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0x86923f96303d656e4aa86d9d42d1e57ad2023fdc  issuer token  "AMD"  updates 0
+AGREE   0x87673a619fc4f3fc08068a0bb04f60aa2d04ca62  not issuer   "mooBeefyAlandaleRobinhoodWETH-SPY"  updates 0
+AGREE   0x88a3443d54bffb1f221bcdfb5561c023533df83e  not issuer   "U[U+206F]S[U+206F]DG"  updates 0
+AGREE   0x894e1ec2d74ffe5aef8dc8a9e84686accb964f2a  issuer token  "PLTR"  updates 0
+AGREE   0x91280d9474cc18931ff3d52a7cea9b0db52f38d3  not issuer   "U[U+206F]S[U+206F]DG"  updates 0
+AGREE   0x92fd66527192e3e61d4ddd13322aa222de86f9b5  issuer token  "SGOV"  updates 4
+AGREE   0x941ae714ec6d8130c7b75d67160ca08f1e7d11dd  issuer token  "DELL"  updates 1
+AGREE   0x94ed49222ae2e604e0a4683fe08b92381b081270  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0x98096d17e191b3da1d5f99a6d7b3584351b11e18  not issuer   "BONER"  updates 0
+AGREE   0x980dcf6766fa79f5cf0c4aadb3ab477ff15a9619  issuer token  "IBM"  updates 0
+AGREE   0x9909c4e8cae5ada810c7297943ae767f87d00a3e  not issuer   "USDG"  updates 0
+AGREE   0x9b23573b156b52565012f5ce02cdf60afbaa70be  issuer token  "PENG"  updates 0
+AGREE   0xa30fa36db767ad9ed3f7a60fc79526fb4d56d344  issuer token  "USO"  updates 0
+AGREE   0xa3284897ad7c8fed700b04f573cf64e4f6c10f2c  not issuer   "NVDA"  updates 0
+AGREE   0xa581f3c3c071215f60494c6cef072b001c1d7d82  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0xa913c4c2f28aa7b0b15a7c6008a6e19ff8bf85c0  not issuer   "USDG"  updates 0
+AGREE   0xac13348444e9fc0584eace3831970af2011951b1  not issuer   "USDG"  updates 0
+AGREE   0xad25ac6c84d497db898fa1e8387bf6af3532a1c4  issuer token  "BABA"  updates 0
+AGREE   0xae517a2903e68bd929dfd15be875f8369d53e94a  issuer token  "CEG"  updates 0
+AGREE   0xaf3d76f1834a1d425780943c99ea8a608f8a93f9  issuer token  "AAPL"  updates 1
+AGREE   0xb4a2e4d7c9493a394ab8e48217d49e1808f7d5ac  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0xb90a19ff0af67f7779aff50a882a9cff42446400  issuer token  "SNDK"  updates 0
+AGREE   0xbce7482902952cf32807afa29928b00477948452  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0xc0d6457c16cc70d6790dd43521c899c87ce02f35  issuer token  "META"  updates 1
+AGREE   0xc2378f126167c55b42ba4f49e012d0d9dcdf52e0  not issuer   "USDG"  updates 0
+AGREE   0xc4f85cebec3fe6c77df0f71f3a3e139d43bbb4a3  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0xc6417224f693a0d8bf612bc6d7dcbbc268d5ad13  not issuer   "USDG"  updates 0
+AGREE   0xc72b96e0e48ecd4dc75e1e45396e26300bc39681  issuer token  "INTC"  updates 0
+AGREE   0xc9a981fee1f9dec688bb123ccdecc63d0debfc4e  issuer token  "GLD"  updates 0
+AGREE   0xc9d244ae176436f96279159b2d91d3e4f830c17f  not issuer   "wMETA"  updates 0
+AGREE   0xca9c78dd337a67f6e0077f65f5e9218719d30edf  not issuer   "NET"  updates 0
+AGREE   0xcb071fc69e4aebd512387316578752e5c20b92e0  not issuer   "U[U+206F]S[U+206F]DG"  updates 0
+AGREE   0xccee82fe024c36fa15e1005ede3e9e4787e23d09  issuer token  "HIMS"  updates 0
+AGREE   0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec  issuer token  "NVDA"  updates 1
+AGREE   0xd3033b5b57b255c66035a62237a9f9486ed10ea2  not issuer   "USDG"  updates 0
+AGREE   0xd51f5d3bb4ac528f58b08e574daa56e9bf58c230  not issuer   "STEERUV417"  updates 0
+AGREE   0xd5f018a09081d7f75b06b4a3f2afd9bcadc42e03  not issuer   "USDG"  updates 0
+AGREE   0xd5f3879160bc7c32ebb4dc785f8a4f505888de68  issuer token  "QQQ"  updates 1
+AGREE   0xd6b8cecde770507fc46cde7ea82dde383ed7a7e5  not issuer   "USDG"  updates 0
+AGREE   0xdb81a12de6c0aebeddf2d85d531dd50cac7366ef  not issuer   "USDG"  updates 0
+AGREE   0xdf0992e440dd0be65bd8439b609d6d4366bf1cb5  issuer token  "CRCL"  updates 0
+AGREE   0xdfd0e854387aef36022bcfc8972e68d8e1bd9a53  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0xe0444ef8bf4ed74f74fd73686e2ddf4c1c5591e8  issuer token  "NFLX"  updates 0
+AGREE   0xe3c500e3e183ea5ca2f0b0a7f8fc55ef914e6ff6  not issuer   "USDG"  updates 0
+AGREE   0xe7391e4047c7e5d48f31cd2b87004c10e875f288  not issuer   "U[U+206F]S[U+206F]DG"  updates 0
+AGREE   0xe93237c50d904957cf27e7b1133b510c669c2e74  issuer token  "MSFT"  updates 1
+AGREE   0xec262a75e413fafd0df80480274532c79d42da09  issuer token  "MSTR"  updates 0
+AGREE   0xec90adc7157d68d9213a88627b66956950374a3e  not issuer   "USDG"  updates 0
+AGREE   0xed3fd1025aa318b8e66ca25aa2ddc83096086de0  not issuer   "USDG"  updates 0
+AGREE   0xf0c4bf4c582cb3836e98394b1d4e7b7281101be8  issuer token  "RBLX"  updates 0
+AGREE   0xf23942801cd33c75a2d6e4832bc2fb05ca1044ec  not issuer   "BIGTECH"  updates 0
+AGREE   0xf2b7ffb610269bdaec42ad983c401635e59814f1  not issuer   "U[U+206F]S[U+206F]DG"  updates 0
+AGREE   0xf4dba7a14467b59e45a06f8600a7c0db26677192  not issuer   "Starman"  updates 0
+AGREE   0xf6589f11bc40b669e584073f428b05562f568733  issuer token  "SNAP"  updates 0
+AGREE   0xf73eea2bf2f1bf06d676652700132d61feb74a15  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0xfdbbdaa4d2d6cc9b6c2b8201acadf9371f91962a  not issuer   "U[U+206F]S[U+206F]DG"  updates 0
+AGREE   0xfde6b5d9bb419b10c23268c74e369abff39c0460  issuer token  "RCAT"  updates 0
+AGREE   0xff080c8ce2e5feadaca0da81314ae59d232d4afd  issuer token  "MU"  updates 2
+run 1  0xda1a216baab1af12ccc41a92be94d7c6558a8abd1396b7aa06ea77d9fc9b1929  TokenBatchChecked found, counts match, block hash matches
+run 2  0x1b629f69f76bfc82ee050d90990c2bd55a7ba3c866a28d4e1a0eddc46b7719c3  TokenBatchChecked found, counts match, block hash matches
+run 3  0x5a056b974b3648747c236dfe58f5fd6c849d955d70e86431d028093346f8f373  TokenBatchChecked found, counts match, block hash matches
+run 4  0xbcc95f7cb393854cc5e5b0562466dc778d3cf92d4d9eeb896b6177f3baa58d25  TokenBatchChecked found, counts match, block hash matches
+run 5  0x189e0eb9900d602c71adec6a0a8d1ac52fe92bc6d5e14c2de632f9e745c1abf3  TokenBatchChecked found, counts match, block hash matches
+run 6  0x021ae09aadf4517a3d880dd55e69648e68c4edfa21cc8242c198a9070a8cb546  TokenBatchChecked found, counts match, block hash matches
+run 7  0xf580989891b9050e23fff002fab8090a627d287f0fba8d3162ef613b10b439f2  TokenBatchChecked found, counts match, block hash matches
+run 8  0xc9ba3818f454796da12a5b6efd1074f1c3470dcd50cb52671014993ece89d616  TokenBatchChecked found, counts match, block hash matches
+run 9  0x83b8ed7206c3359d489b9359937876fb6e8dcbe3682263c680549204bf83adf9  TokenBatchChecked found, counts match, block hash matches
+run 10  0xaae6dad2b49ceda82c1bf4ff797ab8b7743f14ef2922f7d491d67ca6ccc84c2b  TokenBatchChecked found, counts match, block hash matches
+run 11  0xe46ea6a7a70441c60f6d837caa88171f77fc949ff7487de64f9962df71a04298  TokenBatchChecked found, counts match, block hash matches
+run 12  0x694ddb03aeb9b49ef4d8b99c358d3173fa661527de8748f7aef12ac09039c49e  TokenBatchChecked found, counts match, block hash matches
+run 13  0x977bb55a90a6257287d4e99de3a2c3ee6ff77ec3cff84755b921be4ccbc39994  TokenBatchChecked found, counts match, block hash matches
+run 14  0xae8bb10664177f9ea48a9e3a523a6628a9d32cccc5267c64eba52755d4664a5b  TokenBatchChecked found, counts match, block hash matches
+run 15  0xb5a2fb15bb5a9a4314535de154fad69f0400472e6d7811743c25d731eb11abe2  TokenBatchChecked found, counts match, block hash matches
+anchor 0x2328a9398ddf7ad80aa7a1149bc4417cfb57783c57be6e095d44f0df311225af  TokenCheckResultsAnchored found for keccak256(results.json) 0xe2fcacc3ae7ebf4e60cc2d18fa34c1b58e0f747aa3f919b8f87c20ba79535975
+RECHECK: 143 of 143 rows agree, 0 differ; state read at the checked block for 143, as it is now for 0; 0 problems with the onchain trail; 1001 RPC requests

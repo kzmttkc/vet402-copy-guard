@@ -1,0 +1,43 @@
+$ cre workflow simulate token-check --target local-simulation --non-interactive --trigger-index 0 --http-payload docs/token-check/batch/batch-15.payload.json --broadcast
+✓ Workflow compiled
+✓ Simulation limits enabled
+  HTTP: req=120kb resp=250kb timeout=10s | ConfHTTP: req=125kb resp=500kb timeout=1m30s | Consensus obs=25kb | ChainWrite evm_report=50kb evm_gas=10000000 solana_report=265b solana_cu=300000 | WASM binary=100mb compressed=20mb
+  Binary hash: 6e23a2f35e89bcc55d71aa9d5889a5813d80c01b4799d4308ca576a45e596c12
+  Config hash: 15ecce3c14a026a5d49e662198f93518da03b5d593aec5c435fb9795d06eeb11
+✓ Loaded JSON from file: ~/vet402-bli-wt/core/docs/token-check/batch/batch-15.payload.json
+✓ Created HTTP trigger payload with 1 fields
+2026-10-14T15:33:27Z [SIMULATION] Simulator Initialized
+
+2026-10-14T15:33:27Z [SIMULATION] Running trigger trigger=http-trigger@1.0.0-alpha
+2026-10-14T15:33:27Z [USER LOG] token check, batch (Robinhood Chain 4663, read over JSON-RPC, no vet402 API)
+2026-10-14T15:33:27Z [USER LOG] tokens  4
+2026-10-14T15:33:27Z [USER LOG] state   robinhood-rpc.publicnode.com   logs rpc.mainnet.chain.robinhood.com
+2026-10-14T15:33:27Z [USER LOG] head    88226538 (median of the nodes), checking at block 88226518
+2026-10-14T15:33:30Z [USER LOG] block   88226518  hash 0x0441b79dd5605fcd46da96350d111d02f890ce0d0a7d4f32c9585bd81aa1ba7e (the same from both RPCs)
+2026-10-14T15:33:30Z [USER LOG] NOT_ISSUER_TOKEN  0xf73eea2bf2f1bf06d676652700132d61feb74a15  "U[U+17B5]S[U+17B5]DG"  updates 0  NOT_IN_ISSUER_LIST CODE_HASH_DIFFERS BEACON_DIFFERS TICKER_OR_NAME_READS_AS_USDG INVISIBLE_CHARACTERS
+2026-10-14T15:33:30Z [USER LOG] NOT_ISSUER_TOKEN  0xfdbbdaa4d2d6cc9b6c2b8201acadf9371f91962a  "U[U+206F]S[U+206F]DG"  updates 0  NOT_IN_ISSUER_LIST CODE_HASH_DIFFERS BEACON_DIFFERS TICKER_OR_NAME_READS_AS_USDG INVISIBLE_CHARACTERS
+2026-10-14T15:33:30Z [USER LOG] ISSUER_TOKEN      0xfde6b5d9bb419b10c23268c74e369abff39c0460  "RCAT"  updates 0  IN_ISSUER_LIST CODE_HASH_MATCHES BEACON_MATCHES FACTORY_LOG_NAMES_TOKEN TICKER_MATCHES_LIST
+2026-10-14T15:33:30Z [USER LOG] ISSUER_TOKEN      0xff080c8ce2e5feadaca0da81314ae59d232d4afd  "MU"  updates 2  IN_ISSUER_LIST CODE_HASH_MATCHES BEACON_MATCHES FACTORY_LOG_NAMES_TOKEN TICKER_MATCHES_LIST MULTIPLIER_NOT_ONE
+2026-10-14T15:33:30Z [USER LOG] RESULT: 4 tokens at block 88226518, 2 the issuer's, 2 not
+2026-10-14T15:33:30Z [USER LOG] batch hash 0xbe17c46f287f70dc202adf97a4550246ed10305cac9b3d93ed3b277cad71b8f0 (keccak256 of the canonical JSON of the rows)
+2026-10-14T15:33:32Z [USER LOG] batch hash written to 0xF49b4F2110E6E0dAbd1f3B532EFd64E10a016550 on robinhood-testnet, tx 0xb5a2fb15bb5a9a4314535de154fad69f0400472e6d7811743c25d731eb11abe2
+
+✓ Workflow Simulation Result:
+"{\"mode\":\"batch\",\"block\":88226518,\"blockHash\":\"0x0441b79dd5605fcd46da96350d111d02f890ce0d0a7d4f32c9585bd81aa1ba7e\",\"batchHash\":\"0xbe17c46f287f70dc202adf97a4550246ed10305cac9b3d93ed3b277cad71b8f0\",\"listHash\":\"0xcf8a7a002322c28a77f427d342485fd06bd26c97fa0a2f1577615615ac7cfe5e\",\"tokens\":{\"0xf73eea2bf2f1bf06d676652700132d61feb74a15\":{\"issuer_token\":false,\"ticker\":\"U[U+17B5]S[U+17B5]DG\",\"reasons\":[\"NOT_IN_ISSUER_LIST\",\"CODE_HASH_DIFFERS\",\"BEACON_DIFFERS\",\"TICKER_OR_NAME_READS_AS_USDG\",\"INVISIBLE_CHARACTERS\"],\"multiplier_updates\":0,\"checked_block\":88226518},\"0xfdbbdaa4d2d6cc9b6c2b8201acadf9371f91962a\":{\"issuer_token\":false,\"ticker\":\"U[U+206F]S[U+206F]DG\",\"reasons\":[\"NOT_IN_ISSUER_LIST\",\"CODE_HASH_DIFFERS\",\"BEACON_DIFFERS\",\"TICKER_OR_NAME_READS_AS_USDG\",\"INVISIBLE_CHARACTERS\"],\"multiplier_updates\":0,\"checked_block\":88226518},\"0xfde6b5d9bb419b10c23268c74e369abff39c0460\":{\"issuer_token\":true,\"ticker\":\"RCAT\",\"reasons\":[\"IN_ISSUER_LIST\",\"CODE_HASH_MATCHES\",\"BEACON_MATCHES\",\"FACTORY_LOG_NAMES_TOKEN\",\"TICKER_MATCHES_LIST\"],\"multiplier_updates\":0,\"checked_block\":88226518},\"0xff080c8ce2e5feadaca0da81314ae59d232d4afd\":{\"issuer_token\":true,\"ticker\":\"MU\",\"reasons\":[\"IN_ISSUER_LIST\",\"CODE_HASH_MATCHES\",\"BEACON_MATCHES\",\"FACTORY_LOG_NAMES_TOKEN\",\"TICKER_MATCHES_LIST\",\"MULTIPLIER_NOT_ONE\"],\"multiplier_updates\":2,\"checked_block\":88226518}},\"details\":{\"0xf73eea2bf2f1bf06d676652700132d61feb74a15\":{\"verdict\":\"LOOKALIKE\",\"symbol\":\"U[U+17B5]S[U+17B5]DG\",\"name\":\"U[U+17B5]S[U+17B5]DG\",\"code_hash\":\"0x9acac6e174c754f7b4a1499d40ce36b85d49bc316b543b69bed4c87472c85299\",\"beacon\":\"0x0000000000000000000000000000000000000000\",\"multiplier\":null,\"factory_log\":null},\"0xfdbbdaa4d2d6cc9b6c2b8201acadf9371f91962a\":{\"verdict\":\"LOOKALIKE\",\"symbol\":\"U[U+206F]S[U+206F]DG\",\"name\":\"U[U+206F]S[U+206F]DG\",\"code_hash\":\"0x507faf84d5a5686149a599b9786f9e9723088f92f040deee14a8d0abbcf08f75\",\"beacon\":\"0x0000000000000000000000000000000000000000\",\"multiplier\":null,\"factory_log\":null},\"0xfde6b5d9bb419b10c23268c74e369abff39c0460\":{\"verdict\":\"GENUINE_STOCK_TOKEN\",\"symbol\":\"RCAT\",\"name\":\"Red Cat • Robinhood Token\",\"code_hash\":\"0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630\",\"beacon\":\"0xe10b6f6b275de231345c20d14ab812db62151b00\",\"multiplier\":\"1\",\"factory_log\":true},\"0xff080c8ce2e5feadaca0da81314ae59d232d4afd\":{\"verdict\":\"GENUINE_STOCK_TOKEN\",\"symbol\":\"MU\",\"name\":\"Micron Technology • Robinhood Token\",\"code_hash\":\"0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630\",\"beacon\":\"0xe10b6f6b275de231345c20d14ab812db62151b00\",\"multiplier\":\"1.000183456682946507\",\"factory_log\":true}},\"issuerTokens\":2,\"batchTx\":\"0xb5a2fb15bb5a9a4314535de154fad69f0400472e6d7811743c25d731eb11abe2\"}"
+
+2026-10-14T15:33:32Z [SIMULATION] Execution finished signal received
+2026-10-14T15:33:32Z [SIMULATION] Skipping WorkflowEngineV2
+
+╭──────────────────────────────────────────────────────╮
+│ Simulation complete! Ready to deploy your workflow?  │
+│                                                      │
+│ Run cre account access to request deployment access. │
+╰──────────────────────────────────────────────────────╯
+Initializing...
+Loading settings...
+Checking RPC connectivity...
+Compiling workflow...
+
+⚠️  Update available! You’re running 1.37.0, but 1.38.0 is the latest.
+Run `cre update` or visit https://github.com/smartcontractkit/cre-cli/releases to upgrade.
+

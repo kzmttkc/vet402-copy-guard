@@ -3,15 +3,15 @@
  "files": [
   {
    "file": "docs/walk/trails.jsonl",
-   "bytes": 57543236,
-   "sha256": "9692d510ddaf94a5a3d9707dcbc37dda8f4d6006aba0bb7aa9d7faf390500f3a",
-   "gz_bytes": 2701317
+   "bytes": 109759931,
+   "sha256": "7a7e76b424c4f058764b527d894bccb808228373e6c24266b867aedcd1175066",
+   "gz_bytes": 4579243
   },
   {
    "file": "docs/walk/chain.json",
-   "bytes": 51139071,
-   "sha256": "e29d85461028ee4ba2e0c465194d8984cc1784bc4e197001f827571d0bb316ef",
-   "gz_bytes": 2148297
+   "bytes": 25994122,
+   "sha256": "0a0c13bb177337540150ce40d63038c0acd171f1982e10ca3459dff9f1042255",
+   "gz_bytes": 1980254
   }
  ]
 }

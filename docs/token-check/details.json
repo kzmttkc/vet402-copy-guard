@@ -1,6 +1,6 @@
 {
   "about": "What stands behind each row of results.json, and which run checked which token. results.json is the file that is hashed and anchored; this one is for a person who wants to look.",
-  "generated_at": "2026-10-14T05:04:43.989Z",
+  "generated_at": "2026-10-14T08:33:33.157Z",
   "list": {
     "taken_at": "2026-09-28T22:24:32.769Z",
     "source": "https://docs.robinhood.com/chain/contracts",
@@ -17,196 +17,349 @@
   "runs": [
     {
       "run": 1,
-      "tx": "0xfa386a44268705425cc52115bf63badd8106e3e39ffc3b14c63eee71095eb77d",
+      "tx": "0xda1a216baab1af12ccc41a92be94d7c6558a8abd1396b7aa06ea77d9fc9b1929",
       "simulate_log": "docs/token-check/batch/batch-1.cre.txt",
-      "checked_block": 88092367,
-      "checked_block_hash": "0x15dcc80d58602345beaf906e41d2ad41ad4a1f9af12c9d087d5bf0bd25ad83b1",
-      "batch_hash": "0xed85687b976ea99e6d52a6b25ffca39b99d4d0cc5a42b0f166915617dc27eb73",
-      "issuer_tokens": 7,
+      "checked_block": 88224074,
+      "checked_block_hash": "0xc33ba871fa8dfbdaf09c7e31d6a7c548999bb8cdb07848ee0dc935a2b1155c64",
+      "batch_hash": "0xedc62e58f93ab82655ef8bc7a04ace931ae2c81c7ce8e8af44bac08091eeecbb",
+      "issuer_tokens": 5,
       "items_per_request": 10,
       "tokens": [
+        "0x008dd62dd934f3ffdc0986ba5316c78ae51cb1c9",
+        "0x020bfc650a365f8bb26819deaabf3e21291018b4",
         "0x05a3d1cd21d0c88145e82600e62e7e496e0f222b",
         "0x05b37fb53a299a1b874a619e1c4c404d52c36f4c",
         "0x0bd7d308f8e1639fab988df18a8011f41eacad73",
         "0x0c95df78d9f692beb3feaeceb2ef1e614513b1f7",
+        "0x0d74c7103c690d861efd539916fde2db6d604c23",
         "0x0ef3fccbc4c73be8bb14411cfe801df141e309c0",
+        "0x10dd80c6f962eb071beed8433c7f3e68906eacdb",
         "0x116f00968269b7bfbad4109ce591d6e74c0601d4",
         "0x117cc2133c37b721f49de2a7a74833232b3b4c0c",
-        "0x12f190a9f9d7d37a250758b26824b97ce941bf54",
-        "0x147d436a2f253cc8e8d52efb18a6ba6f9e827e5a",
-        "0x1b0e319c6a659f002271b69db8a7df2f911c153e",
-        "0x1d11f0496982706c5e14a514d4e79f2e6bde4516"
+        "0x12f190a9f9d7d37a250758b26824b97ce941bf54"
       ]
     },
     {
       "run": 2,
-      "tx": "0xdbef8b0aeca1820e4a191c2f90edac9ccaf3be2d78ea28c711107fd96c518336",
+      "tx": "0x1b629f69f76bfc82ee050d90990c2bd55a7ba3c866a28d4e1a0eddc46b7719c3",
       "simulate_log": "docs/token-check/batch/batch-2.cre.txt",
-      "checked_block": 88092662,
-      "checked_block_hash": "0x37e85436262b86d8312c0b328dd2f38242b3dc52952d07ee6e1f1d066b4f9bb3",
-      "batch_hash": "0xaea7a111647e6a331953145b7857ea54f2fbd71b2cdfb75cd7628dc42dabb5a8",
-      "issuer_tokens": 2,
+      "checked_block": 88224272,
+      "checked_block_hash": "0x472ab4f049e2f6cba7676b57d701b2a78cd80e18ad0d117715489c6182bb8bcb",
+      "batch_hash": "0xdb72a891dfe6fa158218c18c4f7d51df0cde602a68907fcc65b4f326d6c0df07",
+      "issuer_tokens": 3,
       "items_per_request": 10,
       "tokens": [
-        "0x1dc878194328a96680c23b8d3c1186637b199eb3",
-        "0x1ee1a8fcc194a4fcdbce10f958aea8a18e831458",
+        "0x1383b43aed527485f191b60060f5b5471f71b1ca",
+        "0x147d436a2f253cc8e8d52efb18a6ba6f9e827e5a",
+        "0x156e175dd063a8ce274c50654ef40e0032b3fbcf",
+        "0x17ca67ae8a0f0efe55b58721114f908903a40c06",
+        "0x1b0e319c6a659f002271b69db8a7df2f911c153e",
+        "0x1c8a973a8788c4a57371bed1611830a83fd580f4",
+        "0x1d11f0496982706c5e14a514d4e79f2e6bde4516",
+        "0x22a68ae074150397c42d968ec050cd1ff3501a51",
         "0x22b1137c0637bf8f7ac7fbcfa857604e4b89d8d7",
         "0x2504cc3b84585a5cdf88f4c4f50b2afe9181150c",
-        "0x2ce3e396e069ac9fa62046f423267072e06e77af",
-        "0x2e0847e8910a9732eb3fb1bb4b70a580adad4fe3",
-        "0x318f563dceddbe58625400d9f7ee27eecef5b1a3",
-        "0x322f0929c4625ed5bad873c95208d54e1c003b2d",
-        "0x36f4d7f0fa5c7348416282e04380ddff30ca4be2",
-        "0x38ebf2ab30cbff745e2db10aa17b6aaaad001885",
-        "0x39dbed3a2bd333467115de45665cc57f813c4571"
+        "0x275fe81e2e5a8908f5cb7b5fa84d5b52680a1220",
+        "0x2775c597f2500619993f5cdec034dff2dfe47a58"
       ]
     },
     {
       "run": 3,
-      "tx": "0x6cd511c78b0045af18171246be1d7ca8b92d2ec5e41b5aaf817e2c820fe3357e",
+      "tx": "0x5a056b974b3648747c236dfe58f5fd6c849d955d70e86431d028093346f8f373",
       "simulate_log": "docs/token-check/batch/batch-3.cre.txt",
-      "checked_block": 88095346,
-      "checked_block_hash": "0x9d967ddd6fe9360dfdc855e7bdf62c78469c549799bd1473fab625dd032c7efa",
-      "batch_hash": "0xc41a88a3e96dbf9336545e555e6f5c3577126c71d0e0e9e3698c82a2f1ad2c1a",
-      "issuer_tokens": 6,
+      "checked_block": 88224459,
+      "checked_block_hash": "0xae5fada374f87dbbbfa2de395e33bae3f2e114fde6ef6a76c9098725a39b6f02",
+      "batch_hash": "0x0df98852f15c6268ce96d9792142333c5915eacbb0c9255221644577e01558c1",
+      "issuer_tokens": 1,
       "items_per_request": 10,
       "tokens": [
-        "0x411efb0e7f985935daec3d4c3ebaea0d0ad7d89f",
-        "0x4190ee598c2a69d35bef53c83d152ae0f25ea416",
-        "0x42b4fa90438ecb1a0c2676ff25a9f27355dd53c2",
-        "0x42e140c4b439c42dc01aa29be1fce2bc64d7f160",
-        "0x43b07d15ce533bec5476d70c22a78a1b2b662155",
-        "0x48e39e56acdba37b09020c0b734a613c9a2f100a",
-        "0x4a0e65a3eccec6dbe60ae065f2e7bb85fae35eea",
-        "0x4d3f37a965b21ab4122e92dd41d2693e742c883b",
-        "0x4ea005168d7f09a7a0ba9d1def21a479950e44c2",
-        "0x4ff7f19a6c4c7ebcba25248610dbe642bbd0b792",
-        "0x5411257cedf60bc40f4bead410bf8d02079056a2",
-        "0x58ffe4a942d3885baa22d7520691f611ef09e7aa"
+        "0x2ce3e396e069ac9fa62046f423267072e06e77af",
+        "0x2d427692e928fa156ec22acfabafa0447c5805b7"
       ]
     },
     {
       "run": 4,
-      "tx": "0x1aaea557aad9af3d2a8129523ff0ca0aca62532bb254d2be19b2b13ed08f9842",
+      "tx": "0xbcc95f7cb393854cc5e5b0562466dc778d3cf92d4d9eeb896b6177f3baa58d25",
       "simulate_log": "docs/token-check/batch/batch-4.cre.txt",
-      "checked_block": 88095615,
-      "checked_block_hash": "0x0d7b3cddf2fcc2cc33d9741ab30f9fe54964fba019cd1d63e77bac5355fe21dc",
-      "batch_hash": "0xb0322a582a31394f420335271a4d8685fba5299ae7c26f0555f08619dd41c97d",
-      "issuer_tokens": 3,
+      "checked_block": 88224586,
+      "checked_block_hash": "0xb5b9912eecf1a368ac69d942b740bd3ce40d7f20ac526f871c494d4eb3c60b3e",
+      "batch_hash": "0xd5365771d9baa8e26d1de4e8700de51c554aba24dd716e01f7c2dcdb0cb4e4b0",
+      "issuer_tokens": 5,
       "items_per_request": 10,
       "tokens": [
-        "0x5dd716fe12275b69f04b26beeca343843c8e3539",
-        "0x5e81213613b6b86eab4c6c50d718d34359459786",
-        "0x5fc5360d0400a0fd4f2af552add042d716f1d168",
-        "0x623613c0e9211a7215b4fd4ab80656fcbd1186e0",
-        "0x62fd0668e10d8b72339be2dcf7643001688ff13b",
-        "0x65abeb15f2fed8cccf979c9429f517f937bdc0d5",
-        "0x67f438bd18131f152b6387083628e8eeaa5fb8b2",
-        "0x69e7778d46713e17572d610bdaca3943aa4e6219",
-        "0x711681d447e8f53ac228f20afad1e179ab5e78f1",
-        "0x72ead0c700f07b645a8f91badd82be5c545b9d37",
-        "0x73acfc8352b6a9f0baacd02a266e58fde4b1c183",
-        "0x75742c18bc1f1c5c5f448f4c9d9c6f66dafaaa38"
+        "0x2e0847e8910a9732eb3fb1bb4b70a580adad4fe3",
+        "0x2e8c31162b855a2ffa90f6f8634643ad6f111e18",
+        "0x2fc7f9e2911f20b2c4660d2aef808aa91bddb3d3",
+        "0x318f563dceddbe58625400d9f7ee27eecef5b1a3",
+        "0x322f0929c4625ed5bad873c95208d54e1c003b2d",
+        "0x34d537f53ea0a1333a5d7621e7f023ee6cfcb787",
+        "0x38ebf2ab30cbff745e2db10aa17b6aaaad001885",
+        "0x39dbed3a2bd333467115de45665cc57f813c4571",
+        "0x3b14c39e89d60d627b42a1a4ca45b5bb45fc12e2",
+        "0x3d1fef40fa8a20de967484436c8c527db9c78b6e",
+        "0x408c14038a04f7bd235329e26d2bf569ee20e250",
+        "0x411efb0e7f985935daec3d4c3ebaea0d0ad7d89f"
       ]
     },
     {
       "run": 5,
-      "tx": "0xf7b7484378d166b7b9d4b2ffbe97708fa3ddb1545c4e7d5c053b7cb2ef15fcb6",
+      "tx": "0x189e0eb9900d602c71adec6a0a8d1ac52fe92bc6d5e14c2de632f9e745c1abf3",
       "simulate_log": "docs/token-check/batch/batch-5.cre.txt",
-      "checked_block": 88098280,
-      "checked_block_hash": "0x988755b91e5e9fe15c93c5717fe074a79bc8992e765fac49161fea258c7204a6",
-      "batch_hash": "0xe9bd1c0314844c59630f53195ec9aceba0b22970c41516d213f3272d1efb967b",
-      "issuer_tokens": 5,
+      "checked_block": 88224783,
+      "checked_block_hash": "0x12ba0452095a439b02d6b4133f00f00d6ea3a5f4b7e66ed33de40211a09d5941",
+      "batch_hash": "0x8a1320084854165fc7965ee7e5a1cbb70f13e0878408e56ca8a09302300ac395",
+      "issuer_tokens": 4,
       "items_per_request": 10,
       "tokens": [
-        "0x8005d266423c7ea827372c9c864491e5786600ea",
-        "0x83726b15b25013e95b56357c4795b848ab32c3bc",
-        "0x86923f96303d656e4aa86d9d42d1e57ad2023fdc",
-        "0x87673a619fc4f3fc08068a0bb04f60aa2d04ca62",
-        "0x894e1ec2d74ffe5aef8dc8a9e84686accb964f2a",
-        "0x92fd66527192e3e61d4ddd13322aa222de86f9b5",
-        "0x941ae714ec6d8130c7b75d67160ca08f1e7d11dd"
+        "0x4190ee598c2a69d35bef53c83d152ae0f25ea416",
+        "0x42b4fa90438ecb1a0c2676ff25a9f27355dd53c2",
+        "0x44318785554bf11ffd164a6f98d9a453e2fa74af",
+        "0x480be87734e52fbf56c089e1a4ddba6e5b39d607",
+        "0x48e39e56acdba37b09020c0b734a613c9a2f100a",
+        "0x4a0e65a3eccec6dbe60ae065f2e7bb85fae35eea",
+        "0x4d3f37a965b21ab4122e92dd41d2693e742c883b",
+        "0x4e62068525ab11fe768e29dfd00ef909b9803016",
+        "0x4ea005168d7f09a7a0ba9d1def21a479950e44c2",
+        "0x4eb576e9c8a24b5fb11dd8eee5e5e2554ade1cf4",
+        "0x4ff7f19a6c4c7ebcba25248610dbe642bbd0b792",
+        "0x5411257cedf60bc40f4bead410bf8d02079056a2"
       ]
     },
     {
       "run": 6,
-      "tx": "0xf04a9faefa83c3be99e70e902178e005a101fe50f471d795f5294c4a5609b320",
+      "tx": "0x021ae09aadf4517a3d880dd55e69648e68c4edfa21cc8242c198a9070a8cb546",
       "simulate_log": "docs/token-check/batch/batch-6.cre.txt",
-      "checked_block": 88098529,
-      "checked_block_hash": "0xe7af327b198adc8c5e7533eb113bbb2ba571ab45059c402cd96cb3de4be077df",
-      "batch_hash": "0x8b62ea88d0e54c514a9f31aa86d5a197fe696e9acf040a92c86ce5169b81070e",
-      "issuer_tokens": 4,
+      "checked_block": 88224946,
+      "checked_block_hash": "0xb7ee08f3b5e529ff3ee7c4be350331c5a4716697b26457a6616b0a8d1e13badb",
+      "batch_hash": "0x25edf3bc5b04188183b6b5eccbbde94168b68e8c67a48489bf6f8760b0a25bfe",
+      "issuer_tokens": 0,
       "items_per_request": 10,
       "tokens": [
-        "0x980dcf6766fa79f5cf0c4aadb3ab477ff15a9619",
-        "0x9909c4e8cae5ada810c7297943ae767f87d00a3e",
-        "0xa913c4c2f28aa7b0b15a7c6008a6e19ff8bf85c0",
-        "0xad25ac6c84d497db898fa1e8387bf6af3532a1c4",
-        "0xaf3d76f1834a1d425780943c99ea8a608f8a93f9",
-        "0xb1bf26c1d20ff267a4f93550d1e0d06ac40a114b"
+        "0x56cb52174592a72c570bd9980e3879fd768519f5",
+        "0x57b9b90610a4b9205c57fab92080e9cfbe7229f6"
       ]
     },
     {
       "run": 7,
-      "tx": "0x3868b8e9d9bda1c340ce37c74eba35acbcee1ba00d2d55ce73f65db2446f4ae4",
+      "tx": "0xf580989891b9050e23fff002fab8090a627d287f0fba8d3162ef613b10b439f2",
       "simulate_log": "docs/token-check/batch/batch-7.cre.txt",
-      "checked_block": 88101209,
-      "checked_block_hash": "0x9b4cce4396feb99349adfb8e71e0618016abb4ce8494886783e8ca1ed9510dc0",
-      "batch_hash": "0xccd82eb3d61ea1b82dc7553f9bfb48ff453b75259e81947809557e68f0e65715",
-      "issuer_tokens": 5,
+      "checked_block": 88225072,
+      "checked_block_hash": "0x1241df11f4aa3cd1ec123e65ebf9273782beb48d5bd689721f113cf522194821",
+      "batch_hash": "0x2add686af72189bb513a05d67b7b14fb04c339fb49f7d52a5b2e6b435c288d94",
+      "issuer_tokens": 3,
       "items_per_request": 10,
       "tokens": [
-        "0xb90a19ff0af67f7779aff50a882a9cff42446400",
-        "0xc0d6457c16cc70d6790dd43521c899c87ce02f35",
-        "0xc4f85cebec3fe6c77df0f71f3a3e139d43bbb4a3",
-        "0xc6417224f693a0d8bf612bc6d7dcbbc268d5ad13",
-        "0xc72b96e0e48ecd4dc75e1e45396e26300bc39681",
-        "0xc9a981fee1f9dec688bb123ccdecc63d0debfc4e",
-        "0xcb071fc69e4aebd512387316578752e5c20b92e0",
-        "0xccee82fe024c36fa15e1005ede3e9e4787e23d09"
+        "0x58ffe4a942d3885baa22d7520691f611ef09e7aa",
+        "0x5b00c30098216a00905ee3fb5bda413006418bb6",
+        "0x5baaec1b70864f01dbdb747358ff59f2e2ccf7d5",
+        "0x5c283587a8a10fc14b0f4b3212ef4de97520b282",
+        "0x5cb6f181081301b44905f3ae15419112ecabd8a6",
+        "0x5dd716fe12275b69f04b26beeca343843c8e3539",
+        "0x5e81213613b6b86eab4c6c50d718d34359459786",
+        "0x5eadcaa49e6cc1b7157d9983e62f5ccee0de89d6",
+        "0x5f10a1c971b69e47e059e1dc91901b59b3fb49c3",
+        "0x5fc5360d0400a0fd4f2af552add042d716f1d168",
+        "0x6178406c433c70b006e2f81a79a5d98bf5b0af85",
+        "0x623613c0e9211a7215b4fd4ab80656fcbd1186e0"
       ]
     },
     {
       "run": 8,
-      "tx": "0x2b10033e7bf929064879346b65fd2dde82b45f429838375c3146eb64722eebb3",
+      "tx": "0xc9ba3818f454796da12a5b6efd1074f1c3470dcd50cb52671014993ece89d616",
       "simulate_log": "docs/token-check/batch/batch-8.cre.txt",
-      "checked_block": 88101658,
-      "checked_block_hash": "0x83da79bea73e55b7ccd74a518560a7ef59851714f61842d98c7ab63b086badf0",
-      "batch_hash": "0xfebb50e5c8ef95addedda286d3f437b0509caf1a37b01cb7bbc17d8429d82191",
-      "issuer_tokens": 4,
+      "checked_block": 88225219,
+      "checked_block_hash": "0x19c33d5bfdc996d50e43f0981936de390950743b80665abd78e8e2c78b41207e",
+      "batch_hash": "0x085b9a76e1567ad9dd4f931cf00b97613d379aa21c08a2731ce0e4ad8d0420b4",
+      "issuer_tokens": 2,
       "items_per_request": 10,
       "tokens": [
-        "0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec",
-        "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68",
-        "0xd6b8cecde770507fc46cde7ea82dde383ed7a7e5",
-        "0xd9c6ee31275554006ca30abcde7b48188c4e2cf0",
-        "0xdb81a12de6c0aebeddf2d85d531dd50cac7366ef",
-        "0xdf0992e440dd0be65bd8439b609d6d4366bf1cb5",
-        "0xe0444ef8bf4ed74f74fd73686e2ddf4c1c5591e8",
-        "0xe7391e4047c7e5d48f31cd2b87004c10e875f288"
+        "0x62fd0668e10d8b72339be2dcf7643001688ff13b",
+        "0x6330d8c3178a418788df01a47479c0ce7ccf450b",
+        "0x63ee32ac3077d1fbd8a77ebba2a6ed4b8e9c1e18",
+        "0x642565e604cf64ca49098505e2b9d2fffec77936",
+        "0x650bf9154edfb41ad65e316be31fe489ccc76eb0",
+        "0x67f438bd18131f152b6387083628e8eeaa5fb8b2",
+        "0x69e7778d46713e17572d610bdaca3943aa4e6219",
+        "0x6cfe8050d64b02a21cf6cf2ef2a408489c86c10b",
+        "0x6e401929bb5bebb4807c462c8c9fb8c6b76e1e18",
+        "0x711681d447e8f53ac228f20afad1e179ab5e78f1",
+        "0x72ead0c700f07b645a8f91badd82be5c545b9d37",
+        "0x73acfc8352b6a9f0baacd02a266e58fde4b1c183"
       ]
     },
     {
       "run": 9,
-      "tx": "0x14338fa3c55cdf79c8238bcea3621a0828c59b3a1983d86d546b87e3bf9e2bea",
+      "tx": "0x83b8ed7206c3359d489b9359937876fb6e8dcbe3682263c680549204bf83adf9",
       "simulate_log": "docs/token-check/batch/batch-9.cre.txt",
-      "checked_block": 88102077,
-      "checked_block_hash": "0xe941dce13ffaf935d1beeeba55343b69e1cb860416b14e5c5afa6b60a303fdfd",
-      "batch_hash": "0xb4757cb1b29f676a5c8b2abbeef3e2f475381e2e06a6f39cce2d6bed1a74811d",
+      "checked_block": 88225345,
+      "checked_block_hash": "0xd58977f4b9240458f7c3e1de183b35c5ba2d8df3f89653a3a8f5c75a3e5ee471",
+      "batch_hash": "0xb898272ca5a71fa4713d0b0fbeedc101b78a4d20f5c3e9b892a038475c60b0f1",
+      "issuer_tokens": 3,
+      "items_per_request": 10,
+      "tokens": [
+        "0x73c4aae208080d94e97a0abe80f140a140846cc8",
+        "0x75742c18bc1f1c5c5f448f4c9d9c6f66dafaaa38",
+        "0x794a9a5975da82745a7165a5b91d2d27e9820aea",
+        "0x7c651ee2f3c1c456ac3afc483b834c823649a0e2",
+        "0x7fa63d892faa245a91104873de0e79452cd208ac",
+        "0x8005d266423c7ea827372c9c864491e5786600ea",
+        "0x822cc93ffd030293e9842c30bbd678f530701867",
+        "0x829b217ad539ccc53b18e53c63873333650e60f9",
+        "0x83726b15b25013e95b56357c4795b848ab32c3bc"
+      ]
+    },
+    {
+      "run": 10,
+      "tx": "0xaae6dad2b49ceda82c1bf4ff797ab8b7743f14ef2922f7d491d67ca6ccc84c2b",
+      "simulate_log": "docs/token-check/batch/batch-10.cre.txt",
+      "checked_block": 88225546,
+      "checked_block_hash": "0x2376fd3601684e370eb3b1e64c433a72461cb7fe6835d2144756e11062608d9f",
+      "batch_hash": "0x9fdc09897a585632b34a488ad96c38fd23501d60a66acd5baaee54be66aedb17",
       "issuer_tokens": 6,
       "items_per_request": 10,
       "tokens": [
+        "0x86923f96303d656e4aa86d9d42d1e57ad2023fdc",
+        "0x87673a619fc4f3fc08068a0bb04f60aa2d04ca62",
+        "0x88a3443d54bffb1f221bcdfb5561c023533df83e",
+        "0x894e1ec2d74ffe5aef8dc8a9e84686accb964f2a",
+        "0x91280d9474cc18931ff3d52a7cea9b0db52f38d3",
+        "0x92fd66527192e3e61d4ddd13322aa222de86f9b5",
+        "0x941ae714ec6d8130c7b75d67160ca08f1e7d11dd",
+        "0x94ed49222ae2e604e0a4683fe08b92381b081270",
+        "0x98096d17e191b3da1d5f99a6d7b3584351b11e18",
+        "0x980dcf6766fa79f5cf0c4aadb3ab477ff15a9619",
+        "0x9909c4e8cae5ada810c7297943ae767f87d00a3e",
+        "0x9b23573b156b52565012f5ce02cdf60afbaa70be"
+      ]
+    },
+    {
+      "run": 11,
+      "tx": "0xe46ea6a7a70441c60f6d837caa88171f77fc949ff7487de64f9962df71a04298",
+      "simulate_log": "docs/token-check/batch/batch-11.cre.txt",
+      "checked_block": 88225759,
+      "checked_block_hash": "0x8248a3cc9a0259bef122dd7f0130aefd1f78c48407a9ed6622a626ed01d6fa92",
+      "batch_hash": "0x078c9a8002920b172c65a4e47f27dc8ef4052e5af638af2778d46ddbc2f92ae9",
+      "issuer_tokens": 3,
+      "items_per_request": 10,
+      "tokens": [
+        "0xa30fa36db767ad9ed3f7a60fc79526fb4d56d344",
+        "0xa3284897ad7c8fed700b04f573cf64e4f6c10f2c",
+        "0xa581f3c3c071215f60494c6cef072b001c1d7d82",
+        "0xa913c4c2f28aa7b0b15a7c6008a6e19ff8bf85c0",
+        "0xac13348444e9fc0584eace3831970af2011951b1",
+        "0xad25ac6c84d497db898fa1e8387bf6af3532a1c4",
+        "0xae517a2903e68bd929dfd15be875f8369d53e94a"
+      ]
+    },
+    {
+      "run": 12,
+      "tx": "0x694ddb03aeb9b49ef4d8b99c358d3173fa661527de8748f7aef12ac09039c49e",
+      "simulate_log": "docs/token-check/batch/batch-12.cre.txt",
+      "checked_block": 88225905,
+      "checked_block_hash": "0xe925265619cd091c0b4a49716c2bc7360ed4cf65e56f1b42eb4b6c39fa780f02",
+      "batch_hash": "0xee9237018c2935f88120f2d694c4d0ae64b88a9842b6121ca8d4d34939814567",
+      "issuer_tokens": 5,
+      "items_per_request": 10,
+      "tokens": [
+        "0xaf3d76f1834a1d425780943c99ea8a608f8a93f9",
+        "0xb4a2e4d7c9493a394ab8e48217d49e1808f7d5ac",
+        "0xb90a19ff0af67f7779aff50a882a9cff42446400",
+        "0xbce7482902952cf32807afa29928b00477948452",
+        "0xc0d6457c16cc70d6790dd43521c899c87ce02f35",
+        "0xc2378f126167c55b42ba4f49e012d0d9dcdf52e0",
+        "0xc4f85cebec3fe6c77df0f71f3a3e139d43bbb4a3",
+        "0xc6417224f693a0d8bf612bc6d7dcbbc268d5ad13",
+        "0xc72b96e0e48ecd4dc75e1e45396e26300bc39681",
+        "0xc9a981fee1f9dec688bb123ccdecc63d0debfc4e",
+        "0xc9d244ae176436f96279159b2d91d3e4f830c17f",
+        "0xca9c78dd337a67f6e0077f65f5e9218719d30edf"
+      ]
+    },
+    {
+      "run": 13,
+      "tx": "0x977bb55a90a6257287d4e99de3a2c3ee6ff77ec3cff84755b921be4ccbc39994",
+      "simulate_log": "docs/token-check/batch/batch-13.cre.txt",
+      "checked_block": 88226098,
+      "checked_block_hash": "0x63f4ec7daebb58a387414e63636b17162bb8476027b6d33043b44cf1d8a6f4de",
+      "batch_hash": "0x4a72c4ddbd13f298a27dc8c8b2cc1bbaea66d2dd70b49e3f18b80ef8f7ae355e",
+      "issuer_tokens": 4,
+      "items_per_request": 10,
+      "tokens": [
+        "0xcb071fc69e4aebd512387316578752e5c20b92e0",
+        "0xccee82fe024c36fa15e1005ede3e9e4787e23d09",
+        "0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec",
+        "0xd3033b5b57b255c66035a62237a9f9486ed10ea2",
+        "0xd51f5d3bb4ac528f58b08e574daa56e9bf58c230",
+        "0xd5f018a09081d7f75b06b4a3f2afd9bcadc42e03",
+        "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68",
+        "0xd6b8cecde770507fc46cde7ea82dde383ed7a7e5",
+        "0xdb81a12de6c0aebeddf2d85d531dd50cac7366ef",
+        "0xdf0992e440dd0be65bd8439b609d6d4366bf1cb5",
+        "0xdfd0e854387aef36022bcfc8972e68d8e1bd9a53"
+      ]
+    },
+    {
+      "run": 14,
+      "tx": "0xae8bb10664177f9ea48a9e3a523a6628a9d32cccc5267c64eba52755d4664a5b",
+      "simulate_log": "docs/token-check/batch/batch-14.cre.txt",
+      "checked_block": 88226295,
+      "checked_block_hash": "0x3f5a56a7a5861b6baacd37f83fb8cbc72b5f55e693fa3cd4dccfed60137fd455",
+      "batch_hash": "0x036d8718089e6692e5bab487592a079640e082d80f507e8ea8bfbbb4f0927694",
+      "issuer_tokens": 5,
+      "items_per_request": 10,
+      "tokens": [
+        "0xe0444ef8bf4ed74f74fd73686e2ddf4c1c5591e8",
+        "0xe3c500e3e183ea5ca2f0b0a7f8fc55ef914e6ff6",
+        "0xe7391e4047c7e5d48f31cd2b87004c10e875f288",
         "0xe93237c50d904957cf27e7b1133b510c669c2e74",
         "0xec262a75e413fafd0df80480274532c79d42da09",
         "0xec90adc7157d68d9213a88627b66956950374a3e",
+        "0xed3fd1025aa318b8e66ca25aa2ddc83096086de0",
         "0xf0c4bf4c582cb3836e98394b1d4e7b7281101be8",
-        "0xf23250dac154d05bb671cb0d0ebef3c635c79ce2",
-        "0xf6589f11bc40b669e584073f428b05562f568733",
+        "0xf23942801cd33c75a2d6e4832bc2fb05ca1044ec",
+        "0xf2b7ffb610269bdaec42ad983c401635e59814f1",
+        "0xf4dba7a14467b59e45a06f8600a7c0db26677192",
+        "0xf6589f11bc40b669e584073f428b05562f568733"
+      ]
+    },
+    {
+      "run": 15,
+      "tx": "0xb5a2fb15bb5a9a4314535de154fad69f0400472e6d7811743c25d731eb11abe2",
+      "simulate_log": "docs/token-check/batch/batch-15.cre.txt",
+      "checked_block": 88226518,
+      "checked_block_hash": "0x0441b79dd5605fcd46da96350d111d02f890ce0d0a7d4f32c9585bd81aa1ba7e",
+      "batch_hash": "0xbe17c46f287f70dc202adf97a4550246ed10305cac9b3d93ed3b277cad71b8f0",
+      "issuer_tokens": 2,
+      "items_per_request": 10,
+      "tokens": [
+        "0xf73eea2bf2f1bf06d676652700132d61feb74a15",
+        "0xfdbbdaa4d2d6cc9b6c2b8201acadf9371f91962a",
+        "0xfde6b5d9bb419b10c23268c74e369abff39c0460",
         "0xff080c8ce2e5feadaca0da81314ae59d232d4afd"
       ]
     }
   ],
   "tokens": {
+    "0x008dd62dd934f3ffdc0986ba5316c78ae51cb1c9": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "PAPER",
+      "name": "StonkPress Paper",
+      "code_hash": "0x1664ddefd6a0b46ab45126c6dc84c8685411e1bf9564e9781de4a1edea5894b3",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 1
+    },
+    "0x020bfc650a365f8bb26819deaabf3e21291018b4": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "CASHCAT",
+      "name": "Cash Cat",
+      "code_hash": "0x725781ccca82a0bf9b1f8920b2fe58ea1e4facf46d0db9f50226d6409de890fe",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 1
+    },
     "0x05a3d1cd21d0c88145e82600e62e7e496e0f222b": {
       "verdict": "GENUINE_STOCK_TOKEN",
       "symbol": "AMC",
@@ -247,11 +400,31 @@
       "factory_log": null,
       "run": 1
     },
+    "0x0d74c7103c690d861efd539916fde2db6d604c23": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+206F]S[U+206F]DG",
+      "name": "U[U+206F]S[U+206F]DG",
+      "code_hash": "0xc1f89e2b3b6651756422a9d89de4ff8c147a9283178767d5dcdb6af07a744497",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 1
+    },
     "0x0ef3fccbc4c73be8bb14411cfe801df141e309c0": {
       "verdict": "LOOKALIKE",
       "symbol": "USDG",
       "name": "Global Dollar",
       "code_hash": "0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 1
+    },
+    "0x10dd80c6f962eb071beed8433c7f3e68906eacdb": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+17B5]S[U+17B5]DG",
+      "name": "U[U+17B5]S[U+17B5]DG",
+      "code_hash": "0xc3eceb932f0548f864468762a4835944a73b2b028c7a032c2c53996b5c651140",
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
@@ -287,6 +460,16 @@
       "factory_log": true,
       "run": 1
     },
+    "0x1383b43aed527485f191b60060f5b5471f71b1ca": {
+      "verdict": "LOOKALIKE",
+      "symbol": "USDG",
+      "name": "Global Dollar",
+      "code_hash": "0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 2
+    },
     "0x147d436a2f253cc8e8d52efb18a6ba6f9e827e5a": {
       "verdict": "NOT_A_STOCK_TOKEN",
       "symbol": "USDC",
@@ -295,7 +478,27 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 1
+      "run": 2
+    },
+    "0x156e175dd063a8ce274c50654ef40e0032b3fbcf": {
+      "verdict": "GENUINE_STOCK_TOKEN",
+      "symbol": "AVGO",
+      "name": "Broadcom • Robinhood Token",
+      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
+      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
+      "multiplier": "1.001257318662278132",
+      "factory_log": true,
+      "run": 2
+    },
+    "0x17ca67ae8a0f0efe55b58721114f908903a40c06": {
+      "verdict": "LOOKALIKE",
+      "symbol": "wTSM",
+      "name": "Wrapped Taiwan Semiconductor Manufacturing • Robinhood Token",
+      "code_hash": "0x56d9425d1cad779b164a3697f88f0f4afea8f7f5570872a47be93d359c80bdf1",
+      "beacon": "0x27feb332759f8d2f351d7fc72d29af37664ffd77",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 2
     },
     "0x1b0e319c6a659f002271b69db8a7df2f911c153e": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -305,7 +508,17 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 1
+      "run": 2
+    },
+    "0x1c8a973a8788c4a57371bed1611830a83fd580f4": {
+      "verdict": "LOOKALIKE",
+      "symbol": "GME",
+      "name": "GameStop • Robinhood Token",
+      "code_hash": "0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 2
     },
     "0x1d11f0496982706c5e14a514d4e79f2e6bde4516": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -315,23 +528,13 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 1
-    },
-    "0x1dc878194328a96680c23b8d3c1186637b199eb3": {
-      "verdict": "LOOKALIKE",
-      "symbol": "USDG",
-      "name": "United States Global Dollar",
-      "code_hash": "0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da",
-      "beacon": "0x0000000000000000000000000000000000000000",
-      "multiplier": null,
-      "factory_log": null,
       "run": 2
     },
-    "0x1ee1a8fcc194a4fcdbce10f958aea8a18e831458": {
+    "0x22a68ae074150397c42d968ec050cd1ff3501a51": {
       "verdict": "LOOKALIKE",
-      "symbol": "USDG",
-      "name": "US Global Dollar",
-      "code_hash": "0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da",
+      "symbol": "NVDA",
+      "name": "NVIDIA Robinhood Token",
+      "code_hash": "0x893cae19932420e22bd6cfaa374262ca48283ee612137a831aa1e174d65c6af9",
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
@@ -357,6 +560,26 @@
       "factory_log": null,
       "run": 2
     },
+    "0x275fe81e2e5a8908f5cb7b5fa84d5b52680a1220": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+206F]S[U+206F]DG",
+      "name": "U[U+206F]S[U+206F]DG",
+      "code_hash": "0x15f1c5338afad6122c55bbfc6ca8d7397e055fb187faa9182030a1e673a5800e",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 2
+    },
+    "0x2775c597f2500619993f5cdec034dff2dfe47a58": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+17B5]S[U+17B5]DG",
+      "name": "U[U+17B5]S[U+17B5]DG",
+      "code_hash": "0x5498814db10b13da8592a47a108e83d82cb0b89e54b9c4417ffbe134f763e0f7",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 2
+    },
     "0x2ce3e396e069ac9fa62046f423267072e06e77af": {
       "verdict": "LOOKALIKE",
       "symbol": "USDG",
@@ -365,7 +588,17 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 2
+      "run": 3
+    },
+    "0x2d427692e928fa156ec22acfabafa0447c5805b7": {
+      "verdict": "GENUINE_STOCK_TOKEN",
+      "symbol": "GLXY",
+      "name": "Galaxy Digital Inc. • Robinhood Token",
+      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
+      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
+      "multiplier": "1",
+      "factory_log": true,
+      "run": 3
     },
     "0x2e0847e8910a9732eb3fb1bb4b70a580adad4fe3": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -375,7 +608,27 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1.000193924414112587",
       "factory_log": true,
-      "run": 2
+      "run": 4
+    },
+    "0x2e8c31162b855a2ffa90f6f8634643ad6f111e18": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "AI",
+      "name": "Artificial Inu",
+      "code_hash": "0xf10f86b05965a827a332e6c73086f18026fbe3917f4bffbec3f938b3b5397b56",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 4
+    },
+    "0x2fc7f9e2911f20b2c4660d2aef808aa91bddb3d3": {
+      "verdict": "LOOKALIKE",
+      "symbol": "Fly",
+      "name": "Fly Trader",
+      "code_hash": "0x701015b71e87be2ac033943b4e0a86852c1ced1c362462208032d00bb5807cd5",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 4
     },
     "0x318f563dceddbe58625400d9f7ee27eecef5b1a3": {
       "verdict": "LOOKALIKE",
@@ -385,7 +638,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 2
+      "run": 4
     },
     "0x322f0929c4625ed5bad873c95208d54e1c003b2d": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -395,17 +648,17 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 2
+      "run": 4
     },
-    "0x36f4d7f0fa5c7348416282e04380ddff30ca4be2": {
-      "verdict": "LOOKALIKE",
-      "symbol": "USDG",
-      "name": "Global Dollar",
-      "code_hash": "0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da",
+    "0x34d537f53ea0a1333a5d7621e7f023ee6cfcb787": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "oPLATE",
+      "name": "StonkPress Options Plate",
+      "code_hash": "0x79e3ff0676b16cce44adca902d29361f5abc9d388c38e632a042c77dabd45023",
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 2
+      "run": 4
     },
     "0x38ebf2ab30cbff745e2db10aa17b6aaaad001885": {
       "verdict": "LOOKALIKE",
@@ -415,7 +668,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 2
+      "run": 4
     },
     "0x39dbed3a2bd333467115de45665cc57f813c4571": {
       "verdict": "NOT_A_STOCK_TOKEN",
@@ -425,7 +678,37 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 2
+      "run": 4
+    },
+    "0x3b14c39e89d60d627b42a1a4ca45b5bb45fc12e2": {
+      "verdict": "GENUINE_STOCK_TOKEN",
+      "symbol": "RKLB",
+      "name": "Rocket Lab Corporation • Robinhood Token",
+      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
+      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
+      "multiplier": "1",
+      "factory_log": true,
+      "run": 4
+    },
+    "0x3d1fef40fa8a20de967484436c8c527db9c78b6e": {
+      "verdict": "LOOKALIKE",
+      "symbol": "USDG",
+      "name": "Global Dollar",
+      "code_hash": "0xc3042e0912619d5347e21049afd353df84137a9b21b516c5cb78cf516182cb96",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 4
+    },
+    "0x408c14038a04f7bd235329e26d2bf569ee20e250": {
+      "verdict": "GENUINE_STOCK_TOKEN",
+      "symbol": "NU",
+      "name": "Nu • Robinhood Token",
+      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
+      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
+      "multiplier": "1",
+      "factory_log": true,
+      "run": 4
     },
     "0x411efb0e7f985935daec3d4c3ebaea0d0ad7d89f": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -435,7 +718,7 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 3
+      "run": 4
     },
     "0x4190ee598c2a69d35bef53c83d152ae0f25ea416": {
       "verdict": "LOOKALIKE",
@@ -445,7 +728,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 3
+      "run": 5
     },
     "0x42b4fa90438ecb1a0c2676ff25a9f27355dd53c2": {
       "verdict": "LOOKALIKE",
@@ -455,27 +738,27 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 3
+      "run": 5
     },
-    "0x42e140c4b439c42dc01aa29be1fce2bc64d7f160": {
+    "0x44318785554bf11ffd164a6f98d9a453e2fa74af": {
       "verdict": "LOOKALIKE",
       "symbol": "USDG",
-      "name": "Global Dollar",
+      "name": "United States Global Dollars",
       "code_hash": "0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da",
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 3
+      "run": 5
     },
-    "0x43b07d15ce533bec5476d70c22a78a1b2b662155": {
-      "verdict": "GENUINE_STOCK_TOKEN",
-      "symbol": "MRNA",
-      "name": "Moderna • Robinhood Token",
-      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
-      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
-      "multiplier": "1",
-      "factory_log": true,
-      "run": 3
+    "0x480be87734e52fbf56c089e1a4ddba6e5b39d607": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+17B5]S[U+17B5]DG",
+      "name": "U[U+17B5]S[U+17B5]DG",
+      "code_hash": "0x7f753bf32dea37483813ee49714c199441e93d0a6c82bef594fc12d8f76a5389",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 5
     },
     "0x48e39e56acdba37b09020c0b734a613c9a2f100a": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -485,7 +768,7 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 3
+      "run": 5
     },
     "0x4a0e65a3eccec6dbe60ae065f2e7bb85fae35eea": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -495,7 +778,7 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 3
+      "run": 5
     },
     "0x4d3f37a965b21ab4122e92dd41d2693e742c883b": {
       "verdict": "NOT_A_STOCK_TOKEN",
@@ -505,7 +788,17 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 3
+      "run": 5
+    },
+    "0x4e62068525ab11fe768e29dfd00ef909b9803016": {
+      "verdict": "GENUINE_STOCK_TOKEN",
+      "symbol": "LULU",
+      "name": "Lululemon • Robinhood Token",
+      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
+      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
+      "multiplier": "1",
+      "factory_log": true,
+      "run": 5
     },
     "0x4ea005168d7f09a7a0ba9d1def21a479950e44c2": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -515,7 +808,17 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1.000612040296259656",
       "factory_log": true,
-      "run": 3
+      "run": 5
+    },
+    "0x4eb576e9c8a24b5fb11dd8eee5e5e2554ade1cf4": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "ANTHROPIC",
+      "name": "ANTHROPIC • Pre IPO Token",
+      "code_hash": "0x6da8725e9a2aae402c1749d2e79cda255a089c86cc801bd44af12b07bc2231a1",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 5
     },
     "0x4ff7f19a6c4c7ebcba25248610dbe642bbd0b792": {
       "verdict": "LOOKALIKE",
@@ -525,7 +828,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 3
+      "run": 5
     },
     "0x5411257cedf60bc40f4bead410bf8d02079056a2": {
       "verdict": "LOOKALIKE",
@@ -535,7 +838,27 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 3
+      "run": 5
+    },
+    "0x56cb52174592a72c570bd9980e3879fd768519f5": {
+      "verdict": "LOOKALIKE",
+      "symbol": "USDG",
+      "name": "Gelobal Dollar",
+      "code_hash": "0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 6
+    },
+    "0x57b9b90610a4b9205c57fab92080e9cfbe7229f6": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "STEERUV46",
+      "name": "STEER_UNIV4_VAULT_6",
+      "code_hash": "0xe5e912457423956e060aaf205143a00b41a51961ce1822f5a1ee1ddc07b26709",
+      "beacon": "0xb6e0e5c461ed2679908053ea829b3dd65b0cd0dc",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 6
     },
     "0x58ffe4a942d3885baa22d7520691f611ef09e7aa": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -545,7 +868,47 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1.002728577037771211",
       "factory_log": true,
-      "run": 3
+      "run": 7
+    },
+    "0x5b00c30098216a00905ee3fb5bda413006418bb6": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "PLATE",
+      "name": "StonkPress Plate",
+      "code_hash": "0x8dd10d1c2627b416e5b8dd5edca4b6687d38ed43556df360e37973824dae5abd",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 7
+    },
+    "0x5baaec1b70864f01dbdb747358ff59f2e2ccf7d5": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "GIGA",
+      "name": "GIGA",
+      "code_hash": "0x23b4bc30d84fae3ae75354d51b88f3560c9d2480f47b214241f69ead7de1ac63",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 7
+    },
+    "0x5c283587a8a10fc14b0f4b3212ef4de97520b282": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+17B5]S[U+17B5]DG",
+      "name": "U[U+17B5]S[U+17B5]DG",
+      "code_hash": "0x13dbeefda5560c5611fb97799671b842edadff7bad29c5732acac3174a8b3afa",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 7
+    },
+    "0x5cb6f181081301b44905f3ae15419112ecabd8a6": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "PIPEDOG",
+      "name": "pipedog",
+      "code_hash": "0xc0d0d825734a0b6d070991217c8c0fb8530b574e839d2ff7685341fd9d707912",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 7
     },
     "0x5dd716fe12275b69f04b26beeca343843c8e3539": {
       "verdict": "LOOKALIKE",
@@ -555,7 +918,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 4
+      "run": 7
     },
     "0x5e81213613b6b86eab4c6c50d718d34359459786": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -565,7 +928,27 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 4
+      "run": 7
+    },
+    "0x5eadcaa49e6cc1b7157d9983e62f5ccee0de89d6": {
+      "verdict": "LOOKALIKE",
+      "symbol": "USDG",
+      "name": "Global Dollar",
+      "code_hash": "0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 7
+    },
+    "0x5f10a1c971b69e47e059e1dc91901b59b3fb49c3": {
+      "verdict": "GENUINE_STOCK_TOKEN",
+      "symbol": "CRWV",
+      "name": "CoreWeave • Robinhood Token",
+      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
+      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
+      "multiplier": "1",
+      "factory_log": true,
+      "run": 7
     },
     "0x5fc5360d0400a0fd4f2af552add042d716f1d168": {
       "verdict": "USDG",
@@ -575,7 +958,17 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 4
+      "run": 7
+    },
+    "0x6178406c433c70b006e2f81a79a5d98bf5b0af85": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "UNI-V2",
+      "name": "Uniswap V2",
+      "code_hash": "0x5b83bdbcc56b2e630f2807bbadd2b0c21619108066b92a58de081261089e9ce5",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 7
     },
     "0x623613c0e9211a7215b4fd4ab80656fcbd1186e0": {
       "verdict": "LOOKALIKE",
@@ -585,7 +978,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 4
+      "run": 7
     },
     "0x62fd0668e10d8b72339be2dcf7643001688ff13b": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -595,17 +988,47 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1.000151336736428647",
       "factory_log": true,
-      "run": 4
+      "run": 8
     },
-    "0x65abeb15f2fed8cccf979c9429f517f937bdc0d5": {
-      "verdict": "LOOKALIKE",
-      "symbol": "USDG",
-      "name": "Global Dollar",
-      "code_hash": "0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da",
+    "0x6330d8c3178a418788df01a47479c0ce7ccf450b": {
+      "verdict": "GENUINE_STOCK_TOKEN",
+      "symbol": "COIN",
+      "name": "Coinbase • Robinhood Token",
+      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
+      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
+      "multiplier": "1",
+      "factory_log": true,
+      "run": 8
+    },
+    "0x63ee32ac3077d1fbd8a77ebba2a6ed4b8e9c1e18": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "INU",
+      "name": "iNu",
+      "code_hash": "0xf10f86b05965a827a332e6c73086f18026fbe3917f4bffbec3f938b3b5397b56",
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 4
+      "run": 8
+    },
+    "0x642565e604cf64ca49098505e2b9d2fffec77936": {
+      "verdict": "LOOKALIKE",
+      "symbol": "USDG",
+      "name": "Global Dollars",
+      "code_hash": "0xabe85667b569b7a9c92cb53093a7fca698ae849ef5296599112d2e59f1eb05b5",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 8
+    },
+    "0x650bf9154edfb41ad65e316be31fe489ccc76eb0": {
+      "verdict": "LOOKALIKE",
+      "symbol": "USDG",
+      "name": "United States Global Dollars Gold",
+      "code_hash": "0xfba723b7a2a6f8793af154afd348a8360f8786d282b5fe4600f9470fe90c9960",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 8
     },
     "0x67f438bd18131f152b6387083628e8eeaa5fb8b2": {
       "verdict": "LOOKALIKE",
@@ -615,7 +1038,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 4
+      "run": 8
     },
     "0x69e7778d46713e17572d610bdaca3943aa4e6219": {
       "verdict": "LOOKALIKE",
@@ -625,7 +1048,27 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 4
+      "run": 8
+    },
+    "0x6cfe8050d64b02a21cf6cf2ef2a408489c86c10b": {
+      "verdict": "LOOKALIKE",
+      "symbol": "IBM",
+      "name": "I Buy Memes",
+      "code_hash": "0xc8b1115870662c6cb98c183f8c30fe24067135123aeab2faa83c7fab4244b443",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 8
+    },
+    "0x6e401929bb5bebb4807c462c8c9fb8c6b76e1e18": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "BEAVER",
+      "name": "BEAVERCOIN",
+      "code_hash": "0xf10f86b05965a827a332e6c73086f18026fbe3917f4bffbec3f938b3b5397b56",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 8
     },
     "0x711681d447e8f53ac228f20afad1e179ab5e78f1": {
       "verdict": "LOOKALIKE",
@@ -635,7 +1078,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 4
+      "run": 8
     },
     "0x72ead0c700f07b645a8f91badd82be5c545b9d37": {
       "verdict": "LOOKALIKE",
@@ -645,7 +1088,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 4
+      "run": 8
     },
     "0x73acfc8352b6a9f0baacd02a266e58fde4b1c183": {
       "verdict": "LOOKALIKE",
@@ -655,7 +1098,17 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 4
+      "run": 8
+    },
+    "0x73c4aae208080d94e97a0abe80f140a140846cc8": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "UNI-V2",
+      "name": "Uniswap V2",
+      "code_hash": "0x5b83bdbcc56b2e630f2807bbadd2b0c21619108066b92a58de081261089e9ce5",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 9
     },
     "0x75742c18bc1f1c5c5f448f4c9d9c6f66dafaaa38": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -665,7 +1118,37 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1.00045083821042596",
       "factory_log": true,
-      "run": 4
+      "run": 9
+    },
+    "0x794a9a5975da82745a7165a5b91d2d27e9820aea": {
+      "verdict": "LOOKALIKE",
+      "symbol": "N[U+17B5]V[U+17B5]DA",
+      "name": "N[U+17B5]V[U+17B5]DA",
+      "code_hash": "0x86c75a7a16d3f2b2b4f8366b3242c0b0da4cb152c94b231ef96ffc4bf5b0ecab",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 9
+    },
+    "0x7c651ee2f3c1c456ac3afc483b834c823649a0e2": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "DAM",
+      "name": "Modam",
+      "code_hash": "0xa28a278dc6a303e28b32e440e0c28da14cba006115a716bd16ca1866858a7ba4",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 9
+    },
+    "0x7fa63d892faa245a91104873de0e79452cd208ac": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+17B5]S[U+17B5]DG",
+      "name": "U[U+17B5]S[U+17B5]DG",
+      "code_hash": "0xf529abf9b6a99ca59f87955a7653198be88972b741ac2226a0b722617db9c407",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 9
     },
     "0x8005d266423c7ea827372c9c864491e5786600ea": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -675,7 +1158,27 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1.000002288774375687",
       "factory_log": true,
-      "run": 5
+      "run": 9
+    },
+    "0x822cc93ffd030293e9842c30bbd678f530701867": {
+      "verdict": "GENUINE_STOCK_TOKEN",
+      "symbol": "BE",
+      "name": "Bloom Energy • Robinhood Token",
+      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
+      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
+      "multiplier": "1",
+      "factory_log": true,
+      "run": 9
+    },
+    "0x829b217ad539ccc53b18e53c63873333650e60f9": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "cyberbeer",
+      "name": "cyberbeer",
+      "code_hash": "0x018ce00393b0e6e1b06930d41277b474e9aa08cc70f742f45dd5233363e57895",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 9
     },
     "0x83726b15b25013e95b56357c4795b848ab32c3bc": {
       "verdict": "LOOKALIKE",
@@ -685,7 +1188,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 5
+      "run": 9
     },
     "0x86923f96303d656e4aa86d9d42d1e57ad2023fdc": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -695,7 +1198,7 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 5
+      "run": 10
     },
     "0x87673a619fc4f3fc08068a0bb04f60aa2d04ca62": {
       "verdict": "NOT_A_STOCK_TOKEN",
@@ -705,7 +1208,17 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 5
+      "run": 10
+    },
+    "0x88a3443d54bffb1f221bcdfb5561c023533df83e": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+206F]S[U+206F]DG",
+      "name": "U[U+206F]S[U+206F]DG",
+      "code_hash": "0xa9c2005b1a44b1e37bb34003b4b74f709c82bfad9b6dcff64daee48ab6889c34",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 10
     },
     "0x894e1ec2d74ffe5aef8dc8a9e84686accb964f2a": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -715,7 +1228,17 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 5
+      "run": 10
+    },
+    "0x91280d9474cc18931ff3d52a7cea9b0db52f38d3": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+206F]S[U+206F]DG",
+      "name": "U[U+206F]S[U+206F]DG",
+      "code_hash": "0xc907ed169080e811a37f909092d871954915a142ce20c10575a94e00f128da08",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 10
     },
     "0x92fd66527192e3e61d4ddd13322aa222de86f9b5": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -725,7 +1248,7 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1.007186931447954063",
       "factory_log": true,
-      "run": 5
+      "run": 10
     },
     "0x941ae714ec6d8130c7b75d67160ca08f1e7d11dd": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -735,7 +1258,27 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1.000063708620124549",
       "factory_log": true,
-      "run": 5
+      "run": 10
+    },
+    "0x94ed49222ae2e604e0a4683fe08b92381b081270": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+17B5]S[U+17B5]DG",
+      "name": "U[U+17B5]S[U+17B5]DG",
+      "code_hash": "0x69f9eec3d5e172857f44f6254f1aa3e8be221080a02a37d1187389a671d45cc1",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 10
+    },
+    "0x98096d17e191b3da1d5f99a6d7b3584351b11e18": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "BONER",
+      "name": "Boner Coin",
+      "code_hash": "0xf10f86b05965a827a332e6c73086f18026fbe3917f4bffbec3f938b3b5397b56",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 10
     },
     "0x980dcf6766fa79f5cf0c4aadb3ab477ff15a9619": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -745,7 +1288,7 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 6
+      "run": 10
     },
     "0x9909c4e8cae5ada810c7297943ae767f87d00a3e": {
       "verdict": "LOOKALIKE",
@@ -755,7 +1298,47 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 6
+      "run": 10
+    },
+    "0x9b23573b156b52565012f5ce02cdf60afbaa70be": {
+      "verdict": "GENUINE_STOCK_TOKEN",
+      "symbol": "PENG",
+      "name": "Penguin Solutions • Robinhood Token",
+      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
+      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
+      "multiplier": "1",
+      "factory_log": true,
+      "run": 10
+    },
+    "0xa30fa36db767ad9ed3f7a60fc79526fb4d56d344": {
+      "verdict": "GENUINE_STOCK_TOKEN",
+      "symbol": "USO",
+      "name": "United States Oil Fund • Robinhood Token",
+      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
+      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
+      "multiplier": "1",
+      "factory_log": true,
+      "run": 11
+    },
+    "0xa3284897ad7c8fed700b04f573cf64e4f6c10f2c": {
+      "verdict": "LOOKALIKE",
+      "symbol": "NVDA",
+      "name": " NVIDIA Robinhood Token ",
+      "code_hash": "0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 11
+    },
+    "0xa581f3c3c071215f60494c6cef072b001c1d7d82": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+17B5]S[U+17B5]DG",
+      "name": "U[U+17B5]S[U+17B5]DG",
+      "code_hash": "0x4ed3d1383e6d3ea3af40f2abb4cf6cf4aa815d35337767ce65d11252d8d3e862",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 11
     },
     "0xa913c4c2f28aa7b0b15a7c6008a6e19ff8bf85c0": {
       "verdict": "LOOKALIKE",
@@ -765,7 +1348,17 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 6
+      "run": 11
+    },
+    "0xac13348444e9fc0584eace3831970af2011951b1": {
+      "verdict": "LOOKALIKE",
+      "symbol": "USDG",
+      "name": "Global Dollar",
+      "code_hash": "0x7c5618d027ce9612d14efed8ae82aedfeb94c947e8879f47cfc89487e4cc8877",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 11
     },
     "0xad25ac6c84d497db898fa1e8387bf6af3532a1c4": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -775,7 +1368,17 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 6
+      "run": 11
+    },
+    "0xae517a2903e68bd929dfd15be875f8369d53e94a": {
+      "verdict": "GENUINE_STOCK_TOKEN",
+      "symbol": "CEG",
+      "name": "Constellation Energy • Robinhood Token",
+      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
+      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
+      "multiplier": "1",
+      "factory_log": true,
+      "run": 11
     },
     "0xaf3d76f1834a1d425780943c99ea8a608f8a93f9": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -785,17 +1388,17 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1.000566080061092436",
       "factory_log": true,
-      "run": 6
+      "run": 12
     },
-    "0xb1bf26c1d20ff267a4f93550d1e0d06ac40a114b": {
-      "verdict": "GENUINE_STOCK_TOKEN",
-      "symbol": "RIVN",
-      "name": "Rivian Automotive • Robinhood Token",
-      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
-      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
-      "multiplier": "1",
-      "factory_log": true,
-      "run": 6
+    "0xb4a2e4d7c9493a394ab8e48217d49e1808f7d5ac": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+17B5]S[U+17B5]DG",
+      "name": "U[U+17B5]S[U+17B5]DG",
+      "code_hash": "0xdea7ee95a33bcc7a7d31f855d032d31320ecd37f16408cc1f70c4710f7152a2d",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 12
     },
     "0xb90a19ff0af67f7779aff50a882a9cff42446400": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -805,7 +1408,17 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 7
+      "run": 12
+    },
+    "0xbce7482902952cf32807afa29928b00477948452": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+17B5]S[U+17B5]DG",
+      "name": "U[U+17B5]S[U+17B5]DG",
+      "code_hash": "0x0940255e3468d364f68b8cbf5530536b679222db0446549b19f3c643301b5e12",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 12
     },
     "0xc0d6457c16cc70d6790dd43521c899c87ce02f35": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -815,7 +1428,17 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1.000541459879451635",
       "factory_log": true,
-      "run": 7
+      "run": 12
+    },
+    "0xc2378f126167c55b42ba4f49e012d0d9dcdf52e0": {
+      "verdict": "LOOKALIKE",
+      "symbol": "USDG",
+      "name": "Global Dollar",
+      "code_hash": "0x0c970abfbd8e566a831ffcae0a83eeef9dd7e418ab5b31ae899d451513e9e489",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 12
     },
     "0xc4f85cebec3fe6c77df0f71f3a3e139d43bbb4a3": {
       "verdict": "LOOKALIKE",
@@ -825,7 +1448,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 7
+      "run": 12
     },
     "0xc6417224f693a0d8bf612bc6d7dcbbc268d5ad13": {
       "verdict": "LOOKALIKE",
@@ -835,7 +1458,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 7
+      "run": 12
     },
     "0xc72b96e0e48ecd4dc75e1e45396e26300bc39681": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -845,7 +1468,7 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 7
+      "run": 12
     },
     "0xc9a981fee1f9dec688bb123ccdecc63d0debfc4e": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -855,7 +1478,27 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 7
+      "run": 12
+    },
+    "0xc9d244ae176436f96279159b2d91d3e4f830c17f": {
+      "verdict": "LOOKALIKE",
+      "symbol": "wMETA",
+      "name": "Wrapped Meta Platforms • Robinhood Token",
+      "code_hash": "0x56d9425d1cad779b164a3697f88f0f4afea8f7f5570872a47be93d359c80bdf1",
+      "beacon": "0x27feb332759f8d2f351d7fc72d29af37664ffd77",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 12
+    },
+    "0xca9c78dd337a67f6e0077f65f5e9218719d30edf": {
+      "verdict": "LOOKALIKE",
+      "symbol": "NET",
+      "name": "NetNet",
+      "code_hash": "0x3ad6bb6926ffbb92e858d71f0f439256752e79c801d9ebe4482e495ec84d3c37",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 12
     },
     "0xcb071fc69e4aebd512387316578752e5c20b92e0": {
       "verdict": "LOOKALIKE",
@@ -865,7 +1508,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 7
+      "run": 13
     },
     "0xccee82fe024c36fa15e1005ede3e9e4787e23d09": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -875,7 +1518,7 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 7
+      "run": 13
     },
     "0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -885,7 +1528,37 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1.000775159164630595",
       "factory_log": true,
-      "run": 8
+      "run": 13
+    },
+    "0xd3033b5b57b255c66035a62237a9f9486ed10ea2": {
+      "verdict": "LOOKALIKE",
+      "symbol": "USDG",
+      "name": "Global Dollar",
+      "code_hash": "0x0c970abfbd8e566a831ffcae0a83eeef9dd7e418ab5b31ae899d451513e9e489",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 13
+    },
+    "0xd51f5d3bb4ac528f58b08e574daa56e9bf58c230": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "STEERUV417",
+      "name": "STEER_UNIV4_VAULT_17",
+      "code_hash": "0xe5e912457423956e060aaf205143a00b41a51961ce1822f5a1ee1ddc07b26709",
+      "beacon": "0xb6e0e5c461ed2679908053ea829b3dd65b0cd0dc",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 13
+    },
+    "0xd5f018a09081d7f75b06b4a3f2afd9bcadc42e03": {
+      "verdict": "LOOKALIKE",
+      "symbol": "USDG",
+      "name": "Global Dollars",
+      "code_hash": "0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 13
     },
     "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -895,7 +1568,7 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1.000700791241405425",
       "factory_log": true,
-      "run": 8
+      "run": 13
     },
     "0xd6b8cecde770507fc46cde7ea82dde383ed7a7e5": {
       "verdict": "LOOKALIKE",
@@ -905,17 +1578,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 8
-    },
-    "0xd9c6ee31275554006ca30abcde7b48188c4e2cf0": {
-      "verdict": "LOOKALIKE",
-      "symbol": "USDG",
-      "name": "United Stables Digital Gold",
-      "code_hash": "0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da",
-      "beacon": "0x0000000000000000000000000000000000000000",
-      "multiplier": null,
-      "factory_log": null,
-      "run": 8
+      "run": 13
     },
     "0xdb81a12de6c0aebeddf2d85d531dd50cac7366ef": {
       "verdict": "LOOKALIKE",
@@ -925,7 +1588,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 8
+      "run": 13
     },
     "0xdf0992e440dd0be65bd8439b609d6d4366bf1cb5": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -935,7 +1598,17 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 8
+      "run": 13
+    },
+    "0xdfd0e854387aef36022bcfc8972e68d8e1bd9a53": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+17B5]S[U+17B5]DG",
+      "name": "U[U+17B5]S[U+17B5]DG",
+      "code_hash": "0xb957c4fdaa85b017aeded59ff7ceff362e7376d86c8e2193185a8eb6e57c7ee4",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 13
     },
     "0xe0444ef8bf4ed74f74fd73686e2ddf4c1c5591e8": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -945,7 +1618,17 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 8
+      "run": 14
+    },
+    "0xe3c500e3e183ea5ca2f0b0a7f8fc55ef914e6ff6": {
+      "verdict": "LOOKALIKE",
+      "symbol": "USDG",
+      "name": "Global Dollar",
+      "code_hash": "0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 14
     },
     "0xe7391e4047c7e5d48f31cd2b87004c10e875f288": {
       "verdict": "LOOKALIKE",
@@ -955,7 +1638,7 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 8
+      "run": 14
     },
     "0xe93237c50d904957cf27e7b1133b510c669c2e74": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -965,7 +1648,7 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1.000412952576205964",
       "factory_log": true,
-      "run": 9
+      "run": 14
     },
     "0xec262a75e413fafd0df80480274532c79d42da09": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -975,7 +1658,7 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 9
+      "run": 14
     },
     "0xec90adc7157d68d9213a88627b66956950374a3e": {
       "verdict": "LOOKALIKE",
@@ -985,7 +1668,17 @@
       "beacon": "0x0000000000000000000000000000000000000000",
       "multiplier": null,
       "factory_log": null,
-      "run": 9
+      "run": 14
+    },
+    "0xed3fd1025aa318b8e66ca25aa2ddc83096086de0": {
+      "verdict": "LOOKALIKE",
+      "symbol": "USDG",
+      "name": "US GLOBAL DOLAR",
+      "code_hash": "0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 14
     },
     "0xf0c4bf4c582cb3836e98394b1d4e7b7281101be8": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -995,17 +1688,37 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 9
+      "run": 14
     },
-    "0xf23250dac154d05bb671cb0d0ebef3c635c79ce2": {
-      "verdict": "GENUINE_STOCK_TOKEN",
-      "symbol": "UPS",
-      "name": "UPS • Robinhood Token",
-      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
-      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
-      "multiplier": "1.002208724969205741",
-      "factory_log": true,
-      "run": 9
+    "0xf23942801cd33c75a2d6e4832bc2fb05ca1044ec": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "BIGTECH",
+      "name": "BIG TECH",
+      "code_hash": "0x980951f437099e7d8e75c7db6564694bcb6328cb116ee3544333887b904fef06",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 14
+    },
+    "0xf2b7ffb610269bdaec42ad983c401635e59814f1": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+206F]S[U+206F]DG",
+      "name": "U[U+206F]S[U+206F]DG",
+      "code_hash": "0x672bc50b1f335985c2d47c7c6d389a101f84477b106ce4196e00e4525bf85d8f",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 14
+    },
+    "0xf4dba7a14467b59e45a06f8600a7c0db26677192": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "Starman",
+      "name": "Starman",
+      "code_hash": "0xf30d4599ba2b446b61d99be034bb9a55a438f51d68d9ca8b39a865189c6148fa",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 14
     },
     "0xf6589f11bc40b669e584073f428b05562f568733": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -1015,7 +1728,37 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1",
       "factory_log": true,
-      "run": 9
+      "run": 14
+    },
+    "0xf73eea2bf2f1bf06d676652700132d61feb74a15": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+17B5]S[U+17B5]DG",
+      "name": "U[U+17B5]S[U+17B5]DG",
+      "code_hash": "0x9acac6e174c754f7b4a1499d40ce36b85d49bc316b543b69bed4c87472c85299",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 15
+    },
+    "0xfdbbdaa4d2d6cc9b6c2b8201acadf9371f91962a": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+206F]S[U+206F]DG",
+      "name": "U[U+206F]S[U+206F]DG",
+      "code_hash": "0x507faf84d5a5686149a599b9786f9e9723088f92f040deee14a8d0abbcf08f75",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 15
+    },
+    "0xfde6b5d9bb419b10c23268c74e369abff39c0460": {
+      "verdict": "GENUINE_STOCK_TOKEN",
+      "symbol": "RCAT",
+      "name": "Red Cat • Robinhood Token",
+      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
+      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
+      "multiplier": "1",
+      "factory_log": true,
+      "run": 15
     },
     "0xff080c8ce2e5feadaca0da81314ae59d232d4afd": {
       "verdict": "GENUINE_STOCK_TOKEN",
@@ -1025,7 +1768,7 @@
       "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
       "multiplier": "1.000183456682946507",
       "factory_log": true,
-      "run": 9
+      "run": 15
     }
   }
 }

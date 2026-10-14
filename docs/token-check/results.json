@@ -1,44 +1,90 @@
 {
-  "generated_at": "2026-10-14T05:04:43.989Z",
+  "generated_at": "2026-10-14T08:33:33.157Z",
   "cre_runs": [
     {
-      "tx": "0xfa386a44268705425cc52115bf63badd8106e3e39ffc3b14c63eee71095eb77d",
+      "tx": "0xda1a216baab1af12ccc41a92be94d7c6558a8abd1396b7aa06ea77d9fc9b1929",
       "simulate_log": "docs/token-check/batch/batch-1.cre.txt"
     },
     {
-      "tx": "0xdbef8b0aeca1820e4a191c2f90edac9ccaf3be2d78ea28c711107fd96c518336",
+      "tx": "0x1b629f69f76bfc82ee050d90990c2bd55a7ba3c866a28d4e1a0eddc46b7719c3",
       "simulate_log": "docs/token-check/batch/batch-2.cre.txt"
     },
     {
-      "tx": "0x6cd511c78b0045af18171246be1d7ca8b92d2ec5e41b5aaf817e2c820fe3357e",
+      "tx": "0x5a056b974b3648747c236dfe58f5fd6c849d955d70e86431d028093346f8f373",
       "simulate_log": "docs/token-check/batch/batch-3.cre.txt"
     },
     {
-      "tx": "0x1aaea557aad9af3d2a8129523ff0ca0aca62532bb254d2be19b2b13ed08f9842",
+      "tx": "0xbcc95f7cb393854cc5e5b0562466dc778d3cf92d4d9eeb896b6177f3baa58d25",
       "simulate_log": "docs/token-check/batch/batch-4.cre.txt"
     },
     {
-      "tx": "0xf7b7484378d166b7b9d4b2ffbe97708fa3ddb1545c4e7d5c053b7cb2ef15fcb6",
+      "tx": "0x189e0eb9900d602c71adec6a0a8d1ac52fe92bc6d5e14c2de632f9e745c1abf3",
       "simulate_log": "docs/token-check/batch/batch-5.cre.txt"
     },
     {
-      "tx": "0xf04a9faefa83c3be99e70e902178e005a101fe50f471d795f5294c4a5609b320",
+      "tx": "0x021ae09aadf4517a3d880dd55e69648e68c4edfa21cc8242c198a9070a8cb546",
       "simulate_log": "docs/token-check/batch/batch-6.cre.txt"
     },
     {
-      "tx": "0x3868b8e9d9bda1c340ce37c74eba35acbcee1ba00d2d55ce73f65db2446f4ae4",
+      "tx": "0xf580989891b9050e23fff002fab8090a627d287f0fba8d3162ef613b10b439f2",
       "simulate_log": "docs/token-check/batch/batch-7.cre.txt"
     },
     {
-      "tx": "0x2b10033e7bf929064879346b65fd2dde82b45f429838375c3146eb64722eebb3",
+      "tx": "0xc9ba3818f454796da12a5b6efd1074f1c3470dcd50cb52671014993ece89d616",
       "simulate_log": "docs/token-check/batch/batch-8.cre.txt"
     },
     {
-      "tx": "0x14338fa3c55cdf79c8238bcea3621a0828c59b3a1983d86d546b87e3bf9e2bea",
+      "tx": "0x83b8ed7206c3359d489b9359937876fb6e8dcbe3682263c680549204bf83adf9",
       "simulate_log": "docs/token-check/batch/batch-9.cre.txt"
+    },
+    {
+      "tx": "0xaae6dad2b49ceda82c1bf4ff797ab8b7743f14ef2922f7d491d67ca6ccc84c2b",
+      "simulate_log": "docs/token-check/batch/batch-10.cre.txt"
+    },
+    {
+      "tx": "0xe46ea6a7a70441c60f6d837caa88171f77fc949ff7487de64f9962df71a04298",
+      "simulate_log": "docs/token-check/batch/batch-11.cre.txt"
+    },
+    {
+      "tx": "0x694ddb03aeb9b49ef4d8b99c358d3173fa661527de8748f7aef12ac09039c49e",
+      "simulate_log": "docs/token-check/batch/batch-12.cre.txt"
+    },
+    {
+      "tx": "0x977bb55a90a6257287d4e99de3a2c3ee6ff77ec3cff84755b921be4ccbc39994",
+      "simulate_log": "docs/token-check/batch/batch-13.cre.txt"
+    },
+    {
+      "tx": "0xae8bb10664177f9ea48a9e3a523a6628a9d32cccc5267c64eba52755d4664a5b",
+      "simulate_log": "docs/token-check/batch/batch-14.cre.txt"
+    },
+    {
+      "tx": "0xb5a2fb15bb5a9a4314535de154fad69f0400472e6d7811743c25d731eb11abe2",
+      "simulate_log": "docs/token-check/batch/batch-15.cre.txt"
     }
   ],
   "tokens": {
+    "0x008dd62dd934f3ffdc0986ba5316c78ae51cb1c9": {
+      "issuer_token": false,
+      "ticker": "PAPER",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224074
+    },
+    "0x020bfc650a365f8bb26819deaabf3e21291018b4": {
+      "issuer_token": false,
+      "ticker": "CASHCAT",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224074
+    },
     "0x05a3d1cd21d0c88145e82600e62e7e496e0f222b": {
       "issuer_token": true,
       "ticker": "AMC",
@@ -50,7 +96,7 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092367
+      "checked_block": 88224074
     },
     "0x05b37fb53a299a1b874a619e1c4c404d52c36f4c": {
       "issuer_token": true,
@@ -63,7 +109,7 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092367
+      "checked_block": 88224074
     },
     "0x0bd7d308f8e1639fab988df18a8011f41eacad73": {
       "issuer_token": false,
@@ -74,7 +120,7 @@
         "BEACON_DIFFERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092367
+      "checked_block": 88224074
     },
     "0x0c95df78d9f692beb3feaeceb2ef1e614513b1f7": {
       "issuer_token": false,
@@ -86,7 +132,20 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092367
+      "checked_block": 88224074
+    },
+    "0x0d74c7103c690d861efd539916fde2db6d604c23": {
+      "issuer_token": false,
+      "ticker": "U[U+206F]S[U+206F]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224074
     },
     "0x0ef3fccbc4c73be8bb14411cfe801df141e309c0": {
       "issuer_token": false,
@@ -98,7 +157,20 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092367
+      "checked_block": 88224074
+    },
+    "0x10dd80c6f962eb071beed8433c7f3e68906eacdb": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224074
     },
     "0x116f00968269b7bfbad4109ce591d6e74c0601d4": {
       "issuer_token": true,
@@ -111,7 +183,7 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092367
+      "checked_block": 88224074
     },
     "0x117cc2133c37b721f49de2a7a74833232b3b4c0c": {
       "issuer_token": true,
@@ -125,7 +197,7 @@
         "MULTIPLIER_NOT_ONE"
       ],
       "multiplier_updates": 1,
-      "checked_block": 88092367
+      "checked_block": 88224074
     },
     "0x12f190a9f9d7d37a250758b26824b97ce941bf54": {
       "issuer_token": true,
@@ -138,7 +210,19 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092367
+      "checked_block": 88224074
+    },
+    "0x1383b43aed527485f191b60060f5b5471f71b1ca": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224272
     },
     "0x147d436a2f253cc8e8d52efb18a6ba6f9e827e5a": {
       "issuer_token": false,
@@ -149,7 +233,33 @@
         "BEACON_DIFFERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092367
+      "checked_block": 88224272
+    },
+    "0x156e175dd063a8ce274c50654ef40e0032b3fbcf": {
+      "issuer_token": true,
+      "ticker": "AVGO",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88224272
+    },
+    "0x17ca67ae8a0f0efe55b58721114f908903a40c06": {
+      "issuer_token": false,
+      "ticker": "wTSM",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "NAME_ENDS_LIKE_ISSUER_TOKEN"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224272
     },
     "0x1b0e319c6a659f002271b69db8a7df2f911c153e": {
       "issuer_token": true,
@@ -162,7 +272,21 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092367
+      "checked_block": 88224272
+    },
+    "0x1c8a973a8788c4a57371bed1611830a83fd580f4": {
+      "issuer_token": false,
+      "ticker": "GME",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_SAME_AS_ISSUER_TOKEN",
+        "NAME_SAME_AS_ISSUER_TOKEN",
+        "NAME_ENDS_LIKE_ISSUER_TOKEN"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224272
     },
     "0x1d11f0496982706c5e14a514d4e79f2e6bde4516": {
       "issuer_token": true,
@@ -175,31 +299,21 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092367
+      "checked_block": 88224272
     },
-    "0x1dc878194328a96680c23b8d3c1186637b199eb3": {
+    "0x22a68ae074150397c42d968ec050cd1ff3501a51": {
       "issuer_token": false,
-      "ticker": "USDG",
+      "ticker": "NVDA",
       "reasons": [
         "NOT_IN_ISSUER_LIST",
         "CODE_HASH_DIFFERS",
         "BEACON_DIFFERS",
-        "TICKER_OR_NAME_READS_AS_USDG"
+        "TICKER_SAME_AS_ISSUER_TOKEN",
+        "NAME_SAME_AS_ISSUER_TOKEN",
+        "NAME_ENDS_LIKE_ISSUER_TOKEN"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092662
-    },
-    "0x1ee1a8fcc194a4fcdbce10f958aea8a18e831458": {
-      "issuer_token": false,
-      "ticker": "USDG",
-      "reasons": [
-        "NOT_IN_ISSUER_LIST",
-        "CODE_HASH_DIFFERS",
-        "BEACON_DIFFERS",
-        "TICKER_OR_NAME_READS_AS_USDG"
-      ],
-      "multiplier_updates": 0,
-      "checked_block": 88092662
+      "checked_block": 88224272
     },
     "0x22b1137c0637bf8f7ac7fbcfa857604e4b89d8d7": {
       "issuer_token": false,
@@ -212,7 +326,7 @@
         "INVISIBLE_CHARACTERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092662
+      "checked_block": 88224272
     },
     "0x2504cc3b84585a5cdf88f4c4f50b2afe9181150c": {
       "issuer_token": false,
@@ -224,7 +338,33 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092662
+      "checked_block": 88224272
+    },
+    "0x275fe81e2e5a8908f5cb7b5fa84d5b52680a1220": {
+      "issuer_token": false,
+      "ticker": "U[U+206F]S[U+206F]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224272
+    },
+    "0x2775c597f2500619993f5cdec034dff2dfe47a58": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224272
     },
     "0x2ce3e396e069ac9fa62046f423267072e06e77af": {
       "issuer_token": false,
@@ -236,7 +376,20 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092662
+      "checked_block": 88224459
+    },
+    "0x2d427692e928fa156ec22acfabafa0447c5805b7": {
+      "issuer_token": true,
+      "ticker": "GLXY",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224459
     },
     "0x2e0847e8910a9732eb3fb1bb4b70a580adad4fe3": {
       "issuer_token": true,
@@ -250,7 +403,30 @@
         "MULTIPLIER_NOT_ONE"
       ],
       "multiplier_updates": 1,
-      "checked_block": 88092662
+      "checked_block": 88224586
+    },
+    "0x2e8c31162b855a2ffa90f6f8634643ad6f111e18": {
+      "issuer_token": false,
+      "ticker": "AI",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224586
+    },
+    "0x2fc7f9e2911f20b2c4660d2aef808aa91bddb3d3": {
+      "issuer_token": false,
+      "ticker": "Fly",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_SAME_AFTER_FOLDING"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224586
     },
     "0x318f563dceddbe58625400d9f7ee27eecef5b1a3": {
       "issuer_token": false,
@@ -263,7 +439,7 @@
         "INVISIBLE_CHARACTERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092662
+      "checked_block": 88224586
     },
     "0x322f0929c4625ed5bad873c95208d54e1c003b2d": {
       "issuer_token": true,
@@ -276,19 +452,18 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092662
+      "checked_block": 88224586
     },
-    "0x36f4d7f0fa5c7348416282e04380ddff30ca4be2": {
+    "0x34d537f53ea0a1333a5d7621e7f023ee6cfcb787": {
       "issuer_token": false,
-      "ticker": "USDG",
+      "ticker": "oPLATE",
       "reasons": [
         "NOT_IN_ISSUER_LIST",
         "CODE_HASH_DIFFERS",
-        "BEACON_DIFFERS",
-        "TICKER_OR_NAME_READS_AS_USDG"
+        "BEACON_DIFFERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092662
+      "checked_block": 88224586
     },
     "0x38ebf2ab30cbff745e2db10aa17b6aaaad001885": {
       "issuer_token": false,
@@ -301,7 +476,7 @@
         "INVISIBLE_CHARACTERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092662
+      "checked_block": 88224586
     },
     "0x39dbed3a2bd333467115de45665cc57f813c4571": {
       "issuer_token": false,
@@ -312,7 +487,45 @@
         "BEACON_DIFFERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88092662
+      "checked_block": 88224586
+    },
+    "0x3b14c39e89d60d627b42a1a4ca45b5bb45fc12e2": {
+      "issuer_token": true,
+      "ticker": "RKLB",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224586
+    },
+    "0x3d1fef40fa8a20de967484436c8c527db9c78b6e": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224586
+    },
+    "0x408c14038a04f7bd235329e26d2bf569ee20e250": {
+      "issuer_token": true,
+      "ticker": "NU",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224586
     },
     "0x411efb0e7f985935daec3d4c3ebaea0d0ad7d89f": {
       "issuer_token": true,
@@ -325,7 +538,7 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095346
+      "checked_block": 88224586
     },
     "0x4190ee598c2a69d35bef53c83d152ae0f25ea416": {
       "issuer_token": false,
@@ -338,7 +551,7 @@
         "INVISIBLE_CHARACTERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095346
+      "checked_block": 88224783
     },
     "0x42b4fa90438ecb1a0c2676ff25a9f27355dd53c2": {
       "issuer_token": false,
@@ -350,9 +563,9 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095346
+      "checked_block": 88224783
     },
-    "0x42e140c4b439c42dc01aa29be1fce2bc64d7f160": {
+    "0x44318785554bf11ffd164a6f98d9a453e2fa74af": {
       "issuer_token": false,
       "ticker": "USDG",
       "reasons": [
@@ -362,20 +575,20 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095346
+      "checked_block": 88224783
     },
-    "0x43b07d15ce533bec5476d70c22a78a1b2b662155": {
-      "issuer_token": true,
-      "ticker": "MRNA",
+    "0x480be87734e52fbf56c089e1a4ddba6e5b39d607": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
       "reasons": [
-        "IN_ISSUER_LIST",
-        "CODE_HASH_MATCHES",
-        "BEACON_MATCHES",
-        "FACTORY_LOG_NAMES_TOKEN",
-        "TICKER_MATCHES_LIST"
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095346
+      "checked_block": 88224783
     },
     "0x48e39e56acdba37b09020c0b734a613c9a2f100a": {
       "issuer_token": true,
@@ -388,7 +601,7 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095346
+      "checked_block": 88224783
     },
     "0x4a0e65a3eccec6dbe60ae065f2e7bb85fae35eea": {
       "issuer_token": true,
@@ -401,7 +614,7 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095346
+      "checked_block": 88224783
     },
     "0x4d3f37a965b21ab4122e92dd41d2693e742c883b": {
       "issuer_token": false,
@@ -412,7 +625,20 @@
         "BEACON_DIFFERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095346
+      "checked_block": 88224783
+    },
+    "0x4e62068525ab11fe768e29dfd00ef909b9803016": {
+      "issuer_token": true,
+      "ticker": "LULU",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224783
     },
     "0x4ea005168d7f09a7a0ba9d1def21a479950e44c2": {
       "issuer_token": true,
@@ -426,7 +652,18 @@
         "MULTIPLIER_NOT_ONE"
       ],
       "multiplier_updates": 1,
-      "checked_block": 88095346
+      "checked_block": 88224783
+    },
+    "0x4eb576e9c8a24b5fb11dd8eee5e5e2554ade1cf4": {
+      "issuer_token": false,
+      "ticker": "ANTHROPIC",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224783
     },
     "0x4ff7f19a6c4c7ebcba25248610dbe642bbd0b792": {
       "issuer_token": false,
@@ -438,7 +675,7 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095346
+      "checked_block": 88224783
     },
     "0x5411257cedf60bc40f4bead410bf8d02079056a2": {
       "issuer_token": false,
@@ -450,7 +687,30 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095346
+      "checked_block": 88224783
+    },
+    "0x56cb52174592a72c570bd9980e3879fd768519f5": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224946
+    },
+    "0x57b9b90610a4b9205c57fab92080e9cfbe7229f6": {
+      "issuer_token": false,
+      "ticker": "STEERUV46",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88224946
     },
     "0x58ffe4a942d3885baa22d7520691f611ef09e7aa": {
       "issuer_token": true,
@@ -464,7 +724,53 @@
         "MULTIPLIER_NOT_ONE"
       ],
       "multiplier_updates": 2,
-      "checked_block": 88095346
+      "checked_block": 88225072
+    },
+    "0x5b00c30098216a00905ee3fb5bda413006418bb6": {
+      "issuer_token": false,
+      "ticker": "PLATE",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225072
+    },
+    "0x5baaec1b70864f01dbdb747358ff59f2e2ccf7d5": {
+      "issuer_token": false,
+      "ticker": "GIGA",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225072
+    },
+    "0x5c283587a8a10fc14b0f4b3212ef4de97520b282": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225072
+    },
+    "0x5cb6f181081301b44905f3ae15419112ecabd8a6": {
+      "issuer_token": false,
+      "ticker": "PIPEDOG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225072
     },
     "0x5dd716fe12275b69f04b26beeca343843c8e3539": {
       "issuer_token": false,
@@ -478,7 +784,7 @@
         "NAME_ENDS_LIKE_ISSUER_TOKEN"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095615
+      "checked_block": 88225072
     },
     "0x5e81213613b6b86eab4c6c50d718d34359459786": {
       "issuer_token": true,
@@ -491,7 +797,32 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095615
+      "checked_block": 88225072
+    },
+    "0x5eadcaa49e6cc1b7157d9983e62f5ccee0de89d6": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225072
+    },
+    "0x5f10a1c971b69e47e059e1dc91901b59b3fb49c3": {
+      "issuer_token": true,
+      "ticker": "CRWV",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225072
     },
     "0x5fc5360d0400a0fd4f2af552add042d716f1d168": {
       "issuer_token": false,
@@ -500,7 +831,18 @@
         "USDG_ADDRESS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095615
+      "checked_block": 88225072
+    },
+    "0x6178406c433c70b006e2f81a79a5d98bf5b0af85": {
+      "issuer_token": false,
+      "ticker": "UNI-V2",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225072
     },
     "0x623613c0e9211a7215b4fd4ab80656fcbd1186e0": {
       "issuer_token": false,
@@ -512,7 +854,7 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095615
+      "checked_block": 88225072
     },
     "0x62fd0668e10d8b72339be2dcf7643001688ff13b": {
       "issuer_token": true,
@@ -526,9 +868,33 @@
         "MULTIPLIER_NOT_ONE"
       ],
       "multiplier_updates": 1,
-      "checked_block": 88095615
+      "checked_block": 88225219
     },
-    "0x65abeb15f2fed8cccf979c9429f517f937bdc0d5": {
+    "0x6330d8c3178a418788df01a47479c0ce7ccf450b": {
+      "issuer_token": true,
+      "ticker": "COIN",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225219
+    },
+    "0x63ee32ac3077d1fbd8a77ebba2a6ed4b8e9c1e18": {
+      "issuer_token": false,
+      "ticker": "INU",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225219
+    },
+    "0x642565e604cf64ca49098505e2b9d2fffec77936": {
       "issuer_token": false,
       "ticker": "USDG",
       "reasons": [
@@ -538,7 +904,19 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095615
+      "checked_block": 88225219
+    },
+    "0x650bf9154edfb41ad65e316be31fe489ccc76eb0": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225219
     },
     "0x67f438bd18131f152b6387083628e8eeaa5fb8b2": {
       "issuer_token": false,
@@ -550,7 +928,7 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095615
+      "checked_block": 88225219
     },
     "0x69e7778d46713e17572d610bdaca3943aa4e6219": {
       "issuer_token": false,
@@ -562,7 +940,30 @@
         "TICKER_SAME_AS_ISSUER_TOKEN"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095615
+      "checked_block": 88225219
+    },
+    "0x6cfe8050d64b02a21cf6cf2ef2a408489c86c10b": {
+      "issuer_token": false,
+      "ticker": "IBM",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_SAME_AS_ISSUER_TOKEN"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225219
+    },
+    "0x6e401929bb5bebb4807c462c8c9fb8c6b76e1e18": {
+      "issuer_token": false,
+      "ticker": "BEAVER",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225219
     },
     "0x711681d447e8f53ac228f20afad1e179ab5e78f1": {
       "issuer_token": false,
@@ -574,7 +975,7 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095615
+      "checked_block": 88225219
     },
     "0x72ead0c700f07b645a8f91badd82be5c545b9d37": {
       "issuer_token": false,
@@ -588,7 +989,7 @@
         "NAME_ENDS_LIKE_ISSUER_TOKEN"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095615
+      "checked_block": 88225219
     },
     "0x73acfc8352b6a9f0baacd02a266e58fde4b1c183": {
       "issuer_token": false,
@@ -600,7 +1001,18 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88095615
+      "checked_block": 88225219
+    },
+    "0x73c4aae208080d94e97a0abe80f140a140846cc8": {
+      "issuer_token": false,
+      "ticker": "UNI-V2",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225345
     },
     "0x75742c18bc1f1c5c5f448f4c9d9c6f66dafaaa38": {
       "issuer_token": true,
@@ -614,7 +1026,44 @@
         "MULTIPLIER_NOT_ONE"
       ],
       "multiplier_updates": 1,
-      "checked_block": 88095615
+      "checked_block": 88225345
+    },
+    "0x794a9a5975da82745a7165a5b91d2d27e9820aea": {
+      "issuer_token": false,
+      "ticker": "N[U+17B5]V[U+17B5]DA",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_SAME_AFTER_FOLDING",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225345
+    },
+    "0x7c651ee2f3c1c456ac3afc483b834c823649a0e2": {
+      "issuer_token": false,
+      "ticker": "DAM",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225345
+    },
+    "0x7fa63d892faa245a91104873de0e79452cd208ac": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225345
     },
     "0x8005d266423c7ea827372c9c864491e5786600ea": {
       "issuer_token": true,
@@ -628,7 +1077,31 @@
         "MULTIPLIER_NOT_ONE"
       ],
       "multiplier_updates": 1,
-      "checked_block": 88098280
+      "checked_block": 88225345
+    },
+    "0x822cc93ffd030293e9842c30bbd678f530701867": {
+      "issuer_token": true,
+      "ticker": "BE",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225345
+    },
+    "0x829b217ad539ccc53b18e53c63873333650e60f9": {
+      "issuer_token": false,
+      "ticker": "cyberbeer",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225345
     },
     "0x83726b15b25013e95b56357c4795b848ab32c3bc": {
       "issuer_token": false,
@@ -641,7 +1114,7 @@
         "INVISIBLE_CHARACTERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88098280
+      "checked_block": 88225345
     },
     "0x86923f96303d656e4aa86d9d42d1e57ad2023fdc": {
       "issuer_token": true,
@@ -654,7 +1127,7 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88098280
+      "checked_block": 88225546
     },
     "0x87673a619fc4f3fc08068a0bb04f60aa2d04ca62": {
       "issuer_token": false,
@@ -665,7 +1138,20 @@
         "BEACON_DIFFERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88098280
+      "checked_block": 88225546
+    },
+    "0x88a3443d54bffb1f221bcdfb5561c023533df83e": {
+      "issuer_token": false,
+      "ticker": "U[U+206F]S[U+206F]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225546
     },
     "0x894e1ec2d74ffe5aef8dc8a9e84686accb964f2a": {
       "issuer_token": true,
@@ -678,7 +1164,20 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88098280
+      "checked_block": 88225546
+    },
+    "0x91280d9474cc18931ff3d52a7cea9b0db52f38d3": {
+      "issuer_token": false,
+      "ticker": "U[U+206F]S[U+206F]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225546
     },
     "0x92fd66527192e3e61d4ddd13322aa222de86f9b5": {
       "issuer_token": true,
@@ -692,7 +1191,7 @@
         "MULTIPLIER_NOT_ONE"
       ],
       "multiplier_updates": 4,
-      "checked_block": 88098280
+      "checked_block": 88225546
     },
     "0x941ae714ec6d8130c7b75d67160ca08f1e7d11dd": {
       "issuer_token": true,
@@ -706,7 +1205,31 @@
         "MULTIPLIER_NOT_ONE"
       ],
       "multiplier_updates": 1,
-      "checked_block": 88098280
+      "checked_block": 88225546
+    },
+    "0x94ed49222ae2e604e0a4683fe08b92381b081270": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225546
+    },
+    "0x98096d17e191b3da1d5f99a6d7b3584351b11e18": {
+      "issuer_token": false,
+      "ticker": "BONER",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225546
     },
     "0x980dcf6766fa79f5cf0c4aadb3ab477ff15a9619": {
       "issuer_token": true,
@@ -719,7 +1242,7 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88098529
+      "checked_block": 88225546
     },
     "0x9909c4e8cae5ada810c7297943ae767f87d00a3e": {
       "issuer_token": false,
@@ -731,7 +1254,60 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88098529
+      "checked_block": 88225546
+    },
+    "0x9b23573b156b52565012f5ce02cdf60afbaa70be": {
+      "issuer_token": true,
+      "ticker": "PENG",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225546
+    },
+    "0xa30fa36db767ad9ed3f7a60fc79526fb4d56d344": {
+      "issuer_token": true,
+      "ticker": "USO",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225759
+    },
+    "0xa3284897ad7c8fed700b04f573cf64e4f6c10f2c": {
+      "issuer_token": false,
+      "ticker": "NVDA",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_SAME_AS_ISSUER_TOKEN",
+        "NAME_SAME_AS_ISSUER_TOKEN",
+        "NAME_ENDS_LIKE_ISSUER_TOKEN"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225759
+    },
+    "0xa581f3c3c071215f60494c6cef072b001c1d7d82": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225759
     },
     "0xa913c4c2f28aa7b0b15a7c6008a6e19ff8bf85c0": {
       "issuer_token": false,
@@ -743,7 +1319,19 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88098529
+      "checked_block": 88225759
+    },
+    "0xac13348444e9fc0584eace3831970af2011951b1": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225759
     },
     "0xad25ac6c84d497db898fa1e8387bf6af3532a1c4": {
       "issuer_token": true,
@@ -756,7 +1344,20 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88098529
+      "checked_block": 88225759
+    },
+    "0xae517a2903e68bd929dfd15be875f8369d53e94a": {
+      "issuer_token": true,
+      "ticker": "CEG",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225759
     },
     "0xaf3d76f1834a1d425780943c99ea8a608f8a93f9": {
       "issuer_token": true,
@@ -770,20 +1371,20 @@
         "MULTIPLIER_NOT_ONE"
       ],
       "multiplier_updates": 1,
-      "checked_block": 88098529
+      "checked_block": 88225905
     },
-    "0xb1bf26c1d20ff267a4f93550d1e0d06ac40a114b": {
-      "issuer_token": true,
-      "ticker": "RIVN",
+    "0xb4a2e4d7c9493a394ab8e48217d49e1808f7d5ac": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
       "reasons": [
-        "IN_ISSUER_LIST",
-        "CODE_HASH_MATCHES",
-        "BEACON_MATCHES",
-        "FACTORY_LOG_NAMES_TOKEN",
-        "TICKER_MATCHES_LIST"
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88098529
+      "checked_block": 88225905
     },
     "0xb90a19ff0af67f7779aff50a882a9cff42446400": {
       "issuer_token": true,
@@ -796,7 +1397,20 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88101209
+      "checked_block": 88225905
+    },
+    "0xbce7482902952cf32807afa29928b00477948452": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225905
     },
     "0xc0d6457c16cc70d6790dd43521c899c87ce02f35": {
       "issuer_token": true,
@@ -810,7 +1424,19 @@
         "MULTIPLIER_NOT_ONE"
       ],
       "multiplier_updates": 1,
-      "checked_block": 88101209
+      "checked_block": 88225905
+    },
+    "0xc2378f126167c55b42ba4f49e012d0d9dcdf52e0": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225905
     },
     "0xc4f85cebec3fe6c77df0f71f3a3e139d43bbb4a3": {
       "issuer_token": false,
@@ -823,7 +1449,7 @@
         "INVISIBLE_CHARACTERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88101209
+      "checked_block": 88225905
     },
     "0xc6417224f693a0d8bf612bc6d7dcbbc268d5ad13": {
       "issuer_token": false,
@@ -835,7 +1461,7 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88101209
+      "checked_block": 88225905
     },
     "0xc72b96e0e48ecd4dc75e1e45396e26300bc39681": {
       "issuer_token": true,
@@ -848,7 +1474,7 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88101209
+      "checked_block": 88225905
     },
     "0xc9a981fee1f9dec688bb123ccdecc63d0debfc4e": {
       "issuer_token": true,
@@ -861,7 +1487,31 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88101209
+      "checked_block": 88225905
+    },
+    "0xc9d244ae176436f96279159b2d91d3e4f830c17f": {
+      "issuer_token": false,
+      "ticker": "wMETA",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "NAME_ENDS_LIKE_ISSUER_TOKEN"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225905
+    },
+    "0xca9c78dd337a67f6e0077f65f5e9218719d30edf": {
+      "issuer_token": false,
+      "ticker": "NET",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_SAME_AS_ISSUER_TOKEN"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88225905
     },
     "0xcb071fc69e4aebd512387316578752e5c20b92e0": {
       "issuer_token": false,
@@ -874,7 +1524,7 @@
         "INVISIBLE_CHARACTERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88101209
+      "checked_block": 88226098
     },
     "0xccee82fe024c36fa15e1005ede3e9e4787e23d09": {
       "issuer_token": true,
@@ -887,7 +1537,7 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88101209
+      "checked_block": 88226098
     },
     "0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec": {
       "issuer_token": true,
@@ -901,7 +1551,42 @@
         "MULTIPLIER_NOT_ONE"
       ],
       "multiplier_updates": 1,
-      "checked_block": 88101658
+      "checked_block": 88226098
+    },
+    "0xd3033b5b57b255c66035a62237a9f9486ed10ea2": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88226098
+    },
+    "0xd51f5d3bb4ac528f58b08e574daa56e9bf58c230": {
+      "issuer_token": false,
+      "ticker": "STEERUV417",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88226098
+    },
+    "0xd5f018a09081d7f75b06b4a3f2afd9bcadc42e03": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88226098
     },
     "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68": {
       "issuer_token": true,
@@ -915,7 +1600,7 @@
         "MULTIPLIER_NOT_ONE"
       ],
       "multiplier_updates": 1,
-      "checked_block": 88101658
+      "checked_block": 88226098
     },
     "0xd6b8cecde770507fc46cde7ea82dde383ed7a7e5": {
       "issuer_token": false,
@@ -927,19 +1612,7 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88101658
-    },
-    "0xd9c6ee31275554006ca30abcde7b48188c4e2cf0": {
-      "issuer_token": false,
-      "ticker": "USDG",
-      "reasons": [
-        "NOT_IN_ISSUER_LIST",
-        "CODE_HASH_DIFFERS",
-        "BEACON_DIFFERS",
-        "TICKER_OR_NAME_READS_AS_USDG"
-      ],
-      "multiplier_updates": 0,
-      "checked_block": 88101658
+      "checked_block": 88226098
     },
     "0xdb81a12de6c0aebeddf2d85d531dd50cac7366ef": {
       "issuer_token": false,
@@ -951,7 +1624,7 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88101658
+      "checked_block": 88226098
     },
     "0xdf0992e440dd0be65bd8439b609d6d4366bf1cb5": {
       "issuer_token": true,
@@ -964,7 +1637,20 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88101658
+      "checked_block": 88226098
+    },
+    "0xdfd0e854387aef36022bcfc8972e68d8e1bd9a53": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88226098
     },
     "0xe0444ef8bf4ed74f74fd73686e2ddf4c1c5591e8": {
       "issuer_token": true,
@@ -977,7 +1663,19 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88101658
+      "checked_block": 88226295
+    },
+    "0xe3c500e3e183ea5ca2f0b0a7f8fc55ef914e6ff6": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88226295
     },
     "0xe7391e4047c7e5d48f31cd2b87004c10e875f288": {
       "issuer_token": false,
@@ -990,7 +1688,7 @@
         "INVISIBLE_CHARACTERS"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88101658
+      "checked_block": 88226295
     },
     "0xe93237c50d904957cf27e7b1133b510c669c2e74": {
       "issuer_token": true,
@@ -1004,7 +1702,7 @@
         "MULTIPLIER_NOT_ONE"
       ],
       "multiplier_updates": 1,
-      "checked_block": 88102077
+      "checked_block": 88226295
     },
     "0xec262a75e413fafd0df80480274532c79d42da09": {
       "issuer_token": true,
@@ -1017,7 +1715,7 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88102077
+      "checked_block": 88226295
     },
     "0xec90adc7157d68d9213a88627b66956950374a3e": {
       "issuer_token": false,
@@ -1029,7 +1727,19 @@
         "TICKER_OR_NAME_READS_AS_USDG"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88102077
+      "checked_block": 88226295
+    },
+    "0xed3fd1025aa318b8e66ca25aa2ddc83096086de0": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88226295
     },
     "0xf0c4bf4c582cb3836e98394b1d4e7b7281101be8": {
       "issuer_token": true,
@@ -1042,21 +1752,42 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88102077
+      "checked_block": 88226295
     },
-    "0xf23250dac154d05bb671cb0d0ebef3c635c79ce2": {
-      "issuer_token": true,
-      "ticker": "UPS",
+    "0xf23942801cd33c75a2d6e4832bc2fb05ca1044ec": {
+      "issuer_token": false,
+      "ticker": "BIGTECH",
       "reasons": [
-        "IN_ISSUER_LIST",
-        "CODE_HASH_MATCHES",
-        "BEACON_MATCHES",
-        "FACTORY_LOG_NAMES_TOKEN",
-        "TICKER_MATCHES_LIST",
-        "MULTIPLIER_NOT_ONE"
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
       ],
-      "multiplier_updates": 1,
-      "checked_block": 88102077
+      "multiplier_updates": 0,
+      "checked_block": 88226295
+    },
+    "0xf2b7ffb610269bdaec42ad983c401635e59814f1": {
+      "issuer_token": false,
+      "ticker": "U[U+206F]S[U+206F]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88226295
+    },
+    "0xf4dba7a14467b59e45a06f8600a7c0db26677192": {
+      "issuer_token": false,
+      "ticker": "Starman",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88226295
     },
     "0xf6589f11bc40b669e584073f428b05562f568733": {
       "issuer_token": true,
@@ -1069,7 +1800,46 @@
         "TICKER_MATCHES_LIST"
       ],
       "multiplier_updates": 0,
-      "checked_block": 88102077
+      "checked_block": 88226295
+    },
+    "0xf73eea2bf2f1bf06d676652700132d61feb74a15": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88226518
+    },
+    "0xfdbbdaa4d2d6cc9b6c2b8201acadf9371f91962a": {
+      "issuer_token": false,
+      "ticker": "U[U+206F]S[U+206F]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88226518
+    },
+    "0xfde6b5d9bb419b10c23268c74e369abff39c0460": {
+      "issuer_token": true,
+      "ticker": "RCAT",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88226518
     },
     "0xff080c8ce2e5feadaca0da81314ae59d232d4afd": {
       "issuer_token": true,
@@ -1083,7 +1853,7 @@
         "MULTIPLIER_NOT_ONE"
       ],
       "multiplier_updates": 2,
-      "checked_block": 88102077
+      "checked_block": 88226518
     }
   }
 }

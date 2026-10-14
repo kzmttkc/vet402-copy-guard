@@ -1,0 +1,46 @@
+$ cre workflow simulate token-check --target local-simulation --non-interactive --trigger-index 0 --http-payload docs/token-check/batch/batch-11.payload.json --broadcast
+✓ Workflow compiled
+✓ Simulation limits enabled
+  HTTP: req=120kb resp=250kb timeout=10s | ConfHTTP: req=125kb resp=500kb timeout=1m30s | Consensus obs=25kb | ChainWrite evm_report=50kb evm_gas=10000000 solana_report=265b solana_cu=300000 | WASM binary=100mb compressed=20mb
+  Binary hash: 6e23a2f35e89bcc55d71aa9d5889a5813d80c01b4799d4308ca576a45e596c12
+  Config hash: 15ecce3c14a026a5d49e662198f93518da03b5d593aec5c435fb9795d06eeb11
+✓ Loaded JSON from file: ~/vet402-bli-wt/core/docs/token-check/batch/batch-11.payload.json
+✓ Created HTTP trigger payload with 1 fields
+2026-10-14T15:32:11Z [SIMULATION] Simulator Initialized
+
+2026-10-14T15:32:11Z [SIMULATION] Running trigger trigger=http-trigger@1.0.0-alpha
+2026-10-14T15:32:11Z [USER LOG] token check, batch (Robinhood Chain 4663, read over JSON-RPC, no vet402 API)
+2026-10-14T15:32:11Z [USER LOG] tokens  7
+2026-10-14T15:32:11Z [USER LOG] state   robinhood-rpc.publicnode.com   logs rpc.mainnet.chain.robinhood.com
+2026-10-14T15:32:11Z [USER LOG] head    88225779 (median of the nodes), checking at block 88225759
+2026-10-14T15:32:14Z [USER LOG] block   88225759  hash 0x8248a3cc9a0259bef122dd7f0130aefd1f78c48407a9ed6622a626ed01d6fa92 (the same from both RPCs)
+2026-10-14T15:32:14Z [USER LOG] ISSUER_TOKEN      0xa30fa36db767ad9ed3f7a60fc79526fb4d56d344  "USO"  updates 0  IN_ISSUER_LIST CODE_HASH_MATCHES BEACON_MATCHES FACTORY_LOG_NAMES_TOKEN TICKER_MATCHES_LIST
+2026-10-14T15:32:14Z [USER LOG] NOT_ISSUER_TOKEN  0xa3284897ad7c8fed700b04f573cf64e4f6c10f2c  "NVDA"  updates 0  NOT_IN_ISSUER_LIST CODE_HASH_DIFFERS BEACON_DIFFERS TICKER_SAME_AS_ISSUER_TOKEN NAME_SAME_AS_ISSUER_TOKEN NAME_ENDS_LIKE_ISSUER_TOKEN
+2026-10-14T15:32:14Z [USER LOG] NOT_ISSUER_TOKEN  0xa581f3c3c071215f60494c6cef072b001c1d7d82  "U[U+17B5]S[U+17B5]DG"  updates 0  NOT_IN_ISSUER_LIST CODE_HASH_DIFFERS BEACON_DIFFERS TICKER_OR_NAME_READS_AS_USDG INVISIBLE_CHARACTERS
+2026-10-14T15:32:14Z [USER LOG] NOT_ISSUER_TOKEN  0xa913c4c2f28aa7b0b15a7c6008a6e19ff8bf85c0  "USDG"  updates 0  NOT_IN_ISSUER_LIST CODE_HASH_DIFFERS BEACON_DIFFERS TICKER_OR_NAME_READS_AS_USDG
+2026-10-14T15:32:14Z [USER LOG] NOT_ISSUER_TOKEN  0xac13348444e9fc0584eace3831970af2011951b1  "USDG"  updates 0  NOT_IN_ISSUER_LIST CODE_HASH_DIFFERS BEACON_DIFFERS TICKER_OR_NAME_READS_AS_USDG
+2026-10-14T15:32:14Z [USER LOG] ISSUER_TOKEN      0xad25ac6c84d497db898fa1e8387bf6af3532a1c4  "BABA"  updates 0  IN_ISSUER_LIST CODE_HASH_MATCHES BEACON_MATCHES FACTORY_LOG_NAMES_TOKEN TICKER_MATCHES_LIST
+2026-10-14T15:32:14Z [USER LOG] ISSUER_TOKEN      0xae517a2903e68bd929dfd15be875f8369d53e94a  "CEG"  updates 0  IN_ISSUER_LIST CODE_HASH_MATCHES BEACON_MATCHES FACTORY_LOG_NAMES_TOKEN TICKER_MATCHES_LIST
+2026-10-14T15:32:14Z [USER LOG] RESULT: 7 tokens at block 88225759, 3 the issuer's, 4 not
+2026-10-14T15:32:14Z [USER LOG] batch hash 0x078c9a8002920b172c65a4e47f27dc8ef4052e5af638af2778d46ddbc2f92ae9 (keccak256 of the canonical JSON of the rows)
+2026-10-14T15:32:17Z [USER LOG] batch hash written to 0xF49b4F2110E6E0dAbd1f3B532EFd64E10a016550 on robinhood-testnet, tx 0xe46ea6a7a70441c60f6d837caa88171f77fc949ff7487de64f9962df71a04298
+
+✓ Workflow Simulation Result:
+"{\"mode\":\"batch\",\"block\":88225759,\"blockHash\":\"0x8248a3cc9a0259bef122dd7f0130aefd1f78c48407a9ed6622a626ed01d6fa92\",\"batchHash\":\"0x078c9a8002920b172c65a4e47f27dc8ef4052e5af638af2778d46ddbc2f92ae9\",\"listHash\":\"0xcf8a7a002322c28a77f427d342485fd06bd26c97fa0a2f1577615615ac7cfe5e\",\"tokens\":{\"0xa30fa36db767ad9ed3f7a60fc79526fb4d56d344\":{\"issuer_token\":true,\"ticker\":\"USO\",\"reasons\":[\"IN_ISSUER_LIST\",\"CODE_HASH_MATCHES\",\"BEACON_MATCHES\",\"FACTORY_LOG_NAMES_TOKEN\",\"TICKER_MATCHES_LIST\"],\"multiplier_updates\":0,\"checked_block\":88225759},\"0xa3284897ad7c8fed700b04f573cf64e4f6c10f2c\":{\"issuer_token\":false,\"ticker\":\"NVDA\",\"reasons\":[\"NOT_IN_ISSUER_LIST\",\"CODE_HASH_DIFFERS\",\"BEACON_DIFFERS\",\"TICKER_SAME_AS_ISSUER_TOKEN\",\"NAME_SAME_AS_ISSUER_TOKEN\",\"NAME_ENDS_LIKE_ISSUER_TOKEN\"],\"multiplier_updates\":0,\"checked_block\":88225759},\"0xa581f3c3c071215f60494c6cef072b001c1d7d82\":{\"issuer_token\":false,\"ticker\":\"U[U+17B5]S[U+17B5]DG\",\"reasons\":[\"NOT_IN_ISSUER_LIST\",\"CODE_HASH_DIFFERS\",\"BEACON_DIFFERS\",\"TICKER_OR_NAME_READS_AS_USDG\",\"INVISIBLE_CHARACTERS\"],\"multiplier_updates\":0,\"checked_block\":88225759},\"0xa913c4c2f28aa7b0b15a7c6008a6e19ff8bf85c0\":{\"issuer_token\":false,\"ticker\":\"USDG\",\"reasons\":[\"NOT_IN_ISSUER_LIST\",\"CODE_HASH_DIFFERS\",\"BEACON_DIFFERS\",\"TICKER_OR_NAME_READS_AS_USDG\"],\"multiplier_updates\":0,\"checked_block\":88225759},\"0xac13348444e9fc0584eace3831970af2011951b1\":{\"issuer_token\":false,\"ticker\":\"USDG\",\"reasons\":[\"NOT_IN_ISSUER_LIST\",\"CODE_HASH_DIFFERS\",\"BEACON_DIFFERS\",\"TICKER_OR_NAME_READS_AS_USDG\"],\"multiplier_updates\":0,\"checked_block\":88225759},\"0xad25ac6c84d497db898fa1e8387bf6af3532a1c4\":{\"issuer_token\":true,\"ticker\":\"BABA\",\"reasons\":[\"IN_ISSUER_LIST\",\"CODE_HASH_MATCHES\",\"BEACON_MATCHES\",\"FACTORY_LOG_NAMES_TOKEN\",\"TICKER_MATCHES_LIST\"],\"multiplier_updates\":0,\"checked_block\":88225759},\"0xae517a2903e68bd929dfd15be875f8369d53e94a\":{\"issuer_token\":true,\"ticker\":\"CEG\",\"reasons\":[\"IN_ISSUER_LIST\",\"CODE_HASH_MATCHES\",\"BEACON_MATCHES\",\"FACTORY_LOG_NAMES_TOKEN\",\"TICKER_MATCHES_LIST\"],\"multiplier_updates\":0,\"checked_block\":88225759}},\"details\":{\"0xa30fa36db767ad9ed3f7a60fc79526fb4d56d344\":{\"verdict\":\"GENUINE_STOCK_TOKEN\",\"symbol\":\"USO\",\"name\":\"United States Oil Fund • Robinhood Token\",\"code_hash\":\"0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630\",\"beacon\":\"0xe10b6f6b275de231345c20d14ab812db62151b00\",\"multiplier\":\"1\",\"factory_log\":true},\"0xa3284897ad7c8fed700b04f573cf64e4f6c10f2c\":{\"verdict\":\"LOOKALIKE\",\"symbol\":\"NVDA\",\"name\":\" NVIDIA Robinhood Token \",\"code_hash\":\"0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da\",\"beacon\":\"0x0000000000000000000000000000000000000000\",\"multiplier\":null,\"factory_log\":null},\"0xa581f3c3c071215f60494c6cef072b001c1d7d82\":{\"verdict\":\"LOOKALIKE\",\"symbol\":\"U[U+17B5]S[U+17B5]DG\",\"name\":\"U[U+17B5]S[U+17B5]DG\",\"code_hash\":\"0x4ed3d1383e6d3ea3af40f2abb4cf6cf4aa815d35337767ce65d11252d8d3e862\",\"beacon\":\"0x0000000000000000000000000000000000000000\",\"multiplier\":null,\"factory_log\":null},\"0xa913c4c2f28aa7b0b15a7c6008a6e19ff8bf85c0\":{\"verdict\":\"LOOKALIKE\",\"symbol\":\"USDG\",\"name\":\"Global Dollar\",\"code_hash\":\"0xd1cf95453f5fb704ebbc181fd2a9f5af2ec825fb340445f4af46e2bf833f01da\",\"beacon\":\"0x0000000000000000000000000000000000000000\",\"multiplier\":null,\"factory_log\":null},\"0xac13348444e9fc0584eace3831970af2011951b1\":{\"verdict\":\"LOOKALIKE\",\"symbol\":\"USDG\",\"name\":\"Global Dollar\",\"code_hash\":\"0x7c5618d027ce9612d14efed8ae82aedfeb94c947e8879f47cfc89487e4cc8877\",\"beacon\":\"0x0000000000000000000000000000000000000000\",\"multiplier\":null,\"factory_log\":null},\"0xad25ac6c84d497db898fa1e8387bf6af3532a1c4\":{\"verdict\":\"GENUINE_STOCK_TOKEN\",\"symbol\":\"BABA\",\"name\":\"Alibaba • Robinhood Token\",\"code_hash\":\"0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630\",\"beacon\":\"0xe10b6f6b275de231345c20d14ab812db62151b00\",\"multiplier\":\"1\",\"factory_log\":true},\"0xae517a2903e68bd929dfd15be875f8369d53e94a\":{\"verdict\":\"GENUINE_STOCK_TOKEN\",\"symbol\":\"CEG\",\"name\":\"Constellation Energy • Robinhood Token\",\"code_hash\":\"0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630\",\"beacon\":\"0xe10b6f6b275de231345c20d14ab812db62151b00\",\"multiplier\":\"1\",\"factory_log\":true}},\"issuerTokens\":3,\"batchTx\":\"0xe46ea6a7a70441c60f6d837caa88171f77fc949ff7487de64f9962df71a04298\"}"
+
+2026-10-14T15:32:17Z [SIMULATION] Execution finished signal received
+2026-10-14T15:32:17Z [SIMULATION] Skipping WorkflowEngineV2
+
+╭──────────────────────────────────────────────────────╮
+│ Simulation complete! Ready to deploy your workflow?  │
+│                                                      │
+│ Run cre account access to request deployment access. │
+╰──────────────────────────────────────────────────────╯
+Initializing...
+Loading settings...
+Checking RPC connectivity...
+Compiling workflow...
+
+⚠️  Update available! You’re running 1.37.0, but 1.38.0 is the latest.
+Run `cre update` or visit https://github.com/smartcontractkit/cre-cli/releases to upgrade.
+

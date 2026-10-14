@@ -2,22 +2,22 @@ $ cre workflow simulate trail-anchor --target local-simulation --non-interactive
 ✓ Workflow compiled
 ✓ Simulation limits enabled
   HTTP: req=120kb resp=250kb timeout=10s | ConfHTTP: req=125kb resp=500kb timeout=1m30s | Consensus obs=25kb | ChainWrite evm_report=50kb evm_gas=10000000 solana_report=265b solana_cu=300000 | WASM binary=100mb compressed=20mb
-  Binary hash: 0451ed1af8e3b4633a5ea022715c3b023d8f70369ad14bbeccabad0439f110a2
+  Binary hash: ad55fd32e62a1361ac3ae64712f6b2f31d077c7b4c3e9e9c12adafe056131e11
   Config hash: 7edfb96886909b1c396bda344488c826b74a143fe92b6780995abb35238505de
-✓ Loaded JSON from file: ~/vet402-bli/docs/walk/cre/ledger-root.payload.json
+✓ Loaded JSON from file: ~/vet402-bli-wt/core/docs/walk/cre/ledger-root.payload.json
 ✓ Created HTTP trigger payload with 1 fields
-2026-10-14T12:11:47Z [SIMULATION] Simulator Initialized
+2026-10-14T15:43:22Z [SIMULATION] Simulator Initialized
 
-2026-10-14T12:11:47Z [SIMULATION] Running trigger trigger=http-trigger@1.0.0-alpha
-2026-10-14T12:11:58Z [USER LOG] ledger: 4200 decisions, FULL 0, REDUCED 54, NONE 4146
-2026-10-14T12:11:58Z [USER LOG] root 0x08050cbff7c889dd21d0864ce242a479040035d892275e919f684b0a6cfb4040 recomputed from the leaves
-2026-10-14T12:12:01Z [USER LOG] ledger root written to 0xe3f0cA4f474E15364017eE3f6fc0D0949e5aF0C9 on robinhood-testnet, tx 0x109ada373e1c23c912dfea0d7ba3a47725e469b22f5fad4be9bdb3b68ce201d0
+2026-10-14T15:43:22Z [SIMULATION] Running trigger trigger=http-trigger@1.0.0-alpha
+2026-10-14T15:43:35Z [USER LOG] ledger: 8396 decisions, FULL 0, REDUCED 236, NONE 8160
+2026-10-14T15:43:35Z [USER LOG] root 0x0829cd645caa979dbf725c34f519634060b4c116a71b10b25d5afb2848d8e3c1 recomputed from the leaves
+2026-10-14T15:43:38Z [USER LOG] ledger root written to 0xe3f0cA4f474E15364017eE3f6fc0D0949e5aF0C9 on robinhood-testnet, tx 0xb8f605d9825e4b41da68990bfcdfab20538e1c62db41990b309a6ebf45b76812
 
 ✓ Workflow Simulation Result:
-"{\"root\":\"0x08050cbff7c889dd21d0864ce242a479040035d892275e919f684b0a6cfb4040\",\"decisions\":4200,\"full\":0,\"reduced\":54,\"none\":4146,\"rulesHash\":\"0x47121663018b215e09462e031d50ede872a9544c5473e2e3b07ba3032b701aca\",\"ledgerTx\":\"0x109ada373e1c23c912dfea0d7ba3a47725e469b22f5fad4be9bdb3b68ce201d0\"}"
+"{\"root\":\"0x0829cd645caa979dbf725c34f519634060b4c116a71b10b25d5afb2848d8e3c1\",\"decisions\":8396,\"full\":0,\"reduced\":236,\"none\":8160,\"rulesHash\":\"0xa39fe74ae9b2821f6e29e482673cf611fd34b08478fe22f9699e317e0b8898a7\",\"ledgerTx\":\"0xb8f605d9825e4b41da68990bfcdfab20538e1c62db41990b309a6ebf45b76812\"}"
 
-2026-10-14T12:12:01Z [SIMULATION] Execution finished signal received
-2026-10-14T12:12:01Z [SIMULATION] Skipping WorkflowEngineV2
+2026-10-14T15:43:38Z [SIMULATION] Execution finished signal received
+2026-10-14T15:43:38Z [SIMULATION] Skipping WorkflowEngineV2
 
 ╭──────────────────────────────────────────────────────╮
 │ Simulation complete! Ready to deploy your workflow?  │

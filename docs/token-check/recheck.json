@@ -1,19 +1,19 @@
 {
-  "rechecked_at": "2026-10-14T05:09:15.510Z",
+  "rechecked_at": "2026-10-14T08:39:47.375Z",
   "results_file": "docs/token-check/results.json",
-  "results_keccak": "0x7d0ef98393644903ba187f643e08f3eacf5c417db5e4dd3e843f826c21ba0e41",
+  "results_keccak": "0xe2fcacc3ae7ebf4e60cc2d18fa34c1b58e0f747aa3f919b8f87c20ba79535975",
   "how": "plain JSON-RPC from Node, one request at a time, no CRE and no code of the workflow: eth_getCode hashed here, eth_getStorageAt, symbol(), uiMultiplier(), eth_getLogs",
   "rpc": {
     "mainnet": "https://rpc.mainnet.chain.robinhood.com",
     "testnet": "https://rpc.testnet.chain.robinhood.com"
   },
-  "rpc_requests": 712,
-  "tokens": 82,
-  "agree": 82,
+  "rpc_requests": 1001,
+  "tokens": 143,
+  "agree": 143,
   "differ": [],
   "state_read_at": {
-    "checked_block": 0,
-    "latest": 82
+    "checked_block": 143,
+    "latest": 0
   },
   "compared": {
     "fields": [
@@ -42,43 +42,44 @@
     ]
   },
   "reasons_not_derived_here": {
-    "TICKER_OR_NAME_READS_AS_USDG": 31,
-    "INVISIBLE_CHARACTERS": 8,
-    "NAME_SAME_AS_ISSUER_TOKEN": 2,
-    "NAME_ENDS_LIKE_ISSUER_TOKEN": 2
+    "TICKER_OR_NAME_READS_AS_USDG": 55,
+    "INVISIBLE_CHARACTERS": 26,
+    "NAME_ENDS_LIKE_ISSUER_TOKEN": 7,
+    "NAME_SAME_AS_ISSUER_TOKEN": 5,
+    "TICKER_SAME_AFTER_FOLDING": 2
   },
   "runs": [
     {
       "run": 1,
-      "tx": "0xfa386a44268705425cc52115bf63badd8106e3e39ffc3b14c63eee71095eb77d",
-      "batch_hash": "0xed85687b976ea99e6d52a6b25ffca39b99d4d0cc5a42b0f166915617dc27eb73",
-      "tokens": 11,
-      "onchain": true,
-      "counts_match": true,
-      "block_hash_matches": true
-    },
-    {
-      "run": 2,
-      "tx": "0xdbef8b0aeca1820e4a191c2f90edac9ccaf3be2d78ea28c711107fd96c518336",
-      "batch_hash": "0xaea7a111647e6a331953145b7857ea54f2fbd71b2cdfb75cd7628dc42dabb5a8",
-      "tokens": 11,
-      "onchain": true,
-      "counts_match": true,
-      "block_hash_matches": true
-    },
-    {
-      "run": 3,
-      "tx": "0x6cd511c78b0045af18171246be1d7ca8b92d2ec5e41b5aaf817e2c820fe3357e",
-      "batch_hash": "0xc41a88a3e96dbf9336545e555e6f5c3577126c71d0e0e9e3698c82a2f1ad2c1a",
+      "tx": "0xda1a216baab1af12ccc41a92be94d7c6558a8abd1396b7aa06ea77d9fc9b1929",
+      "batch_hash": "0xedc62e58f93ab82655ef8bc7a04ace931ae2c81c7ce8e8af44bac08091eeecbb",
       "tokens": 12,
       "onchain": true,
       "counts_match": true,
       "block_hash_matches": true
     },
     {
+      "run": 2,
+      "tx": "0x1b629f69f76bfc82ee050d90990c2bd55a7ba3c866a28d4e1a0eddc46b7719c3",
+      "batch_hash": "0xdb72a891dfe6fa158218c18c4f7d51df0cde602a68907fcc65b4f326d6c0df07",
+      "tokens": 12,
+      "onchain": true,
+      "counts_match": true,
+      "block_hash_matches": true
+    },
+    {
+      "run": 3,
+      "tx": "0x5a056b974b3648747c236dfe58f5fd6c849d955d70e86431d028093346f8f373",
+      "batch_hash": "0x0df98852f15c6268ce96d9792142333c5915eacbb0c9255221644577e01558c1",
+      "tokens": 2,
+      "onchain": true,
+      "counts_match": true,
+      "block_hash_matches": true
+    },
+    {
       "run": 4,
-      "tx": "0x1aaea557aad9af3d2a8129523ff0ca0aca62532bb254d2be19b2b13ed08f9842",
-      "batch_hash": "0xb0322a582a31394f420335271a4d8685fba5299ae7c26f0555f08619dd41c97d",
+      "tx": "0xbcc95f7cb393854cc5e5b0562466dc778d3cf92d4d9eeb896b6177f3baa58d25",
+      "batch_hash": "0xd5365771d9baa8e26d1de4e8700de51c554aba24dd716e01f7c2dcdb0cb4e4b0",
       "tokens": 12,
       "onchain": true,
       "counts_match": true,
@@ -86,53 +87,107 @@
     },
     {
       "run": 5,
-      "tx": "0xf7b7484378d166b7b9d4b2ffbe97708fa3ddb1545c4e7d5c053b7cb2ef15fcb6",
-      "batch_hash": "0xe9bd1c0314844c59630f53195ec9aceba0b22970c41516d213f3272d1efb967b",
-      "tokens": 7,
+      "tx": "0x189e0eb9900d602c71adec6a0a8d1ac52fe92bc6d5e14c2de632f9e745c1abf3",
+      "batch_hash": "0x8a1320084854165fc7965ee7e5a1cbb70f13e0878408e56ca8a09302300ac395",
+      "tokens": 12,
       "onchain": true,
       "counts_match": true,
       "block_hash_matches": true
     },
     {
       "run": 6,
-      "tx": "0xf04a9faefa83c3be99e70e902178e005a101fe50f471d795f5294c4a5609b320",
-      "batch_hash": "0x8b62ea88d0e54c514a9f31aa86d5a197fe696e9acf040a92c86ce5169b81070e",
-      "tokens": 6,
+      "tx": "0x021ae09aadf4517a3d880dd55e69648e68c4edfa21cc8242c198a9070a8cb546",
+      "batch_hash": "0x25edf3bc5b04188183b6b5eccbbde94168b68e8c67a48489bf6f8760b0a25bfe",
+      "tokens": 2,
       "onchain": true,
       "counts_match": true,
       "block_hash_matches": true
     },
     {
       "run": 7,
-      "tx": "0x3868b8e9d9bda1c340ce37c74eba35acbcee1ba00d2d55ce73f65db2446f4ae4",
-      "batch_hash": "0xccd82eb3d61ea1b82dc7553f9bfb48ff453b75259e81947809557e68f0e65715",
-      "tokens": 8,
+      "tx": "0xf580989891b9050e23fff002fab8090a627d287f0fba8d3162ef613b10b439f2",
+      "batch_hash": "0x2add686af72189bb513a05d67b7b14fb04c339fb49f7d52a5b2e6b435c288d94",
+      "tokens": 12,
       "onchain": true,
       "counts_match": true,
       "block_hash_matches": true
     },
     {
       "run": 8,
-      "tx": "0x2b10033e7bf929064879346b65fd2dde82b45f429838375c3146eb64722eebb3",
-      "batch_hash": "0xfebb50e5c8ef95addedda286d3f437b0509caf1a37b01cb7bbc17d8429d82191",
-      "tokens": 8,
+      "tx": "0xc9ba3818f454796da12a5b6efd1074f1c3470dcd50cb52671014993ece89d616",
+      "batch_hash": "0x085b9a76e1567ad9dd4f931cf00b97613d379aa21c08a2731ce0e4ad8d0420b4",
+      "tokens": 12,
       "onchain": true,
       "counts_match": true,
       "block_hash_matches": true
     },
     {
       "run": 9,
-      "tx": "0x14338fa3c55cdf79c8238bcea3621a0828c59b3a1983d86d546b87e3bf9e2bea",
-      "batch_hash": "0xb4757cb1b29f676a5c8b2abbeef3e2f475381e2e06a6f39cce2d6bed1a74811d",
+      "tx": "0x83b8ed7206c3359d489b9359937876fb6e8dcbe3682263c680549204bf83adf9",
+      "batch_hash": "0xb898272ca5a71fa4713d0b0fbeedc101b78a4d20f5c3e9b892a038475c60b0f1",
+      "tokens": 9,
+      "onchain": true,
+      "counts_match": true,
+      "block_hash_matches": true
+    },
+    {
+      "run": 10,
+      "tx": "0xaae6dad2b49ceda82c1bf4ff797ab8b7743f14ef2922f7d491d67ca6ccc84c2b",
+      "batch_hash": "0x9fdc09897a585632b34a488ad96c38fd23501d60a66acd5baaee54be66aedb17",
+      "tokens": 12,
+      "onchain": true,
+      "counts_match": true,
+      "block_hash_matches": true
+    },
+    {
+      "run": 11,
+      "tx": "0xe46ea6a7a70441c60f6d837caa88171f77fc949ff7487de64f9962df71a04298",
+      "batch_hash": "0x078c9a8002920b172c65a4e47f27dc8ef4052e5af638af2778d46ddbc2f92ae9",
       "tokens": 7,
+      "onchain": true,
+      "counts_match": true,
+      "block_hash_matches": true
+    },
+    {
+      "run": 12,
+      "tx": "0x694ddb03aeb9b49ef4d8b99c358d3173fa661527de8748f7aef12ac09039c49e",
+      "batch_hash": "0xee9237018c2935f88120f2d694c4d0ae64b88a9842b6121ca8d4d34939814567",
+      "tokens": 12,
+      "onchain": true,
+      "counts_match": true,
+      "block_hash_matches": true
+    },
+    {
+      "run": 13,
+      "tx": "0x977bb55a90a6257287d4e99de3a2c3ee6ff77ec3cff84755b921be4ccbc39994",
+      "batch_hash": "0x4a72c4ddbd13f298a27dc8c8b2cc1bbaea66d2dd70b49e3f18b80ef8f7ae355e",
+      "tokens": 11,
+      "onchain": true,
+      "counts_match": true,
+      "block_hash_matches": true
+    },
+    {
+      "run": 14,
+      "tx": "0xae8bb10664177f9ea48a9e3a523a6628a9d32cccc5267c64eba52755d4664a5b",
+      "batch_hash": "0x036d8718089e6692e5bab487592a079640e082d80f507e8ea8bfbbb4f0927694",
+      "tokens": 12,
+      "onchain": true,
+      "counts_match": true,
+      "block_hash_matches": true
+    },
+    {
+      "run": 15,
+      "tx": "0xb5a2fb15bb5a9a4314535de154fad69f0400472e6d7811743c25d731eb11abe2",
+      "batch_hash": "0xbe17c46f287f70dc202adf97a4550246ed10305cac9b3d93ed3b277cad71b8f0",
+      "tokens": 4,
       "onchain": true,
       "counts_match": true,
       "block_hash_matches": true
     }
   ],
   "anchor": {
-    "tx": "0x175bf12ad77fd67d73490333b04ad1cc4c0c66d1ea7844836219f504a33fdb08",
-    "results_keccak": "0x7d0ef98393644903ba187f643e08f3eacf5c417db5e4dd3e843f826c21ba0e41",
+    "tx": "0x2328a9398ddf7ad80aa7a1149bc4417cfb57783c57be6e095d44f0df311225af",
+    "results_keccak": "0xe2fcacc3ae7ebf4e60cc2d18fa34c1b58e0f747aa3f919b8f87c20ba79535975",
     "onchain": true,
     "counts_match": true
   },

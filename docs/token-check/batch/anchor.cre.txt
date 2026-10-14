@@ -4,29 +4,35 @@ $ cre workflow simulate token-check --target local-simulation --non-interactive 
   HTTP: req=120kb resp=250kb timeout=10s | ConfHTTP: req=125kb resp=500kb timeout=1m30s | Consensus obs=25kb | ChainWrite evm_report=50kb evm_gas=10000000 solana_report=265b solana_cu=300000 | WASM binary=100mb compressed=20mb
   Binary hash: 6e23a2f35e89bcc55d71aa9d5889a5813d80c01b4799d4308ca576a45e596c12
   Config hash: 15ecce3c14a026a5d49e662198f93518da03b5d593aec5c435fb9795d06eeb11
-✓ Loaded JSON from file: ./docs/token-check/batch/anchor.payload.json
+✓ Loaded JSON from file: ~/vet402-bli-wt/core/docs/token-check/batch/anchor.payload.json
 ✓ Created HTTP trigger payload with 2 fields
-2026-10-14T12:04:54Z [SIMULATION] Simulator Initialized
+2026-10-14T15:33:40Z [SIMULATION] Simulator Initialized
 
-2026-10-14T12:04:54Z [SIMULATION] Running trigger trigger=http-trigger@1.0.0-alpha
-2026-10-14T12:04:54Z [USER LOG] token check, anchor: 82 tokens (42 the issuer's) from 9 runs
-2026-10-14T12:04:55Z [USER LOG] run 1   0xfa386a44268705425cc52115bf63badd8106e3e39ffc3b14c63eee71095eb77d holds TokenBatchChecked 0xed85687b976ea99e6d52a6b25ffca39b99d4d0cc5a42b0f166915617dc27eb73 (11 tokens)
-2026-10-14T12:04:55Z [USER LOG] run 2   0xdbef8b0aeca1820e4a191c2f90edac9ccaf3be2d78ea28c711107fd96c518336 holds TokenBatchChecked 0xaea7a111647e6a331953145b7857ea54f2fbd71b2cdfb75cd7628dc42dabb5a8 (11 tokens)
-2026-10-14T12:04:55Z [USER LOG] run 3   0x6cd511c78b0045af18171246be1d7ca8b92d2ec5e41b5aaf817e2c820fe3357e holds TokenBatchChecked 0xc41a88a3e96dbf9336545e555e6f5c3577126c71d0e0e9e3698c82a2f1ad2c1a (12 tokens)
-2026-10-14T12:04:55Z [USER LOG] run 4   0x1aaea557aad9af3d2a8129523ff0ca0aca62532bb254d2be19b2b13ed08f9842 holds TokenBatchChecked 0xb0322a582a31394f420335271a4d8685fba5299ae7c26f0555f08619dd41c97d (12 tokens)
-2026-10-14T12:04:56Z [USER LOG] run 5   0xf7b7484378d166b7b9d4b2ffbe97708fa3ddb1545c4e7d5c053b7cb2ef15fcb6 holds TokenBatchChecked 0xe9bd1c0314844c59630f53195ec9aceba0b22970c41516d213f3272d1efb967b (7 tokens)
-2026-10-14T12:04:56Z [USER LOG] run 6   0xf04a9faefa83c3be99e70e902178e005a101fe50f471d795f5294c4a5609b320 holds TokenBatchChecked 0x8b62ea88d0e54c514a9f31aa86d5a197fe696e9acf040a92c86ce5169b81070e (6 tokens)
-2026-10-14T12:04:56Z [USER LOG] run 7   0x3868b8e9d9bda1c340ce37c74eba35acbcee1ba00d2d55ce73f65db2446f4ae4 holds TokenBatchChecked 0xccd82eb3d61ea1b82dc7553f9bfb48ff453b75259e81947809557e68f0e65715 (8 tokens)
-2026-10-14T12:04:57Z [USER LOG] run 8   0x2b10033e7bf929064879346b65fd2dde82b45f429838375c3146eb64722eebb3 holds TokenBatchChecked 0xfebb50e5c8ef95addedda286d3f437b0509caf1a37b01cb7bbc17d8429d82191 (8 tokens)
-2026-10-14T12:04:57Z [USER LOG] run 9   0x14338fa3c55cdf79c8238bcea3621a0828c59b3a1983d86d546b87e3bf9e2bea holds TokenBatchChecked 0xb4757cb1b29f676a5c8b2abbeef3e2f475381e2e06a6f39cce2d6bed1a74811d (7 tokens)
-2026-10-14T12:04:57Z [USER LOG] results hash 0x7d0ef98393644903ba187f643e08f3eacf5c417db5e4dd3e843f826c21ba0e41 (keccak256 of the file)
-2026-10-14T12:04:59Z [USER LOG] results hash written to 0xF49b4F2110E6E0dAbd1f3B532EFd64E10a016550 on robinhood-testnet, tx 0x175bf12ad77fd67d73490333b04ad1cc4c0c66d1ea7844836219f504a33fdb08
+2026-10-14T15:33:40Z [SIMULATION] Running trigger trigger=http-trigger@1.0.0-alpha
+2026-10-14T15:33:41Z [USER LOG] token check, anchor: 143 tokens (51 the issuer's) from 15 runs
+2026-10-14T15:33:41Z [USER LOG] run 1   0xda1a216baab1af12ccc41a92be94d7c6558a8abd1396b7aa06ea77d9fc9b1929 holds TokenBatchChecked 0xedc62e58f93ab82655ef8bc7a04ace931ae2c81c7ce8e8af44bac08091eeecbb (12 tokens)
+2026-10-14T15:33:41Z [USER LOG] run 2   0x1b629f69f76bfc82ee050d90990c2bd55a7ba3c866a28d4e1a0eddc46b7719c3 holds TokenBatchChecked 0xdb72a891dfe6fa158218c18c4f7d51df0cde602a68907fcc65b4f326d6c0df07 (12 tokens)
+2026-10-14T15:33:41Z [USER LOG] run 3   0x5a056b974b3648747c236dfe58f5fd6c849d955d70e86431d028093346f8f373 holds TokenBatchChecked 0x0df98852f15c6268ce96d9792142333c5915eacbb0c9255221644577e01558c1 (2 tokens)
+2026-10-14T15:33:42Z [USER LOG] run 4   0xbcc95f7cb393854cc5e5b0562466dc778d3cf92d4d9eeb896b6177f3baa58d25 holds TokenBatchChecked 0xd5365771d9baa8e26d1de4e8700de51c554aba24dd716e01f7c2dcdb0cb4e4b0 (12 tokens)
+2026-10-14T15:33:42Z [USER LOG] run 5   0x189e0eb9900d602c71adec6a0a8d1ac52fe92bc6d5e14c2de632f9e745c1abf3 holds TokenBatchChecked 0x8a1320084854165fc7965ee7e5a1cbb70f13e0878408e56ca8a09302300ac395 (12 tokens)
+2026-10-14T15:33:42Z [USER LOG] run 6   0x021ae09aadf4517a3d880dd55e69648e68c4edfa21cc8242c198a9070a8cb546 holds TokenBatchChecked 0x25edf3bc5b04188183b6b5eccbbde94168b68e8c67a48489bf6f8760b0a25bfe (2 tokens)
+2026-10-14T15:33:42Z [USER LOG] run 7   0xf580989891b9050e23fff002fab8090a627d287f0fba8d3162ef613b10b439f2 holds TokenBatchChecked 0x2add686af72189bb513a05d67b7b14fb04c339fb49f7d52a5b2e6b435c288d94 (12 tokens)
+2026-10-14T15:33:43Z [USER LOG] run 8   0xc9ba3818f454796da12a5b6efd1074f1c3470dcd50cb52671014993ece89d616 holds TokenBatchChecked 0x085b9a76e1567ad9dd4f931cf00b97613d379aa21c08a2731ce0e4ad8d0420b4 (12 tokens)
+2026-10-14T15:33:43Z [USER LOG] run 9   0x83b8ed7206c3359d489b9359937876fb6e8dcbe3682263c680549204bf83adf9 holds TokenBatchChecked 0xb898272ca5a71fa4713d0b0fbeedc101b78a4d20f5c3e9b892a038475c60b0f1 (9 tokens)
+2026-10-14T15:33:43Z [USER LOG] run 10   0xaae6dad2b49ceda82c1bf4ff797ab8b7743f14ef2922f7d491d67ca6ccc84c2b holds TokenBatchChecked 0x9fdc09897a585632b34a488ad96c38fd23501d60a66acd5baaee54be66aedb17 (12 tokens)
+2026-10-14T15:33:43Z [USER LOG] run 11   0xe46ea6a7a70441c60f6d837caa88171f77fc949ff7487de64f9962df71a04298 holds TokenBatchChecked 0x078c9a8002920b172c65a4e47f27dc8ef4052e5af638af2778d46ddbc2f92ae9 (7 tokens)
+2026-10-14T15:33:44Z [USER LOG] run 12   0x694ddb03aeb9b49ef4d8b99c358d3173fa661527de8748f7aef12ac09039c49e holds TokenBatchChecked 0xee9237018c2935f88120f2d694c4d0ae64b88a9842b6121ca8d4d34939814567 (12 tokens)
+2026-10-14T15:33:44Z [USER LOG] run 13   0x977bb55a90a6257287d4e99de3a2c3ee6ff77ec3cff84755b921be4ccbc39994 holds TokenBatchChecked 0x4a72c4ddbd13f298a27dc8c8b2cc1bbaea66d2dd70b49e3f18b80ef8f7ae355e (11 tokens)
+2026-10-14T15:33:44Z [USER LOG] run 14   0xae8bb10664177f9ea48a9e3a523a6628a9d32cccc5267c64eba52755d4664a5b holds TokenBatchChecked 0x036d8718089e6692e5bab487592a079640e082d80f507e8ea8bfbbb4f0927694 (12 tokens)
+2026-10-14T15:33:45Z [USER LOG] run 15   0xb5a2fb15bb5a9a4314535de154fad69f0400472e6d7811743c25d731eb11abe2 holds TokenBatchChecked 0xbe17c46f287f70dc202adf97a4550246ed10305cac9b3d93ed3b277cad71b8f0 (4 tokens)
+2026-10-14T15:33:45Z [USER LOG] results hash 0xe2fcacc3ae7ebf4e60cc2d18fa34c1b58e0f747aa3f919b8f87c20ba79535975 (keccak256 of the file)
+2026-10-14T15:33:47Z [USER LOG] results hash written to 0xF49b4F2110E6E0dAbd1f3B532EFd64E10a016550 on robinhood-testnet, tx 0x2328a9398ddf7ad80aa7a1149bc4417cfb57783c57be6e095d44f0df311225af
 
 ✓ Workflow Simulation Result:
-"{\"mode\":\"anchor\",\"resultsHash\":\"0x7d0ef98393644903ba187f643e08f3eacf5c417db5e4dd3e843f826c21ba0e41\",\"listHash\":\"0xcf8a7a002322c28a77f427d342485fd06bd26c97fa0a2f1577615615ac7cfe5e\",\"tokens\":82,\"issuerTokens\":42,\"runs\":9,\"lastCheckedBlock\":88102077,\"anchorTx\":\"0x175bf12ad77fd67d73490333b04ad1cc4c0c66d1ea7844836219f504a33fdb08\"}"
+"{\"mode\":\"anchor\",\"resultsHash\":\"0xe2fcacc3ae7ebf4e60cc2d18fa34c1b58e0f747aa3f919b8f87c20ba79535975\",\"listHash\":\"0xcf8a7a002322c28a77f427d342485fd06bd26c97fa0a2f1577615615ac7cfe5e\",\"tokens\":143,\"issuerTokens\":51,\"runs\":15,\"lastCheckedBlock\":88226518,\"anchorTx\":\"0x2328a9398ddf7ad80aa7a1149bc4417cfb57783c57be6e095d44f0df311225af\"}"
 
-2026-10-14T12:05:00Z [SIMULATION] Execution finished signal received
-2026-10-14T12:05:00Z [SIMULATION] Skipping WorkflowEngineV2
+2026-10-14T15:33:48Z [SIMULATION] Execution finished signal received
+2026-10-14T15:33:48Z [SIMULATION] Skipping WorkflowEngineV2
 
 ╭──────────────────────────────────────────────────────╮
 │ Simulation complete! Ready to deploy your workflow?  │
