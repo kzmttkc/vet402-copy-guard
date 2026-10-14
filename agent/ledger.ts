@@ -31,7 +31,7 @@ import type { Arrival } from './rules-v2'
 import { ARRIVALS, arrival } from './rules-v2'
 import type { FeedSeries, Point } from './facts'
 import { cents, type Limits, usd } from './limits'
-import { type Book, type DecisionInputsV2, feedPrice, priceGap, stockLegV2, type Tier } from './rules-v2'
+import { type Book, type DecisionInputsV2, feedPrice, LISTED_MARKS, netIn, priceGap, stockLegV2, type Tier } from './rules-v2'
 import type { TrailV2 } from './trail'
 
 export const BASELINE =
@@ -45,7 +45,27 @@ export type ExitReason = 'wallet sold' | 'stop loss' | 'take profit' | 'time lim
 /** The pool price a same-ticker token was bought at: the Swap log of the Uniswap v4 PoolManager in the move's own transaction. */
 export type PoolEntry = { pool_id: string; token_is_currency0: boolean; sqrt_price_x96: string; log_index: number }
 /** The last Swap log of a pool at or before the mark block. */
-export type PoolMark = { block: number; tx: string; log_index: number; sqrt_price_x96: string }
+export type PoolMark = { block: number; time?: string; tx: string; log_index: number; sqrt_price_x96: string }
+/** The smallest wallet move counted as a large one in totals.large_incoming, in USD. */
+export const LARGE_USD = '100000.00'
+type ArrivalCounts = Record<Arrival, number>
+type LargeSide = { count: number; by_arrival: ArrivalCounts }
+type OtherByToken = {
+	token: string
+	ticker: string
+	name: string
+	count: number
+	measured: number
+	put_in_usd: string
+	result_measured_usd: string | null
+	/** the same positions at the one size of the second pass */
+	same_size: { size_usd: string; count: number; put_in_usd: string; result_measured_usd: string | null }
+	/** how the pool price moved between each purchase and the pool's last swap at or before the mark block, in percent with one decimal: the lowest and the highest */
+	pool_change_pct: null | { min: string; max: string }
+	first_opened_time: string
+	/** the pool's last swap the positions are marked at (the first position's pool), and the hours from the first purchase to it */
+	pool_mark: null | { block: number; time: string | null; hours_after_first_purchase: string | null }
+}
 export type Cohort = 'watched' | 'top_buyers' | 'same_ticker_buyers'
 /**
  * The three groups the copy-guard book is counted in, one per cohort:
@@ -350,7 +370,13 @@ export type Ledger = {
 			list: { token: string; ticker: string; name: string; moves: number }[]
 		}
 		copy_guard: { opened: number; closed: number; open: number; put_in_usd: string; result_usd: string; followed_purchases_usd: { count: number; median: string; sum: string; min: string; max: string } }
-		blind_copy: { opened: number; closed: number; open: number; in_stock_tokens: Side; in_other_tokens: OtherSide & { tokens: number } }
+		/** Incoming Stock Tokens worth threshold_usd or more at the feed, in the selection's window: by who signed, and those that went out again in the same transaction (passed_through) */
+		large_incoming: { threshold_usd: string; from_block: number; to_block: number; signed_by_the_wallet: LargeSide; signed_by_another: LargeSide; passed_through: LargeSide }
+		/** The decisions inside the selection's window, and how many fall before or after it */
+		in_window: { from_block: number; to_block: number; decisions: number; before: number; after: number; stock_moves: ArrivalCounts; copy_guard_opened: number; ticker_copy_opened: number }
+		/** What the CRE token-check said about every token the walk met */
+		token_check: null | { tokens: number; issuer_tokens: number; not_issuer: number; uses_a_stock_ticker: number; uses_usdg: number; other_assets: number; other_assets_list: { token: string; ticker: string }[] }
+		blind_copy: { opened: number; closed: number; open: number; in_stock_tokens: Side; in_other_tokens: OtherSide & { tokens: number; by_token: OtherByToken[] } }
 		/** Every position of both books at one size, so size cannot make the difference. */
 		same_size: { size_usd: string; opened_by_both: Side; opened_by_ticker_copy_only_stock: Side; opened_by_ticker_copy_only_other: OtherSide }
 	}
@@ -475,6 +501,70 @@ export function buildLedger(trails: TrailV2[], feeds: Feeds, markBlock: number, 
 	const noRecord = context.wallets.filter((w) => w.record_http !== 200).map((w) => lc(w.wallet))
 	const stockBlind = blindPositions.filter((p) => p.asset === 'stock')
 	const otherBlind = blindPositions.filter((p) => p.asset === 'same_ticker')
+	const zero = (): ArrivalCounts => Object.fromEntries(ARRIVALS.map((a) => [a, 0])) as ArrivalCounts
+	const inWin = (r: LedgerRow) => r.move_block >= context.window.from_block && r.move_block <= context.window.to_block
+	// Incoming Stock Tokens worth LARGE_USD or more at the feed, in the selection's window only: signed by the wallet itself, signed by another address, and those that left the wallet again in the same transaction.
+	const largeIncoming = () => {
+		const side = (): LargeSide => ({ count: 0, by_arrival: zero() })
+		const out = { threshold_usd: LARGE_USD, from_block: context.window.from_block, to_block: context.window.to_block, signed_by_the_wallet: side(), signed_by_another: side(), passed_through: side() }
+		for (const r of rows) {
+			const inp = trails[r.n - 1].inputs
+			const leg = stockLegV2(inp)
+			if (!inWin(r) || !leg || leg.direction !== 'in' || r.move_usd === null || cents(r.move_usd) < cents(LARGE_USD)) continue
+			const how = arrival(inp, leg)
+			const s = netIn(inp, leg.token) <= 0n ? out.passed_through : lc(inp.move.signer) === lc(inp.wallet) ? out.signed_by_the_wallet : out.signed_by_another
+			s.count++
+			s.by_arrival[how]++
+		}
+		return out
+	}
+	const inWindow = () => {
+		const stock = zero()
+		for (const r of rows.filter(inWin)) {
+			const leg = stockLegV2(trails[r.n - 1].inputs)
+			if (leg) stock[arrival(trails[r.n - 1].inputs, leg)]++
+		}
+		const win = rows.filter(inWin)
+		return { from_block: context.window.from_block, to_block: context.window.to_block, decisions: win.length, before: rows.filter((r) => r.move_block < context.window.from_block).length, after: rows.filter((r) => r.move_block > context.window.to_block).length, stock_moves: stock, copy_guard_opened: win.filter((r) => r.copy_guard.opened).length, ticker_copy_opened: win.filter((r) => r.blind_copy.opened).length }
+	}
+	// What the CRE token-check said about every token the walk met: the issuer's, or not, and if not, what it claims to be.
+	const tokenCheckSummary = () => {
+		if (!first.token_check) return null
+		const seen = new Map<string, { issuer_token: boolean; ticker: string | null; reasons: string[] }>()
+		for (const t of trails) for (const [k, v] of Object.entries(t.inputs.token_check?.tokens ?? {})) seen.set(lc(k), v)
+		const all = [...seen].sort((a, b) => (a[0] < b[0] ? -1 : 1))
+		const usdg = all.filter(([, v]) => !v.issuer_token && v.reasons.includes('TICKER_OR_NAME_READS_AS_USDG'))
+		const stockTicker = all.filter(([, v]) => !v.issuer_token && !v.reasons.includes('TICKER_OR_NAME_READS_AS_USDG') && v.reasons.some((x) => LISTED_MARKS.includes(x)))
+		const other = all.filter(([, v]) => !v.issuer_token && !v.reasons.some((x) => LISTED_MARKS.includes(x)))
+		return { tokens: all.length, issuer_tokens: all.filter(([, v]) => v.issuer_token).length, not_issuer: all.length - all.filter(([, v]) => v.issuer_token).length, uses_a_stock_ticker: stockTicker.length, uses_usdg: usdg.length, other_assets: other.length, other_assets_list: other.map(([token, v]) => ({ token, ticker: v.ticker ?? '' })) }
+	}
+	// The ticker copy's positions in other tokens, one entry per token: what was put in, the measured result, and how the pool price moved.
+	const otherByToken = (): OtherByToken[] => {
+		const tokens = [...new Set(otherBlind.map((p) => p.token))].sort()
+		return tokens.map((token) => {
+			const ps = otherBlind.filter((p) => p.token === token)
+			const one = samePositions.filter((p) => p.token === token && p.asset === 'same_ticker')
+			const m = ps.filter((p) => p.result_usd !== null)
+			const m1 = one.filter((p) => p.result_usd !== null)
+			const moves = ps.filter((p) => p.pool_entry && p.mark?.pool).map((p) => (poolRatio(p.pool_entry as PoolEntry, p.mark?.pool as PoolMark) - 1) * 100)
+			const firstP = [...ps].sort((a, b) => a.opened_block - b.opened_block || a.n - b.n)[0]
+			const mk = firstP.mark?.pool ?? null
+			const entryInfo = others.get(token)
+			return {
+				token,
+				ticker: firstP.symbol,
+				name: entryInfo?.name ?? '',
+				count: ps.length,
+				measured: m.length,
+				put_in_usd: sumUsd(ps.map((p) => p.notional_usd)),
+				result_measured_usd: m.length ? sumUsd(m.map((p) => p.result_usd)) : null,
+				same_size: { size_usd: limits.size.reduced_usd, count: one.length, put_in_usd: sumUsd(one.map((p) => p.notional_usd)), result_measured_usd: m1.length ? sumUsd(m1.map((p) => p.result_usd)) : null },
+				pool_change_pct: moves.length ? { min: Math.min(...moves).toFixed(1), max: Math.max(...moves).toFixed(1) } : null,
+				first_opened_time: firstP.opened_time,
+				pool_mark: mk ? { block: mk.block, time: mk.time ?? null, hours_after_first_purchase: mk.time ? ((Date.parse(mk.time) - Date.parse(firstP.opened_time)) / 3_600_000).toFixed(1) : null } : null,
+			}
+		})
+	}
 	const times = rows.map((r) => r.move_time).sort()
 	const groupTotals = (g: Group): GroupTotals => {
 		const cohort = (Object.keys(GROUP_OF) as Cohort[]).find((c) => GROUP_OF[c] === g) as Cohort
@@ -587,12 +677,15 @@ export function buildLedger(trails: TrailV2[], feeds: Feeds, markBlock: number, 
 				result_usd: sumUsd(guardPositions.map((p) => p.result_usd)),
 				followed_purchases_usd: { count: followed.length, median: medianUsd(followed), sum: sumUsd(followed), min: fc.length ? usd(fc[0]) : '0.00', max: fc.length ? usd(fc[fc.length - 1]) : '0.00' },
 			},
+			large_incoming: largeIncoming(),
+			in_window: inWindow(),
+			token_check: tokenCheckSummary(),
 			blind_copy: {
 				opened: blindPositions.length,
 				closed: blindPositions.filter((p) => p.status === 'closed').length,
 				open: blindPositions.filter((p) => p.status === 'open').length,
 				in_stock_tokens: sideOf(stockBlind),
-				in_other_tokens: { ...otherOf(otherBlind), tokens: new Set(otherBlind.map((p) => p.token)).size },
+				in_other_tokens: { ...otherOf(otherBlind), tokens: new Set(otherBlind.map((p) => p.token)).size, by_token: otherByToken() },
 			},
 			same_size: {
 				size_usd: same,

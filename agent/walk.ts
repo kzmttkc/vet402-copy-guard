@@ -357,7 +357,10 @@ async function main() {
 				span = Math.max(1, Math.floor(span / 2))
 			}
 		}
-		if (lastLog) context.pool_marks[id] = { block: Number(BigInt(lastLog.blockNumber)), tx: lc(lastLog.transactionHash), log_index: Number(BigInt(lastLog.logIndex)), sqrt_price_x96: BigInt(`0x${lastLog.data.slice(2 + 128, 2 + 192)}`).toString() } satisfies PoolMark
+		if (lastLog) {
+			const at = await rpc('eth_getBlockByNumber', [lastLog.blockNumber, false])
+			context.pool_marks[id] = { block: Number(BigInt(lastLog.blockNumber)), time: new Date(Number(BigInt(at.timestamp)) * 1000).toISOString(), tx: lc(lastLog.transactionHash), log_index: Number(BigInt(lastLog.logIndex)), sqrt_price_x96: BigInt(`0x${lastLog.data.slice(2 + 128, 2 + 192)}`).toString() } satisfies PoolMark
+		}
 	}
 	trails.sort(order)
 	const ledger = buildLedger(trails, feeds, markBlock, context)

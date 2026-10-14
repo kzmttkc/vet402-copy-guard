@@ -60,6 +60,8 @@ export const CLAIMS = {
 	paymentTx: '0x65c314bd758a59dfc79c78d8da76e557450fa1144726ddc4bfc77e183287af61',
 	/** The agent's wallet. */
 	payer: '0xc380d9f41d90765a4820429b9da151889e8bed94',
+	/** The principal the mandate names: the person the agent acts for. Its own key, not the vet402 wallet that is paid. */
+	principal: '0x2ffbaead3acb0f99c851a5ce683b5e578c7eae9e',
 	/** The vet402 wallet. It receives the payment and it is the operator that writes anchors. */
 	payee: '0x973cd8a91a771c2c04c6036888f8175d6b4f6227',
 	/** 0.01 USDG, 6 decimals. */
@@ -1311,6 +1313,61 @@ export function ledgerOf(trails, feeds, markBlock, context) {
 		}
 	}
 	const otherBlind = blindPositions.filter((p) => p.asset === 'same_ticker')
+	// Rows inside the selection's window, large incoming moves, the token-check in short and the ticker copy per other token.
+	const zeroKinds = () => Object.fromEntries(ARRIVAL_KINDS.map((k) => [k, 0]))
+	const win = context.window
+	const inside = (r) => r.move_block >= win.from_block && r.move_block <= win.to_block
+	const LARGE = '100000.00'
+	const large = { threshold_usd: LARGE, from_block: win.from_block, to_block: win.to_block, signed_by_the_wallet: { count: 0, by_arrival: zeroKinds() }, signed_by_another: { count: 0, by_arrival: zeroKinds() }, passed_through: { count: 0, by_arrival: zeroKinds() } }
+	const winStock = zeroKinds()
+	for (const r of rows) {
+		const inp = trails[r.n - 1].inputs
+		const sl = stockLeg2(inp)
+		if (!inside(r) || !sl) continue
+		const how = howItCame(inp, sl)
+		winStock[how]++
+		if (sl.direction !== 'in' || r.move_usd === null || toCents(r.move_usd) < toCents(LARGE)) continue
+		let net = 0n
+		for (const t of inp.movement.transfers) if (lc(t.token) === lc(sl.token)) net += t.direction === 'in' ? BigInt(t.amount_raw) : -BigInt(t.amount_raw)
+		const bucket = net <= 0n ? large.passed_through : lc(inp.move.signer) === lc(inp.wallet) ? large.signed_by_the_wallet : large.signed_by_another
+		bucket.count++
+		bucket.by_arrival[how]++
+	}
+	const inWin = rows.filter(inside)
+	const windowTotals = { from_block: win.from_block, to_block: win.to_block, decisions: inWin.length, before: rows.filter((r) => r.move_block < win.from_block).length, after: rows.filter((r) => r.move_block > win.to_block).length, stock_moves: winStock, copy_guard_opened: inWin.filter((r) => r.copy_guard.opened).length, ticker_copy_opened: inWin.filter((r) => r.blind_copy.opened).length }
+	let tcSummary = null
+	if (first.token_check) {
+		const said = {}
+		for (const t of trails) for (const [k, v] of Object.entries(t.inputs.token_check?.tokens ?? {})) said[lc(k)] = v
+		const keys = Object.keys(said).sort()
+		const isUsdg = (v) => v.reasons.includes('TICKER_OR_NAME_READS_AS_USDG')
+		const marked = (v) => v.reasons.some((x) => MARKS.has(x))
+		const issuer = keys.filter((k) => said[k].issuer_token)
+		const plain = keys.filter((k) => !said[k].issuer_token && !marked(said[k]))
+		tcSummary = { tokens: keys.length, issuer_tokens: issuer.length, not_issuer: keys.length - issuer.length, uses_a_stock_ticker: keys.filter((k) => !said[k].issuer_token && !isUsdg(said[k]) && marked(said[k])).length, uses_usdg: keys.filter((k) => !said[k].issuer_token && isUsdg(said[k])).length, other_assets: plain.length, other_assets_list: plain.map((k) => ({ token: k, ticker: said[k].ticker ?? '' })) }
+	}
+	const byOtherToken = [...new Set(otherBlind.map((p) => p.token))].sort().map((token) => {
+		const ps = otherBlind.filter((p) => p.token === token)
+		const one = onePositions.filter((p) => p.token === token && p.asset === 'same_ticker')
+		const valued = ps.filter((p) => p.result_usd !== null)
+		const valuedOne = one.filter((p) => p.result_usd !== null)
+		const pct = ps.filter((p) => p.pool_entry && p.mark?.pool).map((p) => (poolTimes(p.pool_entry, p.mark.pool) - 1) * 100)
+		const earliest = [...ps].sort((a, b) => a.opened_block - b.opened_block || a.n - b.n)[0]
+		const mk = earliest.mark?.pool ?? null
+		return {
+			token,
+			ticker: earliest.symbol,
+			name: otherList[token]?.name ?? '',
+			count: ps.length,
+			measured: valued.length,
+			put_in_usd: total(ps.map((p) => p.notional_usd)),
+			result_measured_usd: valued.length ? total(valued.map((p) => p.result_usd)) : null,
+			same_size: { size_usd: oneSize, count: one.length, put_in_usd: total(one.map((p) => p.notional_usd)), result_measured_usd: valuedOne.length ? total(valuedOne.map((p) => p.result_usd)) : null },
+			pool_change_pct: pct.length ? { min: Math.min(...pct).toFixed(1), max: Math.max(...pct).toFixed(1) } : null,
+			first_opened_time: earliest.opened_time,
+			pool_mark: mk ? { block: mk.block, time: mk.time ?? null, hours_after_first_purchase: mk.time ? ((Date.parse(mk.time) - Date.parse(earliest.opened_time)) / 3_600_000).toFixed(1) : null } : null,
+		}
+	})
 	const stockMoves = Object.fromEntries(ARRIVAL_KINDS.map((k) => [k, 0]))
 	// The copy-guard book per group: the selected wallets, the observed buyers of another token, and the demo wallet.
 	const groupOf = { selected: 'top_buyers', observed_other_token_buyers: 'same_ticker_buyers', demo: 'watched' }
@@ -1415,12 +1472,15 @@ export function ledgerOf(trails, feeds, markBlock, context) {
 				result_usd: total(guardPositions.map((p) => p.result_usd)),
 				followed_purchases_usd: { count: followed.length, median: median(followed), sum: total(followed), min: fc.length ? fromCents(fc[0]) : '0.00', max: fc.length ? fromCents(fc[fc.length - 1]) : '0.00' },
 			},
+			large_incoming: large,
+			in_window: windowTotals,
+			token_check: tcSummary,
 			blind_copy: {
 				opened: blindPositions.length,
 				closed: blindPositions.filter((p) => p.status === 'closed').length,
 				open: blindPositions.filter((p) => p.status === 'open').length,
 				in_stock_tokens: side(blindPositions.filter((p) => p.asset === 'stock')),
-				in_other_tokens: { ...otherSide(otherBlind), tokens: new Set(otherBlind.map((p) => p.token)).size },
+				in_other_tokens: { ...otherSide(otherBlind), tokens: new Set(otherBlind.map((p) => p.token)).size, by_token: byOtherToken },
 			},
 			same_size: {
 				size_usd: oneSize,
@@ -2237,7 +2297,8 @@ async function verifyLedger(rep, main, test, deep) {
 		const signer = signerOfMandate(m.document, m.signature)
 		const byPrincipal = signer !== null && signer === lc(m.document.principal)
 		if (isReal) {
-			if (lc(real.principal) !== CLAIMS.payee) return [false, `the principal of ${CLAIMS.mandate} is ${real.principal}`]
+			if (lc(real.principal) !== CLAIMS.principal) return [false, `the principal of ${CLAIMS.mandate} is ${real.principal}, expected ${CLAIMS.principal}`]
+			if (lc(real.principal) === CLAIMS.payee) return [false, `the principal of ${CLAIMS.mandate} is the vet402 wallet that is paid`]
 			return [true, byPrincipal ? `${CLAIMS.mandate} hashes to ${short(refs[0])}, and the signature in every decision recovers to its principal ${shortAddr(signer)}: practice only, payment key ${shortAddr(lc(real.agent.payment_key))}, valid ${real.valid_from} to ${real.valid_until}` : `${CLAIMS.mandate} hashes to ${short(refs[0])}. Its principal had not signed it when these decisions were made, so rule M1 made every one of them NONE`]
 		}
 		return [byPrincipal, byPrincipal ? `SAMPLE mandate ${CLAIMS.sampleMandate} (${short(refs[0])}): the signature in every decision recovers to its principal ${shortAddr(signer)}, a testnet-only key that stands in for the principal. The real mandate, ${CLAIMS.mandate}, is not signed yet` : `the sample mandate is not signed by its principal`]
