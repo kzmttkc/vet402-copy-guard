@@ -8,7 +8,7 @@ Anyone can deploy a token called NVDA. copy-guard is an agent that checks which 
 | **Chainlink**, Best workflow with CRE | [Chainlink: Best workflow with CRE](#chainlink-best-workflow-with-cre). The one `cre workflow simulate` line, the bounty text line by line, the CRE code guide |
 | **RYO-CHAN**, Autonomous Agents | [RYO-CHAN: Autonomous Agents](#ryo-chan-autonomous-agents). The bounty text phrase by phrase, the practice trade ledger, one sentence turned into limits |
 | **BLI**, LegalTech and RegTech | [BLI: LegalTech and RegTech](#bli-legaltech-and-regtech). Who the agent acts for, two questions from BLI's own stage, the regulators' words |
-| Any of them | [Verify it yourself with one command](#verify-it-yourself-with-one-command), [Details](#details), [What it does not claim](#what-it-does-not-claim) |
+| Any of them | [Verify it yourself in 20 seconds](#verify-it-yourself-in-20-seconds), [Details](#details), [What it does not claim](#what-it-does-not-claim) |
 <!-- JUMP:END -->
 
 > "$600 out the window in seconds"
@@ -26,11 +26,11 @@ copy-guard is an autonomous agent that checks a move before it would copy it. It
 Nobody has to take my word for this, or the agent's, or a server's. One command with no key, no account and nothing to install rechecks the payment, the records, every decision and the whole practice ledger against two public chains. Without a terminal, [`docs/index.html`](docs/index.html) shows the same ledger as one page.
 
 <!-- FACTS:BEGIN -->
-**The walk of 2026-10-14, practice only.** copy-guard looked at 4200 moves of 40 wallets. 64 of them were in 34 tokens that carry the ticker of a Stock Token or of USDG at an address the issuer did not list, and each of those tokens is [named by address](#tokens-that-share-a-ticker). How they reached the wallet: 36 sent to a wallet that did not sign, 20 bought by the wallet itself (it signed and paid), 8 logged with the wallet as the sender. copy-guard opened no position in any of them. The ticker copy opened 20. 20 of the 40 wallets are in the walk because they bought such a token, so these counts are not a rate. The practice positions copy-guard did open come from 2 groups, counted apart. 18 follow purchases of 3,995.44 to 446,442.61 USD by the selected wallets, all of them by one wallet, 0xb712…bc5c. 36 follow purchases of 0.21 to 0.48 USD by the wallets observed buying the other SPY. In all it opened 54, each at the reduced size the user's limits give for weaker evidence, and declined 4146, each with a reason in plain sentences.
+**The walk of 2026-10-14, practice only.** copy-guard looked at 8396 moves of 51 wallets. 136 of them were in 67 tokens that carry the ticker of a Stock Token or of USDG at an address the issuer did not list, and each of those tokens is [named by address](#tokens-that-share-a-ticker). How they reached the wallet: 75 sent to a wallet that did not sign, 22 bought by the wallet itself at an official venue, 2 bought by the wallet outside the official venues, 37 logged with the wallet as the sender. copy-guard opened no position in any of them. The ticker copy opened 24. 20 of the 51 wallets are in the walk because they bought such a token, so these counts are not a rate. The practice positions copy-guard did open come from 2 groups, counted apart. 212 follow purchases of 5.75 to 144,454.24 USD by the selected wallets. 24 follow purchases of 0.22 to 0.48 USD by the wallets observed buying the other SPY. In all it opened 236, each at the reduced size the user's limits give for weaker evidence, and declined 8160, each with a reason in plain sentences.
 <!-- FACTS:END -->
 
 <!-- VERIFY_HEAD:BEGIN -->
-## Verify it yourself with one command
+## Verify it yourself in 20 seconds
 <!-- VERIFY_HEAD:END -->
 
 Step 1 needs Node 20 or newer and a copy of this repo. Steps 2 to 4 need only a browser. Every date and time in this README is UTC.
@@ -40,6 +40,19 @@ Step 1 needs Node 20 or newer and a copy of this repo. Steps 2 to 4 need only a 
 <!-- VERIFY_RUN:BEGIN -->
 ```bash
 git clone https://github.com/kzmttkc/vet402-copy-guard && cd vet402-copy-guard
+node verify.mjs --quick
+```
+
+`--quick` rechecks the payment, the anchors, the CRE verdicts, the first four cards of the page and the ledger's root against both chains, in 11 to 12 s (5 saved runs of 2026-10-14). Its last two lines:
+
+```
+RESULT: MATCH
+To check every decision, the selection, the page and the gate: node verify.mjs (about 3 minutes)
+```
+
+The whole ledger, every decision and every rule, is one more line, 153 to 232 s in 5 saved runs of 2026-10-14. Most of that time is waiting on the public RPC.
+
+```bash
 node verify.mjs
 ```
 <!-- VERIFY_RUN:END -->
@@ -48,7 +61,7 @@ node verify.mjs
 
 <!-- VERIFY_TAIL:BEGIN -->
 ```
-60 OK, 0 FAIL, 0 not checked
+65 OK, 0 FAIL, 0 not checked
 RESULT: MATCH
 ```
 <!-- VERIFY_TAIL:END -->
@@ -94,44 +107,49 @@ vet402 copy-guard: recheck with no key, no account and no install
   OK    move on chain   0xf7cb51a2…478717 in block 81262132: 1 transfer of the wallet, as the trail lists
   OK    trail onchain   DecisionRecorded in 0xfd3df929…563199 on Robinhood Testnet has this hash, DO_NOT_COPY, the same record, move and payment
 5. The practice ledger: a walk through every decision, copy-guard next to a ticker copy
-  OK    gzipped         trails.jsonl.gz and chain.json.gz unpack to the bytes whose sha256 docs/verify/compressed.json recorded before they were gzipped (57.5 MB and 51.1 MB)
-  OK    decisions       4200 decisions rerun, 18 rules each: FULL 0, REDUCED 54, NONE 4146. Every row, card, mandate and limits hash is the one its inputs give
-  OK    selection       docs/walk/selection.json asked vet402 about the top 100 addresses by what official venues sent them in blocks 62420751 to 87977834 (2026-09-14 to 2026-10-14): 19 selected, 81 with no record, each with its saved answer. Stopped because 100 addresses had been asked: 100 addresses asked from the top of the ranking, 19 selected, 81 with no record. Observations apart: 1 watched wallet and 20 buyers of one token with the ticker SPY
-  OK    records         39 records in docs/walk/records hash to the X-Facts-Hash vet402 sent with them and give the fields every decision read. For 1 wallets vet402 gave no record, and their decisions say so. Every moved token is named as the issuer's list (195 Stock Tokens, taken 2026-09-28), the CRE token-check results 0x7d0ef983…ba0e41 and the record give it
-  OK    prices          3590 decisions read a price, each the last Chainlink feed value at or before the block of the move, out of 10294 values of 22 feeds saved in docs/walk/feeds.json
-  OK    ledger          docs/ledger.json is what the walk gives: 4200 decisions about 40 wallets (FULL 0, REDUCED 54, NONE 4146). Incoming Stock Tokens by kind: purchase 263, rotation 0, liquidity 2872, swapped_unpaid 0, received 283, out 718. copy-guard opened 54 practice positions, every one on a purchase (an official swap the wallet itself paid for, median 0.45 USD), and none in a token the issuer did not list. A ticker copy opened 230: 210 in Stock Tokens and 20 in 1 other token under a listed ticker. Different tokens under a listed ticker were part of 64 moves (34 tokens: NVDA, SPY, USDG): 36 sent to the wallet, 20 bought by it, 0 received unpaid, 8 logged as sent by it. At one size (25.00 USD each): the 54 both opened 6.04 USD, the 156 Stock Token positions only the ticker copy opened 24.43 USD, and its 20 in other tokens: 20 valued at a pool (-460.61 USD), 0 not measured and in no sum
-  OK    page            docs/index.html carries the totals, both books with every position, the 4 cards at the top as full rows and 274 decisions in short form (every one that opened a position, moved a different token under a listed ticker or was not NONE), all as docs/ledger.json has them. The other decisions are in 40 files of docs/rows, one per wallet, which hold the 4200 rows exactly and give the page's counts per wallet
+  OK    gzipped         trails.jsonl.gz and chain.json.gz unpack to the bytes whose sha256 docs/verify/compressed.json recorded before they were gzipped (109.8 MB and 26.0 MB)
+  OK    decisions       8396 decisions rerun, 18 rules each: FULL 0, REDUCED 236, NONE 8160. Every row, card, mandate and limits hash is the one its inputs give
+  OK    selection       docs/walk/selection.json went through the top 262 addresses by what official venues sent them, directly or through 3 listed routers, in blocks 62420751 to 87977834 (2026-09-14 to 2026-10-14): 181 routers or other contracts passed over without asking, 81 asked, 30 selected, 51 with no record, each with its saved answer. Stopped because 30 addresses were selected: 262 places of the ranking gone through, 181 of them routers or other contracts (not asked), 81 addresses asked, 30 selected, 51 with no record. Observations apart: 1 watched wallet and 20 buyers of one token with the ticker SPY
+  OK    records         50 records in docs/walk/records hash to the X-Facts-Hash vet402 sent with them and give the fields every decision read. For 1 wallets vet402 gave no record, and their decisions say so. Every moved token is named as the issuer's list (195 Stock Tokens, taken 2026-09-28), the CRE token-check results 0xe2fcacc3…535975 and the record give it
+  OK    prices          7252 decisions read a price, each the last Chainlink feed value at or before the block of the move, out of 29939 values of 26 feeds saved in docs/walk/feeds.json
+  OK    ledger          docs/ledger.json is what the walk gives: 8396 decisions about 51 wallets (FULL 0, REDUCED 236, NONE 8160). Incoming Stock Tokens by kind: purchase 1184, purchase_off_venue 565, rotation 3, liquidity 2217, swapped_unpaid 5, received 263, out 4029. copy-guard opened 236 practice positions, every one on a purchase (an official swap the wallet itself paid for, median 2680.11 USD), and none in a token the issuer did not list. A ticker copy opened 1565: 1541 in Stock Tokens and 24 in 4 other tokens under a listed ticker. Different tokens under a listed ticker were part of 136 moves (67 tokens: FLY, GME, IBM, NET, NVDA, SPY, USDG, WMETA, WTSM): 75 sent to the wallet, 22 bought by it, 0 received unpaid, 37 logged as sent by it. At one size (25.00 USD each): the 236 both opened 26.62 USD, the 1305 Stock Token positions only the ticker copy opened 48.01 USD, and its 24 in other tokens: 21 valued at a pool (-480.55 USD), 3 not measured and in no sum
+  OK    groups          copy-guard per group, recomputed: selected: 30 wallets, 8093 decisions, copy-guard opened 212 and declined 7881, followed purchases median 3295.74 USD (sum 2508214.48), at 25.00 USD each 26.60 USD, 81 of 212 from 0x30ce…6576; observed_other_token_buyers: 20 wallets, 210 decisions, copy-guard opened 24 and declined 186, followed purchases median 0.40 USD (sum 9.12), at 25.00 USD each 0.02 USD, 4 of 24 from 0xa634…05fd; demo: 1 wallets, 93 decisions, copy-guard opened 0 and declined 93, followed purchases median 0.00 USD (sum 0.00), at 25.00 USD each 0.00 USD
+  OK    page            docs/index.html carries the totals, both books with every position, the 4 cards at the top as full rows and 1677 decisions in short form (every one that opened a position, moved a different token under a listed ticker or was not NONE), all as docs/ledger.json has them. The other decisions are in 51 files of docs/rows, one per wallet, which hold the 8396 rows exactly and give the page's counts per wallet
   OK    limits          limits.json hashes to 0x1e762486…72c2cf, the limits every decision and the mandate name: full 100.00 USD, reduced 25.00 USD, 300.00 USD per day, a wallet at a loss opens nothing
-  OK    rules files     agent/rules.ts hashes to 0x2abeff7f…e93b12, the file the paid run's trails name, and agent/rules-v2.ts to 0x83cdfcf1…0ecf08, as every decision and the mandate say
-  OK    mandate         SAMPLE mandate mandate/sample/mandate.json (0x39388673…e42229): the signature in every decision recovers to its principal 0xbb62…f48d, a testnet-only key that stands in for the principal. The real mandate, mandate/mandate.json, is not signed yet
-  OK    root onchain    LedgerAnchored in 0x109ada37…e201d0 on Robinhood Testnet has the Merkle root 0x08050cbf…fb4040 of all 4200 decisions, the same mandate, limits and rules, and the same counts
-  OK    CRE verdict     the CRE workflow wrote MATCH for anchor 0x15f9ed8a…585c7f in 0x6fbe85b1…e877ad on Robinhood Testnet
-  OK    pool mark       the last swap of Uniswap v4 pool 0x9f0f44d4…87ef34 at or before block 88105125 is in 0x602fda94…004144 (block 87883602), the price 20 ticker-copy positions are marked at
-  18 of the 4200 decisions against Robinhood Chain (--deep checks every one)
-  OK    decision 1      0xa93f4763…814075 in block 29836458 (2026-08-07T02:02:04.000Z): 4 transfers as listed, signed by 0x75ee…354f, not the wallet, liquidity (IncreaseLiquidity, Mint), venue other, feed value 218.7800 USD from round 693
-  OK    decision 24     0xb28b59cf…b41de3 in block 34170399 (2026-08-12T02:33:43.000Z): 1 transfer as listed, signed by 0x8c94…ec08, not the wallet, received
-  OK    decision 545    0xc3d9f6d3…1458f7 in block 49828337 (2026-08-30T07:23:15.000Z): 2 transfers as listed, signed by the wallet, a purchase: an official swap, paid 50,000 USDG by the wallet, venue other and other and uniswap-v4-pool-manager and uniswap-v3-pool and uniswap-v3-pool and other, feed value 770.2651 USD from round 112
-  OK    decision 546    0xd3368718…6eae21 in block 49828712 (2026-08-30T07:23:54.000Z): 2 transfers as listed, signed by the wallet, a purchase: an official swap, paid 50,000 USDG by the wallet, venue other and other and uniswap-v4-pool-manager and uniswap-v3-pool and uniswap-v3-pool and other, feed value 770.2651 USD from round 112
-  OK    decision 548    0xed13cf12…1d8ba3 in block 49831612 (2026-08-30T07:28:46.000Z): 2 transfers as listed, signed by the wallet, a purchase: an official swap, paid 450,000 USDG by the wallet, venue uniswap-v3-pool and uniswap-v4-pool-manager and uniswap-v3-pool and other, feed value 218.1555 USD from round 930
-  OK    decision 549    0xff34e6d3…24404d in block 49833837 (2026-08-30T07:32:31.000Z): 2 transfers as listed, signed by the wallet, a purchase: an official swap, paid 100,000 USDG by the wallet, venue uniswap-v3-pool and uniswap-v4-pool-manager and uniswap-v3-pool and other, feed value 218.1555 USD from round 930
-  OK    decision 574    0x845302ca…669e96 in block 50356044 (2026-08-30T22:13:39.000Z): 2 transfers as listed, signed by the wallet, a purchase: an official swap, paid 50,000 USDG by the wallet, venue uniswap-v3-pool and uniswap-v4-pool-manager and uniswap-v3-pool and other, feed value 715.9000 USD from round 315
-  OK    decision 595    0xd1186eaa…8aeeac in block 50659273 (2026-08-31T06:43:56.000Z): 2 transfers as listed, signed by the wallet, a purchase: an official swap, paid 100,000 USDG by the wallet, venue uniswap-v4-pool-manager and uniswap-v3-pool and uniswap-v3-pool and other, feed value 715.3700 USD from round 317
-  OK    decision 596    0xc9f3af96…e0c0ce in block 50659790 (2026-08-31T06:44:48.000Z): 2 transfers as listed, signed by the wallet, a purchase: an official swap, paid 100,000 USDG by the wallet, venue other and other and uniswap-v4-pool-manager and uniswap-v3-pool and uniswap-v3-pool and other, feed value 766.1400 USD from round 113
-  OK    decision 597    0xb011d6f8…62d103 in block 50660122 (2026-08-31T06:45:23.000Z): 2 transfers as listed, signed by the wallet, a purchase: an official swap, paid 100,000 USDG by the wallet, venue other and other and uniswap-v4-pool-manager and uniswap-v3-pool and uniswap-v3-pool and other, feed value 766.1400 USD from round 113
-  OK    decision 600    0x78cd2cb6…666ad6 in block 50661554 (2026-08-31T06:47:46.000Z): 2 transfers as listed, signed by the wallet, a purchase: an official swap, paid 67,000 USDG by the wallet, venue other and other and other and uniswap-v4-pool-manager and uniswap-v3-pool and uniswap-v3-pool and other, feed value 766.1400 USD from round 113
-  OK    decision 624    0xac825156…abc239 in block 50936792 (2026-08-31T14:29:58.000Z): 2 transfers as listed, signed by the wallet, a purchase: an official swap, paid 4,000 USDG by the wallet, venue uniswap-v4-pool-manager and other, feed value 260.6950 USD from round 685
-  OK    decision 2210   0x0eac7685…6a13f8 in block 68837431 (2026-09-21T13:36:17.000Z): 4 transfers as listed, signed by the wallet, a purchase: an official swap, paid 5,000 USDG by the wallet, venue uniswap-v4-pool-manager and uniswap-v3-pool, feed value 726.9600 USD from round 361
-  OK    decision 2494   0x1b838f40…77b51b in block 73953009 (2026-09-27T12:52:47.000Z): 1 transfer as listed, signed by 0x3433…abd0, not the wallet, received
-  OK    decision 2495   0x1b838f40…77b51b in block 73953009 (2026-09-27T12:52:47.000Z): 1 transfer as listed, signed by 0x3433…abd0, not the wallet, received
-  OK    decision 4140   0x1bd25c5e…86cce4 in block 87803686 (2026-10-13T20:39:01.000Z): 1 transfer as listed, signed by the wallet, a purchase: an official swap, paid 0.000059 ETH by the wallet
-  OK    decision 4141   0xefd5b267…df42a9 in block 87803697 (2026-10-13T20:39:02.000Z): 1 transfer as listed, signed by the wallet, a purchase: an official swap, paid 0.016393 ETH by the wallet
-  OK    decision 4142   0xccd25929…50c753 in block 87803732 (2026-10-13T20:39:06.000Z): 1 transfer as listed, signed by the wallet, a purchase: an official swap, paid 0.024834 ETH by the wallet
+  OK    rules files     agent/rules.ts hashes to 0x2abeff7f…e93b12, the file the paid run's trails name, and agent/rules-v2.ts to 0x051a62db…14cf18, as every decision and the mandate say
+  OK    mandate         SAMPLE mandate mandate/sample/mandate.json (0xdd7b06e1…3c4425): the signature in every decision recovers to its principal 0xbb62…f48d, a testnet-only key that stands in for the principal. The real mandate, mandate/mandate.json, is not signed yet
+  OK    root onchain    LedgerAnchored in 0xb8f605d9…b76812 on Robinhood Testnet has the Merkle root 0x0829cd64…d8e3c1 of all 8396 decisions, the same mandate, limits and rules, and the same counts
+  OK    CRE verdict     the CRE workflow wrote MATCH for anchor 0x15f9ed8a…585c7f in 0x447a2eeb…f2219e on Robinhood Testnet
+  OK    pool mark       the last swap of Uniswap v4 pool 0x04263541…9cce27 at or before block 88230479 is in 0x92677c01…ada53b (block 88191169), the price 1 ticker-copy position is marked at
+  OK    pool mark       the last swap of Uniswap v4 pool 0x9f0f44d4…87ef34 at or before block 88230479 is in 0x602fda94…004144 (block 87883602), the price 20 ticker-copy positions are marked at
+  21 of the 8396 decisions against Robinhood Chain (--deep checks every one)
+  OK    decision 1      0x3b146d42…4e2f14 in block 11167202 (2026-07-16T09:58:34.000Z): 2 transfers as listed, signed by 0x6ce9…8571, not the wallet, purchase_off_venue, venue other, feed value 209.6849 USD from round 337
+  OK    decision 2      0x7412e5f2…01c341 in block 11168196 (2026-07-16T10:00:12.000Z): 1 transfer as listed, signed by the wallet, out (ModifyLiquidity), venue uniswap-v4-pool-manager, feed value 209.6849 USD from round 337
+  OK    decision 3      0xa74397df…695f1e in block 12770989 (2026-07-18T06:37:49.000Z): 2 transfers as listed, signed by 0x6ce9…8571, not the wallet, purchase_off_venue, venue other, feed value 202.7962 USD from round 378
+  OK    decision 5      0x11844df2…353a25 in block 12783716 (2026-07-18T06:59:06.000Z): 4 transfers as listed, signed by the wallet, a purchase: an official swap, paid 125.14426 USDG by the wallet, venue uniswap-v4-pool-manager, feed value 124.0070 USD from round 1223
+  OK    decision 9      0x500227c3…0c7f91 in block 12809556 (2026-07-18T07:42:21.000Z): 2 transfers as listed, signed by the wallet, a purchase: an official swap, paid 500 USDG by the wallet, venue uniswap-v4-pool-manager, feed value 124.0070 USD from round 1223
+  OK    decision 14     0x2d73712c…53f2de in block 13060285 (2026-07-18T14:42:21.000Z): 2 transfers as listed, signed by the wallet, a purchase: an official swap, paid 3,490.422606 USDG by the wallet, venue uniswap-v4-pool-manager, feed value 346.6150 USD from round 301
+  OK    decision 23     0xd8b131e0…739299 in block 13191848 (2026-07-18T18:22:17.000Z): 1 transfer as listed, signed by 0x8c94…ec08, not the wallet, received
+  OK    decision 28     0xafe7fc3b…2b815a in block 14537500 (2026-07-20T07:54:42.000Z): 2 transfers as listed, signed by 0xc912…c247, not the wallet, a purchase: an official swap, paid 76,078.26808 USDG by the wallet, venue uniswap-v4-pool-manager and other, feed value 203.3700 USD from round 381
+  OK    decision 49     0x187c204e…887acf in block 15692344 (2026-07-21T16:04:13.000Z): 4 transfers as listed, signed by the wallet, a purchase: an official swap, paid 6,516.246932 USDG by the wallet, venue uniswap-v4-pool-manager, feed value 128.3950 USD from round 1294
+  OK    decision 51     0xd4f6c2ee…4226c6 in block 15717987 (2026-07-21T16:47:02.000Z): 4 transfers as listed, signed by the wallet, a purchase: an official swap, paid 6,501.03772 USDG by the wallet, venue uniswap-v4-pool-manager, feed value 127.6700 USD from round 1295
+  OK    decision 54     0x019cb449…c5de00 in block 15759014 (2026-07-21T17:55:33.000Z): 4 transfers as listed, signed by the wallet, a purchase: an official swap, paid 6,503.891896 USDG by the wallet, venue uniswap-v4-pool-manager, feed value 127.7150 USD from round 1297
+  OK    decision 71     0xb54aa589…d58ca6 in block 16301693 (2026-07-22T09:01:53.000Z): 4 transfers as listed, signed by the wallet, a purchase: an official swap, paid 25,312.906162 USDG by the wallet, venue uniswap-v4-pool-manager, feed value 124.2686 USD from round 1315
+  OK    decision 128    0xf51d11d7…c59360 in block 17949785 (2026-07-24T06:55:26.000Z): 4 transfers as listed, signed by the wallet, a purchase: an official swap, paid 21,000 USDG by the wallet, venue uniswap-v3-pool and uniswap-v4-pool-manager and uniswap-v3-pool and other, feed value 21.2900 USD from round 258
+  OK    decision 138    0x1c3f73da…06e35e in block 18422461 (2026-07-24T20:05:23.000Z): 2 transfers as listed, signed by the wallet, a purchase: an official swap, paid 500 USDG by the wallet, venue uniswap-v3-pool, feed value 21.1650 USD from round 263
+  OK    decision 490    0x4775909a…b5bb22 in block 43749967 (2026-08-23T05:22:43.000Z): 1 transfer as listed, signed by the wallet, a purchase: an official swap, paid 16.807827 ETH by the wallet
+  OK    decision 638    0xf17d92f8…6aebd2 in block 48284781 (2026-08-28T12:04:21.000Z): 2 transfers as listed, signed by the wallet, a purchase: an official swap, paid 100 USDG by the wallet
+  OK    decision 1168   0x12a76b78…b47804 in block 53079256 (2026-09-03T02:51:34.000Z): 2 transfers as listed, signed by the wallet, rotation, venue uniswap-v4-pool-manager, feed value 763.4914 USD from round 117
+  OK    decision 4836   0x0eac7685…6a13f8 in block 68837431 (2026-09-21T13:36:17.000Z): 4 transfers as listed, signed by the wallet, a purchase: an official swap, paid 5,000 USDG by the wallet, venue uniswap-v4-pool-manager and uniswap-v3-pool, feed value 726.9600 USD from round 361
+  OK    decision 6000   0x1b838f40…77b51b in block 73953009 (2026-09-27T12:52:47.000Z): 1 transfer as listed, signed by 0x3433…abd0, not the wallet, received
+  OK    decision 7351   0xf7cb51a2…478717 in block 81262132 (2026-10-06T01:57:36.000Z): 1 transfer as listed, signed by 0x5739…dc19, not the wallet, out
+  OK    decision 8345   0x1bd25c5e…86cce4 in block 87803686 (2026-10-13T20:39:01.000Z): 1 transfer as listed, signed by the wallet, a purchase: an official swap, paid 0.000059 ETH by the wallet
 6. The x402 gate in front of the CRE workflow (a dry run: nothing signed, nothing paid)
   OK    gate 402        the gate answered 402 for /v1/workflows/rwa-verify: exact, eip155:4663, 0.01 USDG to 0x973c…6227 (vet402), Permit2
   OK    payment built   the payment the agent built and did not sign hashes to 0xe08bf1dc…e39735: 0.01 USDG, spender the x402 Permit2 proxy, recipient pinned to 0x973c…6227, valid 120 s
   OK    agent card      agent.json and SKILL.md offer the workflow rwa-verify under the same terms: 0.01 USDG on eip155:4663 to 0x973c…6227
 
-60 OK, 0 FAIL, 0 not checked
+65 OK, 0 FAIL, 0 not checked
 RESULT: MATCH
 ```
 <!-- VERIFY:END -->
@@ -173,28 +191,28 @@ Both lines run from the root of the repo, after `cre login` and `bun install` in
 **token-check**, many tokens at one block. This payload holds the token of [the card](#the-practice-ledger) below among 12 tokens.
 
 ```bash
-cre workflow simulate token-check --target local-simulation --non-interactive --trigger-index 0 --http-payload docs/token-check/batch/batch-4.payload.json
+cre workflow simulate token-check --target local-simulation --non-interactive --trigger-index 0 --http-payload docs/token-check/batch/batch-7.payload.json
 ```
 
-From [`docs/token-check/batch/batch-4.cre.txt`](docs/token-check/batch/batch-4.cre.txt), the saved output of the same payload run with `--broadcast`. Without `--broadcast` the write at the end is a dry run.
+From [`docs/token-check/batch/batch-7.cre.txt`](docs/token-check/batch/batch-7.cre.txt), the saved output of the same payload run with `--broadcast`. Without `--broadcast` the write at the end is a dry run.
 
 ```
 [USER LOG] token check, batch (Robinhood Chain 4663, read over JSON-RPC, no vet402 API)
 [USER LOG] tokens  12
 [USER LOG] state   robinhood-rpc.publicnode.com   logs rpc.mainnet.chain.robinhood.com
-[USER LOG] head    88095635 (median of the nodes), checking at block 88095615
-[USER LOG] block   88095615  hash 0x0d7b3cdd…fe21dc (the same from both RPCs)
+[USER LOG] head    88225092 (median of the nodes), checking at block 88225072
+[USER LOG] block   88225072  hash 0x1241df11…194821 (the same from both RPCs)
+[USER LOG] ISSUER_TOKEN      0x58ffe4a9…09e7aa  "TSM"  updates 2  IN_ISSUER_LIST CODE_HASH_MATCHES BEACON_MATCHES FACTORY_LOG_NAMES_TOKEN TICKER_MATCHES_LIST MULTIPLIER_NOT_ONE
+[USER LOG] NOT_ISSUER_TOKEN  0x5c283587…20b282  "U[U+17B5]S[U+17B5]DG"  updates 0  NOT_IN_ISSUER_LIST CODE_HASH_DIFFERS BEACON_DIFFERS TICKER_OR_NAME_READS_AS_USDG INVISIBLE_CHARACTERS
 [USER LOG] NOT_ISSUER_TOKEN  0x5dd716fe…8e3539  "NVDA"  updates 0  NOT_IN_ISSUER_LIST CODE_HASH_DIFFERS BEACON_DIFFERS TICKER_SAME_AS_ISSUER_TOKEN NAME_SAME_AS_ISSUER_TOKEN NAME_ENDS_LIKE_ISSUER_TOKEN
-[USER LOG] ISSUER_TOKEN      0x5e812136…459786  "TTWO"  updates 0  IN_ISSUER_LIST CODE_HASH_MATCHES BEACON_MATCHES FACTORY_LOG_NAMES_TOKEN TICKER_MATCHES_LIST
 [USER LOG] NOT_ISSUER_TOKEN  0x5fc5360d…f1d168  "USDG"  updates 0  USDG_ADDRESS
-[USER LOG] NOT_ISSUER_TOKEN  0x623613c0…1186e0  "USDG"  updates 0  NOT_IN_ISSUER_LIST CODE_HASH_DIFFERS BEACON_DIFFERS TICKER_OR_NAME_READS_AS_USDG
 … 8 more rows of the same form
-[USER LOG] RESULT: 12 tokens at block 88095615, 3 the issuer's, 9 not
-[USER LOG] batch hash 0xb0322a58…41c97d (keccak256 of the canonical JSON of the rows)
-[USER LOG] batch hash written to 0xF49b4F21…016550 on robinhood-testnet, tx 0x1aaea557aad9af3d2a8129523ff0ca0aca62532bb254d2be19b2b13ed08f9842
+[USER LOG] RESULT: 12 tokens at block 88225072, 3 the issuer's, 9 not
+[USER LOG] batch hash 0x2add686a…288d94 (keccak256 of the canonical JSON of the rows)
+[USER LOG] batch hash written to 0xF49b4F21…016550 on robinhood-testnet, tx 0xf580989891b9050e23fff002fab8090a627d287f0fba8d3162ef613b10b439f2
 ```
 
-The write is [`0x1aaea557…8f9842`](https://explorer.testnet.chain.robinhood.com/tx/0x1aaea557aad9af3d2a8129523ff0ca0aca62532bb254d2be19b2b13ed08f9842?tab=logs) on Robinhood Testnet.
+The write is [`0xf5809898…b439f2`](https://explorer.testnet.chain.robinhood.com/tx/0xf580989891b9050e23fff002fab8090a627d287f0fba8d3162ef613b10b439f2?tab=logs) on Robinhood Testnet.
 
 **rwa-verify**, the record the agent bought against its anchor on Robinhood Chain.
 
@@ -223,19 +241,19 @@ From [`docs/simulate-match.txt`](docs/simulate-match.txt), saved 2026-10-08. The
 <!-- CRE_SIMULATE:END -->
 
 <!-- CRE_NUMBERS:BEGIN -->
-**What `token-check` has checked so far.** 82 tokens that moved in the walk, in 9 CRE runs, the last at Robinhood Chain block 88102077.
+**What `token-check` has checked so far.** 143 tokens that moved in the walk, in 15 CRE runs, the last at Robinhood Chain block 88226518.
 
 | What | Count |
 |---|---|
-| the issuer's Stock Tokens, every mark confirmed from the chain (the list, the code hash, the beacon, the factory's log) | 42 |
+| the issuer's Stock Tokens, every mark confirmed from the chain (the list, the code hash, the beacon, the factory's log) | 51 |
 | of them with a share multiplier update logged | 16 |
-| not the issuer's | 40 |
+| not the issuer's | 92 |
 | of them USDG itself | 1 |
-| of them at an address outside the list with the ticker or the name of a listed Stock Token | 3 |
-| of them at an address outside the list whose ticker or name reads as USDG (8 with invisible characters) | 31 |
-| of them at an address outside the list with no mark of a listed token | 5 |
+| of them at an address outside the list with the ticker or the name of a listed Stock Token | 12 |
+| of them at an address outside the list whose ticker or name reads as USDG (26 with invisible characters) | 55 |
+| of them at an address outside the list with no mark of a listed token | 24 |
 
-Each run wrote the hash of its rows in a `TokenBatchChecked` event ([run 1](https://explorer.testnet.chain.robinhood.com/tx/0xfa386a44268705425cc52115bf63badd8106e3e39ffc3b14c63eee71095eb77d?tab=logs), [run 2](https://explorer.testnet.chain.robinhood.com/tx/0xdbef8b0aeca1820e4a191c2f90edac9ccaf3be2d78ea28c711107fd96c518336?tab=logs), [run 3](https://explorer.testnet.chain.robinhood.com/tx/0x6cd511c78b0045af18171246be1d7ca8b92d2ec5e41b5aaf817e2c820fe3357e?tab=logs), [run 4](https://explorer.testnet.chain.robinhood.com/tx/0x1aaea557aad9af3d2a8129523ff0ca0aca62532bb254d2be19b2b13ed08f9842?tab=logs), [run 5](https://explorer.testnet.chain.robinhood.com/tx/0xf7b7484378d166b7b9d4b2ffbe97708fa3ddb1545c4e7d5c053b7cb2ef15fcb6?tab=logs), [run 6](https://explorer.testnet.chain.robinhood.com/tx/0xf04a9faefa83c3be99e70e902178e005a101fe50f471d795f5294c4a5609b320?tab=logs), [run 7](https://explorer.testnet.chain.robinhood.com/tx/0x3868b8e9d9bda1c340ce37c74eba35acbcee1ba00d2d55ce73f65db2446f4ae4?tab=logs), [run 8](https://explorer.testnet.chain.robinhood.com/tx/0x2b10033e7bf929064879346b65fd2dde82b45f429838375c3146eb64722eebb3?tab=logs), [run 9](https://explorer.testnet.chain.robinhood.com/tx/0x14338fa3c55cdf79c8238bcea3621a0828c59b3a1983d86d546b87e3bf9e2bea?tab=logs)). One more run read those receipts back over the EVM capability and wrote `keccak256(results.json)` = `0x7d0ef983…ba0e41` in [`0x175bf12a…3fdb08`](https://explorer.testnet.chain.robinhood.com/tx/0x175bf12ad77fd67d73490333b04ad1cc4c0c66d1ea7844836219f504a33fdb08?tab=logs), to `TokenCheckReceiver` on Robinhood Testnet. Every decision of the walk names that file by the same hash. `node token-check/recheck.mjs` reads every row again over plain JSON-RPC, with no CRE and no code shared with the workflow. Its last line: `RECHECK: 82 of 82 rows agree, 0 differ; state read at the checked block for 0, as it is now for 82; 0 problems with the onchain trail; 712 RPC requests`. The codes say what was read. None of them says who made a token or why.
+Each run wrote the hash of its rows in a `TokenBatchChecked` event ([run 1](https://explorer.testnet.chain.robinhood.com/tx/0xda1a216baab1af12ccc41a92be94d7c6558a8abd1396b7aa06ea77d9fc9b1929?tab=logs), [run 2](https://explorer.testnet.chain.robinhood.com/tx/0x1b629f69f76bfc82ee050d90990c2bd55a7ba3c866a28d4e1a0eddc46b7719c3?tab=logs), [run 3](https://explorer.testnet.chain.robinhood.com/tx/0x5a056b974b3648747c236dfe58f5fd6c849d955d70e86431d028093346f8f373?tab=logs), [run 4](https://explorer.testnet.chain.robinhood.com/tx/0xbcc95f7cb393854cc5e5b0562466dc778d3cf92d4d9eeb896b6177f3baa58d25?tab=logs), [run 5](https://explorer.testnet.chain.robinhood.com/tx/0x189e0eb9900d602c71adec6a0a8d1ac52fe92bc6d5e14c2de632f9e745c1abf3?tab=logs), [run 6](https://explorer.testnet.chain.robinhood.com/tx/0x021ae09aadf4517a3d880dd55e69648e68c4edfa21cc8242c198a9070a8cb546?tab=logs), [run 7](https://explorer.testnet.chain.robinhood.com/tx/0xf580989891b9050e23fff002fab8090a627d287f0fba8d3162ef613b10b439f2?tab=logs), [run 8](https://explorer.testnet.chain.robinhood.com/tx/0xc9ba3818f454796da12a5b6efd1074f1c3470dcd50cb52671014993ece89d616?tab=logs), [run 9](https://explorer.testnet.chain.robinhood.com/tx/0x83b8ed7206c3359d489b9359937876fb6e8dcbe3682263c680549204bf83adf9?tab=logs), [run 10](https://explorer.testnet.chain.robinhood.com/tx/0xaae6dad2b49ceda82c1bf4ff797ab8b7743f14ef2922f7d491d67ca6ccc84c2b?tab=logs), [run 11](https://explorer.testnet.chain.robinhood.com/tx/0xe46ea6a7a70441c60f6d837caa88171f77fc949ff7487de64f9962df71a04298?tab=logs), [run 12](https://explorer.testnet.chain.robinhood.com/tx/0x694ddb03aeb9b49ef4d8b99c358d3173fa661527de8748f7aef12ac09039c49e?tab=logs), [run 13](https://explorer.testnet.chain.robinhood.com/tx/0x977bb55a90a6257287d4e99de3a2c3ee6ff77ec3cff84755b921be4ccbc39994?tab=logs), [run 14](https://explorer.testnet.chain.robinhood.com/tx/0xae8bb10664177f9ea48a9e3a523a6628a9d32cccc5267c64eba52755d4664a5b?tab=logs), [run 15](https://explorer.testnet.chain.robinhood.com/tx/0xb5a2fb15bb5a9a4314535de154fad69f0400472e6d7811743c25d731eb11abe2?tab=logs)). One more run read those receipts back over the EVM capability and wrote `keccak256(results.json)` = `0xe2fcacc3…535975` in [`0x2328a939…1225af`](https://explorer.testnet.chain.robinhood.com/tx/0x2328a9398ddf7ad80aa7a1149bc4417cfb57783c57be6e095d44f0df311225af?tab=logs), to `TokenCheckReceiver` on Robinhood Testnet. Every decision of the walk names that file by the same hash. `node token-check/recheck.mjs` reads every row again over plain JSON-RPC, with no CRE and no code shared with the workflow. Its last line: `RECHECK: 143 of 143 rows agree, 0 differ; state read at the checked block for 143, as it is now for 0; 0 problems with the onchain trail; 1001 RPC requests`. The codes say what was read. None of them says who made a token or why.
 <!-- CRE_NUMBERS:END -->
 
 ### The bounty text, line by line
@@ -279,9 +297,9 @@ The last column holds only times read from saved runs on this machine: the simul
 
 | Before | Here | What changes | Measured |
 |---|---|---|---|
-| A person opens a block explorer and compares a token's contract with the issuer's list by eye, if they think of it | `token-check` reads the code hash, the beacon and the official list from the chain | the check runs before the agent acts and returns a reason code a machine can read | 8 s for 12 tokens at one block ([`batch-4.cre.txt`](docs/token-check/batch/batch-4.cre.txt)) |
+| A person opens a block explorer and compares a token's contract with the issuer's list by eye, if they think of it | `token-check` reads the code hash, the beacon and the official list from the chain | the check runs before the agent acts and returns a reason code a machine can read | 6 s for 12 tokens at one block ([`batch-7.cre.txt`](docs/token-check/batch/batch-7.cre.txt)) |
 | A reader trusts the site that shows a wallet's record | `rwa-verify` recomputes the record's hash and reads its anchor | MATCH or MISMATCH with one bit per failed check, as an event | 3 s ([`docs/simulate-match.txt`](docs/simulate-match.txt)) |
-| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 88 to 106 s for `node verify.mjs` on this walk, 5 runs back to back on 2026-10-14, each RESULT: MATCH ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)). Most of it is waiting on the public RPC |
+| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 11 to 12 s for `node verify.mjs --quick`, 153 to 232 s for `node verify.mjs` on this walk, 5 runs back to back on 2026-10-14, each RESULT: MATCH ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)). Most of it is waiting on the public RPC |
 <!-- CHANGES:END -->
 
 ### Why CRE
@@ -334,7 +352,7 @@ RYO-CHAN protects investors with an anti-rug scanner. copy-guard does a neighbou
 | Multi-KOL Narrative Agent (the spotlight) | Not attempted. There is no X, Discord or Telegram input |
 
 <!-- WALLETS:BEGIN -->
-The walk follows 40 wallets in 3 groups, and every count is kept per group. The 19 selected wallets were ranked by what the official venues sent them of Stock Tokens, largest first, over 30 days, and picked by that rule, not by hand. 20 more are observed apart: the first buyers of a token with the ticker SPY at an address the issuer did not list. One demo wallet is in the walk too, the only one vet402 has anchored a record for. The rule, the window and every purchase counted are in [`docs/walk/selection.json`](docs/walk/selection.json). copy-guard opened 18 positions following the selected wallets, on purchases of 3,995.44 to 446,442.61 USD (median 49,700.15 USD) and 36 positions following the wallets observed buying the other SPY, on purchases of 0.21 to 0.48 USD (median 0.36 USD).
+The walk follows 51 wallets in 3 groups, and every count is kept per group. The 30 selected wallets were ranked by what they received of Stock Tokens from the official venues, directly or through one of 3 routers (Uniswap SwapRouter02, Uniswap UniversalRouter and a router measured on the chain), largest first, over 30 days, and picked by that rule, not by hand. 10 of the transfers counted came through a router. 20 more are observed apart: the first buyers of a token with the ticker SPY at an address the issuer did not list. One demo wallet is in the walk too, the only one vet402 has anchored a record for. The rule, the window and every purchase counted are in [`docs/walk/selection.json`](docs/walk/selection.json). copy-guard opened 212 positions following the selected wallets, on purchases of 5.75 to 144,454.24 USD (median 3,295.74 USD) and 24 positions following the wallets observed buying the other SPY, on purchases of 0.22 to 0.48 USD (median 0.40 USD).
 <!-- WALLETS:END -->
 
 ### The practice ledger
@@ -347,53 +365,54 @@ The walk follows 40 wallets in 3 groups, and every count is kept per group. The 
 Both enter a Stock Token at the Chainlink feed's value at the block of the move and leave by the same exit rules: the copied wallet sells or sends the token, the feed crosses the stop loss or the take profit, or the time limit passes. Whatever is still open is marked at the feed's last value.
 
 <!-- LEDGER:BEGIN -->
-Walked 2026-10-14 05:09 UTC, marked at Robinhood Chain block 88105125. Moves from 2026-08-07 02:02 UTC to 2026-10-14 03:51 UTC.
+Walked 2026-10-14 08:40 UTC, marked at Robinhood Chain block 88230479. Moves from 2026-07-16 09:58 UTC to 2026-10-14 03:51 UTC.
 
-**What each book did with the same 4200 moves**
+**What each book did with the same 8396 moves**
 
 | | copy-guard | Ticker copy |
 |---|---|---|
-| Practice positions opened | 54 (full size 0, reduced size 54) | 230 |
-| Of them in a token under a listed ticker at an address the issuer did not list | 0 | 20, in 1 token |
-| Declined, each with a reason | 4146 | 0. It has no rule to decline by |
-| Closed / still open at the mark | 53 / 1 | 204 / 26 |
+| Practice positions opened | 236 (full size 0, reduced size 236) | 1565 |
+| Of them in a token under a listed ticker at an address the issuer did not list | 0 | 24, in 4 tokens |
+| Declined, each with a reason | 8160 | 0. It has no rule to decline by |
+| Closed / still open at the mark | 229 / 7 | 1523 / 42 |
 
 **The same moves by group of wallets.** The groups were chosen in different ways, so each is shown apart and the totals above are only their sum.
 
 | Group | Wallets | Moves | copy-guard opened | Declined | Most in one wallet | Purchases it followed | Ticker copy opened | Of them in other tokens |
 |---|---|---|---|---|---|---|---|---|
-| Selected: the largest buyers | 19 | 3897 | 18 | 3879 | 18 of 18 (100%) | 3,995.44 to 446,442.61 USD, median 49,700.15 USD | 107 | 0 |
-| Observed: buyers of the other SPY | 20 | 210 | 36 | 174 | 5 of 36 (14%) | 0.21 to 0.48 USD, median 0.36 USD | 76 | 20 |
-| Demo wallet | 1 | 93 | 0 | 93 | none | none | 47 | 0 |
+| Selected: the largest buyers | 30 | 8093 | 212 | 7881 | 81 of 212 (38%) | 5.75 to 144,454.24 USD, median 3,295.74 USD | 1433 | 4 |
+| Observed: buyers of the other SPY | 20 | 210 | 24 | 186 | 4 of 24 (17%) | 0.22 to 0.48 USD, median 0.40 USD | 76 | 20 |
+| Demo wallet | 1 | 93 | 0 | 93 | none | none | 56 | 0 |
 
-All 18 positions copy-guard opened for the selected wallets follow one wallet, 0xb712…bc5c, so that group's result is one wallet's result. Of the 36 positions copy-guard opened for the wallets observed buying the other SPY, the busiest wallet, 0x63e1…0986, has 5 (14%).
+Of the 212 positions copy-guard opened for the selected wallets, the busiest wallet, 0x30ce…6576, has 81 (38%). Of the 24 positions copy-guard opened for the wallets observed buying the other SPY, the busiest wallet, 0xa634…05fd, has 4 (17%).
 
 **The same positions at one size, 25.00 USD each**, so that size cannot make the difference.
 
 | | Positions | Put in | Result at the exit or the mark |
 |---|---|---|---|
-| Opened by both books, following the selected wallets | 18 | 450.00 USD | 4.29 USD |
-| Opened by both books, following the wallets observed buying the other SPY | 36 | 900.00 USD | 1.75 USD |
-| Opened by both books, all groups | 54 | 1350.00 USD | 6.04 USD, the same in both books |
-| Opened by the ticker copy only, in Stock Tokens | 156 | 3900.00 USD | 24.43 USD |
-| Opened by the ticker copy only, in other tokens under a listed ticker | 20 | 500.00 USD | 20 positions measured at the pool's own price: -460.61 USD |
+| Opened by both books, following the selected wallets | 212 | 5300.00 USD | 26.60 USD |
+| Opened by both books, following the wallets observed buying the other SPY | 24 | 600.00 USD | 0.02 USD |
+| Opened by both books, all groups | 236 | 5900.00 USD | 26.62 USD, the same in both books |
+| Opened by the ticker copy only, in Stock Tokens | 1305 | 32625.00 USD | 48.01 USD |
+| Opened by the ticker copy only, in other tokens under a listed ticker | 24 | 600.00 USD | 21 positions measured at the pool's own price: -480.55 USD. 3 positions not measured |
 
 **How each token reached the wallet.** Every move is one of these kinds, read from the transaction alone ([`docs/walk/SELECTION.md`](docs/walk/SELECTION.md), section 2). Stock Tokens are counted per incoming token, the books per decision.
 
 | How it arrived | What that means | Incoming Stock Tokens | Moves in other tokens under a listed ticker | copy-guard opened | Ticker copy opened |
 |---|---|---|---|---|---|
-| bought at an official venue | The wallet paid, and the Uniswap v4 PoolManager or an official v3 pool put the token out. | 263 | 20 | 54 | 230 |
-| swapped for another Stock Token | Another Stock Token left the wallet in the same transaction. | 0 | 0 | 0 | 0 |
-| part of a liquidity operation | A liquidity log is in the transaction. | 2872 | 0 | 0 | 0 |
-| swapped in, not paid by the wallet | An official venue put it out, and the payment did not leave this wallet. | 0 | 0 | 0 | 0 |
-| sent to the wallet | No official venue put it out and the wallet paid nothing for it: a transfer, an airdrop or a bridge delivery. | 283 | 36 | 0 | 0 |
-| left the wallet | A sale or a transfer out. | 718 | 8 | 0 | 0 |
+| bought at an official venue | The wallet paid, and the Uniswap v4 PoolManager or an official v3 pool put the token out. | 1184 | 22 | 236 | 1019 |
+| bought outside the official venues | The wallet paid for it, and no official venue put it out. copy-guard does not follow this, because rule V1 asks for an official venue. A ticker copy follows it. | 565 | 2 | 0 | 546 |
+| swapped for another Stock Token | Another Stock Token left the wallet in the same transaction. | 3 | 0 | 0 | 0 |
+| part of a liquidity operation | A liquidity log is in the transaction. | 2217 | 0 | 0 | 0 |
+| swapped in, not paid by the wallet | An official venue put it out, and the payment did not leave this wallet. | 5 | 0 | 0 | 0 |
+| sent to the wallet | No official venue put it out and the wallet paid nothing for it: a transfer, an airdrop or a bridge delivery. | 263 | 75 | 0 | 0 |
+| left the wallet | A sale or a transfer out. | 4029 | 37 | 0 | 0 |
 
 These are practice (paper) positions on past public moves. The tables are not a forecast and not a track record. A position in a token that is not the issuer's is valued only where the price of its own pool could be read from public logs. Otherwise it is listed as not measured and left out of every sum. Nothing is assumed to be worth zero. A pool value compares the pool's last swap with the swap the wallet bought in. It leaves out the move of the pool's other asset in USD, and it does not say that a position of that size could have been sold there.
 
-No move reached the full size in this walk. No position, by leading reason: a liquidity operation, not a purchase (2216), a sale or a transfer out, not a purchase (716), a moved token the agent cannot name (659), sent to the wallet, not bought by it (282), wallet not in profit (121), no Chainlink price at the block (53), not USDG, a different token with the same ticker (41), daily limit reached (21), not the Stock Token SPY, a different token with the same ticker (20), position limit reached (14), not the Stock Token NVDA, a different token with the same ticker (3).
+No move reached the full size in this walk. No position, by leading reason: a sale or a transfer out, not a purchase (3983), a liquidity operation, not a purchase (2213), wallet not in profit (603), bought outside the official Uniswap pools (565), sent to the wallet, not bought by it (254), no Chainlink price at the block (187), position limit reached (148), not USDG, a different token with the same ticker (93), a moved token the agent cannot name (58), not the Stock Token SPY, a different token with the same ticker (20), daily limit reached (10), not the Stock Token NVDA, a different token with the same ticker (10), not the Stock Token WTSM, a different token with the same ticker (6), one Stock Token exchanged for another, not a purchase (3), not the Stock Token NET, a different token with the same ticker (2), not the Stock Token WMETA, a different token with the same ticker (2), not the Stock Token FLY, a different token with the same ticker (1), not the Stock Token GME, a different token with the same ticker (1), not the Stock Token IBM, a different token with the same ticker (1).
 
-The Merkle root of all 4200 decisions is `0x08050cbff7c889dd21d0864ce242a479040035d892275e919f684b0a6cfb4040`. It is in one `LedgerAnchored` event on Robinhood Testnet: [`0x109ada37…e201d0`](https://explorer.testnet.chain.robinhood.com/tx/0x109ada373e1c23c912dfea0d7ba3a47725e469b22f5fad4be9bdb3b68ce201d0?tab=logs).
+The Merkle root of all 8396 decisions is `0x0829cd645caa979dbf725c34f519634060b4c116a71b10b25d5afb2848d8e3c1`. It is in one `LedgerAnchored` event on Robinhood Testnet: [`0xb8f605d9…b76812`](https://explorer.testnet.chain.robinhood.com/tx/0xb8f605d9825e4b41da68990bfcdfab20538e1c62db41990b309a6ebf45b76812?tab=logs).
 <!-- LEDGER:END -->
 
 Each decision is one line of [`docs/walk/trails.jsonl.gz`](docs/walk/trails.jsonl.gz) (gzipped; `gunzip -k` gives `trails.jsonl`, and [`docs/verify/compressed.json`](docs/verify/compressed.json) keeps its sha256 from before it was gzipped): everything the rules read, every rule row, the size, the practice position with its exit, and a card. [`docs/ledger.json`](docs/ledger.json) holds the rows, both books and the totals. [`docs/index.html`](docs/index.html) carries the totals, both books and every decision that opened a position, and loads the other decisions from [`docs/rows/`](docs/rows/), one file per wallet, when they are asked for. `verify.mjs` rebuilds the ledger from the trails and the saved feed values, and checks that the page and `docs/rows/` hold exactly its rows.
@@ -407,7 +426,7 @@ A card reads like this. Every sentence is a fixed template filled with values fr
 > *Why.* This is not the Robinhood Stock Token NVDA. It is a different token at 0x5dd7…3539 with the same ticker, at an address the issuer did not list. The Stock Token NVDA is at 0xd060…9eec. The Chainlink CRE token-check workflow read it from the chain (NOT_IN_ISSUER_LIST, CODE_HASH_DIFFERS, BEACON_DIFFERS, TICKER_SAME_AS_ISSUER_TOKEN, NAME_SAME_AS_ISSUER_TOKEN, NAME_ENDS_LIKE_ISSUER_TOKEN). This says what the token is not. It says nothing about who made it or why.
 > *Suggested action.* copy-guard opened no position. No real trade was placed.
 >
-> Decision 2494 of the walk, move [`0x1b838f40…77b51b`](https://robinhoodchain.blockscout.com/tx/0x1b838f40a43d54b7ce3364f08f723516170be2d03fdbcd6ab801c79f7f77b51b) on 2026-09-27 12:52 UTC. 10 of 18 checks passed.
+> Decision 6000 of the walk, move [`0x1b838f40…77b51b`](https://robinhoodchain.blockscout.com/tx/0x1b838f40a43d54b7ce3364f08f723516170be2d03fdbcd6ab801c79f7f77b51b) on 2026-09-27 12:52 UTC. 11 of 18 checks passed.
 <!-- CARD:END -->
 
 ### One sentence, two values
@@ -438,7 +457,7 @@ The three headings below are the words the Blockchain Legal Institute uses for i
 The principal is an address. It is not a legal identity: nothing here ties that address to a named person or company, and nothing here is a registration.
 
 <!-- MANDATE:BEGIN -->
-**Mandate: sample, not yet signed by the principal.** This walk used `mandate/sample/mandate.json`. Its principal `0xbb62…f48d` is a testnet-only key that stands in for the principal. The mandate meant for signing, `mandate/mandate.json`, names `0x973c…6227` and has no signature yet, so no decision in this walk carries the principal's own signature. After that signature the walk is run again.
+**Mandate: sample, not yet signed by the principal.** This walk used `mandate/sample/mandate.json`. Its principal `0xbb62…f48d` is a testnet-only key that stands in for the principal. The mandate meant for signing, `mandate/mandate.json`, names `0x2FFb…AE9e` and has no signature yet, so no decision in this walk carries the principal's own signature. After that signature the walk is run again.
 <!-- MANDATE:END -->
 
 What the mandate allows and forbids, in its own words (`scope` in `mandate/mandate.json`):
@@ -491,42 +510,75 @@ The table separates things that a ticker-only view mixes up. A token can be sent
 <!-- OTHER_TOKENS:BEGIN -->
 | Ticker it carries | Contract | Name it carries | Moves in this walk | How it reached the wallet |
 |---|---|---|---|---|
-| SPY | [`0x69e7…6219`](https://robinhoodchain.blockscout.com/address/0x69e7778d46713e17572d610bdaca3943aa4e6219) | "" | 20 | bought by the wallet, which signed and paid |
-| USDG | [`0x2ce3…77af`](https://robinhoodchain.blockscout.com/address/0x2ce3e396e069ac9fa62046f423267072e06e77af) | "Global Dollar" | 3 | sent to the wallet, which did not sign |
-| USDG | [`0x0ef3…09c0`](https://robinhoodchain.blockscout.com/address/0x0ef3fccbc4c73be8bb14411cfe801df141e309c0) | "Global Dollar" | 2 | sent to the wallet, which did not sign |
-| USDG | [`0x36f4…4be2`](https://robinhoodchain.blockscout.com/address/0x36f4d7f0fa5c7348416282e04380ddff30ca4be2) | "Global Dollar" | 2 | sent to the wallet, which did not sign |
-| USDG | [`0x42b4…53c2`](https://robinhoodchain.blockscout.com/address/0x42b4fa90438ecb1a0c2676ff25a9f27355dd53c2) | "global dollar" | 2 | sent to the wallet, which did not sign |
-| USDG | [`0x42e1…f160`](https://robinhoodchain.blockscout.com/address/0x42e140c4b439c42dc01aa29be1fce2bc64d7f160) | "Global Dollar" | 2 | sent to the wallet, which did not sign |
-| USDG | [`0x5411…56a2`](https://robinhoodchain.blockscout.com/address/0x5411257cedf60bc40f4bead410bf8d02079056a2) | "United States Global Dollar" | 2 | sent to the wallet, which did not sign |
+| SPY | [`0x69e7…6219`](https://robinhoodchain.blockscout.com/address/0x69e7778d46713e17572d610bdaca3943aa4e6219) | "Spy Chip" | 20 | bought by the wallet, which signed and paid |
+| USDG | [`0xec90…4a3e`](https://robinhoodchain.blockscout.com/address/0xec90adc7157d68d9213a88627b66956950374a3e) | "United States Global Dollars Gold" | 8 | sent to the wallet, which did not sign |
+| WTSM | [`0x17ca…0c06`](https://robinhoodchain.blockscout.com/address/0x17ca67ae8a0f0efe55b58721114f908903a40c06) | "Wrapped Taiwan Semiconductor Manufacturing • Robinhood Token" | 6 | bought by the wallet outside the official venues (1), a log names the wallet as the sender, and the wallet did not sign (5) |
+| USDG | [`0x2ce3…77af`](https://robinhoodchain.blockscout.com/address/0x2ce3e396e069ac9fa62046f423267072e06e77af) | "Global Dollar" | 5 | sent to the wallet, which did not sign |
+| USDG | [`0x1383…b1ca`](https://robinhoodchain.blockscout.com/address/0x1383b43aed527485f191b60060f5b5471f71b1ca) | "Global Dollar" | 4 | sent to the wallet, which did not sign |
+| USDG | [`0x650b…6eb0`](https://robinhoodchain.blockscout.com/address/0x650bf9154edfb41ad65e316be31fe489ccc76eb0) | "United States Global Dollars Gold" | 4 | sent to the wallet, which did not sign |
+| NVDA | [`0xa328…0f2c`](https://robinhoodchain.blockscout.com/address/0xa3284897ad7c8fed700b04f573cf64e4f6c10f2c) | "NVIDIA Robinhood Token" | 4 | sent to the wallet, which did not sign |
+| USDG | [`0xc641…ad13`](https://robinhoodchain.blockscout.com/address/0xc6417224f693a0d8bf612bc6d7dcbbc268d5ad13) | "Global Dolar" | 4 | sent to the wallet, which did not sign |
+| USDG | [`0xd6b8…a7e5`](https://robinhoodchain.blockscout.com/address/0xd6b8cecde770507fc46cde7ea82dde383ed7a7e5) | "Global Dollar" | 4 | sent to the wallet, which did not sign |
+| USDG | [`0x2504…150c`](https://robinhoodchain.blockscout.com/address/0x2504cc3b84585a5cdf88f4c4f50b2afe9181150c) | "Global Dollar United Only" | 3 | sent to the wallet, which did not sign |
+| USDG | [`0x5411…56a2`](https://robinhoodchain.blockscout.com/address/0x5411257cedf60bc40f4bead410bf8d02079056a2) | "United States Global Dollar" | 3 | sent to the wallet, which did not sign |
+| USDG | [`0x6236…86e0`](https://robinhoodchain.blockscout.com/address/0x623613c0e9211a7215b4fd4ab80656fcbd1186e0) | "Global Dollar" | 3 | sent to the wallet, which did not sign |
+| NVDA | [`0x22a6…1a51`](https://robinhoodchain.blockscout.com/address/0x22a68ae074150397c42d968ec050cd1ff3501a51) | "NVIDIA Robinhood Token" | 2 | sent to the wallet, which did not sign |
+| USDG | [`0x4190…a416`](https://robinhoodchain.blockscout.com/address/0x4190ee598c2a69d35bef53c83d152ae0f25ea416) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 2 | a log names the wallet as the sender, and the wallet did not sign |
+| USDG | [`0x4431…74af`](https://robinhoodchain.blockscout.com/address/0x44318785554bf11ffd164a6f98d9a453e2fa74af) | "United States Global Dollars" | 2 | sent to the wallet, which did not sign |
+| USDG | [`0x4ff7…b792`](https://robinhoodchain.blockscout.com/address/0x4ff7f19a6c4c7ebcba25248610dbe642bbd0b792) | "Global Dollar" | 2 | sent to the wallet, which did not sign |
 | NVDA | [`0x5dd7…3539`](https://robinhoodchain.blockscout.com/address/0x5dd716fe12275b69f04b26beeca343843c8e3539) | "NVIDIA Robinhood Coin" | 2 | sent to the wallet, which did not sign |
-| USDG | [`0xa913…85c0`](https://robinhoodchain.blockscout.com/address/0xa913c4c2f28aa7b0b15a7c6008a6e19ff8bf85c0) | "Global Dollar" | 2 | sent to the wallet, which did not sign |
-| USDG | [`0xc641…ad13`](https://robinhoodchain.blockscout.com/address/0xc6417224f693a0d8bf612bc6d7dcbbc268d5ad13) | "Global Dolar " | 2 | sent to the wallet, which did not sign |
-| USDG | [`0xd6b8…a7e5`](https://robinhoodchain.blockscout.com/address/0xd6b8cecde770507fc46cde7ea82dde383ed7a7e5) | "Global Dollar" | 2 | sent to the wallet, which did not sign |
+| USDG | [`0x6425…7936`](https://robinhoodchain.blockscout.com/address/0x642565e604cf64ca49098505e2b9d2fffec77936) | "Global Dollars" | 2 | sent to the wallet, which did not sign |
+| USDG | [`0x67f4…b8b2`](https://robinhoodchain.blockscout.com/address/0x67f438bd18131f152b6387083628e8eeaa5fb8b2) | "Global Dollar" | 2 | sent to the wallet, which did not sign |
+| USDG | [`0x88a3…f83e`](https://robinhoodchain.blockscout.com/address/0x88a3443d54bffb1f221bcdfb5561c023533df83e) | "U⟨U+206F⟩S⟨U+206F⟩DG" | 2 | a log names the wallet as the sender, and the wallet did not sign |
+| USDG | [`0x9909…0a3e`](https://robinhoodchain.blockscout.com/address/0x9909c4e8cae5ada810c7297943ae767f87d00a3e) | "Global Dollar" | 2 | sent to the wallet, which did not sign |
+| USDG | [`0xa581…7d82`](https://robinhoodchain.blockscout.com/address/0xa581f3c3c071215f60494c6cef072b001c1d7d82) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 2 | a log names the wallet as the sender, and the wallet did not sign |
+| WMETA | [`0xc9d2…c17f`](https://robinhoodchain.blockscout.com/address/0xc9d244ae176436f96279159b2d91d3e4f830c17f) | "Wrapped Meta Platforms • Robinhood Token" | 2 | bought by the wallet outside the official venues (1), a log names the wallet as the sender, and the wallet did not sign (1) |
+| NET | [`0xca9c…0edf`](https://robinhoodchain.blockscout.com/address/0xca9c78dd337a67f6e0077f65f5e9218719d30edf) | "NetNet" | 2 | bought by the wallet, which signed and paid |
+| USDG | [`0xcb07…92e0`](https://robinhoodchain.blockscout.com/address/0xcb071fc69e4aebd512387316578752e5c20b92e0) | "U⟨U+206F⟩S⟨U+206F⟩DG" | 2 | a log names the wallet as the sender, and the wallet did not sign |
 | USDG | [`0x0c95…b1f7`](https://robinhoodchain.blockscout.com/address/0x0c95df78d9f692beb3feaeceb2ef1e614513b1f7) | "United States Global Dollar" | 1 | sent to the wallet, which did not sign |
-| USDG | [`0x1dc8…9eb3`](https://robinhoodchain.blockscout.com/address/0x1dc878194328a96680c23b8d3c1186637b199eb3) | "United States Global Dollar" | 1 | sent to the wallet, which did not sign |
-| USDG | [`0x1ee1…1458`](https://robinhoodchain.blockscout.com/address/0x1ee1a8fcc194a4fcdbce10f958aea8a18e831458) | "US Global Dollar" | 1 | sent to the wallet, which did not sign |
+| USDG | [`0x0d74…4c23`](https://robinhoodchain.blockscout.com/address/0x0d74c7103c690d861efd539916fde2db6d604c23) | "U⟨U+206F⟩S⟨U+206F⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
+| USDG | [`0x0ef3…09c0`](https://robinhoodchain.blockscout.com/address/0x0ef3fccbc4c73be8bb14411cfe801df141e309c0) | "Global Dollar" | 1 | sent to the wallet, which did not sign |
+| USDG | [`0x10dd…acdb`](https://robinhoodchain.blockscout.com/address/0x10dd80c6f962eb071beed8433c7f3e68906eacdb) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
+| GME | [`0x1c8a…80f4`](https://robinhoodchain.blockscout.com/address/0x1c8a973a8788c4a57371bed1611830a83fd580f4) | "GameStop • Robinhood Token" | 1 | sent to the wallet, which did not sign |
 | USDG | [`0x22b1…d8d7`](https://robinhoodchain.blockscout.com/address/0x22b1137c0637bf8f7ac7fbcfa857604e4b89d8d7) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
-| USDG | [`0x2504…150c`](https://robinhoodchain.blockscout.com/address/0x2504cc3b84585a5cdf88f4c4f50b2afe9181150c) | "Global Dollar United Only" | 1 | sent to the wallet, which did not sign |
+| USDG | [`0x275f…1220`](https://robinhoodchain.blockscout.com/address/0x275fe81e2e5a8908f5cb7b5fa84d5b52680a1220) | "U⟨U+206F⟩S⟨U+206F⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
+| USDG | [`0x2775…7a58`](https://robinhoodchain.blockscout.com/address/0x2775c597f2500619993f5cdec034dff2dfe47a58) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
+| FLY | [`0x2fc7…b3d3`](https://robinhoodchain.blockscout.com/address/0x2fc7f9e2911f20b2c4660d2aef808aa91bddb3d3) | "Fly Trader" | 1 | sent to the wallet, which did not sign |
 | USDG | [`0x318f…b1a3`](https://robinhoodchain.blockscout.com/address/0x318f563dceddbe58625400d9f7ee27eecef5b1a3) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
 | USDG | [`0x38eb…1885`](https://robinhoodchain.blockscout.com/address/0x38ebf2ab30cbff745e2db10aa17b6aaaad001885) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
-| USDG | [`0x4190…a416`](https://robinhoodchain.blockscout.com/address/0x4190ee598c2a69d35bef53c83d152ae0f25ea416) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
-| USDG | [`0x4ff7…b792`](https://robinhoodchain.blockscout.com/address/0x4ff7f19a6c4c7ebcba25248610dbe642bbd0b792) | "Global Dollar" | 1 | sent to the wallet, which did not sign |
-| USDG | [`0x6236…86e0`](https://robinhoodchain.blockscout.com/address/0x623613c0e9211a7215b4fd4ab80656fcbd1186e0) | "Global Dollar" | 1 | sent to the wallet, which did not sign |
-| USDG | [`0x65ab…c0d5`](https://robinhoodchain.blockscout.com/address/0x65abeb15f2fed8cccf979c9429f517f937bdc0d5) | "Global Dollar" | 1 | sent to the wallet, which did not sign |
-| USDG | [`0x67f4…b8b2`](https://robinhoodchain.blockscout.com/address/0x67f438bd18131f152b6387083628e8eeaa5fb8b2) | "Global Dollar " | 1 | sent to the wallet, which did not sign |
+| USDG | [`0x3d1f…8b6e`](https://robinhoodchain.blockscout.com/address/0x3d1fef40fa8a20de967484436c8c527db9c78b6e) | "Global Dollar" | 1 | a log names the wallet as the sender, and the wallet did not sign |
+| USDG | [`0x42b4…53c2`](https://robinhoodchain.blockscout.com/address/0x42b4fa90438ecb1a0c2676ff25a9f27355dd53c2) | "global dollar" | 1 | sent to the wallet, which did not sign |
+| USDG | [`0x480b…d607`](https://robinhoodchain.blockscout.com/address/0x480be87734e52fbf56c089e1a4ddba6e5b39d607) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
+| USDG | [`0x56cb…19f5`](https://robinhoodchain.blockscout.com/address/0x56cb52174592a72c570bd9980e3879fd768519f5) | "Gelobal Dollar" | 1 | sent to the wallet, which did not sign |
+| USDG | [`0x5c28…b282`](https://robinhoodchain.blockscout.com/address/0x5c283587a8a10fc14b0f4b3212ef4de97520b282) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
+| USDG | [`0x5ead…89d6`](https://robinhoodchain.blockscout.com/address/0x5eadcaa49e6cc1b7157d9983e62f5ccee0de89d6) | "Global Dollar" | 1 | sent to the wallet, which did not sign |
+| IBM | [`0x6cfe…c10b`](https://robinhoodchain.blockscout.com/address/0x6cfe8050d64b02a21cf6cf2ef2a408489c86c10b) | "I Buy Memes" | 1 | sent to the wallet, which did not sign |
 | USDG | [`0x7116…78f1`](https://robinhoodchain.blockscout.com/address/0x711681d447e8f53ac228f20afad1e179ab5e78f1) | "UStates of Dollars Globals" | 1 | sent to the wallet, which did not sign |
 | NVDA | [`0x72ea…9d37`](https://robinhoodchain.blockscout.com/address/0x72ead0c700f07b645a8f91badd82be5c545b9d37) | "NVIDIA Robinhood Coin" | 1 | sent to the wallet, which did not sign |
 | USDG | [`0x73ac…c183`](https://robinhoodchain.blockscout.com/address/0x73acfc8352b6a9f0baacd02a266e58fde4b1c183) | "Global Dollar" | 1 | sent to the wallet, which did not sign |
+| NVDA | [`0x794a…0aea`](https://robinhoodchain.blockscout.com/address/0x794a9a5975da82745a7165a5b91d2d27e9820aea) | "N⟨U+17B5⟩V⟨U+17B5⟩DA" | 1 | a log names the wallet as the sender, and the wallet did not sign |
+| USDG | [`0x7fa6…08ac`](https://robinhoodchain.blockscout.com/address/0x7fa63d892faa245a91104873de0e79452cd208ac) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
 | USDG | [`0x8372…c3bc`](https://robinhoodchain.blockscout.com/address/0x83726b15b25013e95b56357c4795b848ab32c3bc) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
-| USDG | [`0x9909…0a3e`](https://robinhoodchain.blockscout.com/address/0x9909c4e8cae5ada810c7297943ae767f87d00a3e) | "Global Dollar" | 1 | sent to the wallet, which did not sign |
+| USDG | [`0x9128…38d3`](https://robinhoodchain.blockscout.com/address/0x91280d9474cc18931ff3d52a7cea9b0db52f38d3) | "U⟨U+206F⟩S⟨U+206F⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
+| USDG | [`0x94ed…1270`](https://robinhoodchain.blockscout.com/address/0x94ed49222ae2e604e0a4683fe08b92381b081270) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
+| USDG | [`0xa913…85c0`](https://robinhoodchain.blockscout.com/address/0xa913c4c2f28aa7b0b15a7c6008a6e19ff8bf85c0) | "Global Dollar" | 1 | sent to the wallet, which did not sign |
+| USDG | [`0xac13…51b1`](https://robinhoodchain.blockscout.com/address/0xac13348444e9fc0584eace3831970af2011951b1) | "Global Dollar" | 1 | sent to the wallet, which did not sign |
+| USDG | [`0xb4a2…d5ac`](https://robinhoodchain.blockscout.com/address/0xb4a2e4d7c9493a394ab8e48217d49e1808f7d5ac) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
+| USDG | [`0xbce7…8452`](https://robinhoodchain.blockscout.com/address/0xbce7482902952cf32807afa29928b00477948452) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
+| USDG | [`0xc237…52e0`](https://robinhoodchain.blockscout.com/address/0xc2378f126167c55b42ba4f49e012d0d9dcdf52e0) | "Global Dollar" | 1 | sent to the wallet, which did not sign |
 | USDG | [`0xc4f8…b4a3`](https://robinhoodchain.blockscout.com/address/0xc4f85cebec3fe6c77df0f71f3a3e139d43bbb4a3) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
-| USDG | [`0xcb07…92e0`](https://robinhoodchain.blockscout.com/address/0xcb071fc69e4aebd512387316578752e5c20b92e0) | "U⟨U+206F⟩S⟨U+206F⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
-| USDG | [`0xd9c6…2cf0`](https://robinhoodchain.blockscout.com/address/0xd9c6ee31275554006ca30abcde7b48188c4e2cf0) | "United Stables Digital Gold" | 1 | sent to the wallet, which did not sign |
+| USDG | [`0xd303…0ea2`](https://robinhoodchain.blockscout.com/address/0xd3033b5b57b255c66035a62237a9f9486ed10ea2) | "Global Dollar" | 1 | sent to the wallet, which did not sign |
+| USDG | [`0xd5f0…2e03`](https://robinhoodchain.blockscout.com/address/0xd5f018a09081d7f75b06b4a3f2afd9bcadc42e03) | "Global Dollars" | 1 | sent to the wallet, which did not sign |
 | USDG | [`0xdb81…66ef`](https://robinhoodchain.blockscout.com/address/0xdb81a12de6c0aebeddf2d85d531dd50cac7366ef) | "Globals Dollars" | 1 | sent to the wallet, which did not sign |
+| USDG | [`0xdfd0…9a53`](https://robinhoodchain.blockscout.com/address/0xdfd0e854387aef36022bcfc8972e68d8e1bd9a53) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
+| USDG | [`0xe3c5…6ff6`](https://robinhoodchain.blockscout.com/address/0xe3c500e3e183ea5ca2f0b0a7f8fc55ef914e6ff6) | "Global Dollar" | 1 | sent to the wallet, which did not sign |
 | USDG | [`0xe739…f288`](https://robinhoodchain.blockscout.com/address/0xe7391e4047c7e5d48f31cd2b87004c10e875f288) | "U⟨U+206F⟩S⟨U+206F⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
-| USDG | [`0xec90…4a3e`](https://robinhoodchain.blockscout.com/address/0xec90adc7157d68d9213a88627b66956950374a3e) | "United States Global Dollars Gold" | 1 | sent to the wallet, which did not sign |
+| USDG | [`0xed3f…6de0`](https://robinhoodchain.blockscout.com/address/0xed3fd1025aa318b8e66ca25aa2ddc83096086de0) | "US GLOBAL DOLAR" | 1 | sent to the wallet, which did not sign |
+| USDG | [`0xf2b7…14f1`](https://robinhoodchain.blockscout.com/address/0xf2b7ffb610269bdaec42ad983c401635e59814f1) | "U⟨U+206F⟩S⟨U+206F⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
+| USDG | [`0xf73e…4a15`](https://robinhoodchain.blockscout.com/address/0xf73eea2bf2f1bf06d676652700132d61feb74a15) | "U⟨U+17B5⟩S⟨U+17B5⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
+| USDG | [`0xfdbb…962a`](https://robinhoodchain.blockscout.com/address/0xfdbbdaa4d2d6cc9b6c2b8201acadf9371f91962a) | "U⟨U+206F⟩S⟨U+206F⟩DG" | 1 | a log names the wallet as the sender, and the wallet did not sign |
 
-34 tokens, 64 moves. The marks ⟨U+…⟩ stand for invisible characters in a name.
+67 tokens, 136 moves. The marks ⟨U+…⟩ stand for invisible characters in a name.
 <!-- OTHER_TOKENS:END -->
 
 A note on labels. The vet402 record and the frozen v1 rule file call such a token `fake` or a look-alike, and `token-check` returns `LOOKALIKE`. Those labels are statements about an address and the issuer's list.
