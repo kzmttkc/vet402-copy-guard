@@ -23,7 +23,13 @@ const verifyOut = maybe('docs/verify/verify-output.txt', read)
 const extra = {
 	showcase: ['0x0eac7685', '0x1b838f40', '0xf7cb51a2'],
 	anchor: maybe('docs/walk/anchor.json', json),
-	sample_mandate: sample !== null && keccak256(canonicalJson(sample)) === ledger.mandate.keccak,
+	// The same fact as ledger.mandate.status === 'sample', kept under its old name for the template.
+	sample_mandate: ledger.mandate.status === 'sample' || (sample !== null && keccak256(canonicalJson(sample)) === ledger.mandate.keccak),
+	mandate_status: ledger.mandate.status,
+	selection: maybe('docs/walk/selection.json', (p) => {
+		const s = json(p)
+		return { rule: s.rule, window: s.window, top: s.top, counts: s.counts, stop: s.stop, same_ticker_buyers: s.same_ticker_buyers ? { token: s.same_ticker_buyers.token, ticker: s.same_ticker_buyers.ticker, name: s.same_ticker_buyers.name, take: s.same_ticker_buyers.take, receivers: s.same_ticker_buyers.receivers } : null }
+	}),
 	verify: verifyOut ? verifyOut.trim().split('\n').slice(-2).join(' / ') : null,
 	token_check: maybe('docs/token-check/page-note.txt', (p) => read(p).trim()),
 }
