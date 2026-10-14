@@ -6,22 +6,12 @@
 // effectiveSpent (ledger and chain), payOnce (lock, pending entry before sending) and
 // permit2TypedData (120 s validity, witness.to pinned to the vet402 wallet). A gate that
 // asks for another payee, token, chain or price is refused before anything is signed.
-//
-// What the gate answers is not taken on its word. Before the verdict is used the agent
-// reads, itself: the RecordChecked event in the transaction the gate names on Robinhood
-// Testnet (it must come from the receiver pinned in this repo and carry exactly the
-// verdict the gate returned), and the Anchored log of the anchor on Robinhood Chain (the
-// hash the verdict calls "anchored" must be the one RwaAnchor holds). A verdict that
-// cannot be confirmed this way is dropped and the agent runs the same workflow itself.
-// Only a gate on this machine (localhost) may answer without a transaction.
 import { randomBytes } from 'node:crypto'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { createPublicClient, createWalletClient, type Hex, http, keccak256, toHex } from 'viem'
+import { createPublicClient, createWalletClient, type Hex, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { anchoredLogs, RWA_ANCHOR_ADDRESS, type RpcReceipt, summarizeRecord } from '../../rwa-verify/verify'
-import { httpRpc, RPC, type Rpc } from '../chain'
-import { REPO } from '../cre'
+import { httpRpc, RPC } from '../chain'
 import { chain, erc20 } from '../evm'
 import { effectiveSpent, payOnce, readChainSpend } from '../pay'
 import { type Terms, USDG } from '../rules'
@@ -36,100 +26,7 @@ export type GateVerdict = {
 	receiver: string
 }
 
-/** `verdict` is null when nothing was paid, or when what the gate answered could not be confirmed (`unconfirmed` says why). */
-export type GateExchange = { purchase: Purchase; terms: Terms; verdict: GateVerdict | null; unconfirmed?: string }
-
-// ---------------------------------------------------------------- confirming what the gate answered
-
-export const TESTNET_RPC = 'https://rpc.testnet.chain.robinhood.com'
-const TESTNET_CHAIN_ID = 46630
-/** keccak256 of the event RwaVerdictReceiver emits for one verdict. */
-export const RECORD_CHECKED_TOPIC = keccak256(toHex('RecordChecked(bytes32,bytes32,bool,uint32,bytes32,bytes32,uint64,uint64,bytes32,bytes10,address)'))
-const HASH32 = /^0x[0-9a-fA-F]{64}$/
-const ZERO32 = `0x${'0'.repeat(64)}`
-
-/** The receiver the agent trusts: the one in this repo's rwa-verify/config.json, never the one a gate names. */
-export function pinnedReceiver(): string {
-	return String(JSON.parse(readFileSync(join(REPO, 'rwa-verify/config.json'), 'utf8')).receiverAddress).toLowerCase()
-}
-
-/** A gate on this machine. Only such a gate may answer without a transaction. */
-export function isLocalGate(gateUrl: string): boolean {
-	try {
-		const h = new URL(gateUrl).hostname.toLowerCase()
-		return h === 'localhost' || h === '127.0.0.1' || h === '[::1]' || h === '::1'
-	} catch {
-		return false
-	}
-}
-
-export type ConfirmDeps = { testnet: Rpc; mainnet: Rpc; receiver: string }
-
-/**
- * Is the gate's answer the verdict that stands onchain? Returns null when it is, else the
- * reason it is not used.
- *
- *  1. The answer has the shape of a verdict, is about the anchor that was asked about, and
- *     is consistent with itself (MATCH means no reason bit and equal hashes).
- *  2. When the request carried the record inline, the agent hashes it itself: the
- *     recomputed hash must be the gate's.
- *  3. Robinhood Chain: the hash the verdict calls anchored is in an Anchored log of
- *     RwaAnchor in that anchor transaction.
- *  4. Robinhood Testnet: the transaction the gate names succeeded and holds a RecordChecked
- *     log of the pinned receiver with the same anchor, verdict, reason bits and hashes.
- *
- * The limit of 4: the receiver takes reports from CRE's simulation forwarder, which anyone
- * can call. So 4 proves that this verdict is committed in public where it can be disputed,
- * not that a DON produced it. 2 and 3 are the agent's own reads and do not depend on the gate.
- */
-export async function confirmVerdict(gateUrl: string, input: unknown, v: unknown, deps: ConfirmDeps): Promise<string | null> {
-	const asked = typeof (input as { tx?: unknown })?.tx === 'string' ? ((input as { tx: string }).tx.toLowerCase() as string) : null
-	if (!asked) return 'the request named no anchor transaction'
-	const r = (v as GateVerdict | null)?.result as GateVerdict['result'] | undefined
-	if (!v || typeof v !== 'object' || !r || typeof r !== 'object') return 'the answer is not a verdict'
-	if (r.verdict !== 'MATCH' && r.verdict !== 'MISMATCH') return 'the answer is neither MATCH nor MISMATCH'
-	if (!Number.isInteger(r.reasonBits) || r.reasonBits < 0) return 'the answer has no reason bits'
-	for (const h of [r.anchorTx, r.recomputedFactsHash, r.anchoredFactsHash]) if (typeof h !== 'string' || !HASH32.test(h)) return 'the answer is missing a hash'
-	const recomputed = r.recomputedFactsHash.toLowerCase()
-	const anchored = r.anchoredFactsHash.toLowerCase()
-	if (r.anchorTx.toLowerCase() !== asked) return `the answer is about anchor ${r.anchorTx}, the agent asked about ${asked}`
-	if ((r.verdict === 'MATCH') !== (r.reasonBits === 0)) return 'the verdict and its reason bits contradict each other'
-	if (r.verdict === 'MATCH' && (recomputed !== anchored || anchored === ZERO32)) return 'MATCH with hashes that are not equal'
-
-	const record = (input as { record?: unknown }).record
-	if (record !== undefined) {
-		// An unreadable record has no hash: the workflow reports zero for it, and so does the agent.
-		const own = summarizeRecord(record)
-		const ownHash = own.readable ? own.factsHash.toLowerCase() : ZERO32
-		if (ownHash !== recomputed) return `the agent hashes the record to ${ownHash}, the gate says ${recomputed}`
-	}
-
-	const anchorReceipt = (await deps.mainnet('eth_getTransactionReceipt', [asked])) as RpcReceipt
-	const onChain = anchoredLogs(anchorReceipt).filter((l) => l.address === RWA_ANCHOR_ADDRESS).map((l) => l.factsHash)
-	if (r.verdict === 'MATCH' && anchorReceipt?.status !== '0x1') return 'MATCH, but the anchor transaction did not succeed on Robinhood Chain'
-	if (anchored !== ZERO32 && !onChain.includes(anchored)) return `RwaAnchor holds ${onChain.join(', ') || 'no hash'} in that transaction, the gate says ${anchored}`
-
-	const tx = (v as GateVerdict).verdict_tx
-	if (tx === null || tx === undefined) return isLocalGate(gateUrl) ? null : 'the gate named no transaction for its verdict, and it is not on this machine'
-	if (typeof tx !== 'string' || !HASH32.test(tx)) return 'verdict_tx is not a transaction hash'
-	if (Number(BigInt((await deps.testnet('eth_chainId', [])) as string)) !== TESTNET_CHAIN_ID) return 'the testnet RPC is not Robinhood Testnet'
-	const receipt = (await deps.testnet('eth_getTransactionReceipt', [tx])) as { status?: string; logs?: { address: string; topics: string[]; data: string }[] } | null
-	if (!receipt || receipt.status !== '0x1') return `${tx} is not a successful transaction on Robinhood Testnet`
-	const word = (data: string, i: number) => `0x${data.slice(2 + 64 * i, 2 + 64 * (i + 1))}`.toLowerCase()
-	const found = (receipt.logs ?? []).some(
-		(l) =>
-			l.address.toLowerCase() === deps.receiver &&
-			l.topics.length === 4 &&
-			l.topics[0].toLowerCase() === RECORD_CHECKED_TOPIC &&
-			l.topics[1].toLowerCase() === asked &&
-			BigInt(l.topics[3]) === (r.verdict === 'MATCH' ? 1n : 0n) &&
-			l.data.length >= 2 + 64 * 3 &&
-			BigInt(word(l.data, 0)) === BigInt(r.reasonBits) &&
-			word(l.data, 1) === recomputed &&
-			word(l.data, 2) === anchored,
-	)
-	return found ? null : `${tx} holds no RecordChecked log of ${deps.receiver} with this anchor, verdict, reason bits and hashes`
-}
+export type GateExchange = { purchase: Purchase; terms: Terms; verdict: GateVerdict | null }
 
 export type GateOpts = {
 	pay: boolean
@@ -144,8 +41,6 @@ export type GateOpts = {
 	perDecisionAtomic: bigint
 	timeoutMs: number
 	say: (s: string) => void
-	/** Test seam: how the agent reads the two chains to confirm the gate's answer. Default: the public RPCs and the pinned receiver. */
-	confirm?: ConfirmDeps
 }
 
 export async function payGate(gateUrl: string, input: unknown, o: GateOpts): Promise<GateExchange> {
@@ -252,22 +147,9 @@ export async function payGate(gateUrl: string, input: unknown, o: GateOpts): Pro
 	)
 	if (result.httpStatus !== 200) throw new Error(`the gate answered ${result.httpStatus} (${result.outcome.status}); see x402-gate-paid.json`)
 	o.say(`  PAID        ${amount} USDG atomic to the gate's payee, settlement ${result.outcome.status} tx ${result.outcome.tx}`)
-	const paidFor = purchase({ mode: 'paid', payment_tx: result.outcome.tx, settlement: result.outcome.status === 'settled' ? 'settled' : 'unknown', permit2_digest: signedDigest })
-
-	// The payment is done and recorded. What follows only decides whether the gate's answer is used.
-	let verdict: GateVerdict | null = null
-	let unconfirmed: string | null
-	try {
-		const answered = JSON.parse(text) as unknown
-		unconfirmed = await confirmVerdict(gateUrl, input, answered, o.confirm ?? { testnet: httpRpc(TESTNET_RPC), mainnet: httpRpc(RPC), receiver: pinnedReceiver() })
-		if (unconfirmed === null) verdict = answered as GateVerdict
-	} catch (e) {
-		unconfirmed = `could not be checked (${String(e instanceof Error ? e.message : e).slice(0, 160)})`
+	return {
+		purchase: purchase({ mode: 'paid', payment_tx: result.outcome.tx, settlement: result.outcome.status === 'settled' ? 'settled' : 'unknown', permit2_digest: signedDigest }),
+		terms,
+		verdict: JSON.parse(text) as GateVerdict,
 	}
-	if (unconfirmed !== null) {
-		o.say(`  UNCONFIRMED the gate's verdict is not used: ${unconfirmed}`)
-		return { purchase: paidFor, terms, verdict: null, unconfirmed }
-	}
-	o.say(`  CONFIRMED   the gate's verdict against Robinhood Chain${verdict?.verdict_tx ? ` and RecordChecked in ${verdict.verdict_tx} on Robinhood Testnet` : ' (a gate on this machine, nothing broadcast)'}`)
-	return { purchase: paidFor, terms, verdict }
 }

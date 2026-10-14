@@ -18,10 +18,6 @@
 // answered. A request that fails before that is never charged. The gate holds no key:
 // the facilitator (Dexter) sends the settlement and pays its gas, and the money goes
 // straight from the payer to the vet402 wallet.
-//
-// One payment, one run: a payment is reserved in the same tick that finds it unused,
-// before the first await. The same payment arriving again while the first request is
-// still being handled gets 409 and starts nothing.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { REPO, simulate } from '../cre'
@@ -108,10 +104,7 @@ export function catalogEntry(base: string, broadcast: boolean) {
 
 export function makeHandler(deps: GateDeps): (req: Request) => Promise<Response> {
 	let busy = false
-	/** Payments the workflow has run for. Kept for the life of the process. */
 	const used = new Set<string>()
-	/** Payments a request is handling right now, from the signature check to the answer. */
-	const inFlight = new Set<string>()
 	return async (req) => {
 		const url = new URL(req.url)
 		const base = (deps.publicUrl ?? url.origin).replace(/\/+$/, '')
@@ -157,54 +150,46 @@ export function makeHandler(deps: GateDeps): (req: Request) => Promise<Response>
 		if (!(await checkSignature(payment))) return required('bad_signature')
 		const auth = payment.payload.permit2Authorization
 		const once = `${auth.from.toLowerCase()}:${auth.nonce}`
-		// Check and reserve with no await in between: of two requests carrying the same
-		// payment, exactly one gets past these three lines.
 		if (used.has(once)) return required('payment_already_used')
-		if (inFlight.has(once)) return json(409, { error: 'payment_in_progress', detail: 'another request with this payment is being handled', charged: false })
-		inFlight.add(once)
+		let verified: Awaited<ReturnType<typeof verifyPayment>>
 		try {
-			let verified: Awaited<ReturnType<typeof verifyPayment>>
+			verified = await verifyPayment(payment, deps.fetchImpl)
+		} catch {
+			return json(502, { error: 'facilitator_unreachable', charged: false })
+		}
+		if (!verified.isValid) return required(verified.invalidReason ?? 'payment_not_valid')
+		if (busy) return json(503, { error: 'busy', detail: 'one workflow run at a time', charged: false })
+		busy = true
+		try {
+			used.add(once)
+			let run: WorkflowRun
 			try {
-				verified = await verifyPayment(payment, deps.fetchImpl)
-			} catch {
-				return json(502, { error: 'facilitator_unreachable', charged: false })
+				run = deps.runWorkflow(input, deps.broadcast)
+			} catch (e) {
+				used.delete(once)
+				return json(502, { error: 'workflow_failed', detail: String(e instanceof Error ? e.message : e).slice(0, 300), charged: false })
 			}
-			if (!verified.isValid) return required(verified.invalidReason ?? 'payment_not_valid')
-			if (busy) return json(503, { error: 'busy', detail: 'one workflow run at a time', charged: false })
-			busy = true
-			try {
-				let run: WorkflowRun
-				try {
-					run = deps.runWorkflow(input, deps.broadcast)
-				} catch (e) {
-					return json(502, { error: 'workflow_failed', detail: String(e instanceof Error ? e.message : e).slice(0, 300), charged: false })
-				}
-				// The workflow has answered for this payment. From here on it is spent, whatever the settlement says.
-				used.add(once)
-				const settled = await settlePayment(payment, deps.fetchImpl)
-				if (settled.kind === 'failed') return required(`settlement_failed: ${settled.result.errorReason ?? 'no reason given'}`)
-				const paymentOut =
-					settled.kind === 'settled'
-						? { status: 'settled', transaction: settled.result.transaction, payer: settled.result.payer ?? auth.from, network: X402_NETWORK }
-						: { status: 'unknown', transaction: null, payer: auth.from, network: X402_NETWORK, detail: settled.detail }
-				return json(
-					200,
-					{
-						workflow: 'vet402-rwa-verify',
-						mode: deps.broadcast ? 'broadcast' : 'simulate',
-						result: run.result,
-						verdict_tx: run.tx,
-						receiver: receiver(),
-						written_through: "CRE's simulation forwarder (MockKeystoneForwarder). Not a DON attestation.",
-						payment: paymentOut,
-					},
-					{ 'PAYMENT-RESPONSE': b64json(settled.kind === 'settled' ? settled.result : { success: null, transaction: '', network: X402_NETWORK }), 'X-Payment-Status': settled.kind },
-				)
-			} finally {
-				busy = false
-			}
+			const settled = await settlePayment(payment, deps.fetchImpl)
+			if (settled.kind === 'failed') return required(`settlement_failed: ${settled.result.errorReason ?? 'no reason given'}`)
+			const paymentOut =
+				settled.kind === 'settled'
+					? { status: 'settled', transaction: settled.result.transaction, payer: settled.result.payer ?? auth.from, network: X402_NETWORK }
+					: { status: 'unknown', transaction: null, payer: auth.from, network: X402_NETWORK, detail: settled.detail }
+			return json(
+				200,
+				{
+					workflow: 'vet402-rwa-verify',
+					mode: deps.broadcast ? 'broadcast' : 'simulate',
+					result: run.result,
+					verdict_tx: run.tx,
+					receiver: receiver(),
+					written_through: "CRE's simulation forwarder (MockKeystoneForwarder). Not a DON attestation.",
+					payment: paymentOut,
+				},
+				{ 'PAYMENT-RESPONSE': b64json(settled.kind === 'settled' ? settled.result : { success: null, transaction: '', network: X402_NETWORK }), 'X-Payment-Status': settled.kind },
+			)
 		} finally {
-			inFlight.delete(once)
+			busy = false
 		}
 	}
 }
@@ -223,6 +208,7 @@ if (import.meta.main) {
 			return { result: run.result, tx: run.tx }
 		},
 	})
+	// @ts-expect-error Bun is the runtime
 	const server = Bun.serve({ port, hostname: '127.0.0.1', fetch: handler })
 	console.log(`vet402 copy-guard gate on http://127.0.0.1:${server.port}  POST /v1/workflows/${WORKFLOW}  0.01 USDG over x402  CRE ${broadcast ? 'simulate --broadcast' : 'simulate'}`)
 }
