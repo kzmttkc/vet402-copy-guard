@@ -104,7 +104,16 @@ export function catalogEntry(base: string, broadcast: boolean) {
 
 export function makeHandler(deps: GateDeps): (req: Request) => Promise<Response> {
 	let busy = false
-	const used = new Set<string>()
+	/**
+	 * Payments this gate has taken in, by payer and Permit2 nonce. `in_flight`: a request is
+	 * working on it. `used`: /settle was asked for it. The look-up and the reservation are one
+	 * synchronous step, so of two requests carrying the same payment only one goes on to the
+	 * facilitator and the workflow. A request that ends before /settle is asked (not charged)
+	 * gives the reservation back; once /settle was asked the payment stays `used`, whatever
+	 * the facilitator answered, so /settle is never asked twice for one payment.
+	 * In memory only: a restart forgets it, and then only Permit2's own nonce stops a replay.
+	 */
+	const used = new Map<string, 'in_flight' | 'used'>()
 	return async (req) => {
 		const url = new URL(req.url)
 		const base = (deps.publicUrl ?? url.origin).replace(/\/+$/, '')
@@ -149,47 +158,57 @@ export function makeHandler(deps: GateDeps): (req: Request) => Promise<Response>
 		}
 		if (!(await checkSignature(payment))) return required('bad_signature')
 		const auth = payment.payload.permit2Authorization
-		const once = `${auth.from.toLowerCase()}:${auth.nonce}`
-		if (used.has(once)) return required('payment_already_used')
-		let verified: Awaited<ReturnType<typeof verifyPayment>>
+		// The nonce as a number: "0123" and "123" are one Permit2 nonce and verify under one signature.
+		const once = `${auth.from.toLowerCase()}:${BigInt(auth.nonce)}`
+		// Check and reserve with no await in between.
+		const state = used.get(once)
+		if (state) return required(state === 'used' ? 'payment_already_used' : 'payment_in_flight')
+		used.set(once, 'in_flight')
+		let settleAsked = false
 		try {
-			verified = await verifyPayment(payment, deps.fetchImpl)
-		} catch {
-			return json(502, { error: 'facilitator_unreachable', charged: false })
-		}
-		if (!verified.isValid) return required(verified.invalidReason ?? 'payment_not_valid')
-		if (busy) return json(503, { error: 'busy', detail: 'one workflow run at a time', charged: false })
-		busy = true
-		try {
-			used.add(once)
-			let run: WorkflowRun
+			let verified: Awaited<ReturnType<typeof verifyPayment>>
 			try {
-				run = deps.runWorkflow(input, deps.broadcast)
-			} catch (e) {
-				used.delete(once)
-				return json(502, { error: 'workflow_failed', detail: String(e instanceof Error ? e.message : e).slice(0, 300), charged: false })
+				verified = await verifyPayment(payment, deps.fetchImpl)
+			} catch {
+				return json(502, { error: 'facilitator_unreachable', charged: false })
 			}
-			const settled = await settlePayment(payment, deps.fetchImpl)
-			if (settled.kind === 'failed') return required(`settlement_failed: ${settled.result.errorReason ?? 'no reason given'}`)
-			const paymentOut =
-				settled.kind === 'settled'
-					? { status: 'settled', transaction: settled.result.transaction, payer: settled.result.payer ?? auth.from, network: X402_NETWORK }
-					: { status: 'unknown', transaction: null, payer: auth.from, network: X402_NETWORK, detail: settled.detail }
-			return json(
-				200,
-				{
-					workflow: 'vet402-rwa-verify',
-					mode: deps.broadcast ? 'broadcast' : 'simulate',
-					result: run.result,
-					verdict_tx: run.tx,
-					receiver: receiver(),
-					written_through: "CRE's simulation forwarder (MockKeystoneForwarder). Not a DON attestation.",
-					payment: paymentOut,
-				},
-				{ 'PAYMENT-RESPONSE': b64json(settled.kind === 'settled' ? settled.result : { success: null, transaction: '', network: X402_NETWORK }), 'X-Payment-Status': settled.kind },
-			)
+			if (!verified.isValid) return required(verified.invalidReason ?? 'payment_not_valid')
+			if (busy) return json(503, { error: 'busy', detail: 'one workflow run at a time', charged: false })
+			busy = true
+			try {
+				let run: WorkflowRun
+				try {
+					run = deps.runWorkflow(input, deps.broadcast)
+				} catch (e) {
+					return json(502, { error: 'workflow_failed', detail: String(e instanceof Error ? e.message : e).slice(0, 300), charged: false })
+				}
+				settleAsked = true
+				used.set(once, 'used')
+				const settled = await settlePayment(payment, deps.fetchImpl)
+				if (settled.kind === 'failed') return required(`settlement_failed: ${settled.result.errorReason ?? 'no reason given'}`)
+				const paymentOut =
+					settled.kind === 'settled'
+						? { status: 'settled', transaction: settled.result.transaction, payer: settled.result.payer ?? auth.from, network: X402_NETWORK }
+						: { status: 'unknown', transaction: null, payer: auth.from, network: X402_NETWORK, detail: settled.detail }
+				return json(
+					200,
+					{
+						workflow: 'vet402-rwa-verify',
+						mode: deps.broadcast ? 'broadcast' : 'simulate',
+						result: run.result,
+						verdict_tx: run.tx,
+						receiver: receiver(),
+						written_through: "CRE's simulation forwarder (MockKeystoneForwarder). Not a DON attestation.",
+						payment: paymentOut,
+					},
+					{ 'PAYMENT-RESPONSE': b64json(settled.kind === 'settled' ? settled.result : { success: null, transaction: '', network: X402_NETWORK }), 'X-Payment-Status': settled.kind },
+				)
+			} finally {
+				busy = false
+			}
 		} finally {
-			busy = false
+			// Not charged and /settle never asked: the payer may send the same payment again.
+			if (!settleAsked) used.delete(once)
 		}
 	}
 }
