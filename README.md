@@ -7,7 +7,7 @@ Anyone can deploy a token called NVDA. copy-guard is an agent that checks which 
 | **Chainlink**, Best workflow with CRE | [Chainlink: Best workflow with CRE](#chainlink-best-workflow-with-cre). The one `cre workflow simulate` line, the bounty text line by line, the CRE code guide |
 | **RYO-CHAN**, Autonomous Agents | [RYO-CHAN: Autonomous Agents](#ryo-chan-autonomous-agents). The bounty text phrase by phrase, the practice trade ledger, one sentence turned into limits |
 | **BLI**, LegalTech and RegTech | [BLI: LegalTech and RegTech](#bli-legaltech-and-regtech). Who the agent acts for, two questions from BLI's own stage, the regulators' words |
-| Any of them | [Verify it yourself in 60 seconds](#verify-it-yourself-in-60-seconds), [Details](#details), [What it does not claim](#what-it-does-not-claim) |
+| Any of them | [Verify it yourself with one command](#verify-it-yourself-with-one-command), [Details](#details), [What it does not claim](#what-it-does-not-claim) |
 
 > "$600 out the window in seconds"
 > @DCA_Sean, a Robinhood Chain user, after a coin that Protos reports as a scam appeared in the sell screen of the wallet app. Quoted by [Protos, 2026-07-10](https://protos.com/robinhood-chain-scams-are-already-costing-users-dearly/).
@@ -27,7 +27,7 @@ Nobody has to take my word for this, or the agent's, or a server's. One command 
 **The walk of 2026-10-14, practice only.** copy-guard looked at 4200 moves of 40 wallets. It opened 54 practice positions, each at the reduced size the user's limits give for weaker evidence. It declined 4146, each with a reason in plain sentences. 64 of the moves were in 34 tokens that carry the ticker of a Stock Token or of USDG at an address the issuer did not list. How they reached the wallet: 36 sent to a wallet that did not sign, 20 bought by the wallet itself (it signed and paid), 8 logged with the wallet as the sender. Each token is [named by address](#tokens-that-share-a-ticker). 20 of the 40 wallets are in the walk because they bought such a token, so these counts are not a rate.
 <!-- FACTS:END -->
 
-## Verify it yourself in 60 seconds
+## Verify it yourself with one command
 
 Step 1 needs Node 20 or newer and a copy of this repo. Steps 2 to 4 need only a browser. Every date and time in this README is UTC.
 
@@ -42,7 +42,7 @@ It recomputes every hash from the files in this repo with its own code, reruns e
 
 <!-- VERIFY_TAIL:BEGIN -->
 ```
-59 OK, 0 FAIL, 0 not checked
+60 OK, 0 FAIL, 0 not checked
 RESULT: MATCH
 ```
 <!-- VERIFY_TAIL:END -->
@@ -88,12 +88,13 @@ vet402 copy-guard: recheck with no key, no account and no install
   OK    move on chain   0xf7cb51a2…478717 in block 81262132: 1 transfer of the wallet, as the trail lists
   OK    trail onchain   DecisionRecorded in 0xfd3df929…563199 on Robinhood Testnet has this hash, DO_NOT_COPY, the same record, move and payment
 5. The practice ledger: a walk through every decision, copy-guard next to a ticker copy
+  OK    gzipped         trails.jsonl.gz and chain.json.gz unpack to the bytes whose sha256 docs/verify/compressed.json recorded before they were gzipped (57.5 MB and 51.1 MB)
   OK    decisions       4200 decisions rerun, 18 rules each: FULL 0, REDUCED 54, NONE 4146. Every row, card, mandate and limits hash is the one its inputs give
   OK    selection       docs/walk/selection.json asked vet402 about the top 100 addresses by what official venues sent them in blocks 62420751 to 87977834 (2026-09-14 to 2026-10-14): 19 selected, 81 with no record, each with its saved answer. Stopped because 100 addresses had been asked: 100 addresses asked from the top of the ranking, 19 selected, 81 with no record. Observations apart: 1 watched wallet and 20 buyers of one token with the ticker SPY
   OK    records         39 records in docs/walk/records hash to the X-Facts-Hash vet402 sent with them and give the fields every decision read. For 1 wallets vet402 gave no record, and their decisions say so. Every moved token is named as the issuer's list (195 Stock Tokens, taken 2026-09-28), the CRE token-check results 0x7d0ef983…ba0e41 and the record give it
   OK    prices          3590 decisions read a price, each the last Chainlink feed value at or before the block of the move, out of 10294 values of 22 feeds saved in docs/walk/feeds.json
   OK    ledger          docs/ledger.json is what the walk gives: 4200 decisions about 40 wallets (FULL 0, REDUCED 54, NONE 4146). Incoming Stock Tokens by kind: purchase 263, rotation 0, liquidity 2872, swapped_unpaid 0, received 283, out 718. copy-guard opened 54 practice positions, every one on a purchase (an official swap the wallet itself paid for, median 0.45 USD), and none in a token the issuer did not list. A ticker copy opened 230: 210 in Stock Tokens and 20 in 1 other token under a listed ticker. Different tokens under a listed ticker were part of 64 moves (34 tokens: NVDA, SPY, USDG): 36 sent to the wallet, 20 bought by it, 0 received unpaid, 8 logged as sent by it. At one size (25.00 USD each): the 54 both opened 6.04 USD, the 156 Stock Token positions only the ticker copy opened 24.43 USD, and its 20 in other tokens: 20 valued at a pool (-460.61 USD), 0 not measured and in no sum
-  OK    page            docs/index.html carries this ledger, and builds its cards and its tables from it in the browser
+  OK    page            docs/index.html carries the totals, both books with every position, the 4 cards at the top as full rows and 274 decisions in short form (every one that opened a position, moved a different token under a listed ticker or was not NONE), all as docs/ledger.json has them. The other decisions are in 40 files of docs/rows, one per wallet, which hold the 4200 rows exactly and give the page's counts per wallet
   OK    limits          limits.json hashes to 0x1e762486…72c2cf, the limits every decision and the mandate name: full 100.00 USD, reduced 25.00 USD, 300.00 USD per day, a wallet at a loss opens nothing
   OK    rules files     agent/rules.ts hashes to 0x2abeff7f…e93b12, the file the paid run's trails name, and agent/rules-v2.ts to 0x83cdfcf1…0ecf08, as every decision and the mandate say
   OK    mandate         SAMPLE mandate mandate/sample/mandate.json (0x39388673…e42229): the signature in every decision recovers to its principal 0xbb62…f48d, a testnet-only key that stands in for the principal. The real mandate, mandate/mandate.json, is not signed yet
@@ -124,7 +125,7 @@ vet402 copy-guard: recheck with no key, no account and no install
   OK    payment built   the payment the agent built and did not sign hashes to 0xe08bf1dc…e39735: 0.01 USDG, spender the x402 Permit2 proxy, recipient pinned to 0x973c…6227, valid 120 s
   OK    agent card      agent.json and SKILL.md offer the workflow rwa-verify under the same terms: 0.01 USDG on eip155:4663 to 0x973c…6227
 
-59 OK, 0 FAIL, 0 not checked
+60 OK, 0 FAIL, 0 not checked
 RESULT: MATCH
 ```
 <!-- VERIFY:END -->
@@ -274,7 +275,7 @@ The last column holds only times read from saved runs on this machine: the simul
 |---|---|---|---|
 | A person opens a block explorer and compares a token's contract with the issuer's list by eye, if they think of it | `token-check` reads the code hash, the beacon and the official list from the chain | the check runs before the agent acts and returns a reason code a machine can read | 8 s for 12 tokens at one block ([`batch-4.cre.txt`](docs/token-check/batch/batch-4.cre.txt)) |
 | A reader trusts the site that shows a wallet's record | `rwa-verify` recomputes the record's hash and reads its anchor | MATCH or MISMATCH with one bit per failed check, as an event | 3 s ([`docs/simulate-match.txt`](docs/simulate-match.txt)) |
-| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | not measured |
+| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 88 to 106 s for `node verify.mjs` on this walk, 5 runs back to back on 2026-10-14, each RESULT: MATCH ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)). Most of it is waiting on the public RPC |
 <!-- CHANGES:END -->
 
 ### Why CRE

@@ -1,5 +1,6 @@
-48 OK, 0 FAIL, 0 not checked RESULT: MATCH  (19 s, exit code 0)
-48 OK, 0 FAIL, 0 not checked RESULT: MATCH  (21 s, exit code 0)
-48 OK, 0 FAIL, 0 not checked RESULT: MATCH  (22 s, exit code 0)
-48 OK, 0 FAIL, 0 not checked RESULT: MATCH  (21 s, exit code 0)
-48 OK, 0 FAIL, 0 not checked RESULT: MATCH  (22 s, exit code 0)
+node verify.mjs, five runs back to back on 2026-10-14 (UTC), this machine, public RPCs:
+run 1 (05:54:36Z): exit 0, 96 s, 60 OK, 0 FAIL, 0 not checked RESULT: MATCH 
+run 2 (05:56:12Z): exit 0, 106 s, 60 OK, 0 FAIL, 0 not checked RESULT: MATCH 
+run 3 (05:57:58Z): exit 0, 103 s, 60 OK, 0 FAIL, 0 not checked RESULT: MATCH 
+run 4 (05:59:41Z): exit 0, 88 s, 60 OK, 0 FAIL, 0 not checked RESULT: MATCH 
+run 5 (06:01:09Z): exit 0, 102 s, 60 OK, 0 FAIL, 0 not checked RESULT: MATCH 
