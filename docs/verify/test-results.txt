@@ -1,67 +1,37 @@
-Test results, 2026-10-13T23:37Z (UTC). bun 1.4.2, forge Version: 1.8.3-Homebrew, node v26.3.0.
+# Test results, 2026-10-14T01:10Z
 
 $ cd agent && bun test
-bun test v1.4.2 (744846f84)
-dryrun.test.ts:
- 92 pass
+ 114 pass
  0 fail
- 4221 expect() calls
-Ran 92 tests across 6 files. [9.79s]
-exit code 0
+ 4551 expect() calls
+Ran 114 tests across 8 files. [10.00s]
 
-$ cd agent && bun run typecheck
-$ tsc --noEmit
-exit code 0
+$ cd trail-anchor && bun test
+ 8 pass
+ 0 fail
+ 26 expect() calls
+Ran 8 tests across 1 file. [330.00ms]
 
 $ cd rwa-verify && bun test
-bun test v1.4.2 (744846f84)
-
  23 pass
  0 fail
  69 expect() calls
-Ran 23 tests across 2 files. [421.00ms]
-exit code 0
+Ran 23 tests across 2 files. [318.00ms]
 
-$ cd trail-anchor && bun test
-bun test v1.4.2 (744846f84)
-
- 7 pass
+$ cd token-check && bun test
+ 79 pass
  0 fail
- 21 expect() calls
-Ran 7 tests across 1 file. [341.00ms]
-exit code 0
+ 968 expect() calls
+Ran 79 tests across 2 files. [232.00ms]
 
 $ cd contracts && forge test
-No files changed, compilation skipped
+Suite result: ok. 0 passed; 0 failed; 1 skipped; finished in 16.02ms (5.99ms CPU time)
+Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 29.72ms (16.47ms CPU time)
+Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 29.78ms (12.94ms CPU time)
+Suite result: ok. 12 passed; 0 failed; 0 skipped; finished in 29.86ms (14.92ms CPU time)
+Ran 4 test suites in 35.64ms (105.38ms CPU time): 26 tests passed, 0 failed, 1 skipped (27 total tests)
 
-Ran 1 test for test/RwaVerdictReceiver.t.sol:RwaVerdictReceiverForkTest
-[SKIP] test_fork_mockForwarderDeliversTheMatchReport() (gas: 0)
-Suite result: ok. 0 passed; 0 failed; 1 skipped; finished in 13.77ms (3.11ms CPU time)
-
-Ran 7 tests for test/ReasoningTrailReceiver.t.sol:ReasoningTrailReceiverTest
-[PASS] test_emitsDecision() (gas: 46944)
-[PASS] test_rejectsAnyoneButTheForwarder(address) (runs: 256, μ: 38897, ~: 38897)
-[PASS] test_rejectsUnknownConclusion() (gas: 38452)
-[PASS] test_rejectsWrongLengths() (gas: 64548)
-[PASS] test_rejectsZeroForwarder() (gas: 3935)
-[PASS] test_supportsInterface() (gas: 12191)
-[PASS] test_writesNoStorageAndHoldsNoEth() (gas: 72390)
-Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 51.37ms (36.02ms CPU time)
-
-Ran 12 tests for test/RwaVerdictReceiver.t.sol:RwaVerdictReceiverTest
-[PASS] test_cannotReceiveEth() (gas: 72955)
-[PASS] test_constructor_rejectsZeroForwarder() (gas: 4196)
-[PASS] test_forwarderIsFixed() (gas: 7845)
-[PASS] test_hasNoOwnerFunctions() (gas: 92425)
-[PASS] test_match_emitsVerdict() (gas: 46799)
-[PASS] test_mismatch_emitsVerdictWithReasons() (gas: 46408)
-[PASS] test_onReport_rejectsAnyoneButTheForwarder(address) (runs: 256, μ: 38419, ~: 38419)
-[PASS] test_onReport_rejectsNonBooleanMatch() (gas: 38258)
-[PASS] test_onReport_rejectsShortMetadata() (gas: 37302)
-[PASS] test_onReport_rejectsWrongReportLength() (gas: 65525)
-[PASS] test_supportsInterface() (gas: 15570)
-[PASS] test_writesNoStorage() (gas: 43770)
-Suite result: ok. 12 passed; 0 failed; 0 skipped; finished in 51.51ms (31.32ms CPU time)
-
-Ran 3 test suites in 74.96ms (116.64ms CPU time): 19 tests passed, 0 failed, 1 skipped (20 total tests)
-exit code 0
+$ bunx tsc --noEmit (agent, trail-anchor, token-check)
+agent: exit 0
+trail-anchor: exit 0
+token-check: exit 0

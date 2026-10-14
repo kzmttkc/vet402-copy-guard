@@ -1,20 +1,5 @@
-$ node verify.mjs   # run 1 of 5, started 2026-10-13T23:37:34Z, back to back
-26 OK, 0 FAIL, 0 not checked
-RESULT: MATCH
-exit code 0
-$ node verify.mjs   # run 2 of 5, started 2026-10-13T23:37:39Z, back to back
-26 OK, 0 FAIL, 0 not checked
-RESULT: MATCH
-exit code 0
-$ node verify.mjs   # run 3 of 5, started 2026-10-13T23:37:43Z, back to back
-26 OK, 0 FAIL, 0 not checked
-RESULT: MATCH
-exit code 0
-$ node verify.mjs   # run 4 of 5, started 2026-10-13T23:37:47Z, back to back
-26 OK, 0 FAIL, 0 not checked
-RESULT: MATCH
-exit code 0
-$ node verify.mjs   # run 5 of 5, started 2026-10-13T23:37:50Z, back to back
-26 OK, 0 FAIL, 0 not checked
-RESULT: MATCH
-exit code 0
+48 OK, 0 FAIL, 0 not checked RESULT: MATCH  (19 s, exit code 0)
+48 OK, 0 FAIL, 0 not checked RESULT: MATCH  (21 s, exit code 0)
+48 OK, 0 FAIL, 0 not checked RESULT: MATCH  (22 s, exit code 0)
+48 OK, 0 FAIL, 0 not checked RESULT: MATCH  (21 s, exit code 0)
+48 OK, 0 FAIL, 0 not checked RESULT: MATCH  (22 s, exit code 0)
