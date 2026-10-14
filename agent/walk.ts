@@ -43,7 +43,7 @@ import { recordInputs } from './record'
 import { type CreInputs, type Movement, type RecordInputs, USDG } from './rules'
 import { arrival, type DecisionInputsV2, movedTokens, stockLegV2, type Venue } from './rules-v2'
 import { buildTrailV2, type Purchase, recheckTrailV2, type TrailV2 } from './trail'
-import { ISSUER_LIST, loadTokenCheck, NO_RECORD, poolEntryOf, V4_SWAP_TOPIC } from './tokens'
+import { ISSUER_LIST, loadTokenCheck, NO_RECORD, poolEntryOf, receiptFacts, V4_SWAP_TOPIC } from './tokens'
 import { decodeRequired, loadLedger, MAX_SPEND_ATOMIC, pickAccept, spentAtomic, termsOf } from './x402'
 
 const VET402 = 'https://vet402.com'
@@ -96,7 +96,7 @@ function pacedRpc(): Rpc & { calls: () => number; batch: (calls: { method: strin
 	return f
 }
 
-type Move = { wallet: string; mv: Movement; time: string; signer: string; value: string; to: string; selector: string; swaps: any[] }
+type Move = { wallet: string; mv: Movement; time: string; signer: string; value: string; to: string; selector: string; swaps: any[]; liquidity: string[]; swap_emitters: string[]; token_senders: Record<string, string[]> }
 type Saved = { source_url: string; http_status: number; x_facts_hash: string; facts: any }
 
 async function main() {
@@ -105,8 +105,9 @@ async function main() {
 	const walletsFile = join(REPO, arg('--wallets', 'docs/walk/wallets.json'))
 	const wallets: { wallet: string; cohort: Cohort; rank: number | null; purchases_usd: string | null; why: string }[] = JSON.parse(readFileSync(walletsFile, 'utf8'))
 	const selection = JSON.parse(readFileSync(join(out, 'selection.json'), 'utf8'))
-	const counted: Record<string, { tx: string }[]> = JSON.parse(readFileSync(join(out, 'selection-purchases.json'), 'utf8'))
-	for (const w of selection.same_ticker_buyers?.wallets ?? []) counted[lc(w.wallet)] = [...(counted[lc(w.wallet)] ?? []), { tx: w.first_purchase.tx }]
+	// The one purchase counted for each wallet of the same-ticker observation. A selected wallet's moves come from its record alone.
+	const counted: Record<string, { tx: string }[]> = {}
+	for (const w of selection.same_ticker_buyers?.wallets ?? []) counted[lc(w.wallet)] = [{ tx: w.first_purchase.tx }]
 	mkdirSync(join(out, 'records'), { recursive: true })
 	const log: string[] = []
 	const say = (s: string) => {
@@ -136,7 +137,13 @@ async function main() {
 	// Per wallet: the record (free route, once), the newest anchor and CRE's verdict on it, and the moves.
 	const records = new Map<string, { facts: any; record: RecordInputs; cre: CreInputs; fetch: { url: string; http_status: number } }>()
 	const moves: Move[] = []
-	const context: WalkContext = { window: { from_block: selection.window.from, to_block: selection.window.to, from_time: selection.window.from_time, to_time: selection.window.to_time }, wallets: [], pool_marks: {} }
+	const context: WalkContext = {
+		window: { from_block: selection.window.from, to_block: selection.window.to, from_time: selection.window.from_time, to_time: selection.window.to_time },
+		selection: { asked: selection.counts.asked, selected: selection.counts.selected, stop: selection.stop, no_record: selection.no_record },
+		price_source: selection.price_source,
+		wallets: [],
+		pool_marks: {},
+	}
 	// Chain answers saved by an earlier walk are read from the file. A transaction, a block time, a token's decimals and a pool's factory do not change.
 	const chainFile = join(out, 'chain.json')
 	const chain: { receipts: Record<string, any>; blocks: Record<string, string>; decimals: Record<string, number>; venues: Record<string, Venue['kind']> } = existsSync(chainFile)
@@ -201,7 +208,7 @@ async function main() {
 					// Keep only what a checker reads: the Transfer logs that name the wallet, and the PoolManager's swap logs.
 					const logs = (r.logs ?? []).filter((l: any) => (l.topics ?? []).slice(1, 3).some((x: string) => lc(x) === padded))
 					const swaps = (r.logs ?? []).filter((l: any) => lc(l.address) === V4_POOL_MANAGER && lc(l.topics?.[0]) === V4_SWAP_TOPIC).map((l: any) => ({ topics: l.topics, data: l.data, logIndex: l.logIndex }))
-					chain.receipts[`${tx}:${wallet}`] = { transactionHash: tx, blockNumber: r.blockNumber, status: r.status, from: lc(r.from), to: lc(t.to ?? ''), value: BigInt(t.value ?? '0x0').toString(), selector: String(t.input ?? '0x').slice(0, 10), logs, swaps }
+					chain.receipts[`${tx}:${wallet}`] = { transactionHash: tx, blockNumber: r.blockNumber, status: r.status, from: lc(r.from), to: lc(t.to ?? ''), value: BigInt(t.value ?? '0x0').toString(), selector: String(t.input ?? '0x').slice(0, 10), logs, swaps, ...receiptFacts(r.logs ?? [], wallet) }
 				})
 			}
 			const needBlocks = [...new Set(txs.slice(i, i + 10).map((tx) => chain.receipts[`${tx}:${wallet}`]).filter((r) => r && r.status === '0x1').map((r) => String(Number(BigInt(r.blockNumber)))))].filter((b) => !chain.blocks[b])
@@ -217,7 +224,7 @@ async function main() {
 			if (!r || r.status !== '0x1') continue
 			const [mv] = groupMovements(wallet, r.logs ?? []).filter((x) => x.tx === tx)
 			if (!mv) continue
-			moves.push({ wallet, mv, time: new Date(Number(BigInt(chain.blocks[mv.block])) * 1000).toISOString(), signer: lc(r.from), value: r.value, to: r.to, selector: r.selector, swaps: r.swaps ?? [] })
+			moves.push({ wallet, mv, time: new Date(Number(BigInt(chain.blocks[mv.block])) * 1000).toISOString(), signer: lc(r.from), value: r.value, to: r.to, selector: r.selector, swaps: r.swaps ?? [], liquidity: r.liquidity, swap_emitters: r.swap_emitters, token_senders: r.token_senders })
 			n++
 		}
 		writeFileSync(chainFile, `${JSON.stringify(chain)}\n`)
@@ -258,18 +265,25 @@ async function main() {
 		const n = trails.length + 1
 		book.advance(mo.mv.block)
 		const tokensMoved = movedTokens(ctx.facts, mo.mv.transfers, chain.decimals, USDG, ISSUER_LIST, tokenCheck)
-		const base = { wallet: mo.wallet, movement: mo.mv, move: { time: mo.time, signer: mo.signer, value_wei: mo.value, to: mo.to, selector: mo.selector }, tokens_moved: tokensMoved } as DecisionInputsV2
-		const leg = stockLegV2(base)
-		const venue: Venue[] = []
-		if (leg) {
-			const others = [...new Set(mo.mv.transfers.filter((t) => lc(t.token) === lc(leg.token) && t.direction === leg.direction).map((t) => (leg.direction === 'in' ? t.from : t.to)))]
-			for (const a of others) venue.push(await venueOf(rpc, a, venueCache))
+		const base = { wallet: mo.wallet, movement: mo.mv, move: { time: mo.time, signer: mo.signer, value_wei: mo.value, to: mo.to, selector: mo.selector, liquidity: mo.liquidity }, tokens_moved: tokensMoved, venue: [], other_venue: [] } as unknown as DecisionInputsV2
+		/** Who a leg's token came from: the swapping addresses that sent it in the transaction, then the wallet's own counterparties. */
+		const venuesOf = async (token: string, direction: 'in' | 'out'): Promise<Venue[]> => {
+			const direct = mo.mv.transfers.filter((t) => lc(t.token) === lc(token) && t.direction === direction).map((t) => lc(direction === 'in' ? t.from : t.to))
+			const list = [...new Set([...(direction === 'in' ? (mo.token_senders[lc(token)] ?? []) : []), ...direct])]
+			const out: Venue[] = []
+			for (const a of list) out.push(await venueOf(rpc, a, venueCache, mo.swap_emitters.includes(a)))
+			return out
 		}
+		const leg = stockLegV2(base)
+		const venue: Venue[] = leg ? await venuesOf(leg.token, leg.direction) : []
+		const otherIn = mo.mv.transfers.find((t) => t.direction === 'in' && tokensMoved.find((x) => x.token === lc(t.token))?.kind === 'same_ticker')
+		const otherVenue: Venue[] = otherIn ? await venuesOf(otherIn.token, 'in') : []
+		base.venue = venue
+		base.other_venue = otherVenue
 		// A different token under a listed ticker that the wallet bought from the v4 PoolManager: the pool and its price in that swap.
 		let poolEntry: PoolEntry | null = null
-		const other = mo.mv.transfers.find((t) => t.direction === 'in' && lc(t.from) === V4_POOL_MANAGER && tokensMoved.find((x) => x.token === lc(t.token))?.kind === 'same_ticker')
-		if (other && arrival(base, { token: other.token, direction: 'in' }) === 'bought') {
-			const raw = mo.mv.transfers.filter((t) => lc(t.token) === lc(other.token) && t.direction === 'in').reduce((x, t) => x + BigInt(t.amount_raw), 0n).toString()
+		if (otherIn && arrival(base, { token: otherIn.token, direction: 'in' }) === 'purchase') {
+			const raw = mo.mv.transfers.filter((t) => lc(t.token) === lc(otherIn.token) && t.direction === 'in').reduce((x, t) => x + BigInt(t.amount_raw), 0n).toString()
 			poolEntry = poolEntryOf(mo.swaps, raw)
 			if (poolEntry && !poolFirst.has(poolEntry.pool_id)) poolFirst.set(poolEntry.pool_id, mo.mv.block)
 		}
@@ -295,6 +309,7 @@ async function main() {
 			token_check: tokenCheck ? { source: tokenCheck.source, keccak: tokenCheck.keccak, tokens: Object.fromEntries(tokensMoved.filter((x) => tokenCheck.tokens[x.token]).map((x) => [x.token, tokenCheck.tokens[x.token]])) } : null,
 			pool_entry: poolEntry,
 			venue,
+			other_venue: otherVenue,
 			price: leg ? priceAt(feeds[lc(leg.token)], mo.mv.block) : null,
 			limits: policy.limits,
 			limits_keccak: policy.limitsKeccak,

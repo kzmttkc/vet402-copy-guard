@@ -1,35 +1,30 @@
-// Which wallets the walk follows: the notable buyers of Robinhood Stock Tokens.
+// Which wallets the walk follows: notable wallets whose record can be checked.
 //
-//   bun scripts/select-wallets.ts [--days 30] [--top 30] [--to-block N] [--out docs/walk]
+//   bun scripts/select-wallets.ts [--days 30] [--top 30] [--max-asked 100] [--to-block N] [--out docs/walk]
 //
-// One rule, no hand picking:
+// The rule is written out in docs/walk/SELECTION.md, precisely enough to be repeated
+// without this file. In short:
 //
-//   A PURCHASE is a transfer of a Stock Token that has a Chainlink feed, straight from
-//   the Uniswap v4 PoolManager or from a pool of the official Uniswap v3 factory to a
-//   wallet, in a transaction that wallet signed and in which it paid: another token left
-//   the wallet, or the transaction carried ETH. A liquidity-pool `collect`, an airdrop,
-//   a bridge delivery and a purchase made through a contract are not purchases here.
+//   1. Read every transfer of a feed-priced Stock Token out of an official Uniswap venue
+//      in the window (the v4 PoolManager and the pools of the official v3 factory).
+//   2. Rank the receivers by the sum of amount times the Chainlink feed value at the
+//      block. This is one pass over the logs. No receipt is opened.
+//   3. From the top, ask vet402's free /rwa route once per address. An address it can
+//      build a record for is selected. Any other is written down with the HTTP status
+//      and the reason, and not walked. Stop at --top selected or --max-asked asked.
+//   4. Two observations, kept apart: the watched wallet, and the first 20 buyers of one
+//      token that uses the ticker SPY (its first minter and that transaction's signer
+//      left out).
 //
-//   Its SIZE is the amount received times the Chainlink feed's last value at or before
-//   the block.
+// Everything on the chain is read from the public RPC. No key. The route is asked at
+// most ten times a minute, and each answer is saved in <out>/records/.
 //
-//   The walk follows the --top wallets with the largest sum of purchase sizes over the
-//   last --days days, ending at --to-block (default: the head of the chain when run).
-//
-// Everything is read from the public Robinhood Chain RPC. No key, no vet402 API.
-//
-// How the ranking is found without reading every transaction: the Transfer logs give an
-// upper bound for each receiver (everything it received from an official venue). The
-// receivers are then checked one by one from the largest bound down: an address with
-// contract code cannot sign a transaction, so it has no purchase; for a plain account
-// each of its transactions is opened and the purchases are summed. The search stops
-// when the wallet in place --top has a sum at least as large as the next receiver's
-// upper bound, so no receiver left unread could enter the list.
-//
-// Output: <out>/selection.json (the rule, the window, the counts, every selected wallet
-// with each purchase counted) and <out>/wallets.json (what agent/walk.ts reads). The raw
-// scan is cached under agent/state/select/ (not part of the repo): delete it to scan again.
-import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+// Output: <out>/selection.json (the rule, the window, the counts, the selected wallets,
+// the addresses with no record, the observations) and <out>/wallets.json (what
+// agent/walk.ts reads). The raw scan (2 GB) is cached under agent/state/select/, which is
+// not part of the repo: delete it to scan again.
+import { appendFileSync, createReadStream, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { createInterface } from 'node:readline'
 import { join } from 'node:path'
 import { type FeedSeries, feedSeries, pointAt, V3_FACTORY, V4_POOL_MANAGER } from '../agent/facts'
 import snapshot from '../token-check/registry-snapshot.json'
@@ -42,8 +37,29 @@ const REPO = join(import.meta.dir, '..')
 const CACHE = join(REPO, 'agent/state/select')
 const FEED_LOOKBACK = 6_000_000
 
+const VET402 = 'https://vet402.com'
+const USDG = '0x5fc5360d0400a0fd4f2af552add042d716f1d168'
+/** What WETH9() of the official Uniswap v3 position manager answers on Robinhood Chain. */
+const WETH = '0x0bd7d308f8e1639fab988df18a8011f41eacad73'
+/** keccak256("Swap(bytes32,address,int128,int128,uint160,uint128,int24,uint24)"), the v4 PoolManager's swap log. */
+const V4_SWAP = '0x40e9cecb9f5f1f1c5b9c97dec2917b7ee92e57ba5563708daca94dd84ad7112f'
+/** Every log that says a liquidity position was touched: v3 pool Mint, Burn, Collect; position manager IncreaseLiquidity, DecreaseLiquidity, Collect; v4 ModifyLiquidity. */
+const LIQUIDITY_TOPICS = new Set([
+	'0x7a53080ba414158be7ec69b987b5fb7d07dee101fe85488f0853ae16239d0bde',
+	'0x0c396cd989a39f4459b5fa1aed6a9a8dcdbc45908acfd67e028cd568da98982c',
+	'0x70935338e69775456a85ddef226c395fb668b63fa0115f5f20610b388e6ca9c0',
+	'0x3067048beee31b25b2f1681f88dac838c8bba36af25bfb2b7cf7473a5847e35f',
+	'0x26f6a048ee9138f2c0ce266f322cb99228e8d619ae2bff30c67f8dcf9d2377b4',
+	'0x40d0efd1a53d60ecbf40971b9daf7dc90178c3aadc7aab1765632738fa8b8f01',
+	'0xf208f4912782fd25c7f114ca3723a2d5dd6f3bcc3ac8db5af63baa85f711d5ec',
+])
+
+export const PURPOSE = 'The walk follows notable wallets whose record can be checked.'
 export const RULE =
-	'A purchase is a transfer of a Robinhood Stock Token that has a Chainlink feed, straight from the Uniswap v4 PoolManager or a pool of the official Uniswap v3 factory to a wallet, in a transaction that wallet signed and in which it paid (another token left the wallet, or the transaction carried ETH). Its size is the amount received times the Chainlink feed value at or before the block. The walk follows the wallets with the largest sum of purchase sizes in the window.'
+	"Rank every address by what official Uniswap venues (the v4 PoolManager and the pools of the official v3 factory) sent it of the Stock Tokens that have a Chainlink feed, in the window, each transfer at the feed's value at its block. From the top, ask vet402's free route once per address. An address it can build a record for is selected. Any other is listed with the reason and not walked. Stop at the number to select, or at the number of addresses to ask."
+export const PURCHASE =
+	'Within one transaction a wallet bought a token when an official venue emitted a swap log and sent the token, the wallet ended the transaction with more of it, the wallet itself paid USDG or WETH or (as the signer) ETH, no liquidity log is in the transaction, and no other Stock Token left the wallet.'
+export const PRICE_SOURCE = "AnswerUpdated logs of the feed's aggregator: the last answer at or before the block, the last in log order within a block. The public RPC keeps no historical state, so latestRoundData() cannot be asked at a past block."
 
 const arg = (name: string, dflt: string) => (process.argv.includes(name) ? process.argv[process.argv.indexOf(name) + 1] : dflt)
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
@@ -84,7 +100,6 @@ async function batch(calls: { method: string; params: unknown[] }[]): Promise<an
 }
 
 type Hit = { to: string; from: string; raw: string; block: number; tx: string }
-export type Purchase = { tx: string; block: number; time?: string; token: string; symbol: string; venue: string; amount_raw: string; feed_usd: string; feed_round_id: string; size_usd: string; paid: string }
 
 /** First block whose timestamp is at or after `unix`. */
 async function blockAtOrAfter(unix: number, head: number): Promise<number> {
@@ -100,14 +115,15 @@ async function blockAtOrAfter(unix: number, head: number): Promise<number> {
 }
 
 /** Transfer logs of one token whose sender is one of the venues, over [from, to]. The span is halved whenever the RPC says the answer is too large. */
-async function scan(token: string, venues: string[], from: number, to: number, file: string): Promise<Hit[]> {
+/** Returns how many transfers are in `file`. The transfers themselves stay on disk: there are millions. */
+async function scan(token: string, venues: string[], from: number, to: number, file: string): Promise<number> {
 	// One query per venue: with several values in one topic position the RPC allows only 100,000 blocks a query.
 	const done = `${file}.done`
-	if (existsSync(done) && readFileSync(done, 'utf8') === `${from}-${to}-${venues.length}`) {
-		return readFileSync(file, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l))
-	}
+	const mark = `${from}-${to}-${venues.length}`
+	if (existsSync(done) && readFileSync(done, 'utf8').startsWith(`${mark}:`)) return Number(readFileSync(done, 'utf8').split(':')[1])
 	writeFileSync(file, '')
-	const out: Hit[] = []
+	let count = 0
+	let stuck = 0
 	for (const venue of venues) {
 		// The PoolManager is busy, so its span starts small. A v3 pool is usually quiet, so its span starts at the widest the RPC allows.
 		let span = venue === V4_POOL_MANAGER ? 200_000 : 10_000_000
@@ -116,19 +132,28 @@ async function scan(token: string, venues: string[], from: number, to: number, f
 			try {
 				const logs = (await rpc('eth_getLogs', [{ address: token, fromBlock: hex(a), toBlock: hex(b), topics: [TRANSFER, pad(venue)] }])) as any[]
 				const hits: Hit[] = logs.filter((l) => l.topics.length === 3).map((l) => ({ to: addr(l.topics[2]), from: addr(l.topics[1]), raw: BigInt(l.data === '0x' ? '0x0' : l.data).toString(), block: Number(BigInt(l.blockNumber)), tx: String(l.transactionHash).toLowerCase() }))
-				out.push(...hits)
+				count += hits.length
 				if (hits.length) appendFileSync(file, `${hits.map((h) => JSON.stringify(h)).join('\n')}\n`)
 				a = b + 1
 				if (logs.length < 4000) span = Math.min(10_000_000, span * 2)
 			} catch (e) {
-				if (!/exceeds limit|too large|timeout|limit of/i.test(String((e as Error).message))) throw e
-				span = Math.floor(span / 4)
-				if (span < 500) throw new Error(`cannot read ${token} at block ${a}`)
+				const msg = String((e as Error).message)
+				if (!/exceeds limit|too large|timeout|timed out|limit of|aborted/i.test(msg)) throw e
+				// Too many logs: a narrower span. Anything else is the RPC being slow: wait, then a narrower span as well.
+				if (!/exceeds limit|limit of/i.test(msg)) await sleep(5000)
+				span = Math.max(1, Math.floor(span / (venue === V4_POOL_MANAGER ? 2 : 4)))
+				if (span === 1 && ++stuck > 20) throw new Error(`cannot read ${token} at block ${a}: ${msg.slice(0, 120)}`)
 			}
 		}
 	}
-	writeFileSync(done, `${from}-${to}-${venues.length}`)
-	return out
+	writeFileSync(done, `${mark}:${count}`)
+	return count
+}
+
+/** Every transfer saved in a file, one at a time. */
+async function* saved(file: string): AsyncGenerator<Hit> {
+	if (!existsSync(file)) return
+	for await (const line of createInterface({ input: createReadStream(file), crlfDelay: Number.POSITIVE_INFINITY })) if (line) yield JSON.parse(line) as Hit
 }
 
 async function main() {
@@ -191,15 +216,18 @@ async function main() {
 	const poolCount = new Set([...pools.values()].flat()).size
 	say(`tokens with a Chainlink feed: ${tokens.length}; official v3 pools holding one of them: ${poolCount}; plus the v4 PoolManager`)
 
-	// 1. Every transfer of those tokens out of an official venue.
-	const hits: (Hit & { token: string; symbol: string })[] = []
+	// 1. Every transfer of those tokens out of an official venue, saved to disk.
+	const files: { token: string; symbol: string; file: string }[] = []
+	let transfersOut = 0
 	for (const t of tokens) {
 		const token = t.token.toLowerCase()
 		const venues = [V4_POOL_MANAGER, ...(pools.get(token) ?? [])]
-		const got = await scan(token, venues, win.from, win.to, join(CACHE, `${t.symbol}.jsonl`))
-		console.error(`scanned ${t.symbol} ${got.length}`)
-		for (const h of got) hits.push({ ...h, token, symbol: t.symbol })
-		say(`  ${t.symbol}: ${got.length} transfers out of ${venues.length} venue${venues.length === 1 ? '' : 's'}`)
+		const file = join(CACHE, `${t.symbol}.jsonl`)
+		const n = await scan(token, venues, win.from, win.to, file)
+		files.push({ token, symbol: t.symbol, file })
+		transfersOut += n
+		console.error(`scanned ${t.symbol} ${n}`)
+		say(`  ${t.symbol}: ${n} transfers out of ${venues.length} venue${venues.length === 1 ? '' : 's'}`)
 	}
 
 	// 2. Price each at the feed and add up per receiver: an upper bound of its purchases.
@@ -213,155 +241,182 @@ async function main() {
 		const price = Number(p.answer) / 10 ** series.decimals
 		return { price, round: p.round_id, usd: (Number(BigInt(h.raw)) / 1e18) * price }
 	}
-	const bound = new Map<string, { usd: number; hits: typeof hits }>()
+	const bound = new Map<string, number>()
 	let unpriced = 0
-	for (const h of hits) {
-		if (venueSet.has(h.to)) continue
-		const s = sized(h)
-		if (!s) {
-			unpriced++
-			continue
+	for (const f of files) {
+		for await (const h of saved(f.file)) {
+			if (venueSet.has(h.to)) continue
+			const s = sized({ token: f.token, raw: h.raw, block: h.block })
+			if (!s) {
+				unpriced++
+				continue
+			}
+			bound.set(h.to, (bound.get(h.to) ?? 0) + s.usd)
 		}
-		const e = bound.get(h.to) ?? { usd: 0, hits: [] }
-		e.usd += s.usd
-		e.hits.push(h)
-		bound.set(h.to, e)
 	}
-	const ranked = [...bound.entries()].sort((a, b) => b[1].usd - a[1].usd)
-	say(`transfers out of an official venue: ${hits.length}; receivers: ${ranked.length}; transfers with no feed value yet at their block: ${unpriced}`)
+	const ranked = [...bound.entries()].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))
+	say(`transfers out of an official venue: ${transfersOut}; receivers: ${ranked.length}; transfers with no feed value yet at their block: ${unpriced}`)
 	if (process.argv.includes('--scan-only')) {
-		for (const [w, e] of ranked.slice(0, 60)) say(`  ${w} bound ${e.usd.toFixed(2)} USD in ${new Set(e.hits.map((h) => h.tx)).size} txs`)
+		for (const [w, usd] of ranked.slice(0, 60)) say(`  ${w} bound ${usd.toFixed(2)} USD`)
 		return
 	}
 
-	// 3. From the largest bound down: who really bought, and how much.
-	const txCacheFile = join(CACHE, 'txs.json')
-	const txCache: Record<string, { from: string; value: string; block: number; outs: { token: string; raw: string }[] } | null> = existsSync(txCacheFile) ? JSON.parse(readFileSync(txCacheFile, 'utf8')) : {}
-	const codeCache: Record<string, string> = existsSync(join(CACHE, 'code.json')) ? JSON.parse(readFileSync(join(CACHE, 'code.json'), 'utf8')) : {}
-	const selected: { wallet: string; bound_usd: string; purchases: Purchase[]; size_usd: number; not_purchases: { not_signed: number; nothing_paid: number } }[] = []
-	const read: { wallet: string; bound_usd: string; kind: string; size_usd: string; txs: number }[] = []
-	let contracts = 0
-	let accounts = 0
-	for (const [wallet, e] of ranked) {
-		const kth = selected.length >= top ? [...selected].sort((a, b) => b.size_usd - a.size_usd)[top - 1].size_usd : -1
-		if (kth >= e.usd) break
-		codeCache[wallet] ??= (await rpc('eth_getCode', [wallet, 'latest'])) as string
-		// Code that starts with 0xef0100 is an EIP-7702 delegation: the address is still an account that signs.
-		if (codeCache[wallet] !== '0x' && !codeCache[wallet].startsWith('0xef0100')) {
-			contracts++
-			read.push({ wallet, bound_usd: e.usd.toFixed(2), kind: 'contract: cannot sign a transaction', size_usd: '0.00', txs: new Set(e.hits.map((h) => h.tx)).size })
-			continue
+	// 3. From the largest bound down: ask vet402's free route. An address it can build a record for is selected.
+	const feedCover = tokens.map((t) => ({ symbol: t.symbol, feed: t.feed.toLowerCase(), aggregator: feeds[t.token.toLowerCase()].aggregator, answers: feeds[t.token.toLowerCase()].points.length, has_answer_before_window: (feeds[t.token.toLowerCase()].points[0]?.block ?? Number.POSITIVE_INFINITY) < win.from }))
+	say(`feeds: ${feedCover.filter((f) => f.has_answer_before_window).length} of ${feedCover.length} aggregators have an answer before the window starts`)
+	mkdirSync(join(out, 'records'), { recursive: true })
+	let lastAsk = 0
+	let routeCalls = 0
+	/** One address, asked once (a busy answer is asked again). The answer is saved, and read from the file when it is there. */
+	const ask = async (wallet: string): Promise<{ http_status: number; facts: any; reason: string }> => {
+		const file = join(out, 'records', `${wallet}.json`)
+		if (existsSync(file)) {
+			const s = JSON.parse(readFileSync(file, 'utf8'))
+			return { http_status: s.http_status ?? 200, facts: s.facts, reason: s.reason ?? '' }
 		}
-		accounts++
-		const txs = [...new Set(e.hits.map((h) => h.tx))]
-		const need = txs.filter((t) => txCache[`${t}:${wallet}`] === undefined)
-		for (let i = 0; i < need.length; i += 20) {
-			const part = need.slice(i, i + 20)
-			const res = await batch(part.flatMap((t) => [{ method: 'eth_getTransactionByHash', params: [t] }, { method: 'eth_getTransactionReceipt', params: [t] }]))
-			part.forEach((t, k) => {
-				const tx = res[2 * k]
-				const rc = res[2 * k + 1]
-				if (!tx || !rc || rc.status !== '0x1') {
-					txCache[`${t}:${wallet}`] = null
-					return
-				}
-				const outs = (rc.logs ?? []).filter((l: any) => l.topics?.[0] === TRANSFER && l.topics.length === 3 && addr(l.topics[1]) === wallet).map((l: any) => ({ token: String(l.address).toLowerCase(), raw: BigInt(l.data === '0x' ? '0x0' : l.data).toString() }))
-				txCache[`${t}:${wallet}`] = { from: String(tx.from).toLowerCase(), value: BigInt(tx.value).toString(), block: Number(BigInt(rc.blockNumber)), outs }
-			})
-			if (i % 400 === 0) writeFileSync(txCacheFile, JSON.stringify(txCache))
-		}
-		const purchases: Purchase[] = []
-		let notSigned = 0
-		let nothingPaid = 0
-		for (const h of e.hits) {
-			const t = txCache[`${h.tx}:${wallet}`]
-			const s = sized(h)
-			if (!t || !s) continue
-			if (t.from !== wallet) {
-				notSigned++
-				continue
+		const url = `${VET402}/api/v1/rwa/facts/${wallet}?chain=4663`
+		let status = 0
+		let hash = ''
+		let facts: any = null
+		let reason = ''
+		for (let attempt = 0; attempt < 4; attempt++) {
+			const wait = lastAsk + 7000 - Date.now()
+			if (wait > 0) await sleep(wait)
+			lastAsk = Date.now()
+			routeCalls++
+			try {
+				const res = await fetch(url, { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(120_000) })
+				status = res.status
+				const text = await res.text()
+				if (status === 200) {
+					hash = (res.headers.get('x-facts-hash') ?? '').toLowerCase()
+					facts = JSON.parse(text)
+					reason = ''
+				} else reason = text.replace(/\s+/g, ' ').slice(0, 240)
+			} catch (e) {
+				status = 0
+				reason = `no answer: ${String((e as Error).message).slice(0, 80)}`
 			}
-			const paidToken = t.outs.find((o) => o.token !== h.token)
-			if (!paidToken && BigInt(t.value) === 0n) {
-				nothingPaid++
-				continue
-			}
-			purchases.push({ tx: h.tx, block: h.block, token: h.token, symbol: h.symbol, venue: h.from, amount_raw: h.raw, feed_usd: s.price.toFixed(4), feed_round_id: s.round, size_usd: s.usd.toFixed(2), paid: BigInt(t.value) > 0n ? `${t.value} wei of ETH` : `${paidToken?.raw} of ${paidToken?.token}` })
+			if (status !== 429 && status !== 0 && status < 500) break
+			await sleep(30_000)
 		}
-		const size = purchases.reduce((x, p) => x + Number(p.size_usd), 0)
-		read.push({ wallet, bound_usd: e.usd.toFixed(2), kind: 'account', size_usd: size.toFixed(2), txs: txs.length })
-		if (purchases.length) selected.push({ wallet, bound_usd: e.usd.toFixed(2), purchases, size_usd: size, not_purchases: { not_signed: notSigned, nothing_paid: nothingPaid } })
-		say(`  ${wallet} bound ${e.usd.toFixed(2)} USD, ${txs.length} txs: ${purchases.length} purchases, ${size.toFixed(2)} USD (${notSigned} not signed by it, ${nothingPaid} with nothing paid)`)
+		writeFileSync(file, `${JSON.stringify({ source_url: url, http_status: status, reason, x_facts_hash: hash, facts }, null, 2)}\n`)
+		return { http_status: status, facts, reason }
 	}
-	writeFileSync(txCacheFile, JSON.stringify(txCache))
-	writeFileSync(join(CACHE, 'code.json'), JSON.stringify(codeCache))
-	selected.sort((a, b) => b.size_usd - a.size_usd || (a.wallet < b.wallet ? -1 : 1))
-	const picked = selected.slice(0, top)
-	say(`receivers read from the largest bound down: ${read.length} (${contracts} contracts, ${accounts} plain accounts); wallets with at least one purchase among them: ${selected.length}; selected: ${picked.length}`)
+	const maxAsked = Number(arg('--max-asked', '100'))
+	const selected: { wallet: string; bound_rank: number; bound_usd: string; has_code: boolean; r1_status: string; realized_usd: string | null; evidence_txs: number }[] = []
+	const noRecord: { wallet: string; bound_rank: number; bound_usd: string; has_code: boolean; http_status: number; reason: string }[] = []
+	let asked = 0
+	for (let at = 0; at < ranked.length && selected.length < top && asked < maxAsked; at++) {
+		const [wallet, usdBound] = ranked[at]
+		asked++
+		const code = (await rpc('eth_getCode', [wallet, 'latest'])) as string
+		const hasCode = code !== '0x' && !code.startsWith('0xef0100')
+		const a = await ask(wallet)
+		if (a.http_status === 200 && a.facts) {
+			selected.push({ wallet, bound_rank: at + 1, bound_usd: usdBound.toFixed(2), has_code: hasCode, r1_status: String(a.facts.r1_status), realized_usd: a.facts.realized_usd ?? null, evidence_txs: (a.facts.evidence?.txs ?? []).length })
+			say(`  #${at + 1} ${wallet} bound ${usdBound.toFixed(2)} USD: record ${a.facts.r1_status}, ${(a.facts.evidence?.txs ?? []).length} transactions listed: SELECTED (${selected.length})`)
+		} else {
+			noRecord.push({ wallet, bound_rank: at + 1, bound_usd: usdBound.toFixed(2), has_code: hasCode, http_status: a.http_status, reason: a.reason })
+			say(`  #${at + 1} ${wallet} bound ${usdBound.toFixed(2)} USD${hasCode ? ' (a contract)' : ''}: no record, HTTP ${a.http_status} ${a.reason.slice(0, 90)}`)
+		}
+	}
+	const stop = selected.length >= top ? `${top} addresses were selected` : asked >= maxAsked ? `${maxAsked} addresses had been asked` : 'the ranking ran out'
+	say(`asked ${asked} addresses from the top of the ranking: ${selected.length} selected, ${noRecord.length} with no record. Stopped because ${stop}`)
 
-	// Group 3: the first buyers of one token that uses the ticker SPY (docs/walk/SELECTION.md).
+	// Observations (docs/walk/SELECTION.md, section 3): the watched wallet, and the first buyers of one token that uses the ticker SPY.
 	const WATCHED = '0xe9b08727131e34010b34006c660d4c1b436ec25f'
 	const SAME_TICKER = { token: '0x69e7778d46713e17572d610bdaca3943aa4e6219', ticker: 'SPY', name: 'Spy Chip', take: 20 }
-	const stHits = await scan(SAME_TICKER.token, [V4_POOL_MANAGER], win.from, win.to, join(CACHE, 'same-ticker-SPY.jsonl'))
+	const ZERO_TOPIC = `0x${'0'.repeat(64)}`
+	let firstMint: any = null
+	for (let a = 0; a <= win.to && !firstMint; a += 10_000_000) {
+		const logs = (await rpc('eth_getLogs', [{ address: SAME_TICKER.token, fromBlock: hex(a), toBlock: hex(Math.min(win.to, a + 9_999_999)), topics: [TRANSFER, ZERO_TOPIC] }])) as any[]
+		if (logs.length) firstMint = logs[0]
+	}
+	const mintTx = firstMint ? await rpc('eth_getTransactionByHash', [firstMint.transactionHash]) : null
+	const leftOut = [...new Set([firstMint ? addr(firstMint.topics[2]) : '', mintTx ? String(mintTx.from).toLowerCase() : ''].filter(Boolean))]
+	await scan(SAME_TICKER.token, [V4_POOL_MANAGER], win.from, win.to, join(CACHE, 'same-ticker-SPY.jsonl'))
+	const stHits: Hit[] = []
+	for await (const h of saved(join(CACHE, 'same-ticker-SPY.jsonl'))) stHits.push(h)
 	stHits.sort((a, b) => a.block - b.block || (a.tx < b.tx ? -1 : a.tx > b.tx ? 1 : a.to < b.to ? -1 : 1))
-	const taken = new Set([WATCHED, ...picked.map((p) => p.wallet)])
-	const sameTicker: { wallet: string; first_purchase: { tx: string; block: number; amount_raw: string; paid: string } }[] = []
-	let stRead = 0
+	const taken = new Set([WATCHED, V4_POOL_MANAGER, ...leftOut, ...selected.map((p) => p.wallet)])
+	const stockTokens = new Set((snapshot as any).tokens.map((t: any) => String(t.token).toLowerCase()))
+	const sameTicker: { wallet: string; first_purchase: { tx: string; block: number; amount_raw: string; paid: string; signer: string } }[] = []
+	const seenTx = new Set<string>()
 	for (const h of stHits) {
 		if (sameTicker.length >= SAME_TICKER.take) break
-		if (taken.has(h.to) || h.to === V4_POOL_MANAGER) continue
-		const key = `${h.tx}:${h.to}`
-		if (txCache[key] === undefined) {
-			const [tx, rc] = await batch([{ method: 'eth_getTransactionByHash', params: [h.tx] }, { method: 'eth_getTransactionReceipt', params: [h.tx] }])
-			stRead++
-			if (!tx || !rc || rc.status !== '0x1') txCache[key] = null
-			else {
-				const outs = (rc.logs ?? []).filter((l: any) => l.topics?.[0] === TRANSFER && l.topics.length === 3 && addr(l.topics[1]) === h.to).map((l: any) => ({ token: String(l.address).toLowerCase(), raw: BigInt(l.data === '0x' ? '0x0' : l.data).toString() }))
-				txCache[key] = { from: String(tx.from).toLowerCase(), value: BigInt(tx.value).toString(), block: Number(BigInt(rc.blockNumber)), outs }
-			}
+		if (seenTx.has(h.tx)) continue
+		seenTx.add(h.tx)
+		const [tx, rc] = await batch([{ method: 'eth_getTransactionByHash', params: [h.tx] }, { method: 'eth_getTransactionReceipt', params: [h.tx] }])
+		if (!tx || !rc || rc.status !== '0x1') continue
+		const logs = (rc.logs ?? []) as any[]
+		const topic0 = (l: any) => String(l.topics?.[0] ?? '').toLowerCase()
+		// (a) the PoolManager swapped and sent the token, (c) no liquidity log in the transaction
+		if (!logs.some((l) => String(l.address).toLowerCase() === V4_POOL_MANAGER && topic0(l) === V4_SWAP)) continue
+		if (logs.some((l) => LIQUIDITY_TOPICS.has(topic0(l)))) continue
+		const transfers = logs.filter((l) => topic0(l) === TRANSFER && l.topics.length === 3).map((l) => ({ token: String(l.address).toLowerCase(), from: addr(l.topics[1]), to: addr(l.topics[2]), raw: BigInt(l.data === '0x' ? '0x0' : l.data) }))
+		const net = new Map<string, bigint>()
+		for (const t of transfers.filter((x) => x.token === SAME_TICKER.token)) {
+			net.set(t.to, (net.get(t.to) ?? 0n) + t.raw)
+			net.set(t.from, (net.get(t.from) ?? 0n) - t.raw)
 		}
-		const t = txCache[key]
-		if (!t || t.from !== h.to) continue
-		const paidToken = t.outs.find((o) => o.token !== SAME_TICKER.token)
-		if (!paidToken && BigInt(t.value) === 0n) continue
-		taken.add(h.to)
-		sameTicker.push({ wallet: h.to, first_purchase: { tx: h.tx, block: h.block, amount_raw: h.raw, paid: BigInt(t.value) > 0n ? `${t.value} wei of ETH` : `${paidToken?.raw} of ${paidToken?.token}` } })
+		for (const [w, got] of [...net].filter(([, v]) => v > 0n).sort((x, y) => (x[0] < y[0] ? -1 : 1))) {
+			if (sameTicker.length >= SAME_TICKER.take || taken.has(w)) continue
+			// (d) no Stock Token left the wallet, (b) the wallet itself paid USDG, WETH or ETH
+			if (transfers.some((t) => t.from === w && stockTokens.has(t.token))) continue
+			const paidToken = transfers.find((t) => t.from === w && (t.token === USDG || t.token === WETH) && t.raw > 0n)
+			const paidEth = String(tx.from).toLowerCase() === w && BigInt(tx.value) > 0n
+			if (!paidToken && !paidEth) continue
+			taken.add(w)
+			sameTicker.push({ wallet: w, first_purchase: { tx: h.tx, block: h.block, amount_raw: got.toString(), paid: paidEth ? `${BigInt(tx.value)} wei of ETH` : `${paidToken?.raw} of ${paidToken?.token === USDG ? 'USDG' : 'WETH'}`, signer: String(tx.from).toLowerCase() } })
+		}
 	}
-	writeFileSync(txCacheFile, JSON.stringify(txCache))
-	say(`same-ticker token ${SAME_TICKER.token} (${SAME_TICKER.ticker}, "${SAME_TICKER.name}"): ${stHits.length} transfers out of the v4 PoolManager to ${new Set(stHits.map((h) => h.to)).size} receivers in the window; the first ${sameTicker.length} wallets that bought it are group 3`)
+	say(`same-ticker token ${SAME_TICKER.token} (${SAME_TICKER.ticker}, "${SAME_TICKER.name}"): ${stHits.length} transfers out of the v4 PoolManager to ${new Set(stHits.map((h) => h.to)).size} receivers in the window; left out as first minter or its signer: ${leftOut.join(', ') || 'none'}; the first ${sameTicker.length} wallets that bought it are the observation group`)
+	const observed: { wallet: string; cohort: string; http_status: number; reason: string }[] = []
+	for (const w of [WATCHED, ...sameTicker.map((s) => s.wallet)]) {
+		const a = await ask(w)
+		observed.push({ wallet: w, cohort: w === WATCHED ? 'watched' : 'same_ticker_buyers', http_status: a.http_status, reason: a.reason })
+	}
+	say(`observations: ${observed.length} wallets asked, ${observed.filter((o) => o.http_status !== 200).length} with no record`)
 
-	mkdirSync(out, { recursive: true })
 	writeFileSync(
 		join(out, 'selection.json'),
 		`${JSON.stringify(
 			{
+				purpose: PURPOSE,
 				rule: RULE,
+				purchase: PURCHASE,
+				price_source: PRICE_SOURCE,
 				selected_at: new Date().toISOString(),
 				chain_id: 4663,
 				window: win,
 				top,
+				max_asked: maxAsked,
+				list: { source: (snapshot as any).source, taken_at: (snapshot as any).list_taken_at, stock_tokens: (snapshot as any).count },
 				tokens: tokens.map((t) => ({ symbol: t.symbol, token: t.token.toLowerCase(), feed: t.feed.toLowerCase() })),
+				feeds: feedCover,
 				venues: { v4_pool_manager: V4_POOL_MANAGER, v3_factory: V3_FACTORY, v3_pools: poolCount },
-				counts: { transfers_out_of_venues: hits.length, receivers: ranked.length, receivers_read: read.length, contracts_among_them: contracts, accounts_among_them: accounts, wallets_with_a_purchase: selected.length, selected: picked.length },
-				stop: `the wallet in place ${top} bought for ${picked[picked.length - 1]?.size_usd.toFixed(2)} USD; the next receiver not read has an upper bound of ${ranked[read.length]?.[1].usd.toFixed(2) ?? '0.00'} USD`,
-				wallets: picked.map((s, i) => ({ rank: i + 1, wallet: s.wallet, size_usd: s.size_usd.toFixed(2), purchases: s.purchases.length, received_but_not_purchases: s.not_purchases, largest: [...s.purchases].sort((a, b) => Number(b.size_usd) - Number(a.size_usd)).slice(0, 5) })),
-				same_ticker_buyers: { ...SAME_TICKER, transfers_out_of_the_pool_manager: stHits.length, receivers: new Set(stHits.map((h) => h.to)).size, wallets: sameTicker },
+				counts: { transfers_out_of_venues: transfersOut, transfers_with_no_feed_value: unpriced, receivers: ranked.length, asked, selected: selected.length, no_record: noRecord.length, route_calls: routeCalls },
+				stop: `Stopped because ${stop}: ${asked} addresses asked from the top of the ranking, ${selected.length} selected, ${noRecord.length} with no record.`,
+				wallets: selected.map((s, i) => ({ rank: i + 1, ...s })),
+				no_record: noRecord,
+				same_ticker_buyers: { ...SAME_TICKER, first_mint: firstMint ? { tx: String(firstMint.transactionHash).toLowerCase(), block: Number(BigInt(firstMint.blockNumber)), to: addr(firstMint.topics[2]), signer: mintTx ? String(mintTx.from).toLowerCase() : null } : null, left_out: leftOut, transfers_out_of_the_pool_manager: stHits.length, receivers: new Set(stHits.map((h) => h.to)).size, wallets: sameTicker },
 				watched: WATCHED,
-				read,
+				observations: observed,
+				ranking_top: ranked.slice(0, Math.max(asked, 100)).map(([w, usd], i) => ({ bound_rank: i + 1, wallet: w, bound_usd: usd.toFixed(2) })),
 				rpc_calls: rpcCalls,
 			},
 			null,
 			1,
 		)}\n`,
 	)
-	writeFileSync(join(out, 'selection-purchases.json'), `${JSON.stringify(Object.fromEntries(picked.map((s) => [s.wallet, s.purchases])))}\n`)
 	writeFileSync(
 		join(out, 'wallets.json'),
 		`${JSON.stringify(
 			[
-				{ wallet: WATCHED, cohort: 'watched', rank: null, purchases_usd: null, why: 'the wallet copy-guard was first pointed at, and the only wallet vet402 has anchored a record for' },
-				...picked.map((s, i) => ({ wallet: s.wallet, cohort: 'top_buyers', rank: i + 1, purchases_usd: s.size_usd.toFixed(2), why: `rank ${i + 1} of the 30 largest buyers of Stock Tokens in the window: ${s.purchases.length} purchases, ${s.size_usd.toFixed(2)} USD at the Chainlink feed` })),
-				...sameTicker.map((s, i) => ({ wallet: s.wallet, cohort: 'same_ticker_buyers', rank: i + 1, purchases_usd: null, why: `buyer ${i + 1} of the first 20 of the token ${SAME_TICKER.token}, which uses the ticker ${SAME_TICKER.ticker}` })),
+				{ wallet: WATCHED, cohort: 'watched', rank: null, purchases_usd: null, why: 'an observation: the wallet copy-guard was first pointed at, and the only wallet vet402 has anchored a record for' },
+				...selected.map((s, i) => ({ wallet: s.wallet, cohort: 'top_buyers', rank: i + 1, purchases_usd: s.bound_usd, why: `selected: number ${s.bound_rank} by what official venues sent it in the window (${s.bound_usd} USD at the feed, an upper bound of its purchases), and vet402 could build its record` })),
+				...sameTicker.map((s, i) => ({ wallet: s.wallet, cohort: 'same_ticker_buyers', rank: i + 1, purchases_usd: null, why: `an observation: buyer ${i + 1} of the first ${SAME_TICKER.take} of the token ${SAME_TICKER.token}, which uses the ticker ${SAME_TICKER.ticker}` })),
 			],
 			null,
 			1,

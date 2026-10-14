@@ -9,17 +9,24 @@
 //            carries its reasons
 //
 // The rows:
-//   A1 to B2  the eight evidence rules of v1, unchanged in wording
+//   A1 to B1  the seven evidence rules of v1, unchanged in wording
+//   B2        every moved token is one the agent can name: a Stock Token of the issuer's
+//             list, USDG, WETH, or a different token under a listed ticker. v1 asked this
+//             of the record alone
 //   M1        a mandate signed by the principal covers the decision
 //   C1, C2    no moved token is a different token under a listed ticker, and a Stock
 //             Token the issuer listed moves. v1 asked the same two questions of the
 //             record alone. Here they are asked of the issuer's list, and of the
 //             Chainlink CRE token-check workflow's reading of the chain when one is given
 //   C3, C4    complete history, realized profit (v1 wording)
-//   V1        the Stock Token came from an official venue
-//   D1        the wallet itself bought: it received the token in a transaction it signed
-//             and in which it paid. A liquidity-pool collect, a fee claim, a bridge
-//             delivery and an airdrop are not purchases
+//   V1        an official Uniswap venue swapped and sent the Stock Token in the transaction
+//   D1        the wallet bought. One definition, the same one that picks the wallets and
+//             that the ticker-copy baseline uses (docs/walk/SELECTION.md, section 2): an
+//             official swap put the token out, the wallet ended with more of it, the
+//             wallet itself paid USDG, WETH or ETH, no liquidity log is in the
+//             transaction, and no other Stock Token left the wallet. The signer may be a
+//             relayer. An exchange of one Stock Token for another is a rotation, a
+//             rearranged liquidity position is a liquidity operation, and neither is a purchase
 //   P1        a Chainlink feed gives the price at the block of the move
 //   L1, L2    the user's limits leave room
 // In v1 a failed A4, C3 or C4 always meant no trade. In v2 the user's limits say whether
@@ -43,6 +50,7 @@ export type Tier = 'FULL' | 'REDUCED' | 'NONE'
  * What a moved token is.
  *   stock        a Robinhood Stock Token: its address is in the issuer's list
  *   usdg         USDG, by address
+ *   weth         WETH, by address: what WETH9() of the official Uniswap position manager answers
  *   same_ticker  a different token that uses a listed ticker or name (or USDG's) at an address the
  *                issuer did not list. This says what the token is not. It says nothing about who made it or why
  *   unknown      anything else
@@ -51,7 +59,7 @@ export type Tier = 'FULL' | 'REDUCED' | 'NONE'
  */
 export type MovedToken = {
 	token: string
-	kind: 'stock' | 'usdg' | 'same_ticker' | 'unknown'
+	kind: 'stock' | 'usdg' | 'weth' | 'same_ticker' | 'unknown'
 	ticker: string
 	name: string
 	decimals: number
@@ -66,7 +74,8 @@ export type TokenCheckEntry = { issuer_token: boolean; ticker: string | null; re
 export type TokenCheckRef = { source: string; keccak: string; tokens: Record<string, TokenCheckEntry> }
 
 /** Who the Stock Token came from, and whether that is an official venue. Read from the chain. */
-export type Venue = { address: string; kind: 'uniswap-v4-pool-manager' | 'uniswap-v3-pool' | 'other' }
+/** `swapped`: did this address emit a swap log in the transaction. An official pool that only pays out a liquidity position did not. */
+export type Venue = { address: string; kind: 'uniswap-v4-pool-manager' | 'uniswap-v3-pool' | 'other'; swapped: boolean }
 
 /** The Chainlink feed's last answer at or before the block of the move. Read from the aggregator's AnswerUpdated logs. */
 export type Price = { feed: string; aggregator: string; answer: string; decimals: number; round_id: string; updated_at: string; update_block: number; update_tx: string }
@@ -80,11 +89,14 @@ export type DecisionInputsV2 = DecisionInputs & {
 	payer: string
 	rules: RulesRef
 	/** When the move happened, who signed its transaction, the ETH it carried, and what it called. All public chain data. */
-	move: { time: string; signer: string; value_wei: string; to: string; selector: string }
+	/** `liquidity`: the names of the liquidity logs in the transaction (Mint, Burn, Collect, IncreaseLiquidity, DecreaseLiquidity, ModifyLiquidity), sorted, each once. */
+	move: { time: string; signer: string; value_wei: string; to: string; selector: string; liquidity: string[] }
 	/** How the record was fetched. A wallet vet402 could not build a record for stays in the ledger with the HTTP status. */
 	record_fetch: { url: string; http_status: number }
 	tokens_moved: MovedToken[]
 	token_check: TokenCheckRef | null
+	/** Who sent a different token under a listed ticker that came in, read like `venue` for the Stock Token. Empty when no such token came in. */
+	other_venue: Venue[]
 	/** For a different token under a listed ticker that the wallet bought in a Uniswap v4 pool: the pool and its price in that swap. No rule reads it. The ledger values the ticker-copy position with it. */
 	pool_entry: { pool_id: string; token_is_currency0: boolean; sqrt_price_x96: string; log_index: number } | null
 	venue: Venue[]
@@ -140,26 +152,48 @@ export function stockLegV2(inp: DecisionInputsV2) {
 	return inp.movement.transfers.find((t) => inp.tokens_moved.find((m) => m.token === lc(t.token))?.kind === 'stock')
 }
 
-/** What the wallet paid in this transaction for the token of `leg`: every other token that left it, and the ETH the transaction carried. */
-export function paidFor(inp: DecisionInputsV2, legToken: string): { tokens: { token: string; amount_raw: string }[]; eth_wei: string } {
+export const WETH = '0x0bd7d308f8e1639fab988df18a8011f41eacad73'
+const USDG_ADDRESS = '0x5fc5360d0400a0fd4f2af552add042d716f1d168'
+
+/**
+ * What the wallet itself paid in this transaction: USDG and WETH that left it, and the ETH the
+ * transaction carried when the wallet signed it. Another Stock Token, or a token of unknown
+ * worth, leaving the wallet is not a payment.
+ */
+export function paidFor(inp: DecisionInputsV2): { tokens: { token: string; amount_raw: string }[]; eth_wei: string } {
 	const sums = new Map<string, bigint>()
-	for (const t of inp.movement.transfers) if (t.direction === 'out' && lc(t.token) !== lc(legToken)) sums.set(lc(t.token), (sums.get(lc(t.token)) ?? 0n) + BigInt(t.amount_raw))
-	return { tokens: [...sums].filter(([, v]) => v > 0n).map(([token, v]) => ({ token, amount_raw: v.toString() })), eth_wei: /^\d+$/.test(inp.move.value_wei ?? '') ? inp.move.value_wei : '0' }
+	for (const t of inp.movement.transfers) if (t.direction === 'out' && [USDG_ADDRESS, WETH].includes(lc(t.token))) sums.set(lc(t.token), (sums.get(lc(t.token)) ?? 0n) + BigInt(t.amount_raw))
+	const own = lc(inp.move.signer) === lc(inp.wallet)
+	return { tokens: [...sums].filter(([, v]) => v > 0n).map(([token, v]) => ({ token, amount_raw: v.toString() })), eth_wei: own && /^\d+$/.test(inp.move.value_wei ?? '') ? inp.move.value_wei : '0' }
+}
+
+/** How much more of a token the wallet holds after the transaction than before, from the transfers that name it. */
+export function netIn(inp: DecisionInputsV2, token: string): bigint {
+	return inp.movement.transfers.filter((t) => lc(t.token) === lc(token)).reduce((s, t) => s + (t.direction === 'in' ? BigInt(t.amount_raw) : -BigInt(t.amount_raw)), 0n)
 }
 
 /**
- * How a token came into the wallet, from the facts of the transaction alone:
- *   bought            the wallet signed the transaction and paid in it
- *   received_unpaid   the wallet signed, received, and paid nothing (a pool collect, a claim, a withdrawal)
- *   received_unsigned someone else signed (an airdrop, a transfer, a bridge delivery)
- *   out               the token left the wallet
+ * How a token came into the wallet, from the facts of the transaction alone. Tested in this order:
+ *   out             the token left the wallet
+ *   liquidity       the transaction holds a liquidity log: a position was added to, taken from or collected
+ *   rotation        another Stock Token left the wallet: one Stock Token exchanged for another
+ *   purchase        an official venue swapped and sent the token, the wallet ended with more of it,
+ *                   and the wallet itself paid USDG, WETH or ETH. The signer may be a relayer
+ *   swapped_unpaid  an official swap put the token out, and the wallet itself paid none of the three
+ *   received        no official swap put the token out: a transfer, an airdrop, a bridge delivery
+ * Only a purchase opens a practice position, in either book.
  */
-export type Arrival = 'bought' | 'received_unpaid' | 'received_unsigned' | 'out'
+export type Arrival = 'purchase' | 'rotation' | 'liquidity' | 'swapped_unpaid' | 'received' | 'out'
 export function arrival(inp: DecisionInputsV2, leg: { token: string; direction: 'in' | 'out' }): Arrival {
 	if (leg.direction !== 'in') return 'out'
-	if (lc(inp.move.signer) !== lc(inp.wallet)) return 'received_unsigned'
-	const paid = paidFor(inp, leg.token)
-	return paid.tokens.length > 0 || BigInt(paid.eth_wei) > 0n ? 'bought' : 'received_unpaid'
+	if (inp.move.liquidity.length > 0) return 'liquidity'
+	const kindOf = (token: string) => inp.tokens_moved.find((m) => m.token === lc(token))?.kind
+	if (inp.movement.transfers.some((t) => t.direction === 'out' && lc(t.token) !== lc(leg.token) && kindOf(t.token) === 'stock')) return 'rotation'
+	const venues = kindOf(leg.token) === 'stock' ? inp.venue : inp.other_venue
+	const swapOut = venues.some((v) => v.kind !== 'other' && v.swapped) && netIn(inp, leg.token) > 0n
+	if (!swapOut) return 'received'
+	const paid = paidFor(inp)
+	return paid.tokens.length > 0 || BigInt(paid.eth_wei) > 0n ? 'purchase' : 'swapped_unpaid'
 }
 
 /** The feed's answer as a USD price with four decimals, or null. */
@@ -201,7 +235,13 @@ export function decideV2(inp: DecisionInputsV2): DecisionV2 {
 	const stockToken = stockLeg ? inp.tokens_moved.find((m) => m.token === lc(stockLeg.token)) : undefined
 	const creSays = stockToken && tc ? tc.tokens[stockToken.token] : undefined
 	const c2ok = Boolean(stockLeg) && (!tc || creSays?.issuer_token === true)
+	const unnamed = inp.tokens_moved.filter((m) => m.kind === 'unknown')
 	const v2rows: Record<string, { ok: boolean; rule: string; detail: string }> = {
+		B2: {
+			ok: inp.movement.transfers.length > 0 && unnamed.length === 0,
+			rule: 'every moved token is one the agent can name: a Stock Token of the issuer\'s list, USDG, WETH, or a different token under a listed ticker',
+			detail: inp.movement.transfers.length === 0 ? 'no transfers in the movement' : unnamed.length ? `not named: ${unnamed.map((m) => m.token).join(', ')}` : inp.tokens_moved.map((m) => `${m.token} ${m.kind}`).join(', '),
+		},
 		C1: {
 			ok: other.length === 0,
 			rule: 'no moved token is a different token that uses a listed ticker or name at an address the issuer did not list',
@@ -229,30 +269,30 @@ export function decideV2(inp: DecisionInputsV2): DecisionV2 {
 		`principal ${lc(d.principal)} signer ${lc(inp.mandate.signer) || '(none)'} mandate ${lc(inp.mandate.keccak)}${gap ? `: ${gap}` : ''}`,
 	)
 	const leg = stockLegV2(inp)
-	const unofficial = inp.venue.filter((v) => v.kind === 'other')
 	add(
 		'V1',
 		'V',
-		Boolean(leg) && inp.venue.length > 0 && unofficial.length === 0,
-		'the Stock Token came from an official venue (the Uniswap v4 PoolManager or a pool of the official Uniswap v3 factory)',
-		!leg ? 'no Stock Token moved' : inp.venue.length === 0 ? 'no counterparty to judge' : inp.venue.map((v) => `${lc(v.address)} ${v.kind}`).join(', '),
+		Boolean(leg) && inp.venue.some((v) => v.kind !== 'other' && v.swapped),
+		'an official Uniswap venue swapped and sent the Stock Token in the transaction (the v4 PoolManager, or a pool of the official v3 factory)',
+		!leg ? 'no Stock Token moved' : inp.venue.length === 0 ? 'no sender to judge' : inp.venue.map((v) => `${lc(v.address)} ${v.kind}${v.swapped ? ' swapped' : ' no swap'}`).join(', '),
 	)
 	const how = leg ? arrival(inp, leg) : null
-	const paid = leg ? paidFor(inp, leg.token) : null
+	const paid = paidFor(inp)
+	const signer = lc(inp.move.signer) === lc(inp.wallet) ? 'the wallet' : lc(inp.move.signer)
+	const D1_DETAIL: Record<Arrival, string> = {
+		out: `sent, signed by ${signer}`,
+		liquidity: `received in a transaction with liquidity logs (${inp.move.liquidity.join(', ')}): a liquidity operation, not a purchase`,
+		rotation: 'received while another Stock Token left the wallet: a rotation, not a purchase',
+		purchase: `bought: an official swap put it out and the wallet paid ${[...paid.tokens.map((p) => `${p.amount_raw} of ${p.token}`), ...(BigInt(paid.eth_wei) > 0n ? [`${paid.eth_wei} wei of ETH`] : [])].join(' and ')}, signed by ${signer}`,
+		swapped_unpaid: `an official swap put it out, but the wallet itself paid no USDG, WETH or ETH, signed by ${signer}`,
+		received: `received with no official swap of it in the transaction, signed by ${signer}`,
+	}
 	add(
 		'D1',
 		'D',
-		how === 'bought',
-		'the wallet itself bought: it received the Stock Token in a transaction it signed and in which it paid (another token left the wallet, or the transaction carried ETH)',
-		!leg || !paid
-			? 'no Stock Token moved'
-			: how === 'out'
-				? `sent, signed by ${lc(inp.move.signer) === lc(inp.wallet) ? 'the wallet' : lc(inp.move.signer)}`
-				: how === 'received_unsigned'
-					? `received, signed by ${lc(inp.move.signer)}, not the wallet`
-					: how === 'received_unpaid'
-						? `received, signed by the wallet, nothing paid: not a purchase (call ${inp.move.selector || '(none)'} on ${lc(inp.move.to) || '(none)'})`
-						: `received, signed by the wallet, paid ${[...paid.tokens.map((p) => `${p.amount_raw} of ${p.token}`), ...(BigInt(paid.eth_wei) > 0n ? [`${paid.eth_wei} wei of ETH`] : [])].join(' and ')}`,
+		how === 'purchase',
+		'the wallet bought: an official swap put the Stock Token out, the wallet ended with more of it, the wallet itself paid USDG, WETH or ETH, no liquidity log is in the transaction and no other Stock Token left the wallet',
+		how ? D1_DETAIL[how] : 'no Stock Token moved',
 	)
 	const pg = leg ? priceGap(inp) : 'no Stock Token moved'
 	add(
@@ -317,14 +357,20 @@ function position(inp: DecisionInputsV2, tier: 'FULL' | 'REDUCED', room: bigint)
 /** The issuer's list, as the walk and the agent read it: token address to ticker, name and feed. */
 export type IssuerList = Record<string, { symbol: string; name: string; feed: string | null }>
 
+/** The reasons of the CRE token-check that say a token outside the issuer's list carries a listed token's mark (token-check/batch.ts, SHARES_A_LISTED_MARK). */
+export const LISTED_MARKS = ['TICKER_SAME_AS_ISSUER_TOKEN', 'TICKER_SAME_AFTER_FOLDING', 'NAME_SAME_AS_ISSUER_TOKEN', 'NAME_ENDS_LIKE_ISSUER_TOKEN', 'TICKER_OR_NAME_READS_AS_USDG', 'ISSUER_CODE_AT_UNLISTED_ADDRESS']
+
 /**
- * What each moved token is. In this order: the CRE token-check's reading of the chain when its
- * results name the token, the issuer's list, USDG's address, the look-alikes the vet402 record
- * names, and otherwise unknown. decimals come from the token contracts.
+ * What each moved token is. In this order: USDG and WETH by address, the CRE token-check's
+ * reading of the chain when its results name the token, the tokens the vet402 record names
+ * as using a listed ticker, the issuer's list, and otherwise unknown. A listed address the
+ * CRE token-check did not confirm is unknown, not a Stock Token. decimals come from the
+ * token contracts.
  */
 export function movedTokens(facts: any, transfers: { token: string }[], decimals: Record<string, number>, usdg: string, list: IssuerList, check: TokenCheckRef | null): MovedToken[] {
 	const seen = new Set<string>()
 	const out: MovedToken[] = []
+	const at = (ticker: string) => (ticker === 'USDG' ? lc(usdg) : (Object.keys(list).find((k) => list[k].symbol === ticker) ?? null))
 	for (const t of transfers) {
 		const token = lc(t.token)
 		if (seen.has(token)) continue
@@ -334,13 +380,19 @@ export function movedTokens(facts: any, transfers: { token: string }[], decimals
 		const cre = check?.tokens[token]
 		const dec = decimals[token] ?? 18
 		const nameOf = String(named?.name_raw ?? '')
-		const at = (ticker: string) => (ticker === 'USDG' ? lc(usdg) : (Object.keys(list).find((k) => list[k].symbol === ticker) ?? null))
-		if (token === lc(usdg)) out.push({ token, kind: 'usdg', ticker: 'USDG', name: 'Global Dollar', decimals: dec, by: 'address', listed_at: null })
-		else if (cre?.issuer_token === true && listed) out.push({ token, kind: 'stock', ticker: listed.symbol, name: listed.name, decimals: dec, by: 'cre', listed_at: null })
-		else if (cre && cre.issuer_token === false && cre.ticker) out.push({ token, kind: 'same_ticker', ticker: cre.ticker, name: nameOf, decimals: dec, by: 'cre', listed_at: at(cre.ticker) })
-		else if (named) out.push({ token, kind: 'same_ticker', ticker: String(named.imitates), name: nameOf, decimals: dec, by: 'record', listed_at: at(String(named.imitates)) })
-		else if (listed && !cre) out.push({ token, kind: 'stock', ticker: listed.symbol, name: listed.name, decimals: dec, by: 'list', listed_at: null })
-		else out.push({ token, kind: 'unknown', ticker: '?', name: '', decimals: dec, by: cre ? 'cre' : 'none', listed_at: null })
+		const row = (kind: MovedToken['kind'], ticker: string, name: string, by: MovedToken['by']): MovedToken => ({ token, kind, ticker, name, decimals: dec, by, listed_at: kind === 'same_ticker' ? at(ticker) : null })
+		if (token === lc(usdg)) out.push(row('usdg', 'USDG', 'Global Dollar', 'address'))
+		else if (token === WETH) out.push(row('weth', 'WETH', 'Wrapped Ether', 'address'))
+		else if (cre) {
+			if (cre.issuer_token && listed) out.push(row('stock', listed.symbol, listed.name, 'cre'))
+			else if (!cre.issuer_token && cre.reasons.some((r) => LISTED_MARKS.includes(r))) {
+				// Which listed ticker it reads as: USDG, what the record says, or its own symbol without the marks of invisible characters.
+				const reads = cre.reasons.includes('TICKER_OR_NAME_READS_AS_USDG') ? 'USDG' : named ? String(named.imitates) : String(cre.ticker ?? '').replace(/\[U\+[0-9A-F]+\]/g, '').toUpperCase()
+				out.push(row('same_ticker', reads, nameOf, 'cre'))
+			} else out.push(row('unknown', '?', '', 'cre'))
+		} else if (named) out.push(row('same_ticker', String(named.imitates), nameOf, 'record'))
+		else if (listed) out.push(row('stock', listed.symbol, listed.name, 'list'))
+		else out.push(row('unknown', '?', '', 'none'))
 	}
 	return out
 }

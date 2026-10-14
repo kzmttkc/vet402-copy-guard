@@ -10,15 +10,19 @@ import { canonicalJson } from '../rwa-verify/verify'
 // @ts-expect-error verify.mjs is plain JavaScript on purpose and ships no types
 import * as V from '../verify.mjs'
 import { buildCard } from './card'
+import r68837431 from './fixtures/receipt-68837431.json'
 import collectMove from './fixtures/move-collect-76631426.json'
+import liquidityMove from './fixtures/move-liquidity.json'
+import rotationMove from './fixtures/move-rotation.json'
+import routedBuy from './fixtures/move-routed-buy.json'
 import spyBuy from './fixtures/move-same-ticker-buy-87804532.json'
 import { blindEntry, buildLedger, medianUsd, merkleRoot, poolRatio, PracticeBook } from './ledger'
 import { MAY_NOT_ACT } from './mandate-text'
 import { groupMovements } from './movement'
-import { ISSUER_LIST, NO_RECORD, poolEntryOf } from './tokens'
+import { ISSUER_LIST, NO_RECORD, poolEntryOf, receiptFacts } from './tokens'
 import { type Limits, limitsKeccak, parseLimits, paymentCapAtomic } from './limits'
 import { type Mandate, mandateMessage, mandateRef, mandateSigner, personalHash, recoverAddress } from './mandate'
-import { arrival, type DecisionInputsV2, decideV2, type MovedToken, type Price } from './rules-v2'
+import { arrival, type DecisionInputsV2, decideV2, type MovedToken, type Price, type Venue } from './rules-v2'
 import { CRE_MATCH, DRY_PURCHASE, FAKE_NVDA, FAKE_USDG, inputs, LIVE, liveRecord, profitableRecord, QQQ_BUY, WALLET } from './test-helpers'
 import { buildTrailV2, recheckTrail, type TrailV2 } from './trail'
 import { MAX_SPEND_ATOMIC, permit2TypedData } from './x402'
@@ -51,6 +55,14 @@ function mandate(limits: Limits = LIMITS): Mandate {
 }
 const PRICE: Price = { feed: `0x${'fe'.repeat(20)}`, aggregator: `0x${'a9'.repeat(20)}`, answer: '72883000000', decimals: 8, round_id: '300', updated_at: '2026-09-21T13:00:00.000Z', update_block: 68_800_000, update_tx: `0x${'77'.repeat(32)}` }
 
+/** Who sent a token the wallet received in a real receipt, as the walk records it. In a test the PoolManager is v4 and any other swapping address is taken as an official v3 pool (verify.mjs asks the chain). */
+function venuesFrom(logs: any[], wallet: string, token: string, direction: 'in' | 'out', transfers: { token: string; from: string; to: string; direction: string }[]): Venue[] {
+	const f = receiptFacts(logs, wallet)
+	const direct = transfers.filter((t) => t.token === token && t.direction === direction).map((t) => (direction === 'in' ? t.from : t.to))
+	return [...new Set([...(direction === 'in' ? (f.token_senders[token] ?? []) : []), ...direct])].map((a) => ({ address: a, kind: a === PM ? 'uniswap-v4-pool-manager' : f.swap_emitters.includes(a) ? 'uniswap-v3-pool' : 'other', swapped: f.swap_emitters.includes(a) }))
+}
+const QQQ_FACTS = receiptFacts(r68837431.logs as any, WALLET)
+
 async function v2(movement = QQQ_BUY, over: Partial<DecisionInputsV2> = {}, limits: Limits = LIMITS): Promise<DecisionInputsV2> {
 	const m = mandate(limits)
 	const signature = await PRINCIPAL.signMessage({ message: mandateMessage(m) })
@@ -60,12 +72,13 @@ async function v2(movement = QQQ_BUY, over: Partial<DecisionInputsV2> = {}, limi
 		decided_at: DECIDED,
 		payer: PAYER,
 		rules: RULES,
-		move: { time: '2026-09-21T13:36:17.000Z', signer: WALLET, value_wei: '0', to: PM, selector: '0x3593564c' },
+		move: { time: '2026-09-21T13:36:17.000Z', signer: WALLET, value_wei: '0', to: PM, selector: '0x3593564c', liquidity: movement === QQQ_BUY ? QQQ_FACTS.liquidity : [] },
 		record_fetch: { url: 'https://vet402.com/api/v1/rwa/facts/0xE9B08727131E34010b34006c660D4c1B436EC25f?chain=4663', http_status: 200 },
 		tokens_moved: movedTokens(LIVE, movement.transfers, { [QQQ]: 18, [USDG]: 6 }, USDG, ISSUER_LIST, null),
 		token_check: null,
 		pool_entry: null,
-		venue: movement === QQQ_BUY ? [{ address: PM, kind: 'uniswap-v4-pool-manager' }] : [],
+		venue: movement === QQQ_BUY ? venuesFrom(r68837431.logs as any, WALLET, QQQ, 'in', QQQ_BUY.transfers) : [],
+		other_venue: [],
 		price: movement === QQQ_BUY ? PRICE : null,
 		limits,
 		limits_keccak: limitsKeccak(limits),
@@ -74,7 +87,26 @@ async function v2(movement = QQQ_BUY, over: Partial<DecisionInputsV2> = {}, limi
 		...over,
 	}
 }
-const MOVE = { value_wei: '0', to: PM, selector: '0x3593564c' }
+
+/** Inputs from one of the saved real transactions: the movement, the move's facts and the venues, all from its receipt. */
+async function fromFixture(fx: { wallet: string; tx: { hash: string; from: string; to: string; value: string; selector: string }; time: string; logs: any[] }, over: Partial<DecisionInputsV2> = {}, facts: any = null) {
+	const [mv] = groupMovements(fx.wallet, fx.logs as any).filter((x) => x.tx === fx.tx.hash)
+	const tokens = movedTokens(facts, mv.transfers, { [USDG]: 6 }, USDG, ISSUER_LIST, null)
+	const stock = mv.transfers.find((t) => tokens.find((x) => x.token === t.token)?.kind === 'stock')
+	const other = mv.transfers.find((t) => t.direction === 'in' && tokens.find((x) => x.token === t.token)?.kind === 'same_ticker')
+	return v2(mv, {
+		wallet: fx.wallet,
+		record: { ...profitableRecord(), address: fx.wallet, tokens: tokens.filter((x) => x.kind === 'stock').map((x) => ({ token: x.token, symbol: x.ticker, canonical: true, usd: null, shares_ui: '0' })), lookalikes: [] },
+		move: { time: fx.time, signer: fx.tx.from, value_wei: fx.tx.value, to: fx.tx.to, selector: fx.tx.selector, liquidity: receiptFacts(fx.logs, fx.wallet).liquidity },
+		tokens_moved: tokens,
+		venue: stock ? venuesFrom(fx.logs, fx.wallet, stock.token, stock.direction, mv.transfers) : [],
+		other_venue: other ? venuesFrom(fx.logs, fx.wallet, other.token, 'in', mv.transfers) : [],
+		price: stock ? { ...PRICE, updated_at: fx.time, update_block: mv.block - 1 } : null,
+		...over,
+	})
+}
+
+const MOVE = { value_wei: '0', to: PM, selector: '0x3593564c', liquidity: [] as string[] }
 const moved = (transfers: { token: string }[]) => movedTokens(LIVE, transfers, {}, USDG, ISSUER_LIST, null)
 const both = (inp: DecisionInputsV2) => {
 	const d = decideV2(inp)
@@ -162,7 +194,7 @@ describe('the size a decision ends in', () => {
 		expect(other.decisive).toContain('C1')
 		const card = buildCard(await v2(FAKE_NVDA, sent), other)
 		expect(card.headline).toBe('No position: not the Stock Token NVDA, a different token with the same ticker')
-		expect(card.happened).toBe('0x3433…abd0 sent this wallet 25 tokens with the ticker NVDA (named "NVIDIA Robinhood Coin"). The wallet did not sign the transaction (0x3433…abd0 did). It paid nothing for them.')
+		expect(card.happened).toBe('0x3433…abd0 sent this wallet 25 tokens with the ticker NVDA (named "NVIDIA Robinhood Coin"). No official swap put the token out in the transaction. The wallet did not sign the transaction (0x3433…abd0 did).')
 		expect(card.why[0]).toStartWith('This is not the Robinhood Stock Token NVDA. It is a different token at 0x5dd7…3539 with the same ticker, at an address the issuer did not list. The Stock Token NVDA is at ')
 		expect(card.why[0]).toEndWith('It says nothing about who made it or why.')
 		expect(JSON.stringify(card)).not.toMatch(/fake|scam|look-alike/i)
@@ -176,84 +208,110 @@ describe('the size a decision ends in', () => {
 		expect(both(stranger).decisive).toEqual(['M1'])
 		expect(both(await v2(QQQ_BUY, { payer: '0x1111111111111111111111111111111111111111' })).decisive).toEqual(['M1'])
 		expect(both(await v2(QQQ_BUY, { decided_at: '2027-01-01T00:00:00.000Z' })).decisive).toEqual(['M1'])
-		expect(both(await v2(QQQ_BUY, { venue: [{ address: `0x${'9'.repeat(40)}`, kind: 'other' }] })).decisive).toEqual(['V1'])
-		const notSigned = await v2(QQQ_BUY, { move: { time: '2026-09-21T13:36:17.000Z', signer: '0x1111111111111111111111111111111111111111', ...MOVE } })
-		expect(both(notSigned).decisive).toEqual(['D1'])
-		expect(buildCard(notSigned, both(notSigned)).headline).toBe('No position: sent to the wallet, not bought by it')
+		const unofficial = await v2(QQQ_BUY, { venue: [{ address: `0x${'9'.repeat(40)}`, kind: 'other', swapped: true }] })
+		expect(both(unofficial).decisive).toEqual(['V1', 'D1'])
+		expect(buildCard(unofficial, both(unofficial)).headline).toBe('No position: sent to the wallet, not bought by it')
+		// signed by a relayer: still a purchase, because the payment left the wallet itself
+		const relayed = await v2(QQQ_BUY, { move: { time: '2026-09-21T13:36:17.000Z', signer: '0x1111111111111111111111111111111111111111', ...MOVE } })
+		expect(both(relayed).tier).toBe('FULL')
+		expect(buildCard(relayed, both(relayed)).happened).toContain('0x1111…1111 signed the transaction, and the payment left the wallet itself.')
 		expect(both(await v2(QQQ_BUY, { price: null })).decisive).toEqual(['P1'])
 		expect(both(await v2(QQQ_BUY, { price: { ...PRICE, updated_at: '2026-09-10T00:00:00.000Z' } })).decisive).toEqual(['P1'])
 		expect(both(await v2(QQQ_BUY, { price: { ...PRICE, update_block: 99_000_000 } })).decisive).toEqual(['P1'])
 		const sale = { ...QQQ_BUY, transfers: QQQ_BUY.transfers.map((t) => ({ ...t, direction: t.direction === 'in' ? ('out' as const) : ('in' as const) })) }
-		const at = { venue: [{ address: PM, kind: 'uniswap-v4-pool-manager' as const }], price: PRICE }
+		const at = { venue: [{ address: PM, kind: 'uniswap-v4-pool-manager' as const, swapped: true }], price: PRICE }
 		const sold = both(await v2(sale, at))
 		expect(sold.decisive).toEqual(['D1'])
 		expect(buildCard(await v2(sale, at), sold).headline).toBe('No position: a sale or a transfer out, not a purchase')
 	})
-	test('D1 is a purchase: the wallet signed and paid. The real QQQ buy paid USDG, and the same Stock Token with nothing paid, or paid in ETH, is told apart', async () => {
+	test('D1 is a purchase: an official swap put the token out and the wallet itself paid. The real QQQ buy paid USDG, and the same token with nothing paid, or paid in ETH, is told apart', async () => {
 		const buy = await v2()
-		expect(arrival(buy, { token: QQQ, direction: 'in' })).toBe('bought')
+		expect(arrival(buy, { token: QQQ, direction: 'in' })).toBe('purchase')
 		const d = both(buy)
-		expect(d.rule_results.find((r) => r.id === 'D1')?.detail).toStartWith('received, signed by the wallet, paid ')
-		expect(buildCard(buy, d).happened).toBe('The wallet bought 6.86032 QQQ (Invesco QQQ) from 0xd60a…597d and paid 5,000 USDG. The wallet signed the transaction.')
-		// the same transfers without the USDG that left: signed, received, nothing paid
+		expect(d.rule_results.find((r) => r.id === 'D1')?.detail).toStartWith('bought: an official swap put it out and the wallet paid 5000000000 of 0x5fc5360d0400a0fd4f2af552add042d716f1d168')
+		expect(buildCard(buy, d).happened).toMatch(/^The wallet bought 6\.86032 QQQ \(Invesco QQQ\) in a swap on (the Uniswap v4 PoolManager|an official Uniswap v3 pool) \(0x[0-9a-f]{4}…[0-9a-f]{4}\) and paid 5,000 USDG\. The wallet signed the transaction\.$/)
 		const unpaidMove = { ...QQQ_BUY, transfers: QQQ_BUY.transfers.filter((t) => t.direction === 'in') }
 		const unpaid = await v2(unpaidMove, { venue: buy.venue, price: PRICE, tokens_moved: buy.tokens_moved.filter((m) => m.kind === 'stock') })
-		expect(arrival(unpaid, { token: QQQ, direction: 'in' })).toBe('received_unpaid')
+		expect(arrival(unpaid, { token: QQQ, direction: 'in' })).toBe('swapped_unpaid')
 		expect(both(unpaid).decisive).toEqual(['D1'])
-		// with ETH carried by the transaction it is a purchase again
+		expect(buildCard(unpaid, both(unpaid)).headline).toBe('No position: swapped, but not paid for by the wallet')
 		const eth = await v2(unpaidMove, { venue: buy.venue, price: PRICE, tokens_moved: unpaid.tokens_moved, move: { ...unpaid.move, value_wei: '39813720698039296' } })
 		expect(both(eth).tier).toBe('FULL')
 		expect(buildCard(eth, both(eth)).happened).toContain('and paid 0.039813 ETH.')
+		// ETH carried by a transaction someone else signed is not the wallet's payment
+		const relayedEth = await v2(unpaidMove, { venue: buy.venue, price: PRICE, tokens_moved: unpaid.tokens_moved, move: { ...unpaid.move, value_wei: '39813720698039296', signer: '0x1111111111111111111111111111111111111111' } })
+		expect(arrival(relayedEth, { token: QQQ, direction: 'in' })).toBe('swapped_unpaid')
 	})
-	test('a real liquidity-pool collect (0x39967dd6…, method 0xfc6f7865): SLV and USDG arrive from an official v3 pool in a transaction the wallet signed, nothing is paid, so it is not a purchase', async () => {
-		const wallet = collectMove.wallet
-		const [mv] = groupMovements(wallet, collectMove.logs as any)
+	test('a real liquidity-pool collect (0x39967dd6…, Collect logs): SLV and USDG arrive from an official v3 pool and nothing is paid. A liquidity operation, opened by neither book', async () => {
 		const SLV = '0x411efb0e7f985935daec3d4c3ebaea0d0ad7d89f'
-		expect(ISSUER_LIST[SLV]?.symbol).toBe('SLV')
-		const inp = await v2(mv, {
-			wallet,
-			record: { ...profitableRecord(), address: wallet, tokens: [{ token: SLV, symbol: 'SLV', canonical: true, usd: null, shares_ui: '0' }] },
-			move: { time: collectMove.time, signer: collectMove.tx.from, value_wei: collectMove.tx.value, to: collectMove.tx.to, selector: collectMove.tx.selector },
-			tokens_moved: movedTokens(null, mv.transfers, { [SLV]: 18, [USDG]: 6 }, USDG, ISSUER_LIST, null),
-			venue: [{ address: '0x8cb787e6c315d464775289bad00fdd67d53ecb3d', kind: 'uniswap-v3-pool' }],
-			price: { ...PRICE, answer: '5460500000', updated_at: '2026-09-30T12:00:00.000Z', update_block: 76_600_000 },
-		})
+		const inp = await fromFixture(collectMove as any)
 		expect(collectMove.tx.selector).toBe('0xfc6f7865')
-		expect(arrival(inp, { token: SLV, direction: 'in' })).toBe('received_unpaid')
+		expect(inp.move.liquidity).toEqual(['Collect'])
+		expect(arrival(inp, { token: SLV, direction: 'in' })).toBe('liquidity')
 		const d = both(inp)
 		expect([d.tier, d.paper_trade]).toEqual(['NONE', null])
 		expect(d.decisive).toContain('D1')
-		expect(d.rule_results.find((r) => r.id === 'V1')?.ok).toBe(true)
-		expect(d.rule_results.find((r) => r.id === 'D1')?.detail).toBe('received, signed by the wallet, nothing paid: not a purchase (call 0xfc6f7865 on 0x73991a25c818bf1f1128deaab1492d45638de0d3)')
+		expect(d.rule_results.find((r) => r.id === 'D1')?.detail).toBe('received in a transaction with liquidity logs (Collect): a liquidity operation, not a purchase')
 		const card = buildCard(inp, d)
-		expect(card.headline).toBe('No position: received without paying, not a purchase')
-		expect(card.happened).toContain('in a transaction it signed, and paid nothing in it. That is not a purchase')
-		// the ticker copy still opens here, which is the point of telling the two apart
+		expect(card.headline).toBe('No position: a liquidity operation, not a purchase')
+		expect(card.happened).toContain('in a transaction that changes a liquidity position (Collect). That is not a purchase.')
+		expect(blindEntry(inp)).toBeNull()
+	})
+	test('a real rearranged liquidity position (0x03989c0f…) is a liquidity operation, and a real exchange of SPY for NVDA (0x95c9447a…) is a rotation. Neither is a purchase in either book', async () => {
+		const NVDA = '0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec'
+		const lp = await fromFixture(liquidityMove as any)
+		expect(lp.move.liquidity.length).toBeGreaterThan(0)
+		expect(arrival(lp, { token: NVDA, direction: 'in' })).toBe('liquidity')
+		expect(both(lp).tier).toBe('NONE')
+		expect(blindEntry(lp)).toBeNull()
+		const rot = await fromFixture(rotationMove as any)
+		const leg = rot.movement.transfers.find((t) => t.token === NVDA && t.direction === 'in') as any
+		expect(arrival(rot, leg)).toBe('rotation')
+		const d = both(rot)
+		expect(d.tier).toBe('NONE')
+		expect(blindEntry(rot)).toBeNull()
+	})
+	test('a real purchase through a router (0x445859d5…): the Stock Token reaches the wallet from the router, an official swap put it out, the wallet paid USDG. A purchase', async () => {
+		const NVDA = '0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec'
+		const inp = await fromFixture(routedBuy as any)
+		const leg = inp.movement.transfers.find((t) => t.token === NVDA && t.direction === 'in') as any
+		expect(leg.from).toBe('0x3d90f66b534dd8482b181e24655a9e8265316be9')
+		expect(inp.venue.some((v) => v.swapped && v.kind !== 'other')).toBe(true)
+		expect(arrival(inp, leg)).toBe('purchase')
+		const d = both(inp)
+		expect(d.rule_results.find((r) => r.id === 'D1')?.ok).toBe(true)
+		expect(d.rule_results.find((r) => r.id === 'V1')?.ok).toBe(true)
 		expect(blindEntry(inp)?.asset).toBe('stock')
 	})
 	test('a real purchase of a different token under the ticker SPY (0x647ba3dc…): the card says the wallet bought it and what it paid, never that it was sent', async () => {
-		const wallet = spyBuy.wallet
-		const [mv] = groupMovements(wallet, spyBuy.logs as any)
 		const SPY_CHIP = '0x69e7778d46713e17572d610bdaca3943aa4e6219'
 		const facts = { lookalikes: [{ token: SPY_CHIP, imitates: 'SPY', name_raw: 'Spy Chip' }] }
-		const tokens = movedTokens(facts, mv.transfers, { [SPY_CHIP]: 18 }, USDG, ISSUER_LIST, null)
+		const inp0 = await fromFixture(spyBuy as any, {}, facts)
+		const mv = inp0.movement
+		const tokens = inp0.tokens_moved
 		expect(tokens).toEqual([{ token: SPY_CHIP, kind: 'same_ticker', ticker: 'SPY', name: 'Spy Chip', decimals: 18, by: 'record', listed_at: Object.keys(ISSUER_LIST).find((k) => ISSUER_LIST[k].symbol === 'SPY') as string }])
-		const entry = poolEntryOf(spyBuy.swaps, mv.transfers[0].amount_raw)
+		const swaps = spyBuy.logs.filter((l: any) => l.address === PM && l.topics[0] === '0x40e9cecb9f5f1f1c5b9c97dec2917b7ee92e57ba5563708daca94dd84ad7112f')
+		const entry = poolEntryOf(swaps as any, mv.transfers[0].amount_raw)
 		expect(entry).not.toBeNull()
-		const inp = await v2(mv, { wallet, record: { ...profitableRecord(), address: wallet }, move: { time: spyBuy.time, signer: spyBuy.tx.from, value_wei: spyBuy.tx.value, to: spyBuy.tx.to, selector: spyBuy.tx.selector }, tokens_moved: tokens, pool_entry: entry })
-		expect(arrival(inp, { token: SPY_CHIP, direction: 'in' })).toBe('bought')
+		const inp = { ...inp0, pool_entry: entry }
+		expect(arrival(inp, { token: SPY_CHIP, direction: 'in' })).toBe('purchase')
 		const d = both(inp)
 		expect(d.decisive).toContain('C1')
 		const card = buildCard(inp, d)
-		expect(card.happened).toBe('The wallet bought 3,231,746.269751 tokens with the ticker SPY (named "Spy Chip") from the Uniswap v4 PoolManager (0x8366…0951) and paid 0.039813 ETH. The wallet signed the transaction.')
+		expect(card.happened).toBe('The wallet bought 3,231,746.269751 tokens with the ticker SPY (named "Spy Chip") in a swap on the Uniswap v4 PoolManager (0x8366…0951) and paid 0.039813 ETH. The wallet signed the transaction.')
 		expect(card.happened).not.toContain('sent this wallet')
 		expect(card.headline).toBe('No position: not the Stock Token SPY, a different token with the same ticker')
-		// with the CRE token-check results the basis of the sentence changes, and the row names the results file
-		const cre = { source: 'docs/token-check/results.json', keccak: `0x${'cc'.repeat(32)}`, tokens: { [SPY_CHIP]: { issuer_token: false, ticker: 'SPY', reasons: ['NOT_IN_LIST', 'SYMBOL_COPIES_LISTED'] } } }
-		const withCre = await v2(mv, { ...inp, token_check: cre, tokens_moved: movedTokens(null, mv.transfers, { [SPY_CHIP]: 18 }, USDG, ISSUER_LIST, cre) })
+		// with the CRE token-check results (the shape of docs/token-check/results.json) the basis of the sentence changes, and the row names the results file
+		const cre = { source: 'docs/token-check/results.json', keccak: `0x${'cc'.repeat(32)}`, tokens: { [SPY_CHIP]: { issuer_token: false, ticker: 'SPY', reasons: ['NOT_IN_ISSUER_LIST', 'TICKER_SAME_AS_ISSUER_TOKEN'] } } }
+		const withCre = { ...inp, token_check: cre, tokens_moved: movedTokens(null, mv.transfers, { [SPY_CHIP]: 18 }, USDG, ISSUER_LIST, cre) }
 		const d2 = both(withCre)
-		expect(withCre.tokens_moved[0].by).toBe('cre')
-		expect(buildCard(withCre, d2).why[0]).toContain('The Chainlink CRE token-check workflow read it from the chain (NOT_IN_LIST, SYMBOL_COPIES_LISTED).')
+		expect(withCre.tokens_moved[0]).toMatchObject({ by: 'cre', kind: 'same_ticker', ticker: 'SPY' })
+		expect(buildCard(withCre, d2).why[0]).toContain('The Chainlink CRE token-check workflow read it from the chain (NOT_IN_ISSUER_LIST, TICKER_SAME_AS_ISSUER_TOKEN).')
+		// an ordinary token outside the list (no listed mark) is not a same-ticker token
+		const plain = { ...cre, tokens: { [SPY_CHIP]: { issuer_token: false, ticker: 'RIPE', reasons: ['NOT_IN_ISSUER_LIST'] } } }
+		expect(movedTokens(null, mv.transfers, {}, USDG, ISSUER_LIST, plain)[0].kind).toBe('unknown')
+		const hiddenUsdg = { ...cre, tokens: { [SPY_CHIP]: { issuer_token: false, ticker: 'U[U+17B5]S[U+17B5]DG', reasons: ['NOT_IN_ISSUER_LIST', 'TICKER_OR_NAME_READS_AS_USDG'] } } }
+		expect(movedTokens(null, mv.transfers, {}, USDG, ISSUER_LIST, hiddenUsdg)[0]).toMatchObject({ kind: 'same_ticker', ticker: 'USDG' })
 		// the ticker copy opens it. Its value comes from the pool, or it is not measured. Nothing is written off
 		const b = blindEntry(inp)
 		expect(b).toMatchObject({ asset: 'same_ticker', entry: null, pool: entry })
@@ -308,7 +366,7 @@ describe('the size a decision ends in', () => {
 			A5: { record: { ...good, r1_status: 'unverified' } },
 			A6: { record: { ...good, lookalikes: [{ token: `0x${'2'.repeat(40)}`, imitates: 'NVDA', counted: true, needs_review: false }] } },
 			B1: { record: { ...good, as_of_block: 1 } },
-			B2: { record: { ...good, tokens: [], lookalikes: [] } },
+			B2: { tokens_moved: (await v2()).tokens_moved.map((m) => (m.kind === 'usdg' ? { ...m, kind: 'unknown' as const, by: 'none' as const } : m)) },
 			M1: { payer: `0x${'1'.repeat(40)}` },
 		}
 		for (const [id, over] of Object.entries(failing)) {
@@ -369,8 +427,8 @@ describe('the ledger walk', () => {
 		expect(canonicalJson(JSON.parse(JSON.stringify(mine)))).toBe(canonicalJson(saved))
 		// no position copy-guard opened rests on anything but a purchase: signed by the wallet and paid for
 		for (const r of mine.rows.filter((x) => x.copy_guard.opened)) {
-			expect([r.n, r.main?.arrival, r.main?.kind]).toEqual([r.n, 'bought', 'stock'])
-			expect(trails[r.n - 1].inputs.move.selector).not.toBe('0xfc6f7865')
+			expect([r.n, r.main?.arrival, r.main?.kind]).toEqual([r.n, 'purchase', 'stock'])
+			expect(trails[r.n - 1].inputs.move.liquidity).toEqual([])
 		}
 		// every position of the ticker copy is in the same-size pass, and what copy-guard opened is a subset of it
 		const sz = mine.totals.same_size

@@ -22,7 +22,7 @@ const hex = (n: number) => `0x${n.toString(16)}`
 const addr = (word: string) => `0x${word.slice(-40)}`.toLowerCase()
 
 /** Is this address the v4 PoolManager, or a pool whose factory() is the official v3 factory? */
-export async function venueOf(rpc: Rpc, address: string, cache: Map<string, Venue['kind']>): Promise<Venue> {
+export async function venueOf(rpc: Rpc, address: string, cache: Map<string, Venue['kind']>, swapped = false): Promise<Venue> {
 	const a = address.toLowerCase()
 	let kind = cache.get(a)
 	if (!kind) {
@@ -38,7 +38,7 @@ export async function venueOf(rpc: Rpc, address: string, cache: Map<string, Venu
 		}
 		cache.set(a, kind)
 	}
-	return { address: a, kind }
+	return { address: a, kind, swapped }
 }
 
 /** Every answer the feed's current aggregator published in [fromBlock, toBlock], oldest first. */

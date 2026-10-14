@@ -35,7 +35,7 @@ import { type Book, type DecisionInputsV2, feedPrice, priceGap, stockLegV2, type
 import type { TrailV2 } from './trail'
 
 export const BASELINE =
-	'Ticker copy opens the full size on every move in which a token with a stock ticker arrives in the wallet: a Robinhood Stock Token with a usable Chainlink price, or a different token that uses a listed stock ticker. It goes by the ticker and the log. It buys no record, checks no venue, signature or payment, and has no daily or open-position limit. For a Stock Token it uses the same entry price and the same exit rules as copy-guard.'
+	'Ticker copy opens the full size on every purchase of a token with a stock ticker: a Robinhood Stock Token with a usable Chainlink price, or a different token that uses a listed stock ticker. A purchase is the one definition copy-guard and the selection use (an official swap, paid by the wallet in USDG, WETH or ETH, no liquidity operation, no other Stock Token out). It goes by the ticker. It buys no record, does not ask whose token it is, and has no daily or open-position limit. For a Stock Token it uses the same entry price and the same exit rules as copy-guard.'
 export const NOTE =
 	'Practice (paper) trades only. No real trade was placed. The two columns compare two policies on past public moves. This is not a forecast, not a record of real trading and not advice. A position in a token without a Chainlink feed is valued only from a Uniswap v4 pool the wallet itself bought in, otherwise it is not measured and is left out of every sum.'
 
@@ -50,6 +50,10 @@ export type Cohort = 'watched' | 'top_buyers' | 'same_ticker_buyers'
 /** What the ledger knows besides the trails: which wallet is in the walk for which reason, the window, and the pool marks. Saved as docs/walk/context.json. */
 export type WalkContext = {
 	window: { from_block: number; to_block: number; from_time: string; to_time: string }
+	/** How the wallets were picked: the addresses asked, the ones selected, the ones vet402 could build no record for, and why the asking stopped. */
+	selection: { asked: number; selected: number; stop: string; no_record: { wallet: string; bound_rank: number; bound_usd: string; has_code: boolean; http_status: number; reason: string }[] }
+	/** How a price at a past block was read. */
+	price_source: string
 	wallets: { wallet: string; cohort: Cohort; rank: number | null; purchases_usd: string | null; record_http: number }[]
 	pool_marks: Record<string, PoolMark>
 }
@@ -215,6 +219,8 @@ export function saleOf(inp: DecisionInputsV2): string | null {
 export function blindEntry(inp: DecisionInputsV2): { token: string; symbol: string; entry: string | null; asset: 'stock' | 'same_ticker'; pool: PoolEntry | null } | null {
 	const leg = mainLeg(inp)
 	if (!leg || leg.t.direction !== 'in') return null
+	// The same definition of a purchase as rule D1 and the selection: anything else opens nothing in either book.
+	if (arrival(inp, { token: leg.t.token, direction: 'in' }) !== 'purchase') return null
 	if (leg.m.kind === 'same_ticker') return leg.m.ticker === 'USDG' ? null : { token: leg.m.token, symbol: leg.m.ticker, entry: null, asset: 'same_ticker', pool: inp.pool_entry ?? null }
 	if (leg.m.kind === 'stock' && priceGap(inp) === '') return { token: leg.m.token, symbol: leg.m.ticker, entry: feedPrice(inp.price), asset: 'stock', pool: null }
 	return null
@@ -279,6 +285,8 @@ export type Ledger = {
 		wallets_without_record: number
 		decisions_without_record: number
 		first_move_time: string
+		/** How every incoming Stock Token came, from the transactions: only a purchase can open a position. */
+		stock_moves: Record<Arrival, number>
 		last_move_time: string
 		full: number
 		reduced: number
@@ -291,7 +299,9 @@ export type Ledger = {
 			tickers: string[]
 			sent_to_the_wallet: number
 			bought_by_the_wallet: number
+			/** came in by a swap the wallet did not pay for, a liquidity operation or a rotation */
 			received_unpaid: number
+			by_arrival: Record<Arrival, number>
 			logged_as_sent_by_the_wallet: number
 			with_invisible_characters: number
 			list: { token: string; ticker: string; name: string; moves: number }[]
@@ -395,7 +405,7 @@ export function buildLedger(trails: TrailV2[], feeds: Feeds, markBlock: number, 
 	for (const r of rows) if (r.tier === 'NONE') reasons.set(r.card.headline.replace('No position: ', ''), (reasons.get(r.card.headline.replace('No position: ', '')) ?? 0) + 1)
 	// Different tokens under a listed ticker: one entry per token, and how each move came about.
 	const others = new Map<string, { token: string; ticker: string; name: string; moves: number }>()
-	const how: Record<Arrival, number> = { bought: 0, received_unpaid: 0, received_unsigned: 0, out: 0 }
+	const how: Record<Arrival, number> = { purchase: 0, rotation: 0, liquidity: 0, swapped_unpaid: 0, received: 0, out: 0 }
 	let hidden = 0
 	let otherMoves = 0
 	trails.forEach((t) => {
@@ -466,6 +476,14 @@ export function buildLedger(trails: TrailV2[], feeds: Feeds, markBlock: number, 
 			wallets_without_record: noRecord.length,
 			decisions_without_record: rows.filter((r) => noRecord.includes(r.wallet)).length,
 			first_move_time: times[0],
+			stock_moves: (() => {
+				const c: Record<Arrival, number> = { purchase: 0, rotation: 0, liquidity: 0, swapped_unpaid: 0, received: 0, out: 0 }
+				for (const t of trails) {
+					const leg = stockLegV2(t.inputs)
+					if (leg) c[arrival(t.inputs, leg)]++
+				}
+				return c
+			})(),
 			last_move_time: times[times.length - 1],
 			full: count('FULL'),
 			reduced: count('REDUCED'),
@@ -475,9 +493,10 @@ export function buildLedger(trails: TrailV2[], feeds: Feeds, markBlock: number, 
 				moves: otherMoves,
 				tokens: others.size,
 				tickers: [...new Set([...others.values()].map((o) => o.ticker))].sort(),
-				sent_to_the_wallet: how.received_unsigned,
-				bought_by_the_wallet: how.bought,
-				received_unpaid: how.received_unpaid,
+				sent_to_the_wallet: how.received,
+				bought_by_the_wallet: how.purchase,
+				received_unpaid: how.swapped_unpaid + how.liquidity + how.rotation,
+				by_arrival: how,
 				logged_as_sent_by_the_wallet: how.out,
 				with_invisible_characters: hidden,
 				list: [...others.values()].sort((x, y) => y.moves - x.moves || (x.token < y.token ? -1 : 1)),
