@@ -1,4 +1,4 @@
-// Runs the two CRE workflows with `cre workflow simulate` and reads their result.
+// Runs the CRE workflows with `cre workflow simulate` and reads their result.
 //
 // With `broadcast`, the EVM write goes to Robinhood Testnet through CRE's
 // simulation forwarder and is paid in testnet ETH by the testnet-only key in
@@ -26,7 +26,7 @@ export function parseSimulation<T>(out: string): { result: T; tx: string | null 
 	return { result, tx }
 }
 
-export function simulate<T>(workflow: 'rwa-verify' | 'trail-anchor', payload: unknown, opts: { broadcast: boolean; workDir: string; label: string }): CreRun<T> {
+export function simulate<T>(workflow: 'rwa-verify' | 'trail-anchor' | 'token-check', payload: unknown, opts: { broadcast: boolean; workDir: string; label: string }): CreRun<T> {
 	mkdirSync(opts.workDir, { recursive: true })
 	const payloadFile = join(opts.workDir, `${opts.label}.payload.json`)
 	writeFileSync(payloadFile, `${JSON.stringify(payload, null, 2)}\n`)

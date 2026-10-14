@@ -1,0 +1,6 @@
+Compiling 2 files with Solc 0.8.26
+Solc 0.8.26 finished in 562.10ms
+Compiler run successful!
+Deployer: 0xBB621a68f7C142CD340C5D5e71056Ecd42f8f48D
+Deployed to: 0xF49b4F2110E6E0dAbd1f3B532EFd64E10a016550
+Transaction hash: 0xd3f22fe887aecd59941b4ebc6a74533d1efafd7016d93be0e6680dd54fb8d03c

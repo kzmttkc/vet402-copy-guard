@@ -140,6 +140,146 @@ describe('the gate', () => {
 		expect(res.headers.get('X-Payment-Status')).toBe('unknown')
 	})
 
+	test('the same payment sent twice at once runs the workflow once and is settled once', async () => {
+		// The facilitator answers /verify only when the test lets it, so both requests are inside the gate together.
+		const calls: string[] = []
+		const runs: unknown[] = []
+		const waiting: (() => void)[] = []
+		const h = makeHandler({
+			broadcast: false,
+			fetchImpl: (async (url: string) => {
+				const path = String(url).replace(FACILITATOR_URL, '')
+				calls.push(path)
+				if (path === '/verify') await new Promise<void>((r) => waiting.push(r))
+				return new Response(JSON.stringify(path === '/verify' ? { isValid: true, payer: account.address } : { success: true, transaction: SETTLE_TX, network: 'eip155:4663', payer: account.address }), { status: 200 })
+			}) as unknown as typeof fetch,
+			runWorkflow: (payload) => {
+				runs.push(payload)
+				return { result: VERDICT, tx: null }
+			},
+		})
+		const payment = await signed(h)
+		const first = post(h, { 'PAYMENT-SIGNATURE': payment })
+		const second = post(h, { 'PAYMENT-SIGNATURE': payment })
+		// Let the first one go all the way through before the second one's /verify (if it made one) answers.
+		while (waiting.length === 0) await new Promise((r) => setTimeout(r, 1))
+		waiting.shift()?.()
+		const a = await first
+		await new Promise((r) => setTimeout(r, 5))
+		for (const go of waiting.splice(0)) go()
+		const b = await second
+		expect([a.status, b.status].sort()).toEqual([200, 402])
+		const refused = a.status === 402 ? a : b
+		expect(decodeRequired(refused.headers.get('PAYMENT-REQUIRED') as string).error).toBe('payment_in_flight')
+		expect(runs).toHaveLength(1)
+		expect(calls.filter((c) => c === '/settle')).toHaveLength(1)
+		expect(calls.filter((c) => c === '/verify')).toHaveLength(1)
+		// and afterwards it is spent for good
+		const again = await post(h, { 'PAYMENT-SIGNATURE': payment })
+		expect(decodeRequired(again.headers.get('PAYMENT-REQUIRED') as string).error).toBe('payment_already_used')
+		expect(runs).toHaveLength(1)
+		expect(calls.filter((c) => c === '/settle')).toHaveLength(1)
+		// the same nonce written another way ("0…0123" for "123") is the same payment: same signature, same Permit2 nonce
+		const p = JSON.parse(Buffer.from(payment, 'base64').toString('utf8'))
+		p.payload.permit2Authorization.nonce = `000${p.payload.permit2Authorization.nonce}`
+		const padded = await post(h, { 'PAYMENT-SIGNATURE': Buffer.from(JSON.stringify(p), 'utf8').toString('base64') })
+		expect(decodeRequired(padded.headers.get('PAYMENT-REQUIRED') as string).error).toBe('payment_already_used')
+		expect(runs).toHaveLength(1)
+		expect(calls.filter((c) => c === '/settle')).toHaveLength(1)
+	})
+
+	test('a payment that was not charged can be sent again: facilitator down, workflow failed, gate busy', async () => {
+		// facilitator down at /verify, then back
+		let w = world()
+		let down = true
+		let h = makeHandler({
+			broadcast: false,
+			fetchImpl: (async (url: string) => {
+				w.calls.push(String(url).replace(FACILITATOR_URL, ''))
+				if (down) throw new Error('connect ECONNREFUSED')
+				return new Response(JSON.stringify(String(url).endsWith('/verify') ? w.verify : w.settle), { status: 200 })
+			}) as unknown as typeof fetch,
+			runWorkflow: (payload) => {
+				w.runs.push(payload)
+				return { result: VERDICT, tx: null }
+			},
+		})
+		let payment = await signed(h)
+		let res = await post(h, { 'PAYMENT-SIGNATURE': payment })
+		expect(res.status).toBe(502)
+		expect(((await res.json()) as any).charged).toBe(false)
+		down = false
+		res = await post(h, { 'PAYMENT-SIGNATURE': payment })
+		expect(res.status).toBe(200)
+		expect(w.runs).toHaveLength(1)
+		expect(w.calls.filter((c) => c === '/settle')).toHaveLength(1)
+
+		// refused by the facilitator, then accepted
+		w = world()
+		w.verify = { isValid: false, invalidReason: 'insufficient_funds' }
+		h = gate(w)
+		payment = await signed(h)
+		expect((await post(h, { 'PAYMENT-SIGNATURE': payment })).status).toBe(402)
+		w.verify = { isValid: true, payer: account.address }
+		expect((await post(h, { 'PAYMENT-SIGNATURE': payment })).status).toBe(200)
+		expect(w.calls).toEqual(['/verify', '/verify', '/settle'])
+
+		// workflow failed, then worked
+		w = world()
+		w.fail = true
+		h = gate(w)
+		payment = await signed(h)
+		expect((await post(h, { 'PAYMENT-SIGNATURE': payment })).status).toBe(502)
+		w.fail = false
+		expect((await post(h, { 'PAYMENT-SIGNATURE': payment })).status).toBe(200)
+		expect(w.calls).toEqual(['/verify', '/verify', '/settle'])
+
+		// busy: another payment is being settled. The second payer is told so, is not charged, and can come back.
+		w = world()
+		let release: () => void = () => {}
+		const runs: unknown[] = []
+		const calls: string[] = []
+		h = makeHandler({
+			broadcast: false,
+			fetchImpl: (async (url: string) => {
+				const path = String(url).replace(FACILITATOR_URL, '')
+				calls.push(path)
+				if (path === '/settle' && calls.filter((c) => c === '/settle').length === 1) await new Promise<void>((r) => (release = r))
+				return new Response(JSON.stringify(path === '/verify' ? w.verify : w.settle), { status: 200 })
+			}) as unknown as typeof fetch,
+			runWorkflow: (payload) => {
+				runs.push(payload)
+				return { result: VERDICT, tx: null }
+			},
+		})
+		const one = await signed(h)
+		const two = await signed(h)
+		const slow = post(h, { 'PAYMENT-SIGNATURE': one })
+		while (!calls.includes('/settle')) await new Promise((r) => setTimeout(r, 1))
+		res = await post(h, { 'PAYMENT-SIGNATURE': two })
+		expect(res.status).toBe(503)
+		expect(((await res.json()) as any).charged).toBe(false)
+		release()
+		expect((await slow).status).toBe(200)
+		expect((await post(h, { 'PAYMENT-SIGNATURE': two })).status).toBe(200)
+		expect(runs).toHaveLength(2)
+		expect(calls.filter((c) => c === '/settle')).toHaveLength(2)
+	})
+
+	test('once /settle was asked, the payment stays spent even when the facilitator says nothing moved', async () => {
+		const w = world()
+		w.settle = { success: false, errorReason: 'nonce_used', transaction: '' }
+		const h = gate(w)
+		const payment = await signed(h)
+		expect((await post(h, { 'PAYMENT-SIGNATURE': payment })).status).toBe(402)
+		w.settle = { success: true, transaction: SETTLE_TX, network: 'eip155:4663', payer: account.address }
+		const again = await post(h, { 'PAYMENT-SIGNATURE': payment })
+		expect(again.status).toBe(402)
+		expect(decodeRequired(again.headers.get('PAYMENT-REQUIRED') as string).error).toBe('payment_already_used')
+		expect(w.calls).toEqual(['/verify', '/settle'])
+		expect(w.runs).toHaveLength(1)
+	})
+
 	test('an agent can find it: the agent card, SKILL.md and the catalog name the same workflow and terms', async () => {
 		const h = gate(world())
 		const get = (p: string) => h(new Request(`http://gate.test${p}`))

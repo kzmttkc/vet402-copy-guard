@@ -499,7 +499,8 @@ export type Result = {
 
 const ALLOWED: Verdict[] = ['GENUINE_STOCK_TOKEN', 'USDG', 'NOT_A_STOCK_TOKEN']
 
-function judge(state: TokenState): { verdict: Verdict; bits: number; ticker: string | null } {
+/** What one token is, from what was read about it. Used by `check` (one transaction) and by batch.ts (many tokens). */
+export function judge(state: TokenState): { verdict: Verdict; bits: number; ticker: string | null } {
 	const token = state.token.toLowerCase()
 	const codeOk = state.codeHash !== null && state.codeHash.toLowerCase() === STOCK_TOKEN_CODE_HASH
 	const beaconOk = addressInWord(state.beaconSlot) === STOCK_TOKEN_BEACON

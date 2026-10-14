@@ -1,3 +1,7 @@
 {
-  "robinhoodRpc": "https://rpc.mainnet.chain.robinhood.com"
+  "robinhoodRpc": "https://rpc.mainnet.chain.robinhood.com",
+  "stateRpc": "https://robinhood-rpc.publicnode.com",
+  "chainSelectorName": "robinhood-testnet",
+  "receiverAddress": "0xF49b4F2110E6E0dAbd1f3B532EFd64E10a016550",
+  "gasLimit": "300000"
 }

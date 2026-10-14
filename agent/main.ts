@@ -34,6 +34,7 @@ import { type CreRun, REPO, simulate } from './cre'
 import { chain, erc20 } from './evm'
 import { feedSeries, priceAt, venueOf } from './facts'
 import { payGate } from './gate/client'
+import { confirmGateVerdict, ownReceiver, TESTNET_RPC } from './gate/verdict'
 import { cents, limitsKeccak, type Limits, parseLimits, paymentCapAtomic, usd, usdgAtomic } from './limits'
 import { mandateRef, type MandateRef, parseMandate } from './mandate'
 import { recordInputs } from './record'
@@ -464,22 +465,34 @@ export async function main(argv: string[]) {
 		})
 		purchase = gate.purchase
 		terms = gate.terms
-		if (gate.verdict && anchor) {
-			const v = gate.verdict
-			say(`  CRE verify  ${v.result.verdict} reasons ${v.result.reasonBits}, run by the gate${v.verdict_tx ? `, RecordChecked tx ${v.verdict_tx}` : ' (simulated, not broadcast)'}`)
+		// The gate's answer is a claim. It is used only after the agent has read the RecordChecked
+		// event itself on Robinhood Testnet, from its own receiver, and found the same verdict there
+		// (agent/gate/verdict.ts, which also says what that does not prove). Otherwise the agent runs
+		// the same CRE workflow itself, as in a dry run.
+		const receiver = ownReceiver()
+		const checked =
+			gate.verdict && anchor
+				? await confirmGateVerdict(gate.verdict, { receiver, anchorTx: anchor.tx, wallet, anchoredFactsHash: anchor.factsHash, anchorBlock: anchor.block }, httpRpc(TESTNET_RPC))
+				: null
+		if (checked) writeFileSync(join(out, 'x402-gate-verdict-check.json'), `${JSON.stringify({ gate: args.gate, gate_answer: gate.verdict, read_from: TESTNET_RPC, receiver, check: checked }, null, 2)}\n`)
+		if (checked?.ok && anchor) {
+			const e = checked.event
+			say(`  CRE verify  ${e.isMatch ? 'MATCH' : 'MISMATCH'} reasons ${e.reasons}, run by the gate, RecordChecked tx ${checked.tx} read back from Robinhood Testnet`)
+			// Every value below is the agent's own or decoded from the event. None is copied from the gate's answer.
 			cre = {
 				workflow: 'vet402-rwa-verify',
 				anchor_tx: anchor.tx,
 				anchor_record_url: anchor.recordUrl,
-				verdict: v.result.verdict,
-				reason_bits: v.result.reasonBits,
-				recomputed_facts_hash: v.result.recomputedFactsHash.toLowerCase(),
-				anchored_facts_hash: v.result.anchoredFactsHash.toLowerCase(),
-				receiver: v.receiver,
-				mode: v.mode,
-				verdict_tx: v.verdict_tx,
+				verdict: e.isMatch ? 'MATCH' : 'MISMATCH',
+				reason_bits: e.reasons,
+				recomputed_facts_hash: e.recomputedFactsHash,
+				anchored_facts_hash: e.anchoredFactsHash,
+				receiver,
+				mode: 'broadcast',
+				verdict_tx: checked.tx,
 			}
 		} else {
+			if (checked && !checked.ok) say(`  gate answer not used: ${checked.why.join('; ')}. The agent runs the CRE workflow itself`)
 			cre = verifyAnchor(anchor, args, out)
 		}
 	} else {
