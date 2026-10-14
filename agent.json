@@ -1,0 +1,53 @@
+{
+  "name": "vet402 copy-guard gate",
+  "description": "Pay 0.01 USDG over x402 and have a Chainlink CRE workflow re-verify a wallet's anchored vet402 /rwa record against Robinhood Chain. The answer is MATCH or MISMATCH with one reason bit per failed check. A compliance check an autonomous agent can run before it acts on a tokenized-stock record.",
+  "url": "http://127.0.0.1:4021",
+  "version": "0.2.0",
+  "provider": { "organization": "vet402", "url": "https://vet402.com/rwa" },
+  "documentation": "SKILL.md",
+  "capabilities": { "streaming": false, "pushNotifications": false },
+  "defaultInputModes": ["application/json"],
+  "defaultOutputModes": ["application/json"],
+  "authentication": {
+    "schemes": ["x402"],
+    "note": "No account and no API key. A payment proves that a payment authorization was supplied. It does not identify the caller."
+  },
+  "payment": {
+    "protocol": "x402",
+    "x402Version": 2,
+    "scheme": "exact",
+    "network": "eip155:4663",
+    "asset": "USDG",
+    "asset_address": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+    "amount": "0.01",
+    "atomic": "10000",
+    "pay_to": "0x973cD8a91A771C2C04C6036888F8175D6b4F6227",
+    "transfer_method": "permit2",
+    "facilitator": "https://x402.dexter.cash"
+  },
+  "skills": [
+    {
+      "id": "rwa-verify",
+      "name": "Re-verify a vet402 /rwa record against its onchain anchor",
+      "description": "Runs the Chainlink CRE workflow vet402-rwa-verify: reads the anchored record, recomputes its hash, reads the anchor from RwaAnchor on Robinhood Chain (4663) and returns MATCH or MISMATCH. When the gate is started with --broadcast the verdict is also written to RwaVerdictReceiver on Robinhood Testnet (46630).",
+      "tags": ["chainlink-cre", "x402", "tokenized-stocks", "robinhood-chain", "compliance-check", "evidence"],
+      "endpoint": { "method": "POST", "path": "/v1/workflows/rwa-verify" },
+      "catalog": "/v1/catalog/rwa-verify",
+      "examples": [
+        { "input": {}, "output": "MATCH for the demo wallet's anchor 0x15f9ed8a…585c7f" },
+        {
+          "input": {
+            "tx": "0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f",
+            "recordUrl": "https://raw.githubusercontent.com/kzmttkc/vet402/main/fixtures/rwa/anchors/rwa-recon-0.3-76177721.json"
+          },
+          "output": "MATCH, reasonBits 0"
+        }
+      ]
+    }
+  ],
+  "limits": {
+    "execution": "cre workflow simulate, started by the gate. Nothing is deployed to a DON.",
+    "attestation": "None. Simulated runs write through CRE's simulation forwarder, which accepts reports from anyone.",
+    "advice": "The answer says whether a record matches its anchor. It is not legal or investment advice."
+  }
+}

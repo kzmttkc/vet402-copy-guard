@@ -1,0 +1,117 @@
+{
+  "resource": "http://127.0.0.1:4021/v1/workflows/rwa-verify",
+  "request_body": {
+    "tx": "0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f",
+    "recordUrl": "https://raw.githubusercontent.com/kzmttkc/vet402/main/fixtures/rwa/anchors/rwa-recon-0.3-76177721.json"
+  },
+  "status": 402,
+  "payment_required": {
+    "x402Version": 2,
+    "resource": {
+      "url": "http://127.0.0.1:4021/v1/workflows/rwa-verify",
+      "description": "One run of the Chainlink CRE workflow vet402-rwa-verify: re-verify a wallet's anchored vet402 /rwa record against RwaAnchor on Robinhood Chain and return MATCH or MISMATCH",
+      "mimeType": "application/json"
+    },
+    "accepts": [
+      {
+        "scheme": "exact",
+        "network": "eip155:4663",
+        "amount": "10000",
+        "asset": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+        "payTo": "0x973cD8a91A771C2C04C6036888F8175D6b4F6227",
+        "maxTimeoutSeconds": 120,
+        "extra": {
+          "name": "Global Dollar",
+          "version": "1",
+          "assetTransferMethod": "permit2"
+        }
+      }
+    ]
+  },
+  "accepted": {
+    "scheme": "exact",
+    "network": "eip155:4663",
+    "amount": "10000",
+    "asset": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+    "payTo": "0x973cD8a91A771C2C04C6036888F8175D6b4F6227",
+    "maxTimeoutSeconds": 120,
+    "extra": {
+      "name": "Global Dollar",
+      "version": "1",
+      "assetTransferMethod": "permit2"
+    }
+  },
+  "payer": "0xc380D9F41D90765A4820429B9Da151889E8bED94",
+  "usdg_balance_atomic": "0",
+  "permit2_allowance_atomic": "990000",
+  "chain_spent_atomic": "10000",
+  "spent_before_atomic": "10000",
+  "cap_atomic": "1000000",
+  "permit2_typed_data": {
+    "domain": {
+      "name": "Permit2",
+      "chainId": 4663,
+      "verifyingContract": "0x000000000022D473030F116dDEE9F6B43aC78BA3"
+    },
+    "types": {
+      "PermitWitnessTransferFrom": [
+        {
+          "name": "permitted",
+          "type": "TokenPermissions"
+        },
+        {
+          "name": "spender",
+          "type": "address"
+        },
+        {
+          "name": "nonce",
+          "type": "uint256"
+        },
+        {
+          "name": "deadline",
+          "type": "uint256"
+        },
+        {
+          "name": "witness",
+          "type": "Witness"
+        }
+      ],
+      "TokenPermissions": [
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "Witness": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "validAfter",
+          "type": "uint256"
+        }
+      ]
+    },
+    "primaryType": "PermitWitnessTransferFrom",
+    "message": {
+      "permitted": {
+        "token": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+        "amount": "10000"
+      },
+      "spender": "0x402085c248EeA27D92E8b30b2C58ed07f9E20001",
+      "nonce": "80702512943849218703230573581536031732872954850260534117285674738024542446310",
+      "deadline": "1791939255",
+      "witness": {
+        "to": "0x973cD8a91A771C2C04C6036888F8175D6b4F6227",
+        "validAfter": "1791939075"
+      }
+    }
+  },
+  "permit2_digest": "0xe08bf1dc3903700dab878b5e17db2b42165943e80bf83f7ac3ed9e684ee39735",
+  "signed": false
+}

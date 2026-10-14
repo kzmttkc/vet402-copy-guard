@@ -1,0 +1,418 @@
+{
+  "trail": {
+    "trail_version": 2,
+    "rules": {
+      "id": "copy-guard",
+      "version": 2,
+      "source_keccak": "0x2abeff7f6a488b520e458445381413f81507fc545c1dc466fe27d54250e93b12",
+      "limits_rules_keccak": "0x92791b15da3a8de6de1f0392d657070a59ed6cbd40f543642fd1660156aef59e"
+    },
+    "decided_at": "2026-10-14T00:52:36.889Z",
+    "purchase": {
+      "mode": "dry-run",
+      "resource": "http://127.0.0.1:4021/v1/workflows/rwa-verify",
+      "payer": "0xc380D9F41D90765A4820429B9Da151889E8bED94",
+      "payment_tx": null,
+      "settlement": "not-sent",
+      "spent_before_atomic": "10000",
+      "cap_atomic": "1000000",
+      "permit2_digest": "0xe08bf1dc3903700dab878b5e17db2b42165943e80bf83f7ac3ed9e684ee39735"
+    },
+    "inputs": {
+      "wallet": "0xe9b08727131e34010b34006c660d4c1b436ec25f",
+      "movement": {
+        "chain_id": 4663,
+        "tx": "0x0eac7685c6c57c3929d053bea9b5fa4b9879e2afc798848ee2b8ccf0e56a13f8",
+        "block": 68837431,
+        "transfers": [
+          {
+            "token": "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68",
+            "from": "0xd60a5d14db690b7afad71f76b108071d7175597d",
+            "to": "0xe9b08727131e34010b34006c660d4c1b436ec25f",
+            "amount_raw": "4459472133035912033",
+            "direction": "in"
+          },
+          {
+            "token": "0x5fc5360d0400a0fd4f2af552add042d716f1d168",
+            "from": "0xe9b08727131e34010b34006c660d4c1b436ec25f",
+            "to": "0xd60a5d14db690b7afad71f76b108071d7175597d",
+            "amount_raw": "3250000000",
+            "direction": "out"
+          },
+          {
+            "token": "0x5fc5360d0400a0fd4f2af552add042d716f1d168",
+            "from": "0xe9b08727131e34010b34006c660d4c1b436ec25f",
+            "to": "0xa7bb1ac63bbab0c44316e6c8c455213441689167",
+            "amount_raw": "1750000000",
+            "direction": "out"
+          },
+          {
+            "token": "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68",
+            "from": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+            "to": "0xe9b08727131e34010b34006c660d4c1b436ec25f",
+            "amount_raw": "2400847895329641894",
+            "direction": "in"
+          }
+        ]
+      },
+      "terms": {
+        "scheme": "exact",
+        "network": "eip155:4663",
+        "asset": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+        "amount": "10000",
+        "payTo": "0x973cD8a91A771C2C04C6036888F8175D6b4F6227",
+        "assetTransferMethod": "permit2"
+      },
+      "record": {
+        "source_url": "https://vet402.com/api/v1/rwa/facts/0xE9B08727131E34010b34006c660D4c1B436EC25f?chain=4663",
+        "x_facts_hash": "0x4f8e95e4e72d6e7fd6e34eb82212840aff8bf7c6d987b0844ded9fdadc3695dc",
+        "recomputed_facts_hash": "0x4f8e95e4e72d6e7fd6e34eb82212840aff8bf7c6d987b0844ded9fdadc3695dc",
+        "address": "0xe9b08727131e34010b34006c660d4c1b436ec25f",
+        "chain_id": 4663,
+        "as_of": "2026-10-14T00:51:32.000Z",
+        "as_of_block": 87953051,
+        "method_version": "rwa-recon-0.3",
+        "r1_status": "partial",
+        "realized_usd": "-81.19",
+        "tokens": [
+          {
+            "token": "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68",
+            "symbol": "QQQ",
+            "canonical": true,
+            "usd": "58879.01",
+            "shares_ui": "79.23618967"
+          },
+          {
+            "token": "0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec",
+            "symbol": "NVDA",
+            "canonical": true,
+            "usd": "9406.38",
+            "shares_ui": "41.04453377"
+          },
+          {
+            "token": "0x117cc2133c37b721f49de2a7a74833232b3b4c0c",
+            "symbol": "SPY",
+            "canonical": true,
+            "usd": "0.00",
+            "shares_ui": "0.00000000"
+          }
+        ],
+        "lookalikes": [
+          {
+            "token": "0x4190ee598c2a69d35bef53c83d152ae0f25ea416",
+            "imitates": "USDG",
+            "counted": false,
+            "needs_review": false
+          },
+          {
+            "token": "0x5dd716fe12275b69f04b26beeca343843c8e3539",
+            "imitates": "NVDA",
+            "counted": false,
+            "needs_review": false
+          },
+          {
+            "token": "0xe7391e4047c7e5d48f31cd2b87004c10e875f288",
+            "imitates": "USDG",
+            "counted": false,
+            "needs_review": false
+          }
+        ]
+      },
+      "cre": {
+        "workflow": "vet402-rwa-verify",
+        "anchor_tx": "0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f",
+        "anchor_record_url": "https://raw.githubusercontent.com/kzmttkc/vet402/main/fixtures/rwa/anchors/rwa-recon-0.3-76177721.json",
+        "verdict": "MATCH",
+        "reason_bits": 0,
+        "recomputed_facts_hash": "0x9d0e83d968786570beebf0d322b36e0836dc81ebe896bd186304405ba8f721ee",
+        "anchored_facts_hash": "0x9d0e83d968786570beebf0d322b36e0836dc81ebe896bd186304405ba8f721ee",
+        "receiver": "0x8bf4d455d38301e9d330B12144AdE02F16BC2Cb3",
+        "mode": "simulate",
+        "verdict_tx": null
+      },
+      "decided_at": "2026-10-14T00:52:36.889Z",
+      "payer": "0xc380d9f41d90765a4820429b9da151889e8bed94",
+      "rules": {
+        "id": "copy-guard",
+        "version": 2,
+        "source_keccak": "0x2abeff7f6a488b520e458445381413f81507fc545c1dc466fe27d54250e93b12",
+        "limits_rules_keccak": "0x92791b15da3a8de6de1f0392d657070a59ed6cbd40f543642fd1660156aef59e"
+      },
+      "move": {
+        "time": "2026-09-21T13:36:17.000Z",
+        "signer": "0xe9b08727131e34010b34006c660d4c1b436ec25f"
+      },
+      "tokens_moved": [
+        {
+          "token": "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68",
+          "kind": "stock",
+          "ticker": "QQQ",
+          "name": "Invesco QQQ",
+          "decimals": 18
+        },
+        {
+          "token": "0x5fc5360d0400a0fd4f2af552add042d716f1d168",
+          "kind": "usdg",
+          "ticker": "USDG",
+          "name": "Global Dollar",
+          "decimals": 6
+        }
+      ],
+      "venue": [
+        {
+          "address": "0xd60a5d14db690b7afad71f76b108071d7175597d",
+          "kind": "uniswap-v3-pool"
+        },
+        {
+          "address": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+          "kind": "uniswap-v4-pool-manager"
+        }
+      ],
+      "price": {
+        "feed": "0x80901d846d5d7b030f26b480776ee3b29374c2ae",
+        "aggregator": "0x25e996ce8b3529885d429241156e83e7b7744049",
+        "answer": "72696000000",
+        "decimals": 8,
+        "round_id": "361",
+        "updated_at": "2026-09-21T07:57:28.000Z",
+        "update_block": 68635313,
+        "update_tx": "0x8b72a8939e258efbd89a2d0b6e4ab56b93d3f78760f6b5811e11ad84d88d5134"
+      },
+      "limits": {
+        "limits_version": 2,
+        "practice_only": true,
+        "size": {
+          "full_usd": "100.00",
+          "reduced_usd": "25.00",
+          "max_usd_per_day": "300.00",
+          "max_open_positions": 10
+        },
+        "evidence": {
+          "record_not_anchored": "reduced",
+          "history_partial": "reduced",
+          "wallet_result_unknown": "reduced",
+          "wallet_at_a_loss": "none",
+          "max_price_age_hours": 96
+        },
+        "exit": {
+          "when_wallet_sells": true,
+          "stop_loss_pct": "10",
+          "take_profit_pct": "20",
+          "max_holding_days": 30
+        },
+        "payments": {
+          "max_usdg_per_decision": "0.01",
+          "max_usdg_total": "1.00"
+        }
+      },
+      "limits_keccak": "0x1e7624863e095cbdb3475e8f01b8e6befbe53ed24389a2b51c3dcb479d72c2cf",
+      "mandate": {
+        "document": {
+          "mandate_version": 1,
+          "title": "SAMPLE. vet402 copy-guard practice mandate signed with a testnet-only key. Not the real principal.",
+          "principal": "0xBB621a68f7C142CD340C5D5e71056Ecd42f8f48D",
+          "agent": {
+            "name": "vet402 copy-guard",
+            "payment_key": "0xc380D9F41D90765A4820429B9Da151889E8bED94"
+          },
+          "scope": {
+            "practice_only": true,
+            "may": [
+              "read public chain data and vet402 /rwa records",
+              "pay for evidence over x402 in USDG on Robinhood Chain, within the limits named below",
+              "record practice trades and write the hash of each reasoning trail onchain"
+            ],
+            "may_not": [
+              "place a real trade",
+              "pay any address other than 0x973cD8a91A771C2C04C6036888F8175D6b4F6227",
+              "move any asset other than the USDG it pays for evidence",
+              "act on a move when a rule of group A, B or M fails"
+            ]
+          },
+          "rules": {
+            "id": "copy-guard",
+            "version": 2,
+            "source_keccak": "0x2abeff7f6a488b520e458445381413f81507fc545c1dc466fe27d54250e93b12",
+            "limits_rules_keccak": "0x92791b15da3a8de6de1f0392d657070a59ed6cbd40f543642fd1660156aef59e"
+          },
+          "limits_keccak": "0x1e7624863e095cbdb3475e8f01b8e6befbe53ed24389a2b51c3dcb479d72c2cf",
+          "chain_id": 4663,
+          "valid_from": "2026-10-14T00:00:00Z",
+          "valid_until": "2026-12-31T23:59:59Z"
+        },
+        "keccak": "0x4c8c1a98b6b830aa58b0a38e2afdfc5dccede547783ac9e24c281782c24af682",
+        "signature": "0x131c67accbc480c28d1b96f63fc52874fd5320f62196cbe5a1d69107f49df99722c7355e51813a955d35bdd816e0a74ab1c5a1bb51e6d43ed9570230cc344f1c1c",
+        "signer": "0xbb621a68f7c142cd340c5d5e71056ecd42f8f48d"
+      },
+      "book": {
+        "day": "2026-09-21",
+        "used_usd_today": "0.00",
+        "open_positions": 0
+      }
+    },
+    "decision": {
+      "rule_results": [
+        {
+          "id": "A1",
+          "group": "A",
+          "ok": true,
+          "rule": "the record was offered under the published x402 terms (exact, eip155:4663, USDG, at most 0.01, paid to the vet402 anchor wallet)",
+          "detail": "exact eip155:4663 0x5fc5360d0400a0fd4f2af552add042d716f1d168 amount 10000 payTo 0x973cd8a91a771c2c04c6036888f8175d6b4f6227 permit2",
+          "effect": "ok"
+        },
+        {
+          "id": "A2",
+          "group": "A",
+          "ok": true,
+          "rule": "X-Facts-Hash sent with the record equals the hash recomputed from its body",
+          "detail": "header 0x4f8e95e4e72d6e7fd6e34eb82212840aff8bf7c6d987b0844ded9fdadc3695dc recomputed 0x4f8e95e4e72d6e7fd6e34eb82212840aff8bf7c6d987b0844ded9fdadc3695dc",
+          "effect": "ok"
+        },
+        {
+          "id": "A3",
+          "group": "A",
+          "ok": true,
+          "rule": "the record is about the watched wallet on Robinhood Chain 4663",
+          "detail": "record 0xe9b08727131e34010b34006c660d4c1b436ec25f chain 4663 rwa-recon-0.3",
+          "effect": "ok"
+        },
+        {
+          "id": "A4",
+          "group": "A",
+          "ok": true,
+          "rule": "the CRE workflow re-verified the wallet's newest vet402 anchor: MATCH",
+          "detail": "MATCH reasons 0 anchor tx 0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f",
+          "effect": "ok"
+        },
+        {
+          "id": "A5",
+          "group": "A",
+          "ok": true,
+          "rule": "the record replays to the balances it reports (r1_status is not unverified)",
+          "detail": "r1_status partial",
+          "effect": "ok"
+        },
+        {
+          "id": "A6",
+          "group": "A",
+          "ok": true,
+          "rule": "every look-alike token is left out of the figures and none waits for review",
+          "detail": "3 look-alikes, 0 counted or needing review",
+          "effect": "ok"
+        },
+        {
+          "id": "B1",
+          "group": "B",
+          "ok": true,
+          "rule": "the record was built at or after the block of the movement",
+          "detail": "record block 87953051, movement block 68837431",
+          "effect": "ok"
+        },
+        {
+          "id": "B2",
+          "group": "B",
+          "ok": true,
+          "rule": "the record says what every moved token is (Stock Token, USDG or named look-alike)",
+          "detail": "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 stock, 0x5fc5360d0400a0fd4f2af552add042d716f1d168 usdg, 0x5fc5360d0400a0fd4f2af552add042d716f1d168 usdg, 0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 stock",
+          "effect": "ok"
+        },
+        {
+          "id": "C1",
+          "group": "C",
+          "ok": true,
+          "rule": "no token in the movement is a look-alike the record names as fake",
+          "detail": "none",
+          "effect": "ok"
+        },
+        {
+          "id": "C2",
+          "group": "C",
+          "ok": true,
+          "rule": "the movement moves a Robinhood Stock Token",
+          "detail": "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 in",
+          "effect": "ok"
+        },
+        {
+          "id": "C3",
+          "group": "C",
+          "ok": false,
+          "rule": "the wallet's track record is complete (r1_status reconstructed)",
+          "detail": "r1_status partial",
+          "effect": "reduced"
+        },
+        {
+          "id": "C4",
+          "group": "C",
+          "ok": false,
+          "rule": "the wallet has a realized profit (realized_usd above zero)",
+          "detail": "realized_usd -81.19",
+          "effect": "none"
+        },
+        {
+          "id": "M1",
+          "group": "M",
+          "ok": true,
+          "rule": "a mandate signed by the principal covers this decision (signer, practice only, these rules, these limits, this payment key, these dates)",
+          "detail": "principal 0xbb621a68f7c142cd340c5d5e71056ecd42f8f48d signer 0xbb621a68f7c142cd340c5d5e71056ecd42f8f48d mandate 0x4c8c1a98b6b830aa58b0a38e2afdfc5dccede547783ac9e24c281782c24af682",
+          "effect": "ok"
+        },
+        {
+          "id": "V1",
+          "group": "V",
+          "ok": true,
+          "rule": "the Stock Token came from an official venue (the Uniswap v4 PoolManager or a pool of the official Uniswap v3 factory)",
+          "detail": "0xd60a5d14db690b7afad71f76b108071d7175597d uniswap-v3-pool, 0x8366a39cc670b4001a1121b8f6a443a643e40951 uniswap-v4-pool-manager",
+          "effect": "ok"
+        },
+        {
+          "id": "D1",
+          "group": "D",
+          "ok": true,
+          "rule": "the wallet itself bought: it received the Stock Token in a transaction it signed",
+          "detail": "received, signed by the wallet",
+          "effect": "ok"
+        },
+        {
+          "id": "P1",
+          "group": "P",
+          "ok": true,
+          "rule": "a Chainlink feed gives the token's price at the block of the move",
+          "detail": "726.9600 USD, round 361, updated 2026-09-21T07:57:28.000Z in block 68635313",
+          "effect": "ok"
+        },
+        {
+          "id": "L1",
+          "group": "L",
+          "ok": true,
+          "rule": "the user's daily limit leaves room for a practice position",
+          "detail": "300.00 USD per day, 0.00 USD used on 2026-09-21, room 300.00 USD",
+          "effect": "ok"
+        },
+        {
+          "id": "L2",
+          "group": "L",
+          "ok": true,
+          "rule": "fewer practice positions are open than the user allows",
+          "detail": "0 open, limit 10",
+          "effect": "ok"
+        }
+      ],
+      "tier": "NONE",
+      "conclusion": "DO_NOT_COPY",
+      "decisive": [
+        "C4"
+      ],
+      "paper_trade": null
+    },
+    "card": {
+      "headline": "No position: wallet not in profit",
+      "happened": "The wallet received 6.86032 QQQ (Invesco QQQ) and paid 5,000 USDG. The wallet signed the transaction.",
+      "blind_view": "A bot that copies this wallet sees a QQQ buy for 5,000 USDG.",
+      "why": [
+        "The wallet's closed trades add up to a loss of 81.19 USD.",
+        "The user's limits say to open nothing on this evidence (C4)."
+      ],
+      "so": "So copy-guard opened no position. No real trade was placed."
+    }
+  }
+}

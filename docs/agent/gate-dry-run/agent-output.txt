@@ -1,0 +1,46 @@
+copy-guard copy-guard v2  DRY RUN
+  watching    0xE9B08727131E34010b34006c660D4c1B436EC25f on Robinhood Chain 4663, replay of blocks 68837431
+  mandate     0x4c8c1a98b6b830aa58b0a38e2afdfc5dccede547783ac9e24c281782c24af682 principal 0xBB621a68f7C142CD340C5D5e71056Ecd42f8f48D signed by the principal (mandate/sample/)
+  limits      0x1e7624863e095cbdb3475e8f01b8e6befbe53ed24389a2b51c3dcb479d72c2cf full 100.00 USD, reduced 25.00 USD, 300.00 USD per day, payments at most 1000000 USDG atomic in total
+  movements   1
+  gate 402    exact eip155:4663 10000 USDG atomic to 0x973cD8a91A771C2C04C6036888F8175D6b4F6227 (permit2) for http://127.0.0.1:4021/v1/workflows/rwa-verify
+  payer       0xc380D9F41D90765A4820429B9Da151889E8bED94  USDG 0 atomic, Permit2 allowance 990000, spent 10000 of cap 1000000
+  permit2     digest 0xe08bf1dc3903700dab878b5e17db2b42165943e80bf83f7ac3ed9e684ee39735 (spender 0x402085c248EeA27D92E8b30b2C58ed07f9E20001, witness.to 0x973cD8a91A771C2C04C6036888F8175D6b4F6227)
+  DRY RUN     nothing signed, nothing sent to the gate; the agent runs the same CRE workflow itself
+  anchor      rwa-recon-0.3 tx 0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f block 76177721
+  CRE verify  MATCH reasons 0 (simulated, not broadcast)
+  record      rwa-recon-0.3 as_of 2026-10-14T00:51:32.000Z block 87953051, factsHash 0x4f8e95e4e72d6e7fd6e34eb82212840aff8bf7c6d987b0844ded9fdadc3695dc
+
+  movement    0x0eac7685c6c57c3929d053bea9b5fa4b9879e2afc798848ee2b8ccf0e56a13f8 block 68837431 at 2026-09-21T13:36:17.000Z
+              in  0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 4459472133035912033
+              out 0x5fc5360d0400a0fd4f2af552add042d716f1d168 3250000000
+              out 0x5fc5360d0400a0fd4f2af552add042d716f1d168 1750000000
+              in  0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 2400847895329641894
+    OK   A1 exact eip155:4663 0x5fc5360d0400a0fd4f2af552add042d716f1d168 amount 10000 payTo 0x973cd8a91a771c2c04c6036888f8175d6b4f6227 permit2
+    OK   A2 header 0x4f8e95e4e72d6e7fd6e34eb82212840aff8bf7c6d987b0844ded9fdadc3695dc recomputed 0x4f8e95e4e72d6e7fd6e34eb82212840aff8bf7c6d987b0844ded9fdadc3695dc
+    OK   A3 record 0xe9b08727131e34010b34006c660d4c1b436ec25f chain 4663 rwa-recon-0.3
+    OK   A4 MATCH reasons 0 anchor tx 0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f
+    OK   A5 r1_status partial
+    OK   A6 3 look-alikes, 0 counted or needing review
+    OK   B1 record block 87953051, movement block 68837431
+    OK   B2 0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 stock, 0x5fc5360d0400a0fd4f2af552add042d716f1d168 usdg, 0x5fc5360d0400a0fd4f2af552add042d716f1d168 usdg, 0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 stock
+    OK   C1 none
+    OK   C2 0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 in
+    FAIL C3 r1_status partial
+    FAIL C4 realized_usd -81.19
+    OK   M1 principal 0xbb621a68f7c142cd340c5d5e71056ecd42f8f48d signer 0xbb621a68f7c142cd340c5d5e71056ecd42f8f48d mandate 0x4c8c1a98b6b830aa58b0a38e2afdfc5dccede547783ac9e24c281782c24af682
+    OK   V1 0xd60a5d14db690b7afad71f76b108071d7175597d uniswap-v3-pool, 0x8366a39cc670b4001a1121b8f6a443a643e40951 uniswap-v4-pool-manager
+    OK   D1 received, signed by the wallet
+    OK   P1 726.9600 USD, round 361, updated 2026-09-21T07:57:28.000Z in block 68635313
+    OK   L1 300.00 USD per day, 0.00 USD used on 2026-09-21, room 300.00 USD
+    OK   L2 0 open, limit 10
+  DECISION    NONE (DO_NOT_COPY) (C4)
+  CARD        No position: wallet not in profit
+              The wallet received 6.86032 QQQ (Invesco QQQ) and paid 5,000 USDG. The wallet signed the transaction.
+              The wallet's closed trades add up to a loss of 81.19 USD.
+              The user's limits say to open nothing on this evidence (C4).
+              So copy-guard opened no position. No real trade was placed.
+  trail hash  0x3682d6aa1c415ab46354b3533f8c52c66e89289ec9bf571ee8ce3a3a574e1825
+  CRE trail   rules re-run, movement checked (simulated, not broadcast)
+
+  saved       docs/agent/gate-dry-run/

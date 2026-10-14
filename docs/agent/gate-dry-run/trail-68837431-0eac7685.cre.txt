@@ -1,0 +1,55 @@
+$ cre workflow simulate trail-anchor --target local-simulation --non-interactive --trigger-index 0 --http-payload docs/agent/gate-dry-run/trail-68837431-0eac7685.payload.json
+✓ Workflow compiled
+✓ Simulation limits enabled
+  HTTP: req=120kb resp=250kb timeout=10s | ConfHTTP: req=125kb resp=500kb timeout=1m30s | Consensus obs=25kb | ChainWrite evm_report=50kb evm_gas=10000000 solana_report=265b solana_cu=300000 | WASM binary=100mb compressed=20mb
+  Binary hash: 9805d813cd7afda2f9e5186a5c02ccbe569e4d8b87c5679c65e7c224004ff3f5
+  Config hash: 7edfb96886909b1c396bda344488c826b74a143fe92b6780995abb35238505de
+✓ Loaded JSON from file: ~/vet402-bli/docs/agent/gate-dry-run/trail-68837431-0eac7685.payload.json
+✓ Created HTTP trigger payload with 1 fields
+2026-10-14T07:52:45Z [SIMULATION] Simulator Initialized
+
+2026-10-14T07:52:45Z [SIMULATION] Running trigger trigger=http-trigger@1.0.0-alpha
+2026-10-14T07:52:45Z [USER LOG] OK    A1  exact eip155:4663 0x5fc5360d0400a0fd4f2af552add042d716f1d168 amount 10000 payTo 0x973cd8a91a771c2c04c6036888f8175d6b4f6227 permit2
+2026-10-14T07:52:45Z [USER LOG] OK    A2  header 0x4f8e95e4e72d6e7fd6e34eb82212840aff8bf7c6d987b0844ded9fdadc3695dc recomputed 0x4f8e95e4e72d6e7fd6e34eb82212840aff8bf7c6d987b0844ded9fdadc3695dc
+2026-10-14T07:52:45Z [USER LOG] OK    A3  record 0xe9b08727131e34010b34006c660d4c1b436ec25f chain 4663 rwa-recon-0.3
+2026-10-14T07:52:45Z [USER LOG] OK    A4  MATCH reasons 0 anchor tx 0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f
+2026-10-14T07:52:45Z [USER LOG] OK    A5  r1_status partial
+2026-10-14T07:52:45Z [USER LOG] OK    A6  3 look-alikes, 0 counted or needing review
+2026-10-14T07:52:45Z [USER LOG] OK    B1  record block 87953051, movement block 68837431
+2026-10-14T07:52:45Z [USER LOG] OK    B2  0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 stock, 0x5fc5360d0400a0fd4f2af552add042d716f1d168 usdg, 0x5fc5360d0400a0fd4f2af552add042d716f1d168 usdg, 0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 stock
+2026-10-14T07:52:45Z [USER LOG] OK    C1  none
+2026-10-14T07:52:45Z [USER LOG] OK    C2  0xd5f3879160bc7c32ebb4dc785f8a4f505888de68 in
+2026-10-14T07:52:45Z [USER LOG] FAIL  C3  r1_status partial
+2026-10-14T07:52:45Z [USER LOG] FAIL  C4  realized_usd -81.19
+2026-10-14T07:52:45Z [USER LOG] OK    M1  principal 0xbb621a68f7c142cd340c5d5e71056ecd42f8f48d signer 0xbb621a68f7c142cd340c5d5e71056ecd42f8f48d mandate 0x4c8c1a98b6b830aa58b0a38e2afdfc5dccede547783ac9e24c281782c24af682
+2026-10-14T07:52:45Z [USER LOG] OK    V1  0xd60a5d14db690b7afad71f76b108071d7175597d uniswap-v3-pool, 0x8366a39cc670b4001a1121b8f6a443a643e40951 uniswap-v4-pool-manager
+2026-10-14T07:52:45Z [USER LOG] OK    D1  received, signed by the wallet
+2026-10-14T07:52:45Z [USER LOG] OK    P1  726.9600 USD, round 361, updated 2026-09-21T07:57:28.000Z in block 68635313
+2026-10-14T07:52:45Z [USER LOG] OK    L1  300.00 USD per day, 0.00 USD used on 2026-09-21, room 300.00 USD
+2026-10-14T07:52:45Z [USER LOG] OK    L2  0 open, limit 10
+2026-10-14T07:52:45Z [USER LOG] rules copy-guard v2 give DO_NOT_COPY, the trail says DO_NOT_COPY
+2026-10-14T07:52:46Z [USER LOG] movement 0x0eac7685c6c57c3929d053bea9b5fa4b9879e2afc798848ee2b8ccf0e56a13f8: 4 transfers in block 68837431 as listed
+2026-10-14T07:52:46Z [USER LOG] payment: dry run, nothing paid
+2026-10-14T07:52:46Z [USER LOG] trail hash 0x3682d6aa1c415ab46354b3533f8c52c66e89289ec9bf571ee8ce3a3a574e1825
+2026-10-14T07:52:47Z [USER LOG] trail written to 0x991311C2ECA78B83dA3593C7500804af6FEEa0B3 on robinhood-testnet, tx 0x0000000000000000000000000000000000000000000000000000000000000000
+
+✓ Workflow Simulation Result:
+"{\"trailHash\":\"0x3682d6aa1c415ab46354b3533f8c52c66e89289ec9bf571ee8ce3a3a574e1825\",\"conclusion\":\"DO_NOT_COPY\",\"decisive\":[\"C4\"],\"movementTx\":\"0x0eac7685c6c57c3929d053bea9b5fa4b9879e2afc798848ee2b8ccf0e56a13f8\",\"paymentTx\":\"0x0000000000000000000000000000000000000000000000000000000000000000\",\"verdictTx\":\"0x0000000000000000000000000000000000000000000000000000000000000000\",\"rules\":\"copy-guard v2\",\"trailTx\":\"0x0000000000000000000000000000000000000000000000000000000000000000\"}"
+
+2026-10-14T07:52:47Z [SIMULATION] Execution finished signal received
+2026-10-14T07:52:47Z [SIMULATION] Skipping WorkflowEngineV2
+
+╭──────────────────────────────────────────────────────╮
+│ Simulation complete! Ready to deploy your workflow?  │
+│                                                      │
+│ Run cre account access to request deployment access. │
+╰──────────────────────────────────────────────────────╯
+Initializing...
+Loading settings...
+! Using default private key for chain write simulation. To use your own key, set CRE_ETH_PRIVATE_KEY in your .env file or system environment.
+Checking RPC connectivity...
+Compiling workflow...
+
+⚠️  Update available! You’re running 1.37.0, but 1.38.0 is the latest.
+Run `cre update` or visit https://github.com/smartcontractkit/cre-cli/releases to upgrade.
+
