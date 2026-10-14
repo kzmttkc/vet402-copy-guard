@@ -17,14 +17,14 @@
       "place a real trade",
       "pay any address other than 0x973cD8a91A771C2C04C6036888F8175D6b4F6227",
       "move any asset other than the USDG it pays for evidence",
-      "act on a move when a rule of group A, B or M fails"
+      "act on a move when a rule of group A, B or M fails, except rule A4 when the record has no anchor yet, in which case the user's limits grade the size down"
     ]
   },
   "rules": {
     "id": "copy-guard",
     "version": 2,
     "source_keccak": "0x2abeff7f6a488b520e458445381413f81507fc545c1dc466fe27d54250e93b12",
-    "limits_rules_keccak": "0x92791b15da3a8de6de1f0392d657070a59ed6cbd40f543642fd1660156aef59e"
+    "limits_rules_keccak": "0xe085cf7eb58d6936b06bc7c78ff55812964d4bad5ec19c83c0e6a3537927bd59"
   },
   "limits_keccak": "0x1e7624863e095cbdb3475e8f01b8e6befbe53ed24389a2b51c3dcb479d72c2cf",
   "chain_id": 4663,

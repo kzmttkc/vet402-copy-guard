@@ -18,6 +18,7 @@ import { getAddress, type Hex, keccak256 } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { limitsKeccak, parseLimits } from './limits'
 import { type Mandate, mandateKeccak, mandateMessage, mandateSigner } from './mandate'
+import { MAY_NOT_ACT } from './mandate-text'
 import { PAY_TO } from './rules'
 import { RULES_V2 } from './rules-v2'
 
@@ -44,7 +45,8 @@ function mandate(principal: string, title: string): Mandate {
 				'place a real trade',
 				`pay any address other than ${getAddress(PAY_TO)}`,
 				'move any asset other than the USDG it pays for evidence',
-				'act on a move when a rule of group A, B or M fails',
+				// The same sentence the rules implement (agent/rules-v2.ts), fixed by a test in agent/v2.test.ts.
+				MAY_NOT_ACT,
 			],
 		},
 		rules: { id: RULES_V2.id, version: RULES_V2.version, source_keccak: keccak256(read('agent/rules.ts')), limits_rules_keccak: keccak256(read('agent/rules-v2.ts')) },

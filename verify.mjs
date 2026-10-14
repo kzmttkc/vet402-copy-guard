@@ -57,7 +57,7 @@ export const CLAIMS = {
 	priceAtomic: '10000',
 	/** Block of the wallet's move, and what the agent concluded about it. */
 	decisions: { 68837431: 'DO_NOT_COPY', 73953009: 'DO_NOT_COPY', 81262132: 'DO_NOT_COPY' },
-	/** The practice ledger: every version 2 decision, copy-guard next to a blind copy. */
+	/** The practice ledger: every version 2 decision, copy-guard next to a ticker copy. */
 	ledger: 'docs/ledger.json',
 	walkDir: 'docs/walk',
 	/** The page a person reads without a terminal. It carries the ledger. */
@@ -608,10 +608,36 @@ function practicePosition(inp, tier, room) {
 	}
 }
 
+/** Every other token that left the wallet in this transaction, summed per token in log order, and the ETH the transaction carried. */
+function whatWasPaid(inp, legToken) {
+	const order = []
+	const sums = {}
+	for (const t of inp.movement.transfers) {
+		const token = lc(t.token)
+		if (t.direction !== 'out' || token === lc(legToken)) continue
+		if (!(token in sums)) {
+			sums[token] = 0n
+			order.push(token)
+		}
+		sums[token] += BigInt(t.amount_raw)
+	}
+	const v = inp.move.value_wei
+	return { tokens: order.filter((k) => sums[k] > 0n).map((k) => ({ token: k, amount_raw: sums[k].toString() })), eth_wei: typeof v === 'string' && /^\d+$/.test(v) ? v : '0' }
+}
+
+/** bought (signed and paid), received_unpaid (signed, nothing paid), received_unsigned (someone else signed), or out. */
+function howItCame(inp, leg) {
+	if (leg.direction !== 'in') return 'out'
+	if (lc(inp.move.signer) !== lc(inp.wallet)) return 'received_unsigned'
+	const paid = whatWasPaid(inp, leg.token)
+	return paid.tokens.length > 0 || BigInt(paid.eth_wei) > 0n ? 'bought' : 'received_unpaid'
+}
+
 /**
- * copy-guard v2: one decision that ends in a size. The v1 rows without C5, then M1, V1,
- * D1, P1, L1 and L2. A failed A4 (no anchor), C3 or C4 makes the size smaller or none as
- * the user's limits say. Any other failed row makes it none.
+ * copy-guard v2: one decision that ends in a size. The v1 rows without C5, with C1 and C2
+ * asked of the issuer's list and the CRE token-check, then M1, V1, D1, P1, L1 and L2. A
+ * failed A4 (no anchor), C3 or C4 makes the size smaller or none as the user's limits say.
+ * Any other failed row makes it none. D1 is a purchase: signed by the wallet and paid for.
  */
 export function decideV2(inp) {
 	const ev = inp.limits.evidence
@@ -621,8 +647,33 @@ export function decideV2(inp) {
 		if (r.id === 'C4') return inp.record.realized_usd === null ? ev.wallet_result_unknown : ev.wallet_at_a_loss
 		return 'none'
 	}
+	// C1 and C2 are asked of tokens_moved (the issuer's list, and the CRE token-check when given), not of the record alone.
+	const others = inp.tokens_moved.filter((m) => m.kind === 'same_ticker')
+	const sLeg = stockLeg2(inp)
+	const tc = inp.token_check
+	const said = sLeg && tc ? tc.tokens[lc(sLeg.token)] : undefined
+	let c2detail = 'no Stock Token moved'
+	if (sLeg) {
+		let basis = "in the issuer's list (no CRE token-check results given)"
+		if (tc && said) basis = `CRE token-check: ${said.issuer_token ? "the issuer's token" : `not confirmed (${said.reasons.join(' ') || 'no reason given'})`}, results ${lc(tc.keccak)}`
+		else if (tc) basis = `not in the CRE token-check results ${lc(tc.keccak)}`
+		c2detail = `${lc(sLeg.token)} ${sLeg.direction}, ${basis}`
+	}
+	const reworded = {
+		C1: {
+			ok: others.length === 0,
+			rule: 'no moved token is a different token that uses a listed ticker or name at an address the issuer did not list',
+			detail: others.length ? others.map((m) => `${m.token} uses ${m.ticker} (${m.by})`).join(', ') : 'none',
+		},
+		C2: {
+			ok: Boolean(sLeg) && (!tc || said?.issuer_token === true),
+			rule: "the move moves a Robinhood Stock Token: its address is in the issuer's list, and the CRE token-check confirms it from the chain when its results are given",
+			detail: c2detail,
+		},
+	}
 	const rule_results = decide(inp)
 		.rule_results.filter((r) => r.id !== 'C5')
+		.map((r) => (reworded[r.id] ? { ...r, ...reworded[r.id] } : r))
 		.map((r) => ({ ...r, effect: r.ok ? 'ok' : graded(r) }))
 	const add = (id, ok, rule, detail) => rule_results.push({ id, group: id[0], ok, rule, detail, effect: ok ? 'ok' : 'none' })
 	const d = inp.mandate.document
@@ -636,8 +687,17 @@ export function decideV2(inp) {
 		'the Stock Token came from an official venue (the Uniswap v4 PoolManager or a pool of the official Uniswap v3 factory)',
 		!leg ? 'no Stock Token moved' : inp.venue.length === 0 ? 'no counterparty to judge' : inp.venue.map((v) => `${lc(v.address)} ${v.kind}`).join(', '),
 	)
-	const own = lc(inp.move.signer) === lc(inp.wallet)
-	add('D1', Boolean(leg) && leg?.direction === 'in' && own, 'the wallet itself bought: it received the Stock Token in a transaction it signed', !leg ? 'no Stock Token moved' : `${leg.direction === 'in' ? 'received' : 'sent'}, signed by ${own ? 'the wallet' : lc(inp.move.signer)}`)
+	const how = leg ? howItCame(inp, leg) : null
+	let d1detail = 'no Stock Token moved'
+	if (leg) {
+		const paid = whatWasPaid(inp, leg.token)
+		const signer = lc(inp.move.signer)
+		if (how === 'out') d1detail = `sent, signed by ${signer === lc(inp.wallet) ? 'the wallet' : signer}`
+		else if (how === 'received_unsigned') d1detail = `received, signed by ${signer}, not the wallet`
+		else if (how === 'received_unpaid') d1detail = `received, signed by the wallet, nothing paid: not a purchase (call ${inp.move.selector || '(none)'} on ${lc(inp.move.to) || '(none)'})`
+		else d1detail = `received, signed by the wallet, paid ${[...paid.tokens.map((p) => `${p.amount_raw} of ${p.token}`), ...(BigInt(paid.eth_wei) > 0n ? [`${paid.eth_wei} wei of ETH`] : [])].join(' and ')}`
+	}
+	add('D1', how === 'bought', 'the wallet itself bought: it received the Stock Token in a transaction it signed and in which it paid (another token left the wallet, or the transaction carried ETH)', d1detail)
 	const pg = leg ? gapInPrice(inp) : 'no Stock Token moved'
 	add('P1', pg === '', "a Chainlink feed gives the token's price at the block of the move", pg === '' && inp.price ? `${feedUsd(inp.price)} USD, round ${inp.price.round_id}, updated ${inp.price.updated_at} in block ${inp.price.update_block}` : pg)
 	const room = dayRoom(inp)
@@ -653,21 +713,29 @@ export function decideV2(inp) {
 	return { rule_results, tier, conclusion: 'COPY', decisive: reduced, paper_trade: practicePosition(inp, tier, room) }
 }
 
-/** What each moved token is, rebuilt from the saved record. `decimals` maps token to its decimals(). */
-export function movedTokensFrom(facts, transfers, decimals) {
+/**
+ * What each moved token is, rebuilt from the saved record, the issuer's list (token to
+ * { symbol, name }) and the CRE token-check results when the decision read any.
+ */
+export function movedTokensFrom(facts, transfers, decimals, list, check) {
 	const seen = new Set()
 	const out = []
+	const listedAt = (ticker) => (ticker === 'USDG' ? USDG : (Object.keys(list).find((k) => list[k].symbol === ticker) ?? null))
 	for (const t of transfers) {
 		const token = lc(t.token)
 		if (seen.has(token)) continue
 		seen.add(token)
-		const fake = (facts.lookalikes ?? []).find((l) => lc(l.token) === token)
-		const stock = (facts.tokens ?? []).find((k) => k.canonical === true && lc(k.token) === token)
-		const dec = decimals[token] ?? 18
-		if (fake) out.push({ token, kind: 'fake', ticker: String(fake.imitates), name: String(fake.name_raw ?? ''), decimals: dec })
-		else if (token === USDG) out.push({ token, kind: 'usdg', ticker: 'USDG', name: 'Global Dollar', decimals: dec })
-		else if (stock) out.push({ token, kind: 'stock', ticker: String(stock.symbol), name: String(stock.name ?? ''), decimals: dec })
-		else out.push({ token, kind: 'unknown', ticker: '?', name: '', decimals: dec })
+		const named = (facts?.lookalikes ?? []).find((l) => lc(l.token) === token)
+		const listed = list[token]
+		const cre = check?.tokens?.[token]
+		const base = { token, decimals: decimals[token] ?? 18 }
+		const name = String(named?.name_raw ?? '')
+		if (token === USDG) out.push({ ...base, kind: 'usdg', ticker: 'USDG', name: 'Global Dollar', by: 'address', listed_at: null })
+		else if (cre?.issuer_token === true && listed) out.push({ ...base, kind: 'stock', ticker: listed.symbol, name: listed.name, by: 'cre', listed_at: null })
+		else if (cre && cre.issuer_token === false && cre.ticker) out.push({ ...base, kind: 'same_ticker', ticker: cre.ticker, name, by: 'cre', listed_at: listedAt(cre.ticker) })
+		else if (named) out.push({ ...base, kind: 'same_ticker', ticker: String(named.imitates), name, by: 'record', listed_at: listedAt(String(named.imitates)) })
+		else if (listed && !cre) out.push({ ...base, kind: 'stock', ticker: listed.symbol, name: listed.name, by: 'list', listed_at: null })
+		else out.push({ ...base, kind: 'unknown', ticker: '?', name: '', by: cre ? 'cre' : 'none', listed_at: null })
 	}
 	return out
 }
@@ -684,14 +752,33 @@ function showAmount(raw, decimals) {
 }
 function cardLeg(inp) {
 	const legs = inp.movement.transfers.map((t) => ({ t, m: movedKind(inp, t.token) })).filter((l) => l.m)
-	return legs.find((l) => l.m.kind === 'fake') ?? legs.find((l) => l.m.kind === 'stock') ?? legs[0] ?? null
+	return legs.find((l) => l.m.kind === 'same_ticker') ?? legs.find((l) => l.m.kind === 'stock') ?? legs[0] ?? null
 }
 const sumRaw = (inp, pick) => inp.movement.transfers.filter(pick).reduce((s, t) => s + BigInt(t.amount_raw), 0n)
 const legTotal = (inp, leg) => sumRaw(inp, (t) => lc(t.token) === lc(leg.t.token) && t.direction === leg.t.direction).toString()
-function usdgOtherWay(inp, leg) {
-	const other = leg.t.direction === 'in' ? 'out' : 'in'
-	const sum = sumRaw(inp, (t) => lc(t.token) === USDG && t.direction === other)
-	return sum > 0n ? showAmount(sum.toString(), 6) : ''
+
+/** What the wallet paid for the leg's token, in words, or ''. */
+function paidWords(inp, leg) {
+	const paid = whatWasPaid(inp, leg.t.token)
+	const parts = paid.tokens.map((p) => {
+		const m = movedKind(inp, p.token)
+		const amt = showAmount(p.amount_raw, m?.decimals ?? 18)
+		if (m?.kind === 'usdg') return `${amt} USDG`
+		if (m?.kind === 'stock') return `${amt} ${m.ticker}`
+		return `${amt} of the token at ${cardAddr(p.token)}`
+	})
+	if (BigInt(paid.eth_wei) > 0n) parts.push(`${showAmount(paid.eth_wei, 18)} ETH`)
+	return parts.join(' and ')
+}
+
+const PM_ADDRESS = '0x8366a39cc670b4001a1121b8f6a443a643e40951'
+/** Who the leg's token came from or went to, in words. */
+function otherParty(inp, leg) {
+	const other = lc(leg.t.direction === 'in' ? leg.t.from : leg.t.to)
+	const v = inp.venue.find((x) => lc(x.address) === other)
+	if (v?.kind === 'uniswap-v4-pool-manager' || (!v && other === PM_ADDRESS)) return `the Uniswap v4 PoolManager (${cardAddr(other)})`
+	if (v?.kind === 'uniswap-v3-pool') return `an official Uniswap v3 pool (${cardAddr(other)})`
+	return cardAddr(other)
 }
 
 const NONE_HEAD = {
@@ -700,7 +787,7 @@ const NONE_HEAD = {
 	A3: 'record is about another wallet',
 	A4: 'record not confirmed against its anchor',
 	A5: 'record does not replay',
-	A6: 'look-alike still under review',
+	A6: 'a same-ticker token still under review',
 	B1: 'record older than the move',
 	B2: 'a moved token is not classified',
 	M1: 'no signed mandate covers it',
@@ -708,7 +795,7 @@ const NONE_HEAD = {
 	C3: 'track record incomplete',
 	C4: 'wallet not in profit',
 	V1: 'not bought on an official venue',
-	D1: 'not a buy by the wallet',
+	D1: 'not a purchase by the wallet',
 	P1: 'no Chainlink price at the block',
 	L1: 'daily limit reached',
 	L2: 'position limit reached',
@@ -719,7 +806,10 @@ function cardReason(id, inp) {
 	const r = inp.record
 	const leg = stockLeg2(inp)
 	if (id === 'A1') return ['The payment terms offered for the evidence were not the published ones (0.01 USDG on Robinhood Chain, paid to vet402), so the evidence was not trusted.']
-	if (id === 'A2') return ['The record did not match the hash that came with it, so it may have been changed on the way.']
+	if (id === 'A2') {
+		if (inp.record_fetch.http_status !== 200) return [`vet402 answered HTTP ${inp.record_fetch.http_status} when asked for this wallet's record, so there is no record to judge the wallet by. copy-guard opens nothing on a wallet it has no record for.`]
+		return ['The record did not match the hash that came with it, so it may have been changed on the way.']
+	}
 	if (id === 'A3') return ['The record is about another wallet or another chain.']
 	if (id === 'A4') {
 		if (inp.cre.verdict === 'NO_ANCHOR') return ['vet402 has not anchored a record for this wallet onchain, so the Chainlink CRE workflow had nothing to check its record against.']
@@ -727,19 +817,23 @@ function cardReason(id, inp) {
 		return ["The Chainlink CRE workflow did not confirm the wallet's anchored record."]
 	}
 	if (id === 'A5') return ['The record does not replay to the balances it reports.']
-	if (id === 'A6') return ['A look-alike token in this wallet is still counted in its figures or waits for review.']
+	if (id === 'A6') return ['A token in this wallet that uses a listed ticker at another address is still counted in its figures or waits for review.']
 	if (id === 'B1') return [`The record was built at block ${r.as_of_block}, before this move in block ${inp.movement.block}, so it says nothing about it.`]
 	if (id === 'B2') return ['The record does not say what one of the moved tokens is.']
 	if (id === 'M1') return [`No signed mandate covers this decision: ${gapInMandate(inp)}.`]
 	if (id === 'C1') {
-		return inp.tokens_moved
-			.filter((m) => m.kind === 'fake')
-			.map((m) => {
-				const real = m.ticker === 'USDG' ? USDG : lc(r.tokens.find((k) => k.canonical && k.symbol === m.ticker)?.token)
-				return `The token is not ${m.ticker}. It is a look-alike at ${cardAddr(m.token)} that copies the ticker.${real ? ` The real ${m.ticker} is the token at ${cardAddr(real)}.` : ''}`
-			})
+		const out = []
+		for (const m of inp.tokens_moved) {
+			if (m.kind !== 'same_ticker') continue
+			const usdgLike = m.ticker === 'USDG'
+			let line = `This is not ${usdgLike ? 'USDG' : `the Robinhood Stock Token ${m.ticker}`}. It is a different token at ${cardAddr(m.token)} with the same ticker, at an address the issuer did not list.`
+			if (m.listed_at) line += ` ${usdgLike ? 'USDG' : `The Stock Token ${m.ticker}`} is at ${cardAddr(m.listed_at)}.`
+			line += m.by === 'cre' ? ` The Chainlink CRE token-check workflow read it from the chain (${(inp.token_check?.tokens[m.token]?.reasons ?? []).join(', ') || 'no reason given'}).` : ' The vet402 record names it.'
+			out.push(`${line} This says what the token is not. It says nothing about who made it or why.`)
+		}
+		return out
 	}
-	if (id === 'C2') return ['No real Robinhood Stock Token moved, so there is nothing to copy.']
+	if (id === 'C2') return ['No Robinhood Stock Token moved, so there is nothing to copy.']
 	if (id === 'C3') return [`The wallet's history could only be rebuilt in part (status: ${r.r1_status}), so its track record is not fully known.`]
 	if (id === 'C4') {
 		if (r.realized_usd === null) return ['The record gives no realized result for this wallet, so it is not known whether its closed trades made or lost money.']
@@ -751,8 +845,10 @@ function cardReason(id, inp) {
 		return [`The Stock Token did not come from an official venue (${others.join(', ') || 'no counterparty'} is neither the Uniswap v4 PoolManager nor an official Uniswap v3 pool).`]
 	}
 	if (id === 'D1') {
-		if (leg && leg.direction !== 'in') return ['The wallet sold or sent the Stock Token. That opens nothing. It closes a practice position copied from this wallet in the same token, if one is open.']
-		return ['The wallet received the Stock Token in a transaction it did not sign, so this is not a buy the wallet chose.']
+		const how = leg ? howItCame(inp, leg) : null
+		if (how === 'out') return ['The wallet sold or sent the Stock Token. That opens nothing. It closes a practice position copied from this wallet in the same token, if one is open.']
+		if (how === 'received_unpaid') return [`The wallet signed the transaction and received the Stock Token, but paid nothing in it (it called ${inp.move.selector || 'no function'} on ${inp.move.to ? cardAddr(lc(inp.move.to)) : 'no contract'}). Collecting from a liquidity pool, claiming a fee and withdrawing look like this. None of them is a purchase.`]
+		return ['Someone else signed the transaction that sent the wallet the Stock Token, so this is not a purchase the wallet chose.']
 	}
 	if (id === 'P1') return [`No Chainlink feed value can be used as the price at the block of the move (${gapInPrice(inp)}), so a practice position cannot be entered.`]
 	if (id === 'L1') return [`The limit of ${inp.limits.size.max_usd_per_day} USD per day leaves no room (${inp.book.used_usd_today} USD used on ${inp.book.day}).`]
@@ -775,30 +871,32 @@ export function cardOf(inp, d) {
 	if (leg) {
 		const { t, m } = leg
 		const amt = showAmount(legTotal(inp, leg), m.decimals)
-		const against = usdgOtherWay(inp, leg)
+		const how = howItCame(inp, { token: t.token, direction: t.direction })
+		const paid = paidWords(inp, leg)
+		const from = otherParty(inp, leg)
 		const n = inp.movement.transfers.length
-		if (m.kind === 'fake') {
-			const named = m.name && m.name !== m.ticker ? `, under the name "${m.name}"` : ''
-			const marks = `${m.name}${m.ticker}`.includes('⟨U+') ? ' The marks ⟨U+…⟩ stand for invisible characters in the name.' : ''
-			happened =
-				t.direction === 'in'
-					? `${cardAddr(t.from)} sent this wallet ${amt} tokens that a block explorer lists as ${m.ticker}${named}. ${sig}${own ? '' : ' It did not buy them.'}${marks}`
-					: `A token that a block explorer lists as ${m.ticker}${named} logged a transfer of ${amt} from this wallet to ${cardAddr(t.to)}. ${sig}${own ? '' : ' It never made this payment.'}${marks}`
-			blind_view = t.direction === 'in' ? `A bot that trusts tickers sees this wallet receive ${amt} ${m.ticker}.` : `A bot that trusts logs sees this wallet pay ${amt} ${m.ticker} to ${cardAddr(t.to)}.`
+		const incoming = t.direction === 'in'
+		if (m.kind === 'same_ticker') {
+			const named = m.name && m.name !== m.ticker ? ` (named "${m.name}")` : ''
+			const what = `${amt} tokens with the ticker ${m.ticker}${named}`
+			const marks = `${m.name}${m.ticker}`.includes('⟨U+') ? ` The marks ⟨U+…⟩ stand for invisible characters in the name: without them it reads ${m.ticker}.` : ''
+			if (how === 'bought') happened = `The wallet bought ${what} from ${from} and paid ${paid}. The wallet signed the transaction.${marks}`
+			else if (how === 'received_unpaid') happened = `The wallet received ${what} from ${from} in a transaction it signed, and paid nothing in it.${marks}`
+			else if (how === 'received_unsigned') happened = `${from} sent this wallet ${what}. ${sig} It paid nothing for them.${marks}`
+			else happened = `A token with the ticker ${m.ticker}${named} logged a transfer of ${amt} from this wallet to ${cardAddr(t.to)}. ${sig}${own ? '' : ' The wallet never made this payment.'}${marks}`
+			blind_view = incoming ? `A bot that goes by the ticker sees ${amt} ${m.ticker} arrive in this wallet.` : `A bot that goes by the log sees this wallet pay ${amt} ${m.ticker} to ${cardAddr(t.to)}.`
 		} else if (m.kind === 'stock') {
 			const label = m.name ? `${m.ticker} (${m.name})` : m.ticker
-			if (t.direction === 'in') {
-				happened = `The wallet received ${amt} ${label}${against ? ` and paid ${against} USDG` : ''}. ${sig}`
-				blind_view = against ? `A bot that copies this wallet sees a ${m.ticker} buy for ${against} USDG.` : `A bot that copies this wallet sees ${amt} ${m.ticker} arrive.`
-			} else {
-				happened = `The wallet sent ${amt} ${label}${against ? ` and received ${against} USDG` : ''}. ${sig}`
-				blind_view = against ? `A bot that copies this wallet sees a ${m.ticker} sale for ${against} USDG.` : `A bot that copies this wallet sees ${amt} ${m.ticker} leave.`
+			if (how === 'bought') happened = `The wallet bought ${amt} ${label} from ${from} and paid ${paid}. The wallet signed the transaction.`
+			else if (how === 'received_unpaid') happened = `The wallet received ${amt} ${label} from ${from} in a transaction it signed, and paid nothing in it. That is not a purchase: a liquidity-pool collect, a fee claim or a withdrawal looks like this.`
+			else if (how === 'received_unsigned') happened = `${from} sent this wallet ${amt} ${label}. ${sig}`
+			else {
+				const got = sumRaw(inp, (x) => lc(x.token) === USDG && x.direction === 'in')
+				happened = `The wallet sent ${amt} ${label} to ${from}${got > 0n ? ` and received ${showAmount(got.toString(), 6)} USDG` : ''}. ${sig}`
 			}
+			blind_view = incoming ? `A bot that copies this wallet sees ${amt} ${m.ticker} arrive.` : `A bot that copies this wallet sees ${amt} ${m.ticker} leave.`
 		} else {
-			happened =
-				m.kind === 'usdg'
-					? `The wallet ${t.direction === 'in' ? 'received' : 'sent'} ${amt} USDG and no Stock Token moved. ${sig}`
-					: `The wallet ${t.direction === 'in' ? 'received' : 'sent'} ${amt} of a token at ${cardAddr(m.token)} that the record does not classify. ${sig}`
+			happened = m.kind === 'usdg' ? `The wallet ${incoming ? 'received' : 'sent'} ${amt} USDG and no Stock Token moved. ${sig}` : `The wallet ${incoming ? 'received' : 'sent'} ${amt} of a token at ${cardAddr(m.token)} that is neither a Stock Token nor USDG. ${sig}`
 			blind_view = `A bot that copies this wallet sees ${n} token transfer${n === 1 ? '' : 's'}.`
 		}
 	}
@@ -810,7 +908,7 @@ export function cardOf(inp, d) {
 			happened,
 			blind_view,
 			why: [
-				`${p.symbol} is the real Robinhood Stock Token at ${cardAddr(p.token)}. No look-alike is part of the move, the wallet bought it itself, and it came from an official Uniswap venue.`,
+				`${p.symbol} is the Robinhood Stock Token at ${cardAddr(p.token)}, an address in the issuer's list${inp.token_check ? ', confirmed from the chain by the Chainlink CRE token-check workflow' : ''}. No other token with a listed ticker is part of the move. The wallet signed the transaction and paid in it, and the token came from an official Uniswap venue.`,
 				full
 					? `The record matches its hash, the Chainlink CRE workflow confirmed the wallet's anchored record (MATCH), the wallet's full history could be rebuilt and its closed trades add up to a profit of ${inp.record.realized_usd} USD.`
 					: 'The record matches its hash, but the evidence about the wallet is weaker:',
@@ -820,12 +918,28 @@ export function cardOf(inp, d) {
 			so: `So copy-guard opened a practice buy of ${p.notional_usd} USD: ${p.shares} ${p.symbol} at ${p.price_usd} USD, the Chainlink feed's value at the block of the move. It will ${p.exit.rule}. No real trade was placed.`,
 		}
 	}
-	const fake = d.decisive.includes('C1')
+	const otherToken = d.decisive.includes('C1')
+	const noRecord = inp.record_fetch.http_status !== 200
 	const rank = (id) => CARD_PRIORITY.indexOf(id) + 1 || 99
-	const lead = fake ? ['C1'] : d.decisive.filter((id) => !(d.decisive.includes('C2') && ['V1', 'D1', 'P1'].includes(id))).sort((x, y) => rank(x) - rank(y))
+	let lead = d.decisive.filter((id) => !(d.decisive.includes('C2') && ['V1', 'D1', 'P1'].includes(id))).sort((x, y) => rank(x) - rank(y))
+	if (otherToken) lead = ['C1']
+	else if (noRecord) lead = ['A2']
 	const rest = d.decisive.filter((id) => !lead.includes(id))
+	let head = NONE_HEAD[lead[0]] ?? 'a rule failed'
+	if (lead[0] === 'D1') {
+		const sl = stockLeg2(inp)
+		const how = sl ? howItCame(inp, sl) : null
+		if (how === 'out') head = 'a sale or a transfer out, not a purchase'
+		else if (how === 'received_unpaid') head = 'received without paying, not a purchase'
+		else if (how === 'received_unsigned') head = 'sent to the wallet, not bought by it'
+	}
+	if (noRecord) head = 'vet402 has no record for this wallet'
+	if (otherToken) {
+		const ticker = inp.tokens_moved.find((m) => m.kind === 'same_ticker')?.ticker ?? ''
+		head = `not ${ticker === 'USDG' ? 'USDG' : `the Stock Token ${ticker}`}, a different token with the same ticker`
+	}
 	return {
-		headline: fake ? `No position: fake ${inp.tokens_moved.find((m) => m.kind === 'fake')?.ticker ?? ''}` : `No position: ${NONE_HEAD[lead[0]] ?? 'a rule failed'}`,
+		headline: `No position: ${head}`,
 		happened,
 		blind_view,
 		why: [...lead.flatMap((id) => cardReason(id, inp)), ...cardLimitNote(lead, inp, 'none'), ...(rest.length ? [`${rest.length === 1 ? 'Rule' : 'Rules'} ${rest.join(', ')} failed as well. The rule rows show each one.`] : [])],
@@ -833,12 +947,16 @@ export function cardOf(inp, d) {
 	}
 }
 
-// The practice ledger: a walk through the decisions with two books, copy-guard and a blind copy.
+// The practice ledger: a walk through the decisions with two books, copy-guard and a
+// ticker copy. A second, separate writing of agent/ledger.ts. A Stock Token is valued
+// at its Chainlink feed. A different token under the same ticker is valued only from the
+// Uniswap v4 pool the wallet bought it in, and otherwise not at all: nothing is assumed
+// to be worth zero, and what is not measured is in no sum.
 
 export const BLIND_BASELINE =
-	'Blind copy opens the full size on every move in which something that looks like a Stock Token arrives in the wallet: a real one, or a look-alike that copies a stock ticker. It trusts the ticker and the log. It buys no record, checks no venue or signature, and has no daily or open-position limit. It uses the same entry price and the same exit rules as copy-guard.'
+	'Ticker copy opens the full size on every move in which a token with a stock ticker arrives in the wallet: a Robinhood Stock Token with a usable Chainlink price, or a different token that uses a listed stock ticker. It goes by the ticker and the log. It buys no record, checks no venue, signature or payment, and has no daily or open-position limit. For a Stock Token it uses the same entry price and the same exit rules as copy-guard.'
 export const LEDGER_NOTE =
-	'Practice (paper) trades only. No real trade was placed. The two columns compare two policies on past public moves. This is not a forecast, not a record of real trading and not advice.'
+	'Practice (paper) trades only. No real trade was placed. The two columns compare two policies on past public moves. This is not a forecast, not a record of real trading and not advice. A position in a token without a Chainlink feed is valued only from a Uniswap v4 pool the wallet itself bought in, otherwise it is not measured and is left out of every sum.'
 
 const pointUsd = (series, pt) => (Number(pt.answer) / 10 ** series.decimals).toFixed(4)
 const lastPoint = (series, block) => {
@@ -851,13 +969,19 @@ const lastPoint = (series, block) => {
 }
 const gain = (notional, entry, exit) => BigInt(Math.round(Number(toCents(notional)) * (Number(exit) / Number(entry) - 1)))
 
-/** One book of practice positions. Plain objects and four functions, walked forward block by block. */
-function newBook(feeds, limits) {
+/** How many times its entry price a token is worth at the mark. sqrtPriceX96 squared is the price of currency0 in currency1. */
+export function poolTimes(entry, mark) {
+	const r = Number(BigInt(mark.sqrt_price_x96)) / Number(BigInt(entry.sqrt_price_x96))
+	return entry.token_is_currency0 ? r * r : 1 / (r * r)
+}
+
+/** One book of practice positions. Plain objects and a few functions, walked forward block by block. */
+function newBook(feeds, limits, marks = {}) {
 	const positions = []
 	const close = (p, reason, block, price, atDecision) => {
 		p.status = 'closed'
 		p.exit = { reason, block, price_usd: price, at_decision: atDecision }
-		p.result_usd = p.fake || !price || !p.entry_price_usd ? fromCents(-toCents(p.notional_usd)) : fromCents(gain(p.notional_usd, p.entry_price_usd, price))
+		p.result_usd = !price || !p.entry_price_usd ? null : fromCents(gain(p.notional_usd, p.entry_price_usd, price))
 	}
 	return {
 		positions,
@@ -895,35 +1019,45 @@ function newBook(feeds, limits) {
 		},
 		open(n, inp, o) {
 			const entry = o.entry === null ? Number.NaN : Number(o.entry)
-			const p = {
+			const stock = o.asset === 'stock'
+			positions.push({
 				n,
 				wallet: lc(inp.wallet),
 				token: o.token,
 				symbol: o.symbol,
 				tier: o.tier,
-				fake: o.fake,
+				asset: o.asset,
+				valued_by: stock ? 'feed' : 'none',
 				notional_usd: o.notional,
 				entry_price_usd: o.entry,
+				pool_entry: o.pool,
 				opened_block: inp.movement.block,
 				opened_time: inp.move.time,
 				status: 'open',
 				exit: null,
 				mark: null,
-				result_usd: '0.00',
+				result_usd: stock ? '0.00' : null,
 				_stop: entry * (1 - Number(limits.exit.stop_loss_pct) / 100),
 				_take: entry * (1 + Number(limits.exit.take_profit_pct) / 100),
 				_closeBy: Date.parse(inp.move.time) + limits.exit.max_holding_days * 86_400_000,
 				_cursor: 0,
-			}
-			positions.push(p)
-			if (o.fake) close(p, 'look-alike, written off', inp.movement.block, null, n)
+			})
 		},
 		finish(markBlock) {
 			this.advance(markBlock)
 			for (const p of positions) {
+				if (p.status !== 'open') continue
+				if (p.asset === 'same_ticker') {
+					const m = p.pool_entry ? marks[p.pool_entry.pool_id] : undefined
+					if (!m || m.block > markBlock || m.block < p.opened_block) continue
+					p.mark = { block: m.block, price_usd: null, pool: m }
+					p.valued_by = 'pool'
+					p.result_usd = fromCents(BigInt(Math.round(Number(toCents(p.notional_usd)) * (poolTimes(p.pool_entry, m) - 1))))
+					continue
+				}
 				const pt = lastPoint(feeds[p.token], markBlock)
-				if (p.status !== 'open' || !pt || !p.entry_price_usd) continue
-				p.mark = { block: pt.block, price_usd: pointUsd(feeds[p.token], pt) }
+				if (!pt || !p.entry_price_usd) continue
+				p.mark = { block: pt.block, price_usd: pointUsd(feeds[p.token], pt), pool: null }
 				p.result_usd = fromCents(gain(p.notional_usd, p.entry_price_usd, p.mark.price_usd))
 			}
 			return positions.map((p) => Object.fromEntries(Object.entries(p).filter(([k]) => !k.startsWith('_'))))
@@ -934,9 +1068,17 @@ function newBook(feeds, limits) {
 function blindOpens(inp) {
 	const leg = cardLeg(inp)
 	if (!leg || leg.t.direction !== 'in') return null
-	if (leg.m.kind === 'fake') return leg.m.ticker === 'USDG' ? null : { token: leg.m.token, symbol: leg.m.ticker, entry: null, fake: true }
-	if (leg.m.kind === 'stock' && gapInPrice(inp) === '') return { token: leg.m.token, symbol: leg.m.ticker, entry: feedUsd(inp.price), fake: false }
+	if (leg.m.kind === 'same_ticker') return leg.m.ticker === 'USDG' ? null : { token: leg.m.token, symbol: leg.m.ticker, entry: null, asset: 'same_ticker', pool: inp.pool_entry ?? null }
+	if (leg.m.kind === 'stock' && gapInPrice(inp) === '') return { token: leg.m.token, symbol: leg.m.ticker, entry: feedUsd(inp.price), asset: 'stock', pool: null }
 	return null
+}
+
+/** The wallet's own receipt of a Stock Token in USD at the feed, or null. */
+function moveInUsd(inp) {
+	const leg = stockLeg2(inp)
+	if (!leg || leg.direction !== 'in' || gapInPrice(inp) !== '') return null
+	const raw = sumRaw(inp, (t) => lc(t.token) === lc(leg.token) && t.direction === 'in')
+	return ((Number(raw) / 10 ** (movedKind(inp, leg.token)?.decimals ?? 18)) * Number(feedUsd(inp.price))).toFixed(2)
 }
 
 /** A binary Merkle root over the leaves in order. An odd last node moves up unchanged. */
@@ -951,53 +1093,124 @@ export function merkleRootOf(leaves) {
 	return level[0]
 }
 
-/** The whole ledger from the trails in walk order, the saved feed values and the block it is marked at. */
-export function ledgerOf(trails, feeds, markBlock) {
+/** The whole ledger from the trails in walk order, the saved feed values, the walk's context and the block it is marked at. */
+export function ledgerOf(trails, feeds, markBlock, context) {
 	const first = trails[0].inputs
 	const limits = first.limits
+	const oneSize = limits.size.reduced_usd
 	const guard = newBook(feeds, limits)
-	const blind = newBook(feeds, limits)
+	const blind = newBook(feeds, limits, context.pool_marks)
+	const blindOne = newBook(feeds, limits, context.pool_marks)
+	const cohorts = Object.fromEntries(context.wallets.map((w) => [lc(w.wallet), w.cohort]))
+	const hasOther = (t) => t.inputs.tokens_moved.some((x) => x.kind === 'same_ticker')
 	const rows = trails.map((t, i) => {
 		const n = i + 1
 		const inp = t.inputs
 		const block = inp.movement.block
 		guard.advance(block)
 		blind.advance(block)
+		blindOne.advance(block)
 		const leg = stockLeg2(inp)
 		const sold = leg && leg.direction === 'out' && lc(inp.move.signer) === lc(inp.wallet) ? lc(leg.token) : null
 		const closedGuard = sold ? guard.walletSold(lc(inp.wallet), sold, block, n) : []
 		const closedBlind = sold ? blind.walletSold(lc(inp.wallet), sold, block, n) : []
+		if (sold) blindOne.walletSold(lc(inp.wallet), sold, block, n)
 		const book = guard.state(inp.move.time.slice(0, 10))
 		const p = t.decision.paper_trade
-		if (p) guard.open(n, inp, { token: p.token, symbol: p.symbol, tier: p.tier, notional: p.notional_usd, entry: p.price_usd, fake: false })
+		if (p) guard.open(n, inp, { token: p.token, symbol: p.symbol, tier: p.tier, notional: p.notional_usd, entry: p.price_usd, asset: 'stock', pool: null })
 		const b = blindOpens(inp)
-		if (b) blind.open(n, inp, { ...b, tier: 'BLIND', notional: limits.size.full_usd })
+		if (b) {
+			blind.open(n, inp, { ...b, tier: 'BLIND', notional: limits.size.full_usd })
+			blindOne.open(n, inp, { ...b, tier: 'BLIND', notional: oneSize })
+		}
+		const cohort = cohorts[lc(inp.wallet)]
+		if (!cohort) throw new Error(`decision ${n}: wallet ${lc(inp.wallet)} is not in the walk's context`)
+		const main = cardLeg(inp)
 		return {
 			n,
 			wallet: lc(inp.wallet),
+			cohort,
 			move_tx: lc(inp.movement.tx),
 			move_block: block,
 			move_time: inp.move.time,
 			tier: t.decision.tier,
 			failed: t.decision.decisive,
 			checks: { passed: t.decision.rule_results.filter((r) => r.ok).length, total: t.decision.rule_results.length, flags: t.decision.rule_results.filter((r) => !r.ok).map((r) => r.id) },
+			main: main ? { token: main.m.token, kind: main.m.kind, ticker: main.m.ticker, arrival: howItCame(inp, { token: main.t.token, direction: main.t.direction }) } : null,
+			move_usd: moveInUsd(inp),
 			card: t.card,
 			book,
 			copy_guard: { opened: p ? { tier: p.tier, notional_usd: p.notional_usd, entry_price_usd: p.price_usd, shares: p.shares } : null, closed_here: closedGuard },
-			blind_copy: { opened: b ? { notional_usd: limits.size.full_usd, entry_price_usd: b.entry, fake: b.fake } : null, closed_here: closedBlind },
+			blind_copy: { opened: b ? { notional_usd: limits.size.full_usd, entry_price_usd: b.entry, asset: b.asset } : null, closed_here: closedBlind },
 			leaf: keccak256(canonicalJson(t)),
 		}
 	})
 	const guardPositions = guard.finish(markBlock)
 	const blindPositions = blind.finish(markBlock)
-	const signed = (s) => toCents(s.replace('-', '')) * (s.startsWith('-') ? -1n : 1n)
-	const sum = (ps, pick) => fromCents(ps.reduce((s, p) => s + signed(pick(p)), 0n))
-	const side = (ps) => ({ opened: ps.length, closed: ps.filter((p) => p.status === 'closed').length, open: ps.filter((p) => p.status === 'open').length, put_in_usd: sum(ps, (p) => p.notional_usd), result_usd: sum(ps, (p) => p.result_usd) })
-	const count = (tier) => rows.filter((r) => r.tier === tier).length
+	const onePositions = blindOne.finish(markBlock)
+	const signedCents = (s) => toCents(s.replace('-', '')) * (s.startsWith('-') ? -1n : 1n)
+	const total = (xs) => fromCents(xs.reduce((s, x) => s + (x === null ? 0n : signedCents(x)), 0n))
+	const side = (ps) => ({ count: ps.length, put_in_usd: total(ps.map((p) => p.notional_usd)), result_usd: total(ps.map((p) => p.result_usd)) })
+	const otherSide = (ps) => {
+		const measured = ps.filter((p) => p.result_usd !== null)
+		return { count: ps.length, put_in_usd: total(ps.map((p) => p.notional_usd)), measured: measured.length, result_measured_usd: measured.length ? total(measured.map((p) => p.result_usd)) : null, not_measured: ps.length - measured.length }
+	}
+	const sortedCents = (xs) => xs.map(toCents).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+	const median = (xs) => {
+		if (!xs.length) return '0.00'
+		const c = sortedCents(xs)
+		const mid = c.length >> 1
+		return fromCents(c.length % 2 ? c[mid] : (c[mid - 1] + c[mid]) / 2n)
+	}
+	const tierCount = (rs, tier) => rs.filter((r) => r.tier === tier).length
 	const m = first.mandate
-	const bs = side(blindPositions)
+	const signedByPrincipal = Boolean(m.signer) && lc(m.signer) === lc(m.document.principal)
+	const sample = /^SAMPLE\b/.test(m.document.title)
+	const reasonCount = {}
+	for (const r of rows) {
+		if (r.tier !== 'NONE') continue
+		const reason = r.card.headline.replace('No position: ', '')
+		reasonCount[reason] = (reasonCount[reason] ?? 0) + 1
+	}
+	const otherList = {}
+	const came = { bought: 0, received_unpaid: 0, received_unsigned: 0, out: 0 }
+	let hidden = 0
+	let otherMoves = 0
+	for (const t of trails) {
+		const part = t.inputs.tokens_moved.filter((x) => x.kind === 'same_ticker')
+		if (!part.length) continue
+		otherMoves++
+		for (const x of part) {
+			otherList[x.token] ??= { token: x.token, ticker: x.ticker, name: x.name, moves: 0 }
+			otherList[x.token].moves++
+		}
+		const main = cardLeg(t.inputs)
+		if (main) came[howItCame(t.inputs, { token: main.t.token, direction: main.t.direction })]++
+		if (part.some((x) => `${x.name}${x.ticker}`.includes('⟨U+'))) hidden++
+	}
+	const openedByGuard = new Set(guardPositions.map((p) => p.n))
+	const followed = rows.filter((r) => r.copy_guard.opened && r.move_usd !== null).map((r) => r.move_usd)
+	const fc = sortedCents(followed)
+	const noRecord = context.wallets.filter((w) => w.record_http !== 200).map((w) => lc(w.wallet))
+	const times = rows.map((r) => r.move_time).sort()
+	const inCohort = (c) => context.wallets.filter((w) => w.cohort === c).length
+	const cohortTotals = (c) => {
+		const rs = rows.filter((r) => r.cohort === c)
+		return {
+			wallets: inCohort(c),
+			decisions: rs.length,
+			full: tierCount(rs, 'FULL'),
+			reduced: tierCount(rs, 'REDUCED'),
+			none: tierCount(rs, 'NONE'),
+			other_token_moves: rs.filter((r) => hasOther(trails[r.n - 1])).length,
+			copy_guard_opened: rs.filter((r) => r.copy_guard.opened).length,
+			ticker_copy_opened: rs.filter((r) => r.blind_copy.opened).length,
+			ticker_copy_in_other_tokens: rs.filter((r) => r.blind_copy.opened?.asset === 'same_ticker').length,
+		}
+	}
+	const otherBlind = blindPositions.filter((p) => p.asset === 'same_ticker')
 	return {
-		ledger_version: 2,
+		ledger_version: 3,
 		note: LEDGER_NOTE,
 		baseline: BLIND_BASELINE,
 		decided_at: trails[0].decided_at,
@@ -1006,13 +1219,18 @@ export function ledgerOf(trails, feeds, markBlock) {
 		limits_keccak: lc(first.limits_keccak),
 		mandate: {
 			keccak: lc(m.keccak),
+			title: m.document.title,
 			principal: lc(m.document.principal),
 			agent_payment_key: lc(m.document.agent.payment_key),
-			signed_by_principal: Boolean(m.signer) && lc(m.signer) === lc(m.document.principal),
+			signed_by_principal: signedByPrincipal,
+			sample,
+			status: !signedByPrincipal ? 'not_signed' : sample ? 'sample' : 'signed_by_principal',
 			valid_from: m.document.valid_from,
 			valid_until: m.document.valid_until,
 		},
 		rules: trails[0].rules,
+		token_check: first.token_check ? { source: first.token_check.source, keccak: lc(first.token_check.keccak) } : null,
+		context,
 		root: merkleRootOf(rows.map((r) => r.leaf)),
 		rows,
 		copy_guard_positions: guardPositions,
@@ -1020,12 +1238,50 @@ export function ledgerOf(trails, feeds, markBlock) {
 		totals: {
 			decisions: rows.length,
 			wallets: new Set(rows.map((r) => r.wallet)).size,
-			full: count('FULL'),
-			reduced: count('REDUCED'),
-			none: count('NONE'),
-			fakes_named: trails.filter((t) => t.decision.rule_results.some((r) => r.id === 'C1' && !r.ok)).length,
-			copy_guard: side(guardPositions),
-			blind_copy: { opened: bs.opened, fakes: blindPositions.filter((p) => p.fake).length, closed: bs.closed, open: bs.open, put_in_usd: bs.put_in_usd, result_usd: bs.result_usd },
+			wallets_by_cohort: { watched: inCohort('watched'), top_buyers: inCohort('top_buyers'), same_ticker_buyers: inCohort('same_ticker_buyers') },
+			by_cohort: { watched: cohortTotals('watched'), top_buyers: cohortTotals('top_buyers'), same_ticker_buyers: cohortTotals('same_ticker_buyers') },
+			wallets_without_record: noRecord.length,
+			decisions_without_record: rows.filter((r) => noRecord.includes(r.wallet)).length,
+			first_move_time: times[0],
+			last_move_time: times[times.length - 1],
+			full: tierCount(rows, 'FULL'),
+			reduced: tierCount(rows, 'REDUCED'),
+			none: tierCount(rows, 'NONE'),
+			none_by_reason: Object.entries(reasonCount)
+				.map(([reason, count]) => ({ reason, count }))
+				.sort((x, y) => y.count - x.count || (x.reason < y.reason ? -1 : 1)),
+			other_tokens: {
+				moves: otherMoves,
+				tokens: Object.keys(otherList).length,
+				tickers: [...new Set(Object.values(otherList).map((o) => o.ticker))].sort(),
+				sent_to_the_wallet: came.received_unsigned,
+				bought_by_the_wallet: came.bought,
+				received_unpaid: came.received_unpaid,
+				logged_as_sent_by_the_wallet: came.out,
+				with_invisible_characters: hidden,
+				list: Object.values(otherList).sort((x, y) => y.moves - x.moves || (x.token < y.token ? -1 : 1)),
+			},
+			copy_guard: {
+				opened: guardPositions.length,
+				closed: guardPositions.filter((p) => p.status === 'closed').length,
+				open: guardPositions.filter((p) => p.status === 'open').length,
+				put_in_usd: total(guardPositions.map((p) => p.notional_usd)),
+				result_usd: total(guardPositions.map((p) => p.result_usd)),
+				followed_purchases_usd: { count: followed.length, median: median(followed), sum: total(followed), min: fc.length ? fromCents(fc[0]) : '0.00', max: fc.length ? fromCents(fc[fc.length - 1]) : '0.00' },
+			},
+			blind_copy: {
+				opened: blindPositions.length,
+				closed: blindPositions.filter((p) => p.status === 'closed').length,
+				open: blindPositions.filter((p) => p.status === 'open').length,
+				in_stock_tokens: side(blindPositions.filter((p) => p.asset === 'stock')),
+				in_other_tokens: { ...otherSide(otherBlind), tokens: new Set(otherBlind.map((p) => p.token)).size },
+			},
+			same_size: {
+				size_usd: oneSize,
+				opened_by_both: side(onePositions.filter((p) => openedByGuard.has(p.n))),
+				opened_by_ticker_copy_only_stock: side(onePositions.filter((p) => !openedByGuard.has(p.n) && p.asset === 'stock')),
+				opened_by_ticker_copy_only_other: otherSide(onePositions.filter((p) => p.asset === 'same_ticker')),
+			},
 		},
 	}
 }
@@ -1512,6 +1768,9 @@ const V4_POOL_MANAGER = '0x8366a39cc670b4001a1121b8f6a443a643e40951'
 const V3_FACTORY = '0x1f7d7550b1b028f7571e69a784071f0205fd2efa'
 /** The three moves of the demo wallet the paid run decided. They are always among the decisions checked on chain. */
 const SHOWCASE = ['0x0eac7685', '0x1b838f40', '0xf7cb51a2']
+const V4_SWAP_TOPIC = keccak256('Swap(bytes32,address,int128,int128,uint160,uint128,int24,uint24)')
+/** The record fields of a wallet vet402 has no record for: all empty, so the evidence rules fail and say so. */
+const NO_RECORD_FIELDS = { source_url: '', x_facts_hash: '', recomputed_facts_hash: '', address: '', chain_id: 0, as_of: '', as_of_block: 0, method_version: '', r1_status: 'unverified', realized_usd: null, tokens: [], lookalikes: [] }
 
 /** One decision of the walk against the chain: the transfers, the time, the signer, the decimals, the venue and the feed value. */
 async function chainFacts(main, t) {
@@ -1523,6 +1782,20 @@ async function chainFacts(main, t) {
 	const onchain = movementFromLogs(inp.wallet, mv.tx, r.logs ?? [])
 	if (onchain === null || canonicalJson(onchain) !== canonicalJson(mv)) bad.push('the transfers differ from what the trail lists')
 	if (lc(r.from) !== lc(inp.move.signer)) bad.push(`signed by ${lc(r.from)}, the trail says ${inp.move.signer}`)
+	const tx = await main('eth_getTransactionByHash', [mv.tx])
+	if (!tx || BigInt(tx.value ?? '0x0').toString() !== inp.move.value_wei) bad.push(`the transaction carried ${tx ? BigInt(tx.value ?? '0x0') : '?'} wei, the trail says ${inp.move.value_wei}`)
+	if (tx && (lc(tx.to) !== lc(inp.move.to) || String(tx.input ?? '0x').slice(0, 10) !== inp.move.selector)) bad.push('the transaction called another contract or method than the trail says')
+	if (inp.pool_entry) {
+		const e = inp.pool_entry
+		const swap = (r.logs ?? []).find((l) => lc(l.address) === V4_POOL_MANAGER && lc(l.topics?.[0]) === V4_SWAP_TOPIC && Number(BigInt(l.logIndex)) === e.log_index)
+		const d = swap ? swap.data.slice(2) : ''
+		const abs = (w) => {
+			const v = BigInt.asIntN(256, BigInt(`0x${w}`))
+			return v < 0n ? -v : v
+		}
+		const got = sumRaw(inp, (t) => t.direction === 'in' && movedKind(inp, t.token)?.kind === 'same_ticker')
+		if (!swap || lc(swap.topics[1]) !== e.pool_id || BigInt(`0x${d.slice(128, 192)}`).toString() !== e.sqrt_price_x96 || abs(d.slice(e.token_is_currency0 ? 0 : 64, e.token_is_currency0 ? 64 : 128)) !== got) bad.push('the Uniswap v4 swap log is not the one the trail names for the pool price')
+	}
 	const block = await main('eth_getBlockByNumber', [`0x${mv.block.toString(16)}`, false])
 	const time = block ? new Date(Number(BigInt(block.timestamp)) * 1000).toISOString() : '(no block)'
 	if (time !== inp.move.time) bad.push(`the block is from ${time}, the trail says ${inp.move.time}`)
@@ -1550,16 +1823,21 @@ async function chainFacts(main, t) {
 	}
 	if (bad.length) return [false, `${short(lc(mv.tx))}: ${bad.join('; ')}`]
 	const signer = lc(r.from) === lc(inp.wallet) ? 'the wallet' : `${shortAddr(lc(r.from))}, not the wallet`
-	return [true, `${short(lc(mv.tx))} in block ${mv.block} (${inp.move.time}): ${mv.transfers.length} transfer${mv.transfers.length === 1 ? '' : 's'} as listed, signed by ${signer}${inp.venue.length ? `, venue ${inp.venue.map((v) => v.kind).join(' and ')}` : ''}${p ? `, feed value ${feedUsd(p)} USD from round ${p.round_id}` : ''}`]
+	const sl = stockLeg2(inp) ?? cardLeg(inp)?.t
+	const how = sl ? howItCame(inp, sl) : null
+	const came = how === 'bought' ? `, a purchase: paid ${paidWords(inp, { t: sl })}` : how === 'received_unpaid' ? `, nothing paid (method ${inp.move.selector})` : ''
+	return [true, `${short(lc(mv.tx))} in block ${mv.block} (${inp.move.time}): ${mv.transfers.length} transfer${mv.transfers.length === 1 ? '' : 's'} as listed, signed by ${signer}${came}${inp.venue.length ? `, venue ${inp.venue.map((v) => v.kind).join(' and ')}` : ''}${p ? `, feed value ${feedUsd(p)} USD from round ${p.round_id}` : ''}`]
 }
 
 /** 5. The practice ledger: every decision of the walk, both books, the mandate, the user's limits, the root and the page. */
 async function verifyLedger(rep, main, test, deep) {
-	rep.say(`5. The practice ledger: a walk through every decision, copy-guard next to a blind copy`)
+	rep.say(`5. The practice ledger: a walk through every decision, copy-guard next to a ticker copy`)
 	const dir = join(REPO, CLAIMS.walkDir)
 	let trails = []
 	let feeds = {}
 	let ledger = null
+	let context = null
+	let selection = null
 	await rep.check('decisions', () => {
 		trails = readFileSync(join(dir, 'trails.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l))
 		const bad = []
@@ -1570,19 +1848,66 @@ async function verifyLedger(rep, main, test, deep) {
 		const tier = (x) => trails.filter((t) => t.decision.tier === x).length
 		return [trails.length > 0 && bad.length === 0, bad.length ? bad.slice(0, 3).join('; ') : `${trails.length} decisions rerun, ${trails[0].decision.rule_results.length} rules each: FULL ${tier('FULL')}, REDUCED ${tier('REDUCED')}, NONE ${tier('NONE')}. Every row, card, mandate and limits hash is the one its inputs give`]
 	})
+	await rep.check('selection', () => {
+		context = readJson(join(dir, 'context.json'))
+		selection = readJson(join(dir, 'selection.json'))
+		const purchases = readJson(join(dir, 'selection-purchases.json'))
+		const listed = readJson(join(dir, 'wallets.json'))
+		const bad = []
+		if (canonicalJson(listed.map((w) => [lc(w.wallet), w.cohort, w.rank, w.purchases_usd])) !== canonicalJson(context.wallets.map((w) => [lc(w.wallet), w.cohort, w.rank, w.purchases_usd]))) bad.push('the walk did not follow the wallets the selection wrote')
+		if (canonicalJson([selection.window.from, selection.window.to]) !== canonicalJson([context.window.from_block, context.window.to_block])) bad.push('the window of the walk is not the window of the selection')
+		const top = context.wallets.filter((w) => w.cohort === 'top_buyers')
+		let counted = 0
+		top.forEach((w, i) => {
+			const ps = purchases[lc(w.wallet)] ?? []
+			counted += ps.length
+			const sum = ps.reduce((x, p) => x + Number(p.size_usd), 0).toFixed(2)
+			if (sum !== w.purchases_usd) bad.push(`${w.wallet}: its purchases add up to ${sum} USD, not ${w.purchases_usd}`)
+			if (w.rank !== i + 1 || (i > 0 && Number(top[i - 1].purchases_usd) < Number(w.purchases_usd))) bad.push(`${w.wallet} is out of order`)
+			for (const p of ps) if (p.size_usd !== ((Number(BigInt(p.amount_raw)) / 1e18) * Number(p.feed_usd)).toFixed(2)) bad.push(`purchase ${short(p.tx)} is not amount times feed value`)
+		})
+		const strangers = [...new Set(trails.map((t) => lc(t.inputs.wallet)))].filter((w) => !context.wallets.some((x) => lc(x.wallet) === w))
+		if (strangers.length) bad.push(`${strangers.length} wallets in the walk are not in the selection`)
+		const by = (c) => context.wallets.filter((w) => w.cohort === c).length
+		const noRecord = context.wallets.filter((w) => w.record_http !== 200)
+		return [bad.length === 0, bad.length ? bad.slice(0, 3).join('; ') : `${context.wallets.length} wallets, as ${CLAIMS.walkDir}/selection.json picked them: the ${by('top_buyers')} largest buyers of Stock Tokens in blocks ${selection.window.from} to ${selection.window.to} (${selection.window.from_time.slice(0, 10)} to ${selection.window.to_time.slice(0, 10)}, ${counted} purchases counted, each amount times feed value), ${by('watched')} watched wallet and the first ${by('same_ticker_buyers')} buyers of one token with the ticker ${selection.same_ticker_buyers?.ticker ?? '?'}. vet402 had no record for ${noRecord.length} of them, and they stay in the ledger`]
+	})
+	if (!context) return
 	await rep.check('records', () => {
+		const snapshot = readJson(join(REPO, 'token-check/registry-snapshot.json'))
+		const list = Object.fromEntries(snapshot.tokens.map((t) => [lc(t.token), { symbol: t.symbol, name: t.name }]))
+		const resultsPath = join(REPO, 'docs/token-check/results.json')
+		const results = existsSync(resultsPath) ? { keccak: keccak256(new Uint8Array(readFileSync(resultsPath))), tokens: readJson(resultsPath).tokens ?? {} } : null
 		const wallets = [...new Set(trails.map((t) => lc(t.inputs.wallet)))]
+		let without = 0
 		for (const w of wallets) {
 			const saved = readJson(join(dir, 'records', `${w}.json`))
-			if (factsHash(saved.facts) !== lc(saved.x_facts_hash)) return [false, `records/${w}.json does not hash to the X-Facts-Hash saved with it`]
-			const fields = canonicalJson(recordFields(saved.facts, { source_url: saved.source_url, x_facts_hash: saved.x_facts_hash }))
+			const http = saved.http_status ?? 200
+			if (context.wallets.find((x) => lc(x.wallet) === w)?.record_http !== http) return [false, `records/${w}.json says HTTP ${http}, the walk's context says otherwise`]
+			let fields
+			if (saved.facts) {
+				if (factsHash(saved.facts) !== lc(saved.x_facts_hash)) return [false, `records/${w}.json does not hash to the X-Facts-Hash saved with it`]
+				fields = canonicalJson(recordFields(saved.facts, { source_url: saved.source_url, x_facts_hash: saved.x_facts_hash }))
+			} else {
+				if (http === 200) return [false, `records/${w}.json has no record but says HTTP 200`]
+				without++
+				fields = canonicalJson({ ...NO_RECORD_FIELDS, source_url: saved.source_url })
+			}
 			for (const t of trails.filter((x) => lc(x.inputs.wallet) === w)) {
 				if (canonicalJson(t.inputs.record) !== fields) return [false, `a decision about ${w} read record fields that records/${w}.json does not give`]
+				if (canonicalJson(t.inputs.record_fetch) !== canonicalJson({ url: saved.source_url, http_status: http })) return [false, `a decision about ${w} names another answer of vet402 than records/${w}.json`]
+				const tc = t.inputs.token_check
+				if (Boolean(tc) !== Boolean(results)) return [false, results ? `a decision about ${w} did not read docs/token-check/results.json` : `a decision about ${w} names CRE token-check results, and docs/token-check/results.json is missing`]
+				if (tc && lc(tc.keccak) !== results.keccak) return [false, `a decision about ${w} names token-check results ${tc.keccak}, the file hashes to ${results.keccak}`]
+				for (const [token, said] of Object.entries(tc?.tokens ?? {})) {
+					const f = results.tokens[token] ?? Object.entries(results.tokens).find(([k]) => lc(k) === token)?.[1]
+					if (!f || (f.issuer_token === true) !== said.issuer_token || (f.ticker ?? null) !== said.ticker || canonicalJson(f.reasons ?? []) !== canonicalJson(said.reasons)) return [false, `a decision about ${w} says something else about ${token} than docs/token-check/results.json`]
+				}
 				const decimals = Object.fromEntries(t.inputs.tokens_moved.map((m) => [m.token, m.decimals]))
-				if (canonicalJson(movedTokensFrom(saved.facts, t.inputs.movement.transfers, decimals)) !== canonicalJson(t.inputs.tokens_moved)) return [false, `a decision about ${w} names a moved token differently from the record`]
+				if (canonicalJson(movedTokensFrom(saved.facts, t.inputs.movement.transfers, decimals, list, tc)) !== canonicalJson(t.inputs.tokens_moved)) return [false, `a decision about ${w} names a moved token differently from the issuer's list, the token-check results and the record`]
 			}
 		}
-		return [wallets.length > 0, `${wallets.length} records in ${CLAIMS.walkDir}/records hash to the X-Facts-Hash vet402 sent with them, and give the fields and the token names every decision read`]
+		return [wallets.length > 0, `${wallets.length - without} records in ${CLAIMS.walkDir}/records hash to the X-Facts-Hash vet402 sent with them and give the fields every decision read. For ${without} wallets vet402 gave no record, and their decisions say so. Every moved token is named as the issuer's list (${snapshot.count} Stock Tokens, taken ${snapshot.list_taken_at.slice(0, 10)})${results ? `, the CRE token-check results ${short(results.keccak)}` : ''} and the record give it${results ? '' : '. No CRE token-check results file is present, so no decision names one'}`]
 	})
 	await rep.check('prices', () => {
 		feeds = readJson(join(dir, 'feeds.json'))
@@ -1600,14 +1925,23 @@ async function verifyLedger(rep, main, test, deep) {
 	})
 	await rep.check('ledger', () => {
 		ledger = readJson(join(REPO, CLAIMS.ledger))
-		const rebuilt = ledgerOf(trails, feeds, ledger.mark_block)
+		const rebuilt = ledgerOf(trails, feeds, ledger.mark_block, context)
 		const i = rebuilt.rows.findIndex((r, k) => canonicalJson(r) !== canonicalJson(ledger.rows?.[k] ?? null))
 		if (i >= 0) return [false, `row ${i + 1} of ${CLAIMS.ledger} is not what the walk gives`]
 		if (canonicalJson(rebuilt) !== canonicalJson(ledger)) return [false, `${CLAIMS.ledger} differs from what the walk gives outside its rows (a position, a total, the root, the limits or the mandate)`]
 		const k = trails.findIndex((t, j) => canonicalJson(t.inputs.book) !== canonicalJson(rebuilt.rows[j].book))
 		if (k >= 0) return [false, `decision ${k + 1} read a practice book that the walk up to it does not give`]
+		// What a position of copy-guard rests on: a Stock Token the wallet bought. Signed by it, paid for by it. Never a collect.
+		const notBought = rebuilt.rows.filter((r) => r.copy_guard.opened && !(r.main?.kind === 'stock' && r.main.arrival === 'bought'))
+		if (notBought.length) return [false, `decision ${notBought[0].n} opened a position on something that is not a purchase by the wallet`]
 		const t = rebuilt.totals
-		return [true, `${CLAIMS.ledger} is what the walk gives: ${t.decisions} decisions about ${t.wallets} wallets, ${t.fakes_named} look-alikes named. copy-guard opened ${t.copy_guard.opened} practice positions (${t.copy_guard.put_in_usd} USD), result ${t.copy_guard.result_usd} USD. A blind copy opened ${t.blind_copy.opened} (${t.blind_copy.put_in_usd} USD), ${t.blind_copy.fakes} of them look-alikes, result ${t.blind_copy.result_usd} USD`]
+		const o = t.other_tokens
+		const b = t.blind_copy
+		const z = t.same_size
+		return [
+			true,
+			`${CLAIMS.ledger} is what the walk gives: ${t.decisions} decisions about ${t.wallets} wallets (FULL ${t.full}, REDUCED ${t.reduced}, NONE ${t.none}). copy-guard opened ${t.copy_guard.opened} practice positions, every one on a purchase the wallet signed and paid for (their median ${t.copy_guard.followed_purchases_usd.median} USD), and none in a token the issuer did not list. A ticker copy opened ${b.opened}: ${b.in_stock_tokens.count} in Stock Tokens and ${b.in_other_tokens.count} in ${b.in_other_tokens.tokens} other token${b.in_other_tokens.tokens === 1 ? '' : 's'} under a listed ticker. Different tokens under a listed ticker were part of ${o.moves} moves (${o.tokens} tokens: ${o.tickers.join(', ')}): ${o.sent_to_the_wallet} sent to the wallet, ${o.bought_by_the_wallet} bought by it, ${o.received_unpaid} received unpaid, ${o.logged_as_sent_by_the_wallet} logged as sent by it. At one size (${z.size_usd} USD each): the ${z.opened_by_both.count} both opened ${z.opened_by_both.result_usd} USD, the ${z.opened_by_ticker_copy_only_stock.count} Stock Token positions only the ticker copy opened ${z.opened_by_ticker_copy_only_stock.result_usd} USD, and its ${z.opened_by_ticker_copy_only_other.count} in other tokens: ${z.opened_by_ticker_copy_only_other.measured} valued at a pool (${z.opened_by_ticker_copy_only_other.result_measured_usd ?? 'none'} USD), ${z.opened_by_ticker_copy_only_other.not_measured} not measured and in no sum`,
+		]
 	})
 	if (!ledger) return
 	await rep.check('page', () => {
@@ -1674,13 +2008,54 @@ async function verifyLedger(rep, main, test, deep) {
 		seenVerdict.add(vtx)
 		await checkVerdict(rep, test, t, null)
 	}
+	// The pool marks: the last swap of each pool at or before the mark block, read again from the chain.
+	for (const [id, m] of Object.entries(context.pool_marks ?? {})) {
+		await rep.check('pool mark', async () => {
+			const at = await main('eth_getLogs', [{ address: V4_POOL_MANAGER, fromBlock: `0x${m.block.toString(16)}`, toBlock: `0x${ledger.mark_block.toString(16)}`, topics: [V4_SWAP_TOPIC, id] }])
+			const last = (at ?? [])[at.length - 1]
+			const ok = last && Number(BigInt(last.blockNumber)) === m.block && Number(BigInt(last.logIndex)) === m.log_index && lc(last.transactionHash) === lc(m.tx) && BigInt(`0x${last.data.slice(2 + 128, 2 + 192)}`).toString() === m.sqrt_price_x96
+			const valued = ledger.blind_copy_positions.filter((p) => p.valued_by === 'pool' && p.pool_entry?.pool_id === id)
+			return [Boolean(ok), ok ? `the last swap of Uniswap v4 pool ${short(id)} at or before block ${ledger.mark_block} is in ${short(lc(m.tx))} (block ${m.block}), the price ${valued.length} ticker-copy position${valued.length === 1 ? ' is' : 's are'} marked at` : `the last swap of pool ${short(id)} on chain is not the one ${CLAIMS.walkDir}/context.json names`]
+		})
+	}
+	// Purchases the selection counted, opened on the chain: signed by the wallet, paid in the same transaction, sent by an official venue.
+	const purchases = readJson(join(dir, 'selection-purchases.json'))
+	const tops = context.wallets.filter((w) => w.cohort === 'top_buyers')
+	const sampleOf = deep ? tops : tops.slice(0, 3)
+	rep.say(`  the largest counted purchase of ${deep ? 'every selected wallet' : `the first ${sampleOf.length} selected wallets`} against Robinhood Chain`)
+	for (const w of sampleOf) {
+		const p = [...(purchases[lc(w.wallet)] ?? [])].sort((x, y) => Number(y.size_usd) - Number(x.size_usd))[0]
+		if (!p) continue
+		await rep.check(`purchase ${w.rank}`, async () => {
+			const tx = await main('eth_getTransactionByHash', [p.tx])
+			const r = await main('eth_getTransactionReceipt', [p.tx])
+			if (!tx || !r || r.status !== '0x1') return [false, `${short(p.tx)} is not a successful tx`]
+			const padded = `0x${'0'.repeat(24)}${lc(w.wallet).slice(2)}`
+			const transfers = (r.logs ?? []).filter((l) => lc(l.topics?.[0]) === TRANSFER_TOPIC && l.topics.length === 3)
+			const got = transfers.find((l) => lc(l.address) === lc(p.token) && lc(l.topics[2]) === padded && addrOf(l.topics[1]) === lc(p.venue) && BigInt(l.data).toString() === p.amount_raw)
+			const paidToken = transfers.some((l) => lc(l.topics[1]) === padded && lc(l.address) !== lc(p.token))
+			let venue = lc(p.venue) === V4_POOL_MANAGER
+			if (!venue) {
+				const f = await main('eth_call', [{ to: p.venue, data: '0xc45a0155' }, 'latest']).catch((e) => (e instanceof Unreachable ? Promise.reject(e) : '0x'))
+				venue = typeof f === 'string' && f.length === 66 && addrOf(f) === V3_FACTORY
+			}
+			const bad = []
+			if (lc(tx.from) !== lc(w.wallet)) bad.push(`signed by ${lc(tx.from)}`)
+			if (!got) bad.push('no such transfer from the venue to the wallet')
+			if (!paidToken && BigInt(tx.value ?? '0x0') === 0n) bad.push('the wallet paid nothing')
+			if (!venue) bad.push('the sender is not an official venue')
+			return [bad.length === 0, bad.length ? `${short(p.tx)}: ${bad.join('; ')}` : `wallet ${shortAddr(lc(w.wallet))} (rank ${w.rank}, ${w.purchases_usd} USD in ${purchases[lc(w.wallet)].length} purchases): ${short(p.tx)} in block ${p.block} is signed by the wallet, it paid ${BigInt(tx.value ?? '0x0') > 0n ? 'ETH' : 'a token'} in it, and ${p.symbol} came straight from ${lc(p.venue) === V4_POOL_MANAGER ? 'the Uniswap v4 PoolManager' : 'an official Uniswap v3 pool'}: ${p.size_usd} USD at the feed`]
+		})
+	}
 	const picked = new Set()
 	if (deep) trails.forEach((_, i) => picked.add(i))
 	else {
 		const take = (test, max) => trails.forEach((t, i) => void (test(t) && [...picked].filter((k) => test(trails[k])).length < max && picked.add(i)))
 		take((t) => SHOWCASE.some((h) => t.inputs.movement.tx.startsWith(h)), 3)
-		take((t) => t.decision.paper_trade !== null, 4)
-		take((t) => t.decision.decisive.includes('C1'), 4)
+		take((t) => t.decision.paper_trade !== null, 10)
+		take((t) => t.decision.decisive.includes('C1') && lc(t.inputs.move.signer) === lc(t.inputs.wallet), 3)
+		take((t) => t.decision.decisive.includes('C1'), 6)
+		take((t) => t.inputs.move.selector === '0xfc6f7865', 1)
 	}
 	rep.say(deep ? `  every decision against Robinhood Chain` : `  ${picked.size} of the ${trails.length} decisions against Robinhood Chain (--deep checks every one)`)
 	for (const i of [...picked].sort((a, b) => a - b)) await rep.check(`decision ${i + 1}`, () => chainFacts(main, trails[i]))

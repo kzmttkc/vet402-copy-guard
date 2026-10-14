@@ -40,6 +40,7 @@ import { recordInputs } from './record'
 import { type CreInputs, type Movement, USDG } from './rules'
 import { type Book, type DecisionInputsV2, movedTokens, RULES_V2, type RulesRef, stockLegV2, type Venue } from './rules-v2'
 import { effectiveSpent, ledgerPath, payOnce, readChainSpend } from './pay'
+import { ISSUER_LIST, loadTokenCheck } from './tokens'
 import { buildTrailV2, type Purchase, type TrailV2, trailHash } from './trail'
 import {
 	assertUnderCap,
@@ -368,7 +369,7 @@ export function bookAt(earlier: TrailV2[], moveTime: string, moveTx: string): Bo
 }
 
 /** When the move happened, who signed its transaction, and the decimals of each moved token. All public chain reads. */
-async function moveFacts(rpc: Rpc, mv: Movement): Promise<{ time: string; signer: string; decimals: Record<string, number> }> {
+async function moveFacts(rpc: Rpc, mv: Movement): Promise<{ time: string; signer: string; value_wei: string; to: string; selector: string; decimals: Record<string, number> }> {
 	const block = await rpc('eth_getBlockByNumber', [`0x${mv.block.toString(16)}`, false])
 	const tx = await rpc('eth_getTransactionByHash', [mv.tx])
 	const decimals: Record<string, number> = {}
@@ -379,7 +380,7 @@ async function moveFacts(rpc: Rpc, mv: Movement): Promise<{ time: string; signer
 			decimals[token] = 18
 		}
 	}
-	return { time: new Date(Number(BigInt(block.timestamp)) * 1000).toISOString(), signer: String(tx.from).toLowerCase(), decimals }
+	return { time: new Date(Number(BigInt(block.timestamp)) * 1000).toISOString(), signer: String(tx.from).toLowerCase(), value_wei: BigInt(tx.value ?? '0x0').toString(), to: String(tx.to ?? '').toLowerCase(), selector: String(tx.input ?? '0x').slice(0, 10), decimals }
 }
 
 export async function main(argv: string[]) {
@@ -497,10 +498,11 @@ export async function main(argv: string[]) {
 	// 4. Decide, write the trail, notarize it through CRE, keep the practice trade.
 	const earlier = args.book ? loadTrails(join(REPO, args.book)) : []
 	const venueCache = new Map<string, Venue['kind']>()
+	const tokenCheck = loadTokenCheck(join(REPO, 'docs/token-check/results.json'), 'docs/token-check/results.json')
 	const results = []
 	for (const mv of todo) {
 		const mf = await moveFacts(rpc, mv)
-		const tokensMoved = movedTokens(facts, mv.transfers, mf.decimals, USDG)
+		const tokensMoved = movedTokens(facts, mv.transfers, mf.decimals, USDG, ISSUER_LIST, tokenCheck)
 		// Who the Stock Token came from, and the Chainlink feed's value at the block of the move.
 		const leg = stockLegV2({ movement: mv, tokens_moved: tokensMoved } as DecisionInputsV2)
 		const venue: Venue[] = []
@@ -508,8 +510,8 @@ export async function main(argv: string[]) {
 		if (leg) {
 			const others = [...new Set(mv.transfers.filter((t) => t.token.toLowerCase() === leg.token.toLowerCase() && t.direction === leg.direction).map((t) => (leg.direction === 'in' ? t.from : t.to)))]
 			for (const a of others) venue.push(await venueOf(rpc, a, venueCache))
-			const stock = (facts.tokens ?? []).find((k: any) => k.canonical === true && String(k.token).toLowerCase() === leg.token.toLowerCase() && k.feed)
-			if (stock) price = priceAt(await feedSeries(rpc, leg.token, stock.symbol, stock.feed, mv.block - 6_000_000, mv.block), mv.block)
+			const stock = ISSUER_LIST[leg.token.toLowerCase()]
+			if (stock?.feed) price = priceAt(await feedSeries(rpc, leg.token, stock.symbol, stock.feed, mv.block - 6_000_000, mv.block), mv.block)
 		}
 		const inputs: DecisionInputsV2 = {
 			wallet,
@@ -520,8 +522,11 @@ export async function main(argv: string[]) {
 			decided_at: new Date().toISOString(),
 			payer: payer.toLowerCase(),
 			rules: policy.rules,
-			move: { time: mf.time, signer: mf.signer },
+			move: { time: mf.time, signer: mf.signer, value_wei: mf.value_wei, to: mf.to, selector: mf.selector },
+			record_fetch: { url: sourceUrl, http_status: 200 },
 			tokens_moved: tokensMoved,
+			token_check: tokenCheck ? { source: tokenCheck.source, keccak: tokenCheck.keccak, tokens: Object.fromEntries(tokensMoved.filter((x) => tokenCheck.tokens[x.token]).map((x) => [x.token, tokenCheck.tokens[x.token]])) } : null,
+			pool_entry: null,
 			venue,
 			price,
 			limits: policy.limits,
