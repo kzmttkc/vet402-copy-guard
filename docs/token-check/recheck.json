@@ -1,0 +1,86 @@
+{
+  "rechecked_at": "2026-10-14T02:33:24.580Z",
+  "results_file": "docs/token-check/results.json",
+  "results_keccak": "0x0cb2ff8dda91a22776fd33a3ccb93c9f2e60d7d56908e0f0e406f182fb655366",
+  "how": "plain JSON-RPC from Node, one request at a time, no CRE and no code of the workflow: eth_getCode hashed here, eth_getStorageAt, symbol(), uiMultiplier(), eth_getLogs",
+  "rpc": {
+    "mainnet": "https://rpc.mainnet.chain.robinhood.com",
+    "testnet": "https://rpc.testnet.chain.robinhood.com"
+  },
+  "rpc_requests": 91,
+  "tokens": 11,
+  "agree": 11,
+  "differ": [],
+  "state_read_at": {
+    "checked_block": 11,
+    "latest": 0
+  },
+  "compared": {
+    "fields": [
+      "issuer_token",
+      "ticker",
+      "multiplier_updates",
+      "reasons"
+    ],
+    "reasons_derived_here": [
+      "IN_ISSUER_LIST",
+      "NOT_IN_ISSUER_LIST",
+      "USDG_ADDRESS",
+      "CODE_HASH_MATCHES",
+      "CODE_HASH_DIFFERS",
+      "NO_CONTRACT_CODE",
+      "BEACON_MATCHES",
+      "BEACON_DIFFERS",
+      "FACTORY_LOG_NAMES_TOKEN",
+      "FACTORY_LOG_MISSING",
+      "TICKER_MATCHES_LIST",
+      "TICKER_DIFFERS_FROM_LIST",
+      "TICKER_SAME_AS_ISSUER_TOKEN",
+      "ISSUER_CODE_AT_UNLISTED_ADDRESS",
+      "MULTIPLIER_NOT_ONE",
+      "MULTIPLIER_UNREADABLE"
+    ]
+  },
+  "reasons_not_derived_here": {
+    "TICKER_OR_NAME_READS_AS_USDG": 3,
+    "INVISIBLE_CHARACTERS": 3,
+    "NAME_SAME_AS_ISSUER_TOKEN": 1,
+    "NAME_ENDS_LIKE_ISSUER_TOKEN": 1
+  },
+  "runs": [
+    {
+      "run": 1,
+      "tx": "0xd210ce1637067cda6633ffa025ed10f531f60e3d6c97423998c9fa41c7b33bb1",
+      "batch_hash": "0xa1c4f1f120f4a2bf23d4fd8797d9708039dcbfd26492ab5208d65391526fa65c",
+      "tokens": 1,
+      "onchain": true,
+      "counts_match": true,
+      "block_hash_matches": true
+    },
+    {
+      "run": 2,
+      "tx": "0x1e4c1ef268a4664794ea72637a3812e955ab6006d6c087adff8cb2e9157d0a7a",
+      "batch_hash": "0x653ab43bc6a55bfaa583642069f1f0ad6cc25314669e1b52181af6bbf604828c",
+      "tokens": 1,
+      "onchain": true,
+      "counts_match": true,
+      "block_hash_matches": true
+    },
+    {
+      "run": 3,
+      "tx": "0xb5f9ed44aadde61402643adbcd2789ac324c940c08af281ba7a74969111e977b",
+      "batch_hash": "0xd6844688d79640672273a679e8b68b93f43ceee2df2fd48b88ad49c8bf7a0244",
+      "tokens": 9,
+      "onchain": true,
+      "counts_match": true,
+      "block_hash_matches": true
+    }
+  ],
+  "anchor": {
+    "tx": "0x6c1bbce2a8a49e82a59588ef6bfa8fb0253b3d35912c68e9ebccaa726377e500",
+    "results_keccak": "0x0cb2ff8dda91a22776fd33a3ccb93c9f2e60d7d56908e0f0e406f182fb655366",
+    "onchain": true,
+    "counts_match": true
+  },
+  "problems": []
+}

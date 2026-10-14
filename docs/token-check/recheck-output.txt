@@ -1,0 +1,17 @@
+recheck of docs/token-check/results.json: 11 tokens, over https://rpc.mainnet.chain.robinhood.com (no CRE)
+AGREE   0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec  issuer token  "NVDA"  updates 1
+AGREE   0xd5f3879160bc7c32ebb4dc785f8a4f505888de68  issuer token  "QQQ"  updates 1
+AGREE   0x117cc2133c37b721f49de2a7a74833232b3b4c0c  issuer token  "SPY"  updates 1
+AGREE   0x0bd7d308f8e1639fab988df18a8011f41eacad73  not issuer   "WETH"  updates 0
+AGREE   0x4190ee598c2a69d35bef53c83d152ae0f25ea416  not issuer   "U[U+17B5]S[U+17B5]DG"  updates 0
+AGREE   0x4d3f37a965b21ab4122e92dd41d2693e742c883b  not issuer   "RIPE"  updates 0
+AGREE   0x5dd716fe12275b69f04b26beeca343843c8e3539  not issuer   "NVDA"  updates 0
+AGREE   0x5fc5360d0400a0fd4f2af552add042d716f1d168  not issuer   "USDG"  updates 0
+AGREE   0x69e7778d46713e17572d610bdaca3943aa4e6219  not issuer   "SPY"  updates 0
+AGREE   0xe7391e4047c7e5d48f31cd2b87004c10e875f288  not issuer   "U[U+206F]S[U+206F]DG"  updates 0
+AGREE   0xfdbbdaa4d2d6cc9b6c2b8201acadf9371f91962a  not issuer   "U[U+206F]S[U+206F]DG"  updates 0
+run 1  0xd210ce1637067cda6633ffa025ed10f531f60e3d6c97423998c9fa41c7b33bb1  TokenBatchChecked found, counts match, block hash matches
+run 2  0x1e4c1ef268a4664794ea72637a3812e955ab6006d6c087adff8cb2e9157d0a7a  TokenBatchChecked found, counts match, block hash matches
+run 3  0xb5f9ed44aadde61402643adbcd2789ac324c940c08af281ba7a74969111e977b  TokenBatchChecked found, counts match, block hash matches
+anchor 0x6c1bbce2a8a49e82a59588ef6bfa8fb0253b3d35912c68e9ebccaa726377e500  TokenCheckResultsAnchored found for keccak256(results.json) 0x0cb2ff8dda91a22776fd33a3ccb93c9f2e60d7d56908e0f0e406f182fb655366
+RECHECK: 11 of 11 rows agree, 0 differ; state read at the checked block for 11, as it is now for 0; 0 problems with the onchain trail; 91 RPC requests

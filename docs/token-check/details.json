@@ -1,0 +1,178 @@
+{
+  "about": "What stands behind each row of results.json, and which run checked which token. results.json is the file that is hashed and anchored; this one is for a person who wants to look.",
+  "generated_at": "2026-10-14T02:31:06.046Z",
+  "list": {
+    "taken_at": "2026-09-28T22:24:32.769Z",
+    "source": "https://docs.robinhood.com/chain/contracts",
+    "count": 195,
+    "source_file_keccak256": "0xcf8a7a002322c28a77f427d342485fd06bd26c97fa0a2f1577615615ac7cfe5e"
+  },
+  "rpc": {
+    "state": "https://robinhood-rpc.publicnode.com",
+    "logs": "https://rpc.mainnet.chain.robinhood.com"
+  },
+  "receiver": "0xF49b4F2110E6E0dAbd1f3B532EFd64E10a016550",
+  "network": "robinhood-testnet (46630)",
+  "written_through": "CRE's simulation forwarder (MockKeystoneForwarder). Not a DON attestation.",
+  "runs": [
+    {
+      "run": 1,
+      "tx": "0xd210ce1637067cda6633ffa025ed10f531f60e3d6c97423998c9fa41c7b33bb1",
+      "simulate_log": "docs/token-check/batch/batch-1.cre.txt",
+      "checked_block": 88010921,
+      "checked_block_hash": "0xdaed4db785b7fe6d2404b75a84800a9bc65ce367608edaf62d0239bb0780a37d",
+      "batch_hash": "0xa1c4f1f120f4a2bf23d4fd8797d9708039dcbfd26492ab5208d65391526fa65c",
+      "issuer_tokens": 1,
+      "items_per_request": 2,
+      "tokens": [
+        "0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec"
+      ]
+    },
+    {
+      "run": 2,
+      "tx": "0x1e4c1ef268a4664794ea72637a3812e955ab6006d6c087adff8cb2e9157d0a7a",
+      "simulate_log": "docs/token-check/batch/batch-2.cre.txt",
+      "checked_block": 88011200,
+      "checked_block_hash": "0x825299372792fb4c63b7fa912dbcb717366638697ac59dd038aa50c9d8b21cf7",
+      "batch_hash": "0x653ab43bc6a55bfaa583642069f1f0ad6cc25314669e1b52181af6bbf604828c",
+      "issuer_tokens": 1,
+      "items_per_request": 2,
+      "tokens": [
+        "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68"
+      ]
+    },
+    {
+      "run": 3,
+      "tx": "0xb5f9ed44aadde61402643adbcd2789ac324c940c08af281ba7a74969111e977b",
+      "simulate_log": "docs/token-check/batch/batch-3.cre.txt",
+      "checked_block": 88011466,
+      "checked_block_hash": "0xcbcb18687a1f489de5948732011cfa08aaea5e1a03e2fca8c29c107b272c498b",
+      "batch_hash": "0xd6844688d79640672273a679e8b68b93f43ceee2df2fd48b88ad49c8bf7a0244",
+      "issuer_tokens": 1,
+      "items_per_request": 2,
+      "tokens": [
+        "0x117cc2133c37b721f49de2a7a74833232b3b4c0c",
+        "0x0bd7d308f8e1639fab988df18a8011f41eacad73",
+        "0x4190ee598c2a69d35bef53c83d152ae0f25ea416",
+        "0x4d3f37a965b21ab4122e92dd41d2693e742c883b",
+        "0x5dd716fe12275b69f04b26beeca343843c8e3539",
+        "0x5fc5360d0400a0fd4f2af552add042d716f1d168",
+        "0x69e7778d46713e17572d610bdaca3943aa4e6219",
+        "0xe7391e4047c7e5d48f31cd2b87004c10e875f288",
+        "0xfdbbdaa4d2d6cc9b6c2b8201acadf9371f91962a"
+      ]
+    }
+  ],
+  "tokens": {
+    "0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec": {
+      "verdict": "GENUINE_STOCK_TOKEN",
+      "symbol": "NVDA",
+      "name": "NVIDIA • Robinhood Token",
+      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
+      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
+      "multiplier": "1.000775159164630595",
+      "factory_log": true,
+      "run": 1
+    },
+    "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68": {
+      "verdict": "GENUINE_STOCK_TOKEN",
+      "symbol": "QQQ",
+      "name": "Invesco QQQ • Robinhood Token",
+      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
+      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
+      "multiplier": "1.000700791241405425",
+      "factory_log": true,
+      "run": 2
+    },
+    "0x117cc2133c37b721f49de2a7a74833232b3b4c0c": {
+      "verdict": "GENUINE_STOCK_TOKEN",
+      "symbol": "SPY",
+      "name": "SPDR S&P 500 ETF Trust • Robinhood Token",
+      "code_hash": "0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630",
+      "beacon": "0xe10b6f6b275de231345c20d14ab812db62151b00",
+      "multiplier": "1.001717991187472003",
+      "factory_log": true,
+      "run": 3
+    },
+    "0x0bd7d308f8e1639fab988df18a8011f41eacad73": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "WETH",
+      "name": "WETH",
+      "code_hash": "0x5706be52f64875fee65a2cec0d80e47a23d8793cbe85d214b48445e2d05f5353",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 3
+    },
+    "0x4190ee598c2a69d35bef53c83d152ae0f25ea416": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+17B5]S[U+17B5]DG",
+      "name": "U[U+17B5]S[U+17B5]DG",
+      "code_hash": "0x2660e228c7f7438865de8d7b3f2de706fc94ccaf9403f9167a24fad8345843ab",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 3
+    },
+    "0x4d3f37a965b21ab4122e92dd41d2693e742c883b": {
+      "verdict": "NOT_A_STOCK_TOKEN",
+      "symbol": "RIPE",
+      "name": "Ripe DAO Governance Token",
+      "code_hash": "0xff93dfc1dc8887dc7b376e04fc9c13d173c21697d50bc0298c2111e0587f3264",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 3
+    },
+    "0x5dd716fe12275b69f04b26beeca343843c8e3539": {
+      "verdict": "LOOKALIKE",
+      "symbol": "NVDA",
+      "name": "NVIDIA Robinhood Coin",
+      "code_hash": "0x7c5618d027ce9612d14efed8ae82aedfeb94c947e8879f47cfc89487e4cc8877",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 3
+    },
+    "0x5fc5360d0400a0fd4f2af552add042d716f1d168": {
+      "verdict": "USDG",
+      "symbol": "USDG",
+      "name": "Global Dollar",
+      "code_hash": "0x864cc9ad53b338b82da1f7cab85ab0b3d5c8861acb422b6fec63cf36234f36a6",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 3
+    },
+    "0x69e7778d46713e17572d610bdaca3943aa4e6219": {
+      "verdict": "LOOKALIKE",
+      "symbol": "SPY",
+      "name": "Spy Chip",
+      "code_hash": "0x59a5fc2253c5f2b5624a3701d0bb2d7a367419d0ab412142db91ab74a433cd5b",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 3
+    },
+    "0xe7391e4047c7e5d48f31cd2b87004c10e875f288": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+206F]S[U+206F]DG",
+      "name": "U[U+206F]S[U+206F]DG",
+      "code_hash": "0xd7e3ff49e15f9438f1a26d1cccdb87a90343aeec0b605076f713862370fe3336",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 3
+    },
+    "0xfdbbdaa4d2d6cc9b6c2b8201acadf9371f91962a": {
+      "verdict": "LOOKALIKE",
+      "symbol": "U[U+206F]S[U+206F]DG",
+      "name": "U[U+206F]S[U+206F]DG",
+      "code_hash": "0x507faf84d5a5686149a599b9786f9e9723088f92f040deee14a8d0abbcf08f75",
+      "beacon": "0x0000000000000000000000000000000000000000",
+      "multiplier": null,
+      "factory_log": null,
+      "run": 3
+    }
+  }
+}

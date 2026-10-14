@@ -1,0 +1,157 @@
+{
+  "generated_at": "2026-10-14T02:31:06.046Z",
+  "cre_runs": [
+    {
+      "tx": "0xd210ce1637067cda6633ffa025ed10f531f60e3d6c97423998c9fa41c7b33bb1",
+      "simulate_log": "docs/token-check/batch/batch-1.cre.txt"
+    },
+    {
+      "tx": "0x1e4c1ef268a4664794ea72637a3812e955ab6006d6c087adff8cb2e9157d0a7a",
+      "simulate_log": "docs/token-check/batch/batch-2.cre.txt"
+    },
+    {
+      "tx": "0xb5f9ed44aadde61402643adbcd2789ac324c940c08af281ba7a74969111e977b",
+      "simulate_log": "docs/token-check/batch/batch-3.cre.txt"
+    }
+  ],
+  "tokens": {
+    "0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec": {
+      "issuer_token": true,
+      "ticker": "NVDA",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88010921
+    },
+    "0xd5f3879160bc7c32ebb4dc785f8a4f505888de68": {
+      "issuer_token": true,
+      "ticker": "QQQ",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88011200
+    },
+    "0x117cc2133c37b721f49de2a7a74833232b3b4c0c": {
+      "issuer_token": true,
+      "ticker": "SPY",
+      "reasons": [
+        "IN_ISSUER_LIST",
+        "CODE_HASH_MATCHES",
+        "BEACON_MATCHES",
+        "FACTORY_LOG_NAMES_TOKEN",
+        "TICKER_MATCHES_LIST",
+        "MULTIPLIER_NOT_ONE"
+      ],
+      "multiplier_updates": 1,
+      "checked_block": 88011466
+    },
+    "0x0bd7d308f8e1639fab988df18a8011f41eacad73": {
+      "issuer_token": false,
+      "ticker": "WETH",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88011466
+    },
+    "0x4190ee598c2a69d35bef53c83d152ae0f25ea416": {
+      "issuer_token": false,
+      "ticker": "U[U+17B5]S[U+17B5]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88011466
+    },
+    "0x4d3f37a965b21ab4122e92dd41d2693e742c883b": {
+      "issuer_token": false,
+      "ticker": "RIPE",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88011466
+    },
+    "0x5dd716fe12275b69f04b26beeca343843c8e3539": {
+      "issuer_token": false,
+      "ticker": "NVDA",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_SAME_AS_ISSUER_TOKEN",
+        "NAME_SAME_AS_ISSUER_TOKEN",
+        "NAME_ENDS_LIKE_ISSUER_TOKEN"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88011466
+    },
+    "0x5fc5360d0400a0fd4f2af552add042d716f1d168": {
+      "issuer_token": false,
+      "ticker": "USDG",
+      "reasons": [
+        "USDG_ADDRESS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88011466
+    },
+    "0x69e7778d46713e17572d610bdaca3943aa4e6219": {
+      "issuer_token": false,
+      "ticker": "SPY",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_SAME_AS_ISSUER_TOKEN"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88011466
+    },
+    "0xe7391e4047c7e5d48f31cd2b87004c10e875f288": {
+      "issuer_token": false,
+      "ticker": "U[U+206F]S[U+206F]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88011466
+    },
+    "0xfdbbdaa4d2d6cc9b6c2b8201acadf9371f91962a": {
+      "issuer_token": false,
+      "ticker": "U[U+206F]S[U+206F]DG",
+      "reasons": [
+        "NOT_IN_ISSUER_LIST",
+        "CODE_HASH_DIFFERS",
+        "BEACON_DIFFERS",
+        "TICKER_OR_NAME_READS_AS_USDG",
+        "INVISIBLE_CHARACTERS"
+      ],
+      "multiplier_updates": 0,
+      "checked_block": 88011466
+    }
+  }
+}

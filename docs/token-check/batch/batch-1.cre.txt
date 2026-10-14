@@ -1,0 +1,40 @@
+$ cre workflow simulate token-check --target local-simulation --non-interactive --trigger-index 0 --http-payload docs/token-check/batch/batch-1.payload.json --broadcast
+✓ Workflow compiled
+✓ Simulation limits enabled
+  HTTP: req=120kb resp=250kb timeout=10s | ConfHTTP: req=125kb resp=500kb timeout=1m30s | Consensus obs=25kb | ChainWrite evm_report=50kb evm_gas=10000000 solana_report=265b solana_cu=300000 | WASM binary=100mb compressed=20mb
+  Binary hash: 6e23a2f35e89bcc55d71aa9d5889a5813d80c01b4799d4308ca576a45e596c12
+  Config hash: 15ecce3c14a026a5d49e662198f93518da03b5d593aec5c435fb9795d06eeb11
+✓ Loaded JSON from file: ~/vet402-bli-wt/cre/docs/token-check/batch/batch-1.payload.json
+✓ Created HTTP trigger payload with 2 fields
+2026-10-14T09:29:48Z [SIMULATION] Simulator Initialized
+
+2026-10-14T09:29:48Z [SIMULATION] Running trigger trigger=http-trigger@1.0.0-alpha
+2026-10-14T09:29:48Z [USER LOG] token check, batch (Robinhood Chain 4663, read over JSON-RPC, no vet402 API)
+2026-10-14T09:29:48Z [USER LOG] tokens  1
+2026-10-14T09:29:48Z [USER LOG] state   robinhood-rpc.publicnode.com   logs rpc.mainnet.chain.robinhood.com
+2026-10-14T09:29:49Z [USER LOG] head    88010941 (median of the nodes), checking at block 88010921
+2026-10-14T09:29:57Z [USER LOG] block   88010921  hash 0xdaed4db785b7fe6d2404b75a84800a9bc65ce367608edaf62d0239bb0780a37d (the same from both RPCs)
+2026-10-14T09:29:57Z [USER LOG] ISSUER_TOKEN      0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec  "NVDA"  updates 1  IN_ISSUER_LIST CODE_HASH_MATCHES BEACON_MATCHES FACTORY_LOG_NAMES_TOKEN TICKER_MATCHES_LIST MULTIPLIER_NOT_ONE
+2026-10-14T09:29:57Z [USER LOG] RESULT: 1 tokens at block 88010921, 1 the issuer's, 0 not
+2026-10-14T09:29:57Z [USER LOG] batch hash 0xa1c4f1f120f4a2bf23d4fd8797d9708039dcbfd26492ab5208d65391526fa65c (keccak256 of the canonical JSON of the rows)
+2026-10-14T09:30:00Z [USER LOG] batch hash written to 0xF49b4F2110E6E0dAbd1f3B532EFd64E10a016550 on robinhood-testnet, tx 0xd210ce1637067cda6633ffa025ed10f531f60e3d6c97423998c9fa41c7b33bb1
+
+✓ Workflow Simulation Result:
+"{\"mode\":\"batch\",\"block\":88010921,\"blockHash\":\"0xdaed4db785b7fe6d2404b75a84800a9bc65ce367608edaf62d0239bb0780a37d\",\"batchHash\":\"0xa1c4f1f120f4a2bf23d4fd8797d9708039dcbfd26492ab5208d65391526fa65c\",\"listHash\":\"0xcf8a7a002322c28a77f427d342485fd06bd26c97fa0a2f1577615615ac7cfe5e\",\"tokens\":{\"0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec\":{\"issuer_token\":true,\"ticker\":\"NVDA\",\"reasons\":[\"IN_ISSUER_LIST\",\"CODE_HASH_MATCHES\",\"BEACON_MATCHES\",\"FACTORY_LOG_NAMES_TOKEN\",\"TICKER_MATCHES_LIST\",\"MULTIPLIER_NOT_ONE\"],\"multiplier_updates\":1,\"checked_block\":88010921}},\"details\":{\"0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec\":{\"verdict\":\"GENUINE_STOCK_TOKEN\",\"symbol\":\"NVDA\",\"name\":\"NVIDIA • Robinhood Token\",\"code_hash\":\"0x6c1fdd40002dcb440c7fff6a84171404d279ccb057803b65826f7546acd65630\",\"beacon\":\"0xe10b6f6b275de231345c20d14ab812db62151b00\",\"multiplier\":\"1.000775159164630595\",\"factory_log\":true}},\"issuerTokens\":1,\"batchTx\":\"0xd210ce1637067cda6633ffa025ed10f531f60e3d6c97423998c9fa41c7b33bb1\"}"
+
+2026-10-14T09:30:01Z [SIMULATION] Execution finished signal received
+2026-10-14T09:30:01Z [SIMULATION] Skipping WorkflowEngineV2
+
+╭──────────────────────────────────────────────────────╮
+│ Simulation complete! Ready to deploy your workflow?  │
+│                                                      │
+│ Run cre account access to request deployment access. │
+╰──────────────────────────────────────────────────────╯
+Initializing...
+Loading settings...
+Checking RPC connectivity...
+Compiling workflow...
+
+⚠️  Update available! You’re running 1.37.0, but 1.38.0 is the latest.
+Run `cre update` or visit https://github.com/smartcontractkit/cre-cli/releases to upgrade.
+
