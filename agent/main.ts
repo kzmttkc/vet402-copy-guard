@@ -5,6 +5,16 @@
 //
 //   bun agent/main.ts [--wallet 0x…] [--from-block N] [--to-block N | --blocks N,N,…] [--max N]
 //                     [--broadcast] [--pay [--approve]] [--out docs/agent/<name>]
+//                     [--limits limits.json] [--mandate mandate] [--book docs/agent/<run>]
+//                     [--gate http://127.0.0.1:4021/v1/workflows/rwa-verify] [--anchor-record file.json]
+//
+// Every decision is a version 2 trail (agent/rules-v2.ts): the 13 rules, the mandate
+// (who the agent acts for), the user's limits from limits.json, the practice position
+// with its exit, and a decision card in plain sentences.
+// --gate pays the x402 gate in front of the CRE workflow instead of the record route.
+// --book names the folder whose earlier trails count against the daily limit.
+// --anchor-record gives the anchored record as a local file when vet402's public repo
+// does not hold it yet.
 //
 // Default is a dry run: the 402 is read and the Permit2 payment is built, but
 // nothing is signed or sent. --pay signs and pays, never past MAX_SPEND_ATOMIC
@@ -16,14 +26,20 @@ import { randomBytes } from 'node:crypto'
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join, relative } from 'node:path'
-import { createPublicClient, createWalletClient, getAddress, type Hex, http, keccak256, parseAbi } from 'viem'
+import { readdirSync, statSync } from 'node:fs'
+import { createPublicClient, createWalletClient, getAddress, type Hex, http, keccak256 } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { type AnchorRef, httpRpc, LOG_SPAN, movements, newestAnchor, RPC } from './chain'
+import { type AnchorRef, httpRpc, LOG_SPAN, movements, newestAnchor, RPC, type Rpc } from './chain'
 import { type CreRun, REPO, simulate } from './cre'
+import { chain, erc20 } from './evm'
+import { payGate } from './gate/client'
+import { cents, limitsKeccak, type Limits, parseLimits, paymentCapAtomic, usd, usdgAtomic } from './limits'
+import { mandateRef, type MandateRef, parseMandate } from './mandate'
 import { recordInputs } from './record'
-import { type CreInputs, type DecisionInputs, RULES, USDG } from './rules'
+import { type CreInputs, type Movement, USDG } from './rules'
+import { type Book, type DecisionInputsV2, movedTokens, RULES_V2, type RulesRef } from './rules-v2'
 import { effectiveSpent, ledgerPath, payOnce, readChainSpend } from './pay'
-import { buildTrail, type Purchase, type Trail, trailHash } from './trail'
+import { buildTrailV2, type Purchase, type TrailV2, trailHash } from './trail'
 import {
 	assertUnderCap,
 	CHAIN_ID,
@@ -34,6 +50,7 @@ import {
 	paymentHeader,
 	permit2TypedData,
 	pickAccept,
+	RefusedTerms,
 	termsOf,
 	X402_PERMIT2_PROXY,
 } from './x402'
@@ -65,6 +82,16 @@ type Args = {
 	approve: boolean
 	broadcast: boolean
 	out?: string
+	/** The user's limits, relative to the repo. */
+	limits?: string
+	/** Folder with mandate.json and, once the principal has signed, mandate.sig. */
+	mandate?: string
+	/** Folder whose earlier version 2 trails count against the daily limit. */
+	book?: string
+	/** URL of the x402 gate in front of the CRE workflow. */
+	gate?: string
+	/** A local anchored-record JSON, as vet402's anchor script writes it. */
+	anchorRecord?: string
 }
 
 export function parseArgs(argv: string[]): Args {
@@ -85,31 +112,32 @@ export function parseArgs(argv: string[]): Args {
 		else if (k === '--pay') a.pay = true
 		else if (k === '--approve') a.approve = true
 		else if (k === '--broadcast') a.broadcast = true
+		else if (k === '--limits') a.limits = v()
+		else if (k === '--mandate') a.mandate = v()
+		else if (k === '--book') a.book = v()
+		else if (k === '--gate') a.gate = v()
+		else if (k === '--anchor-record') a.anchorRecord = v()
 		else throw new Error(`unknown argument ${k}`)
 	}
 	if (a.approve && !a.pay) throw new Error('--approve only goes with --pay')
 	return a
 }
 
-const chain = {
-	id: CHAIN_ID,
-	name: 'Robinhood Chain',
-	nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-	rpcUrls: { default: { http: [RPC] } },
-} as const
-const erc20 = parseAbi([
-	'function balanceOf(address) view returns (uint256)',
-	'function allowance(address,address) view returns (uint256)',
-	'function approve(address,uint256) returns (bool)',
-])
-
 const say = (s: string) => console.log(s)
 
 type Bought = { facts: any; xFactsHash: string; sourceUrl: string; purchase: Purchase; terms: ReturnType<typeof termsOf>; x402: unknown }
 
 /** Step 2: buy the record (or, in a dry run, build the payment and read the same JSON from the free route). */
-export async function buyRecord(wallet: string, args: Args, payer: string, out: string, opts: { paidTimeoutMs?: number } = {}): Promise<Bought> {
+export async function buyRecord(
+	wallet: string,
+	args: Args,
+	payer: string,
+	out: string,
+	opts: { paidTimeoutMs?: number; capAtomic?: bigint; perDecisionAtomic?: bigint } = {},
+): Promise<Bought> {
 	const paidTimeoutMs = opts.paidTimeoutMs ?? PAID_REQUEST_TIMEOUT_MS
+	// The user's limits can lower the cap. They can never raise it above MAX_SPEND_ATOMIC.
+	const cap = opts.capAtomic !== undefined && opts.capAtomic < MAX_SPEND_ATOMIC ? opts.capAtomic : MAX_SPEND_ATOMIC
 	const pub = createPublicClient({ chain, transport: http(RPC) })
 	const paidUrl = `${VET402}/api/v1/rwa/paid/facts/${wallet}`
 	const first = await fetch(paidUrl)
@@ -134,8 +162,11 @@ export async function buyRecord(wallet: string, args: Args, payer: string, out: 
 	const onchain = await readChainSpend(httpRpc(RPC), payer, latest, allowance)
 	const spent = effectiveSpent(LEDGER_FILE, loadLedger(LEDGER_FILE, payer), onchain.spentAtomic)
 	const amount = BigInt(accept.amount)
+	if (opts.perDecisionAtomic !== undefined && amount > opts.perDecisionAtomic) {
+		throw new RefusedTerms(`the route asks ${amount} USDG atomic, above the user's limit of ${opts.perDecisionAtomic} for one decision`)
+	}
 	// The cap is checked before a payment is even built, in a dry run too.
-	assertUnderCap(spent, amount)
+	assertUnderCap(spent, amount, cap)
 	const now = Math.floor(Date.now() / 1000)
 	const nonce = BigInt(`0x${randomBytes(32).toString('hex')}`)
 	const built = permit2TypedData(accept, payer, now, nonce)
@@ -149,13 +180,13 @@ export async function buyRecord(wallet: string, args: Args, payer: string, out: 
 		permit2_allowance_atomic: allowance.toString(),
 		chain_spent_atomic: onchain.spentAtomic.toString(),
 		spent_before_atomic: spent.toString(),
-		cap_atomic: MAX_SPEND_ATOMIC.toString(),
+		cap_atomic: cap.toString(),
 		permit2_typed_data: JSON.parse(JSON.stringify(built.typedData, (_k, v) => (typeof v === 'bigint' ? v.toString() : v))),
 		permit2_digest: built.digest,
 		signed: false,
 	}
 	say(`  402 terms   ${accept.scheme} ${accept.network} ${accept.amount} USDG atomic to ${accept.payTo} (${accept.extra?.assetTransferMethod})`)
-	say(`  payer       ${payer}  USDG ${balance} atomic, Permit2 allowance ${allowance}, spent ${spent} of cap ${MAX_SPEND_ATOMIC}`)
+	say(`  payer       ${payer}  USDG ${balance} atomic, Permit2 allowance ${allowance}, spent ${spent} of cap ${cap}`)
 	say(`  permit2     digest ${built.digest} (spender ${X402_PERMIT2_PROXY}, witness.to ${accept.payTo})`)
 
 	if (!args.pay) {
@@ -179,7 +210,7 @@ export async function buyRecord(wallet: string, args: Args, payer: string, out: 
 				payment_tx: null,
 				settlement: 'not-sent',
 				spent_before_atomic: spent.toString(),
-				cap_atomic: MAX_SPEND_ATOMIC.toString(),
+				cap_atomic: cap.toString(),
 				permit2_digest: built.digest,
 			},
 		}
@@ -199,13 +230,14 @@ export async function buyRecord(wallet: string, args: Args, payer: string, out: 
 		resource: paidUrl,
 		chainSpentAtomic: onchain.spentAtomic,
 		allowance,
+		cap,
 		approve: args.approve
 			? async (remaining) => {
 					// Approve only what is left under the cap, so Permit2 itself can never pull past it.
 					const wallet = createWalletClient({ account, chain, transport: http(RPC) })
 					const hash = await wallet.writeContract({ address: USDG as Hex, abi: erc20, functionName: 'approve', args: [PERMIT2, remaining] })
 					await pub.waitForTransactionReceipt({ hash })
-					say(`  approve     Permit2 ${remaining} USDG atomic (cap ${MAX_SPEND_ATOMIC} minus spent), tx ${hash}`)
+					say(`  approve     Permit2 ${remaining} USDG atomic (cap ${cap} minus spent), tx ${hash}`)
 				}
 			: undefined,
 		send: async () => {
@@ -243,7 +275,7 @@ export async function buyRecord(wallet: string, args: Args, payer: string, out: 
 			payment_tx: last.tx,
 			settlement: last.status === 'settled' ? 'settled' : 'unknown',
 			spent_before_atomic: spent.toString(),
-			cap_atomic: MAX_SPEND_ATOMIC.toString(),
+			cap_atomic: cap.toString(),
 			permit2_digest: signedDigest,
 		},
 	}
@@ -258,7 +290,7 @@ type VerifyResult = {
 }
 
 /** Step 3: Chainlink CRE re-verifies the wallet's newest anchor against Robinhood Chain. */
-function verifyAnchor(anchor: AnchorRef | null, args: Args, out: string): CreInputs {
+function verifyAnchor(anchor: (AnchorRef & { record?: unknown }) | null, args: Args, out: string): CreInputs {
 	const receiver = JSON.parse(readFileSync(join(REPO, 'rwa-verify/config.json'), 'utf8')).receiverAddress
 	if (!anchor) {
 		return {
@@ -275,7 +307,7 @@ function verifyAnchor(anchor: AnchorRef | null, args: Args, out: string): CreInp
 		}
 	}
 	say(`  anchor      ${anchor.methodVersion} tx ${anchor.tx} block ${anchor.block}`)
-	const run: CreRun<VerifyResult> = simulate('rwa-verify', { tx: anchor.tx, recordUrl: anchor.recordUrl }, { broadcast: args.broadcast, workDir: out, label: 'cre-verify' })
+	const run: CreRun<VerifyResult> = simulate('rwa-verify', anchor.record ? { tx: anchor.tx, record: anchor.record } : { tx: anchor.tx, recordUrl: anchor.recordUrl }, { broadcast: args.broadcast, workDir: out, label: 'cre-verify' })
 	say(`  CRE verify  ${run.result.verdict} reasons ${run.result.reasonBits}${run.tx ? `, RecordChecked tx ${run.tx}` : ' (simulated, not broadcast)'}`)
 	return {
 		workflow: 'vet402-rwa-verify',
@@ -291,10 +323,71 @@ function verifyAnchor(anchor: AnchorRef | null, args: Args, out: string): CreInp
 	}
 }
 
+// ---------------------------------------------------------------- the policy: limits, mandate, book
+
+export type Policy = { limits: Limits; limitsKeccak: string; mandate: MandateRef; rules: RulesRef; mandateDir: string }
+
+/** limits.json, the mandate and its signature, and the two rule files named by hash. */
+export function loadPolicy(args: Pick<Args, 'limits' | 'mandate'>): Policy {
+	const limits = parseLimits(JSON.parse(readFileSync(join(REPO, args.limits ?? 'limits.json'), 'utf8')))
+	const mandateDir = args.mandate ?? 'mandate'
+	const document = parseMandate(JSON.parse(readFileSync(join(REPO, mandateDir, 'mandate.json'), 'utf8')))
+	const sigFile = join(REPO, mandateDir, 'mandate.sig')
+	const signature = existsSync(sigFile) ? readFileSync(sigFile, 'utf8').trim() : null
+	const rules: RulesRef = {
+		id: RULES_V2.id,
+		version: RULES_V2.version,
+		source_keccak: keccak256(readFileSync(join(REPO, 'agent/rules.ts'))),
+		limits_rules_keccak: keccak256(readFileSync(join(REPO, 'agent/rules-v2.ts'))),
+	}
+	return { limits, limitsKeccak: limitsKeccak(limits), mandate: mandateRef(document, signature || null), rules, mandateDir }
+}
+
+/** Every version 2 trail under a folder. */
+export function loadTrails(dir: string): TrailV2[] {
+	if (!existsSync(dir)) return []
+	const out: TrailV2[] = []
+	for (const name of readdirSync(dir)) {
+		const p = join(dir, name)
+		if (statSync(p).isDirectory()) out.push(...loadTrails(p))
+		else if (/^trail-\d+-[0-9a-f]+\.json$/.test(name)) {
+			const t = JSON.parse(readFileSync(p, 'utf8')).trail
+			if (t?.trail_version === 2) out.push(t)
+		}
+	}
+	return out
+}
+
+/** What earlier decisions already used on the UTC day of this move. A trail about the same move is left out. */
+export function bookAt(earlier: TrailV2[], moveTime: string, moveTx: string): Book {
+	const day = moveTime.slice(0, 10)
+	const copies = earlier.filter((t) => t.decision.conclusion === 'COPY' && t.decision.paper_trade && t.inputs.movement.tx.toLowerCase() !== moveTx.toLowerCase())
+	const used = copies.filter((t) => t.inputs.move.time.slice(0, 10) === day).reduce((s, t) => s + cents(t.decision.paper_trade?.notional_usd ?? '0'), 0n)
+	return { day, used_usd_today: usd(used), open_positions: copies.length }
+}
+
+/** When the move happened, who signed its transaction, and the decimals of each moved token. All public chain reads. */
+async function moveFacts(rpc: Rpc, mv: Movement): Promise<{ time: string; signer: string; decimals: Record<string, number> }> {
+	const block = await rpc('eth_getBlockByNumber', [`0x${mv.block.toString(16)}`, false])
+	const tx = await rpc('eth_getTransactionByHash', [mv.tx])
+	const decimals: Record<string, number> = {}
+	for (const token of new Set(mv.transfers.map((t) => t.token.toLowerCase()))) {
+		try {
+			decimals[token] = Number(BigInt(await rpc('eth_call', [{ to: token, data: '0x313ce567' }, 'latest'])))
+		} catch {
+			decimals[token] = 18
+		}
+	}
+	return { time: new Date(Number(BigInt(block.timestamp)) * 1000).toISOString(), signer: String(tx.from).toLowerCase(), decimals }
+}
+
 export async function main(argv: string[]) {
 	const args = parseArgs(argv)
 	const wallet = args.wallet.toLowerCase()
 	const payer = getAddress(readFileSync(ADDRESS_FILE, 'utf8').trim())
+	const policy = loadPolicy(args)
+	const cap = paymentCapAtomic(policy.limits, MAX_SPEND_ATOMIC)
+	const perDecision = usdgAtomic(policy.limits.payments.max_usdg_per_decision)
 	const rpc = httpRpc(RPC)
 	const latest = Number(BigInt(await rpc('eth_blockNumber', [])))
 	mkdirSync(STATE_DIR, { recursive: true })
@@ -306,9 +399,13 @@ export async function main(argv: string[]) {
 	const out = join(REPO, args.out ?? `agent/state/runs/${stamp}`)
 	mkdirSync(out, { recursive: true })
 
-	say(`copy-guard ${RULES.id} v${RULES.version}  ${args.pay ? 'PAY' : 'DRY RUN'}${args.broadcast ? ' + testnet broadcast' : ''}`)
+	say(`copy-guard ${RULES_V2.id} v${RULES_V2.version}  ${args.pay ? 'PAY' : 'DRY RUN'}${args.broadcast ? ' + testnet broadcast' : ''}`)
 	const replay = args.blocks?.length ? args.blocks : null
 	say(`  watching    ${getAddress(wallet)} on Robinhood Chain 4663, ${replay ? `replay of blocks ${replay.join(', ')}` : `blocks ${fromBlock}..${toBlock}`}`)
+	const m = policy.mandate
+	const signedByPrincipal = Boolean(m.signer) && m.signer?.toLowerCase() === m.document.principal.toLowerCase()
+	say(`  mandate     ${m.keccak} principal ${m.document.principal} ${signedByPrincipal ? 'signed by the principal' : m.signature ? `signed by ${m.signer}, NOT the principal` : 'NOT SIGNED: every decision will be HOLD'} (${policy.mandateDir}/)`)
+	say(`  limits      ${policy.limitsKeccak} ${policy.limits.position.max_usd_per_position} USD per position, ${policy.limits.position.max_usd_per_day} USD per day, payments at most ${cap} USDG atomic in total`)
 
 	// 1. Detect.
 	const found = replay
@@ -326,29 +423,110 @@ export async function main(argv: string[]) {
 	}
 	const todo = found.slice(0, args.max)
 
-	// 2. Buy the record once per run; every decision in the run reads the same bytes.
-	const bought = await buyRecord(getAddress(wallet), args, payer, out)
-	writeFileSync(join(out, 'record.json'), `${JSON.stringify(bought.facts, null, 2)}\n`)
-	const record = recordInputs(bought.facts, { source_url: bought.sourceUrl, x_facts_hash: bought.xFactsHash })
+	// The wallet's newest anchor. With --anchor-record the anchored record is a local file.
+	let anchor: (AnchorRef & { record?: unknown }) | null = await newestAnchor(rpc, wallet, latest, VET402_REPO_RAW)
+	if (args.anchorRecord) {
+		const rec = JSON.parse(readFileSync(join(REPO, args.anchorRecord), 'utf8'))
+		if (!anchor || anchor.tx !== String(rec.anchor_tx).toLowerCase()) throw new Error(`--anchor-record is for anchor ${rec.anchor_tx}, but the wallet's newest anchor onchain is ${anchor?.tx ?? '(none)'}`)
+		anchor = { ...anchor, record: rec, recordUrl: `file:${args.anchorRecord}` }
+		writeFileSync(join(out, 'anchored-record.json'), `${JSON.stringify(rec, null, 2)}\n`)
+	}
+
+	// 2. Buy the evidence once per run; every decision in the run reads the same bytes.
+	let facts: any
+	let xFactsHash: string
+	let sourceUrl: string
+	let purchase: Purchase
+	let terms: Bought['terms']
+	let cre: CreInputs
+	if (args.gate) {
+		// The payment sits at the entrance of the CRE workflow. The record itself comes from the free route.
+		sourceUrl = `${VET402}/api/v1/rwa/facts/${getAddress(wallet)}?chain=4663`
+		const res = await fetch(sourceUrl)
+		if (res.status !== 200) throw new Error(`free route ${res.status}`)
+		facts = await res.json()
+		xFactsHash = (res.headers.get('x-facts-hash') ?? '').toLowerCase()
+		const gate = await payGate(args.gate, anchor ? (anchor.record ? { tx: anchor.tx, record: anchor.record } : { tx: anchor.tx, recordUrl: anchor.recordUrl }) : {}, {
+			// With no anchor there is nothing for the workflow to check, so nothing is paid.
+			pay: args.pay && anchor !== null,
+			approve: args.approve,
+			payer,
+			out,
+			ledgerFile: LEDGER_FILE,
+			keyFile: KEY_FILE,
+			capAtomic: cap,
+			perDecisionAtomic: perDecision,
+			timeoutMs: 110_000,
+			say,
+		})
+		purchase = gate.purchase
+		terms = gate.terms
+		if (gate.verdict && anchor) {
+			const v = gate.verdict
+			say(`  CRE verify  ${v.result.verdict} reasons ${v.result.reasonBits}, run by the gate${v.verdict_tx ? `, RecordChecked tx ${v.verdict_tx}` : ' (simulated, not broadcast)'}`)
+			cre = {
+				workflow: 'vet402-rwa-verify',
+				anchor_tx: anchor.tx,
+				anchor_record_url: anchor.recordUrl,
+				verdict: v.result.verdict,
+				reason_bits: v.result.reasonBits,
+				recomputed_facts_hash: v.result.recomputedFactsHash.toLowerCase(),
+				anchored_facts_hash: v.result.anchoredFactsHash.toLowerCase(),
+				receiver: v.receiver,
+				mode: v.mode,
+				verdict_tx: v.verdict_tx,
+			}
+		} else {
+			cre = verifyAnchor(anchor, args, out)
+		}
+	} else {
+		const bought = await buyRecord(getAddress(wallet), args, payer, out, { capAtomic: cap, perDecisionAtomic: perDecision })
+		facts = bought.facts
+		xFactsHash = bought.xFactsHash
+		sourceUrl = bought.sourceUrl
+		purchase = bought.purchase
+		terms = bought.terms
+		// 3. CRE re-verification of the newest anchor.
+		cre = verifyAnchor(anchor, args, out)
+	}
+	writeFileSync(join(out, 'record.json'), `${JSON.stringify(facts, null, 2)}\n`)
+	const record = recordInputs(facts, { source_url: sourceUrl, x_facts_hash: xFactsHash })
 	say(`  record      ${record.method_version} as_of ${record.as_of} block ${record.as_of_block}, factsHash ${record.recomputed_facts_hash}`)
 
-	// 3. CRE re-verification of the newest anchor.
-	const anchor = await newestAnchor(rpc, wallet, latest, VET402_REPO_RAW)
-	const cre = verifyAnchor(anchor, args, out)
-
-	// 4. Decide, write the trail, notarize it through CRE, keep the paper trade.
-	const rulesSourceKeccak = keccak256(readFileSync(join(REPO, 'agent/rules.ts')))
+	// 4. Decide, write the trail, notarize it through CRE, keep the practice trade.
+	const earlier = args.book ? loadTrails(join(REPO, args.book)) : []
 	const results = []
 	for (const mv of todo) {
-		const inputs: DecisionInputs = { wallet, movement: mv, terms: bought.terms, record, cre }
-		const trail: Trail = buildTrail(inputs, bought.purchase, { decided_at: new Date().toISOString(), rules_source_keccak: rulesSourceKeccak })
+		const mf = await moveFacts(rpc, mv)
+		const inputs: DecisionInputsV2 = {
+			wallet,
+			movement: mv,
+			terms,
+			record,
+			cre,
+			decided_at: new Date().toISOString(),
+			payer: payer.toLowerCase(),
+			rules: policy.rules,
+			move: { time: mf.time, signer: mf.signer },
+			tokens_moved: movedTokens(facts, mv.transfers, mf.decimals, USDG),
+			limits: policy.limits,
+			limits_keccak: policy.limitsKeccak,
+			mandate: policy.mandate,
+			book: bookAt(earlier, mf.time, mv.tx),
+		}
+		const trail: TrailV2 = buildTrailV2(inputs, purchase)
+		earlier.push(trail)
 		const hash = trailHash(trail)
 		const label = `trail-${mv.block}-${mv.tx.slice(2, 10)}`
 		say('')
-		say(`  movement    ${mv.tx} block ${mv.block}`)
+		say(`  movement    ${mv.tx} block ${mv.block} at ${mf.time}`)
 		for (const t of mv.transfers) say(`              ${t.direction === 'in' ? 'in ' : 'out'} ${t.token} ${t.amount_raw}`)
 		for (const r of trail.decision.rule_results) say(`    ${r.ok ? 'OK  ' : 'FAIL'} ${r.id} ${r.detail}`)
 		say(`  DECISION    ${trail.decision.conclusion}${trail.decision.decisive.length ? ` (${trail.decision.decisive.join(', ')})` : ''}`)
+		say(`  CARD        ${trail.card.headline}`)
+		say(`              ${trail.card.happened}`)
+		for (const w of trail.card.why) say(`              ${w}`)
+		say(`              ${trail.card.so}`)
 		say(`  trail hash  ${hash}`)
 		const run = simulate<{ trailHash: string }>('trail-anchor', { trail }, { broadcast: args.broadcast, workDir: out, label })
 		if (run.result.trailHash !== hash) throw new Error(`CRE hashed the trail as ${run.result.trailHash}, the agent as ${hash}`)
