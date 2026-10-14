@@ -1,0 +1,349 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0xa0e727E45c523bB71b96FdB23a67ba41f859d34C?chain=4663",
+  "x_facts_hash": "0x6835da43bfd5bb7eb094fd35081d86093491856bea26f0990fa04a72ff5b1c32",
+  "facts": {
+    "address": "0xa0e727E45c523bB71b96FdB23a67ba41f859d34C",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T00:49:01.000Z",
+    "as_of_block": 87951557,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "GME",
+        "MRNA",
+        "MRVL",
+        "NVDA",
+        "RBLX",
+        "SLV",
+        "TSM"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "GME",
+        "name": "GameStop",
+        "token": "0x1b0E319c6A659F002271B69dB8A7df2F911c153E",
+        "canonical": true,
+        "raw": "10561655943494",
+        "shares_ui": "0.00001056",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x27C71df6A64fB476468EdF256CF72c038baB5B67",
+        "feed_answer": "2773520000",
+        "feed_updated_at": "2026-10-13T23:16:18.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "10561655943494",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "NVDA",
+        "name": "NVIDIA",
+        "token": "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC",
+        "canonical": true,
+        "raw": "596506248864",
+        "shares_ui": "0.00000059",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x379EC4f7C378F34a1B47E4F3cbeBCbAC3E8E9F15",
+        "feed_answer": "22935264710",
+        "feed_updated_at": "2026-10-13T20:03:51.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "596506248864",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 58952659,
+            "time": "2026-09-09T23:50:42.000Z",
+            "effective_at": "2026-09-10T00:00:30.000Z",
+            "tx": "0x4ac23f2e58e2c4962dcd701c2beff581e87f3995152a29d527c07a3afd67d956",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000775159164630595",
+            "ratio": "1.000775159164630595",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "SLV",
+        "name": "iShares Silver Trust",
+        "token": "0x411eFb0E7f985935DAec3D4C3ebaEa0d0AD7D89f",
+        "canonical": true,
+        "raw": "4036045624921",
+        "shares_ui": "0.00000403",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x209b73908e92Ae021826eD79609845451Ecba2ce",
+        "feed_answer": "5326000000",
+        "feed_updated_at": "2026-10-13T23:19:48.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "4036045624921",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "TSM",
+        "name": "Taiwan Semiconductor Manufacturing",
+        "token": "0x58FfE4a942d3885bAa22D7520691F611EF09e7AA",
+        "canonical": true,
+        "raw": "811499818642",
+        "shares_ui": "0.00000081",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x874cF94aa8eC88Fd9560094dD065f2fB3E41Fc2F",
+        "feed_answer": "44808646144",
+        "feed_updated_at": "2026-10-13T20:57:47.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "811499818642",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 64062939,
+            "time": "2026-09-16T00:00:56.000Z",
+            "effective_at": "2026-09-16T00:10:33.000Z",
+            "tx": "0x53888b0500828784f8eb5e98b22e2becf1e5d9b00d4e48c26d0b440e08f34037",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1001463024159690554",
+            "ratio": "1.001463024159690554",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          },
+          {
+            "block": 80347763,
+            "time": "2026-10-05T00:03:01.000Z",
+            "effective_at": "2026-10-05T00:12:31.000Z",
+            "tx": "0x3ec41fca900ab92c68ff37c424fe16f0840ccb64fd62d14b1a05172b27dae3fd",
+            "multiplier_before": "1001463024159690554",
+            "multiplier_after": "1002728577037771211",
+            "ratio": "1.001263704048526963",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "MRNA",
+        "name": "Moderna",
+        "token": "0x43B07D15cE533bEc5476d70C22a78a1B2B662155",
+        "canonical": true,
+        "raw": "5857341932",
+        "shares_ui": "0.00000000",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "5857341932",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 4,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "MRVL",
+        "name": "Marvell Technology",
+        "token": "0x62fd0668e10D8B72339BE2DCF7643001688ff13B",
+        "canonical": true,
+        "raw": "2203195816",
+        "shares_ui": "0.00000000",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "2203195816",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 4,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 83720133,
+            "time": "2026-10-09T00:01:21.000Z",
+            "effective_at": "2026-10-09T00:10:33.000Z",
+            "tx": "0x6456a1f0869c075f1b797ac9139376c0a8b59e42941becc3e9006db31d4e62c1",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000151336736428647",
+            "ratio": "1.000151336736428647",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "RBLX",
+        "name": "Roblox",
+        "token": "0xF0C4BF4C582cb3836e98394b1d4e7B7281101bE8",
+        "canonical": true,
+        "raw": "8150878984941",
+        "shares_ui": "0.00000815",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "8150878984941",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 18,
+      "univ4": 0,
+      "other_unparsed": 0
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": null,
+    "mdd_usd": null,
+    "gaps": [
+      "unknown_cost_lots",
+      "no_feed",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0x69E7778d46713e17572D610bDaca3943aa4e6219",
+        "symbol_raw": "SPY",
+        "name_raw": "Spy Chip",
+        "imitates": "SPY",
+        "reasons": [
+          "symbol_copies_stock_token",
+          "code_hash_differs",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "received",
+        "counterparty": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+        "mimics": null,
+        "first_seen_block": 87805142,
+        "tx": "0x33c737ffc055fa548ccd3d183bb1239ebd43b70c039b81798477f31c40c24d8c",
+        "amount_raw": "4098635688720900203861174",
+        "transfers_seen": 5,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 87951557,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 28,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0x778c560d43bc0090db1ec489b90ed727f892e6ab41a5a6d3d78779cf9a542744",
+        "0xdd4455ff3d49b53b4b5a618bbbb53746829ff3530c05780272a4e11682a1c314",
+        "0x91d61d3385e00885b3bd51866bb92e50d69c4f7951f33f76fb27187f5dc6674a",
+        "0x8ad5f4abcabdc8b9d88e5e6192134f207378f6ee47fd6011e2462a703e979111",
+        "0x61e416220b96702c5f2535f33a082c4da833c42a44d83072f327698e626ab47e",
+        "0x6fa74af2e118e5924580e065936b457a2747064662bfe1ef46dc69e067b762f2",
+        "0xee13b40d7c7efa74f68aba89ff78f4dfe59dca2fd2b0043bb04af1ee811594f6",
+        "0x46860666191bb295c0e698b5df359ac28c47e056242a89deef9a96099c418f2c",
+        "0x80b3bc4c59ee1ae6982102f012b6d624d286231f21a31e2f517af4a566581881",
+        "0x9dd09531171b97a58ba83265b42c22b7dc11d978cbad361855f90dbadcf490be",
+        "0x880dc913b9cc6eb313626ec21c900a2358369a3783bc11bf6176f5085ff045c3",
+        "0x455417c5e0b2760216e79a90cf156ae3eb9422ca8d73a700af84c03efda749d1",
+        "0xb6a260219667d8f8fe7147e40ba88456469da5351af0502c16d210bc868748bd",
+        "0x1b685cd8d052d2df62210454e18c3baf7deedd04bb8a988b6b6a646e957ec2c0",
+        "0xe4aedcaa1b6bce0c556d2aac6c21f95837314ccb3fd44e595bbe6a20854ed729",
+        "0xd1b2a3197d2406f86771060f65a4562178c41783712aecc1fa89179eaa3b3c81",
+        "0x608bb003345ffc8375882652d1e74d471bfc1b64ff173ededfd35141842184d6",
+        "0x782142d9c8318f3615dfe83987a7df80db398402e5e1e68d53367fbd8c258465"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

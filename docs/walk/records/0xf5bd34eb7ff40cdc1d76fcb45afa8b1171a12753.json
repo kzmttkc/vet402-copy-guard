@@ -1,0 +1,94 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0xF5bd34EB7Ff40cDc1d76fcB45afA8b1171A12753?chain=4663",
+  "x_facts_hash": "0x1810e35622e98a0a7eb0555cb9871a0eabfd12c828ba08cf44bab16ab2473291",
+  "facts": {
+    "address": "0xF5bd34EB7Ff40cDc1d76fcB45afA8b1171A12753",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T00:52:22.000Z",
+    "as_of_block": 87953544,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "SLV"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "SLV",
+        "name": "iShares Silver Trust",
+        "token": "0x411eFb0E7f985935DAec3D4C3ebaEa0d0AD7D89f",
+        "canonical": true,
+        "raw": "14976401369336",
+        "shares_ui": "0.00001497",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x209b73908e92Ae021826eD79609845451Ecba2ce",
+        "feed_answer": "5326000000",
+        "feed_updated_at": "2026-10-13T23:19:48.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "14976401369336",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 3,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 3,
+      "univ4": 0,
+      "other_unparsed": 0
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": "0.00",
+    "mdd_usd": null,
+    "gaps": [
+      "unknown_cost_lots",
+      "mdd_pending"
+    ],
+    "lookalikes": [],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 87953544,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 0,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0x5d0ef4fa3d0d831fec15bc12e399e180ae5c9892ff8be42088e2acc91c4ebd53",
+        "0x1d8859d88bcffa0da2c9117ded4a63f240636e3aaaa96fd0185b250a0f800c2a",
+        "0x807aaab36384602059956403d86633e7e3e9eaa72d55a3eb5cd1c8a8d87fa98a"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

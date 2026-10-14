@@ -1,0 +1,135 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0xBA0b003A12cFb218C7624EF6328E45b8f8DF05aa?chain=4663",
+  "x_facts_hash": "0x0584ce0e9b1e478eaa52257c7f90555390b67779e856118a526464030c21ba73",
+  "facts": {
+    "address": "0xBA0b003A12cFb218C7624EF6328E45b8f8DF05aa",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T00:49:53.000Z",
+    "as_of_block": 87952080,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "NVDA",
+        "SLV"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "NVDA",
+        "name": "NVIDIA",
+        "token": "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC",
+        "canonical": true,
+        "raw": "1968155362463594",
+        "shares_ui": "0.00196968",
+        "usd": "0.45",
+        "usd_reason": null,
+        "feed": "0x379EC4f7C378F34a1B47E4F3cbeBCbAC3E8E9F15",
+        "feed_answer": "22935264710",
+        "feed_updated_at": "2026-10-13T20:03:51.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "1968155362463594",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 1,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 58952659,
+            "time": "2026-09-09T23:50:42.000Z",
+            "effective_at": "2026-09-10T00:00:30.000Z",
+            "tx": "0x4ac23f2e58e2c4962dcd701c2beff581e87f3995152a29d527c07a3afd67d956",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000775159164630595",
+            "ratio": "1.000775159164630595",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "SLV",
+        "name": "iShares Silver Trust",
+        "token": "0x411eFb0E7f985935DAec3D4C3ebaEa0d0AD7D89f",
+        "canonical": true,
+        "raw": "5512409007819",
+        "shares_ui": "0.00000551",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x209b73908e92Ae021826eD79609845451Ecba2ce",
+        "feed_answer": "5326000000",
+        "feed_updated_at": "2026-10-13T23:19:48.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "5512409007819",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 3,
+      "univ4": 0,
+      "other_unparsed": 0
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": "0.45",
+    "mdd_usd": null,
+    "gaps": [
+      "unknown_cost_lots",
+      "mdd_pending"
+    ],
+    "lookalikes": [],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 87952080,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 0,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0x807da453960df391080519002fca99f420cdd064fb8fc51af6e5a0580c14c318",
+        "0xa0b7cc70d9510daf2117c33ee3fc2c5e68061eb6ef05fb0a50ab5a21709a3f90",
+        "0xddf6ad60ab9231049c0195f503d1132f8cfaa6ac5e61f360b529c7284534531a"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

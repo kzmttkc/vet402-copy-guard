@@ -1,0 +1,60 @@
+copy-guard v2 walk, 29 wallets, decided 2026-10-14T00:59:39.028Z, marked at block 87957817
+  mandate  0x4c8c1a98b6b830aa58b0a38e2afdfc5dccede547783ac9e24c281782c24af682 principal 0xBB621a68f7C142CD340C5D5e71056Ecd42f8f48D signed by the principal (mandate/sample/)
+  limits   0x1e7624863e095cbdb3475e8f01b8e6befbe53ed24389a2b51c3dcb479d72c2cf full 100.00 USD, reduced 25.00 USD, 300.00 USD per day, 10 open
+  0xe9b08727131e34010b34006c660d4c1b436ec25f record partial, realized -81.19, anchor MATCH, 93 moves of 93 listed txs
+  0x35eb8c43c7f8da87eb21749787c92cfab6cdf751 record partial, realized unknown, no anchor, 29 moves of 29 listed txs
+  0x31d93de13896f8ef6957d50d0208d34a14eabd30 record partial, realized unknown, no anchor, 24 moves of 24 listed txs
+  0x6b7242ab2d4bc3b7547780673778dc5b29b1344d record partial, realized unknown, no anchor, 19 moves of 19 listed txs
+  0x8261321126e04390d2f6eff169ac399c83cb2e26 record partial, realized unknown, no anchor, 12 moves of 12 listed txs
+  0xb9c1ea30b0c01a6aa795084e8d1f7a96e460a952 record partial, realized unknown, no anchor, 16 moves of 16 listed txs
+  0x6ab99e7001c4514be26e294fff6c5417d9c2eb01 record partial, realized unknown, no anchor, 4 moves of 4 listed txs
+  0xe845229cfed0b23e51ae6c41eb13ae1c61680878 record partial, realized unknown, no anchor, 11 moves of 11 listed txs
+  0xdc1ed1d35d700762f58b67f795bad2bd45785bb1 record partial, realized unknown, no anchor, 2 moves of 2 listed txs
+  0x6b5c87e26cbea7e1811cebb47ec74e7a176ea153 record partial, realized unknown, no anchor, 31 moves of 31 listed txs
+  0x8db35c80c6e4f2d942a6112baad0b26b89cb3a15 record partial, realized unknown, no anchor, 18 moves of 18 listed txs
+  0x0fc47c7d4058aef603ff55b8ebb34ce9cc365b63 record partial, realized unknown, no anchor, 4 moves of 4 listed txs
+  0xa0e727e45c523bb71b96fdb23a67ba41f859d34c record partial, realized unknown, no anchor, 19 moves of 19 listed txs
+  0x82b36ad20db012ec41377cc33c6f772ff772f088 record partial, realized unknown, no anchor, 22 moves of 22 listed txs
+  0xccbb6e8ac480c5a7b54274453a87a96411ed3815 record partial, realized unknown, no anchor, 7 moves of 7 listed txs
+  0xe86761414d72cbb66962cbfca198fd18e6a74d8b record partial, realized unknown, no anchor, 16 moves of 16 listed txs
+  0xba0b003a12cfb218c7624ef6328e45b8f8df05aa record partial, realized unknown, no anchor, 3 moves of 3 listed txs
+  0xc8cfbc11358edd01a49ef85939af883f68d01b14 record partial, realized unknown, no anchor, 11 moves of 11 listed txs
+  0x64d386406c6a9c90e03e4678dc7443672700dd41 record partial, realized unknown, no anchor, 21 moves of 21 listed txs
+  0x02e462d9a45dd25140b9f858d4246aa52273c861 record partial, realized unknown, no anchor, 24 moves of 24 listed txs
+  0x92d3f66287a21e12f04fc6389d65f14a52e01d21 record partial, realized unknown, no anchor, 5 moves of 5 listed txs
+  0xebf23da0f3ef7e5c9048a914565face014238eec record partial, realized unknown, no anchor, 9 moves of 9 listed txs
+  0xf51695083382c833c7b237f5f100ffff6be7a403 record partial, realized unknown, no anchor, 16 moves of 16 listed txs
+  0x60d93ed0005c9e022e7f9a9da67209ac537c9323 record partial, realized unknown, no anchor, 2 moves of 2 listed txs
+  0xf5bd34eb7ff40cdc1d76fcb45afa8b1171a12753 record partial, realized unknown, no anchor, 3 moves of 3 listed txs
+  0x096b752f213226971d17dc91bcd460401f1e91ac record partial, realized unknown, no anchor, 17 moves of 17 listed txs
+  0x3c8d9d957000e671e9a4b4cfbfa6b84554df50bf record partial, realized unknown, no anchor, 20 moves of 20 listed txs
+  0x52fe15f476b586056a9ee7d6cf528d106f8d8861 record partial, realized unknown, no anchor, 15 moves of 15 listed txs
+  0x4218ee29cf8ccfc01aecea3c6699c2f612df9ca0 record partial, realized unknown, no anchor, 20 moves of 20 listed txs
+  feed NVDA 382 values from block 46211835
+  feed QQQ 106 values from block 49429568
+  feed SPY 48 values from block 52901050
+  feed GME 183 values from block 79388332
+  feed DELL 207 values from block 79400970
+  feed TSLA 59 values from block 78522540
+  feed SNDK 216 values from block 79845938
+  feed INTC 215 values from block 79398683
+  feed AAPL 50 values from block 79050090
+  feed TSM 72 values from block 79672405
+  feed GOOGL 60 values from block 79546884
+  feed SPCX 173 values from block 79657532
+  feed META 82 values from block 79403886
+  feed MU 152 values from block 81036056
+  feed CRCL 299 values from block 77761039
+  feed MSTR 275 values from block 79810567
+  feed COIN 227 values from block 78793754
+  feed PLTR 125 values from block 79557094
+  feed AMD 157 values from block 79573082
+  feed SLV 191 values from block 70631426
+
+  CRE       root recomputed from 493 leaves, LedgerAnchored tx 0xbd62eb46e46a0eea6f7278ef0833955a92188810215db10064cff8a9a42da94d
+  decisions 493 about 29 wallets: FULL 0, REDUCED 59, NONE 434; look-alikes named 23
+  copy-guard  opened 59 (1475.00 USD of practice money), closed 56, open 3, result 1.50 USD
+  blind copy  opened 200 (20000.00 USD), of which 20 look-alikes, closed 190, open 10, result -1993.54 USD
+  root      0x803f7c9785923dc4921de7f46969327814cb9d26d4258dea44f2d075ddc9109d
+  read      0 records from the free route, 131 RPC calls
+  saved     docs/walk/ and docs/ledger.json

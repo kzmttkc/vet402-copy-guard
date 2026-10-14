@@ -1,0 +1,107 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0xDC1ED1d35D700762f58B67f795bAD2Bd45785bB1?chain=4663",
+  "x_facts_hash": "0x881daca8340698f56a9809cba6484171ace6e46b43334eee5c07ac17d97e808d",
+  "facts": {
+    "address": "0xDC1ED1d35D700762f58B67f795bAD2Bd45785bB1",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T00:48:09.000Z",
+    "as_of_block": 87951042,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "DELL"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "DELL",
+        "name": "Dell",
+        "token": "0x941AE714EC6D8130c7B75d67160Ca08f1e7d11Dd",
+        "canonical": true,
+        "raw": "318974920079",
+        "shares_ui": "0.00000031",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x1C6c8cADBe02E19129c39dDB92281cE4c0bf206b",
+        "feed_answer": "57570030235",
+        "feed_updated_at": "2026-10-14T00:16:34.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "318974920079",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 26853518,
+            "time": "2026-08-03T15:00:48.000Z",
+            "effective_at": "2026-08-03T15:10:23.000Z",
+            "tx": "0x8881e24ee42a7fdac96523e3166e8361ea72d24c45f2f6991a1da174acb531a8",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000063708620124549",
+            "ratio": "1.000063708620124549",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 2,
+      "univ4": 0,
+      "other_unparsed": 0
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": "0.00",
+    "mdd_usd": null,
+    "gaps": [
+      "unknown_cost_lots",
+      "mdd_pending"
+    ],
+    "lookalikes": [],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 87951042,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 0,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0xd420ab34c12cd39b26f24e5a5617454165c7261d7f19a28c41a4e2682a0d63d4",
+        "0x62580610132f7541bfe491acb7f2cf5e48c3bfc2987b51683e0f0aa7066ac545"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

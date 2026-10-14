@@ -1,0 +1,203 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0xeBf23Da0F3EF7e5c9048A914565FaCe014238EEc?chain=4663",
+  "x_facts_hash": "0x70c33363257168b7ddda226e23990e8c0aa4cb3cdbfb5a65837321100e7e3e68",
+  "facts": {
+    "address": "0xeBf23Da0F3EF7e5c9048A914565FaCe014238EEc",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T00:50:49.000Z",
+    "as_of_block": 87952634,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "HIMS",
+        "IBM",
+        "MRNA",
+        "SLV"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "SLV",
+        "name": "iShares Silver Trust",
+        "token": "0x411eFb0E7f985935DAec3D4C3ebaEa0d0AD7D89f",
+        "canonical": true,
+        "raw": "5614782914851",
+        "shares_ui": "0.00000561",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x209b73908e92Ae021826eD79609845451Ecba2ce",
+        "feed_answer": "5326000000",
+        "feed_updated_at": "2026-10-13T23:19:48.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "5614782914851",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "HIMS",
+        "name": "Hims & Hers Health",
+        "token": "0xCceE82fE024c36fA15E1005edE3E9e4787e23D09",
+        "canonical": true,
+        "raw": "9851566943713",
+        "shares_ui": "0.00000985",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "9851566943713",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "IBM",
+        "name": "IBM",
+        "token": "0x980dcf6766FA79f5Cf0c4AAdb3ab477ff15a9619",
+        "canonical": true,
+        "raw": "1341229788928",
+        "shares_ui": "0.00000134",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "1341229788928",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "MRNA",
+        "name": "Moderna",
+        "token": "0x43B07D15cE533bEc5476d70C22a78a1B2B662155",
+        "canonical": true,
+        "raw": "726694700331",
+        "shares_ui": "0.00000072",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "726694700331",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 8,
+      "univ4": 0,
+      "other_unparsed": 0
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": null,
+    "mdd_usd": null,
+    "gaps": [
+      "no_feed",
+      "unknown_cost_lots",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0x69E7778d46713e17572D610bDaca3943aa4e6219",
+        "symbol_raw": "SPY",
+        "name_raw": "Spy Chip",
+        "imitates": "SPY",
+        "reasons": [
+          "symbol_copies_stock_token",
+          "code_hash_differs",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "received",
+        "counterparty": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+        "mimics": null,
+        "first_seen_block": 87809725,
+        "tx": "0x8085558a8d1977035beb8ffd47d274a47ed93531838ca492bb188e4cd0531285",
+        "amount_raw": "5192384680532681397078543",
+        "transfers_seen": 2,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 87952634,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 29,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0x121f75ef3bbba03c87a4fcaaef12408fd4d0e0e03352bdda4a30def97bc3d44a",
+        "0x36977550eb9e079da20898f2d047a616a98f1e09340fa0b56b013621c59b3079",
+        "0xd3465b9447d94b0eae324fe0119ed389b29dcf278bda48ccd357be0a0854885d",
+        "0xbbc59c1be9b7cc56442661df83ba2b7ed409148b177d86539f06d3dd2a950122",
+        "0xcde04c23310b69e0c22ffd301544b04331c3c01231d2fa5be21d7538f1951d56",
+        "0x3e6af0697f7f3b2847dfb2ca21c122e663900b8bf64d6d1d0635dbafb8e7e455",
+        "0x0a47753da89370de0f177ebb0c61afb6cd367c3cbc3465225455d14cbd473910",
+        "0xe541da483161de7b8159343f76041d0477441a7130037b32d043a585ddeee10c"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

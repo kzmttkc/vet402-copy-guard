@@ -1,0 +1,305 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0xF51695083382c833c7b237F5f100fFFF6BE7A403?chain=4663",
+  "x_facts_hash": "0x15f84a231e8a89159eafc3df1e0a3918e4bb6794be64db5daf00afd657120e0e",
+  "facts": {
+    "address": "0xF51695083382c833c7b237F5f100fFFF6BE7A403",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T00:50:57.000Z",
+    "as_of_block": 87952704,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "COIN",
+        "LLY",
+        "RDDT",
+        "SLV",
+        "SPCX",
+        "TSLA",
+        "TTWO"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "COIN",
+        "name": "Coinbase",
+        "token": "0x6330D8C3178a418788dF01a47479c0ce7CCF450b",
+        "canonical": true,
+        "raw": "2262462640790",
+        "shares_ui": "0.00000226",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0xA3a468A452940B7D6b69991207B508c609a98Ef2",
+        "feed_answer": "18233634616",
+        "feed_updated_at": "2026-10-14T00:37:52.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "2262462640790",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "SLV",
+        "name": "iShares Silver Trust",
+        "token": "0x411eFb0E7f985935DAec3D4C3ebaEa0d0AD7D89f",
+        "canonical": true,
+        "raw": "3676959669948",
+        "shares_ui": "0.00000367",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x209b73908e92Ae021826eD79609845451Ecba2ce",
+        "feed_answer": "5326000000",
+        "feed_updated_at": "2026-10-13T23:19:48.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "3676959669948",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "SPCX",
+        "name": "Space Exploration Technologies Corp. Class A Common Stock",
+        "token": "0x4a0E65A3EcceC6dBe60AE065F2e7bb85Fae35eEa",
+        "canonical": true,
+        "raw": "2145078176787",
+        "shares_ui": "0.00000214",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0xB265810950ba6c5C0Ff821c9963014a56fD8Bffb",
+        "feed_answer": "15703810000",
+        "feed_updated_at": "2026-10-13T16:41:03.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "2145078176787",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "TSLA",
+        "name": "Tesla",
+        "token": "0x322F0929c4625eD5bAd873c95208D54E1c003b2d",
+        "canonical": true,
+        "raw": "709670475967",
+        "shares_ui": "0.00000070",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x4A1166a659A55625345e9515b32adECea5547C38",
+        "feed_answer": "37444500000",
+        "feed_updated_at": "2026-10-13T20:03:48.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "709670475967",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 4,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "LLY",
+        "name": "Eli Lilly",
+        "token": "0x8005d266423c7ea827372c9c864491e5786600ea",
+        "canonical": true,
+        "raw": "390371830018",
+        "shares_ui": "0.00000039",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "390371830018",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 60346735,
+            "time": "2026-09-11T15:01:30.000Z",
+            "effective_at": "2026-09-11T15:10:30.000Z",
+            "tx": "0xb20fb11da8a57ff41835258059c4c80ae7a5a454db171f9fdd30802924289c03",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000002288774375687",
+            "ratio": "1.000002288774375687",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "RDDT",
+        "name": "Reddit",
+        "token": "0x05b37Fb53A299a1b874A619e1c4C404D52C36F4C",
+        "canonical": true,
+        "raw": "1356266954068429",
+        "shares_ui": "0.00135626",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "1356266954068429",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 1,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "TTWO",
+        "name": "Take-Two Interactive Software",
+        "token": "0x5e81213613b6B86EaB4c6c50d718d34359459786",
+        "canonical": true,
+        "raw": "774993034159",
+        "shares_ui": "0.00000077",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "774993034159",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 15,
+      "univ4": 0,
+      "other_unparsed": 0
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": null,
+    "mdd_usd": null,
+    "gaps": [
+      "unknown_cost_lots",
+      "no_feed",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0x69E7778d46713e17572D610bDaca3943aa4e6219",
+        "symbol_raw": "SPY",
+        "name_raw": "Spy Chip",
+        "imitates": "SPY",
+        "reasons": [
+          "symbol_copies_stock_token",
+          "code_hash_differs",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "received",
+        "counterparty": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+        "mimics": null,
+        "first_seen_block": 87807636,
+        "tx": "0xab008e3d8dcd1c270f9e1566f2dcdba6d2ad5028bbc434ac1c11b36249d45c3c",
+        "amount_raw": "21175611650630232472344357",
+        "transfers_seen": 13,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 87952704,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 26,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0x8f392ac7aa5cce2492d32c0bb50142faed39d30e452f805a8c5e89a02be78830",
+        "0x41811e8167ab8b0f03949e42e245aa49b06309fcb80e31f54490e46660d8428b",
+        "0x4193dbcd3c491b2e8d1c9728b76dc884edcef8047a0841560c47bd3ea403a69f",
+        "0xe3fbd5ba45a20733699a90c298ddce7f2ce407fe0eaee44efc297fee7d015f89",
+        "0x026e7aa9c487a763975e9156a8753f5fd110b0d3e51746454921c427b9662f87",
+        "0x7558900ab7e02a51f4a253f35bcd67d074b3b0a062bc712b91b82640d5c30ab3",
+        "0xb6c635d7a78f4d23a9cb3366a577a8154b6130680b83880d1575ff6005dbe0d8",
+        "0x65768ff3b9e5b991da643ed32264d6a74e56d255ba9f17d378d573b2480db8fd",
+        "0x1672b72f12bd3bcd6247042bfbcb640f63a1370a8e7d0f3ccece885dc7559c79",
+        "0xef59ec8bfae409dccec43c29ae77290bc04506386a160d18b13d86547e8e519b",
+        "0x7ae348ccbbf853f78c291857c0b3634b9e64ed4189e64857ce68ada06675cb7c",
+        "0x4699f4173187b5f8218ac583d4427f4f61a94ce8fe6632fa7f516d56e1f3f6cd",
+        "0x8f7e0f3aa6425a0a4910f5c30bced3204d0747e2c2de7e88ece9e3540dec84e2",
+        "0x1d8228fc1fe1df08c033375988cb56ca9f33109d4de50ccfbe9fbf89d518dfed",
+        "0xad7551e22bed36c9b105715992fd5e5b2a4d2906436502c99e03874d10742de3"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

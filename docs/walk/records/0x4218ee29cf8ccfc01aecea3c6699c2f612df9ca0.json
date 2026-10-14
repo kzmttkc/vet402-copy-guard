@@ -1,0 +1,134 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x4218Ee29cF8ccFc01aeCEA3C6699c2F612DF9cA0?chain=4663",
+  "x_facts_hash": "0x582158f9623ccbfac024cdbd231b76a32d3d9d447729b8ff7a8901630c136251",
+  "facts": {
+    "address": "0x4218Ee29cF8ccFc01aeCEA3C6699c2F612DF9cA0",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T00:55:52.000Z",
+    "as_of_block": 87955612,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "SLV"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "SLV",
+        "name": "iShares Silver Trust",
+        "token": "0x411eFb0E7f985935DAec3D4C3ebaEa0d0AD7D89f",
+        "canonical": true,
+        "raw": "2884270485130927566",
+        "shares_ui": "2.88427048",
+        "usd": "153.61",
+        "usd_reason": null,
+        "feed": "0x209b73908e92Ae021826eD79609845451Ecba2ce",
+        "feed_answer": "5326000000",
+        "feed_updated_at": "2026-10-13T23:19:48.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "2884270485130927566",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 0,
+          "univ4": 0,
+          "other_unparsed": 19
+        },
+        "corporate_actions": []
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 0,
+      "univ4": 0,
+      "other_unparsed": 19
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": "153.61",
+    "mdd_usd": null,
+    "gaps": [
+      "other_unparsed",
+      "unknown_cost_lots",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0xfdBBDAA4d2D6Cc9b6c2b8201ACADF9371F91962A",
+        "symbol_raw": "U⟨U+206F⟩S⟨U+206F⟩DG",
+        "name_raw": "U⟨U+206F⟩S⟨U+206F⟩DG",
+        "imitates": "USDG",
+        "reasons": [
+          "imitates_usdg",
+          "hidden_characters",
+          "mimics_counterparty",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "sent",
+        "counterparty": "0xde4f4a8eb352614edd33162907c753e9b0d48b34",
+        "mimics": "0xde4f24ef048f1fe30ed31ba8038de63913fe8b34",
+        "first_seen_block": 86244518,
+        "tx": "0xea4b5253ad90c31508c559f615cd305c1b5efec25369a85c2b733a47ba97294b",
+        "amount_raw": "121671189",
+        "transfers_seen": 1,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 87955612,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 4,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0x39967dd6723baf07c272201dccd0afb1c8330875fec214de9e80a2caffa7314f",
+        "0xdcd431cbbceef4337c73e5fd9e066c50674bdf1e47b1ffdf9f591434c4e51695",
+        "0x144bace02789f57526c579cc8b551951148f8650f31722011571da5da1d42705",
+        "0xac0409869acf9b255fc06e492f272739731277d94868d78389384858dbab38c5",
+        "0x9e7c88643a0975b5c8f39dcc7a64c0a71a67660c9ef386402213ab1e89aa407b",
+        "0x4576cde62fb16bc6823572ffd31b74e154de4741185bf65f5c1dbcda39b77fae",
+        "0x3bdfa99885867236345b3831525c2fb058510f01e8b7c45a0883b64cff5c980c",
+        "0x6bc617038c0966d9307e9c20285169e4f6a11dd1fa5e3ffaeefafbd60af09a83",
+        "0x77045736036e5c8516ddecc1c197639405330e0d22bdbf5f19a9cd95a6a85fc9",
+        "0x3a7f0cd1b8f2d724b0c0364da9ebaf7b31f29e2df05d185903fff052872b12ee",
+        "0xc9491f01ca3c3d2d6efc3d611ec84f1d154367fd4a7f18fa4fa162b381a8a1f9",
+        "0x6c064e6dfb2c42bbe3330369f9b7e85fc8611a066075b026a9bc431520154c99",
+        "0x8ce81bca15d57464853878680683ea1585d540d41e90edc976d9877935992eb3",
+        "0xccbedc31f5a8e950543678442e853cecfb18d96bfaa23045645856b871b73939",
+        "0x22c8ec446dfa6df31efad1f414c1bc0194d7242b6731d73bd1a4e3cdfc6efa67",
+        "0x99840cee3670ef17caf74621e8072cf15e0f3d353a43537e9163e2316ff39691",
+        "0xa8a7012d015ecf95936b044c8cd122dd15666d4bd5f278af4d6bd2844657fdf6",
+        "0xc3029f71a71d3bc32a9bbe88638ea679d62d39957d7e2f1d724139e1b076a91e",
+        "0x04e3a25cf6ecd9da678e59fa3212a965747848789d120a183a3056caa340de33"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

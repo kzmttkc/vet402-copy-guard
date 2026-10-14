@@ -1,0 +1,348 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x8db35c80c6e4F2D942A6112BAad0b26B89CB3A15?chain=4663",
+  "x_facts_hash": "0x6575533643c396083b7918285da47be5f05b474047b0784c57106da7381eb9a4",
+  "facts": {
+    "address": "0x8db35c80c6e4F2D942A6112BAad0b26B89CB3A15",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T00:48:40.000Z",
+    "as_of_block": 87951356,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "AMC",
+        "AMD",
+        "COIN",
+        "DELL",
+        "MRVL",
+        "PLTR",
+        "SNAP",
+        "TTWO"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "COIN",
+        "name": "Coinbase",
+        "token": "0x6330D8C3178a418788dF01a47479c0ce7CCF450b",
+        "canonical": true,
+        "raw": "1871414134108577",
+        "shares_ui": "0.00187141",
+        "usd": "0.34",
+        "usd_reason": null,
+        "feed": "0xA3a468A452940B7D6b69991207B508c609a98Ef2",
+        "feed_answer": "18233634616",
+        "feed_updated_at": "2026-10-14T00:37:52.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "1871414134108577",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 3,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "AMD",
+        "name": "AMD",
+        "token": "0x86923f96303D656E4aa86D9d42D1e57ad2023fdC",
+        "canonical": true,
+        "raw": "655411755061",
+        "shares_ui": "0.00000065",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x943A29E7ae51A4798823ca9eEd2ed533B2A22C72",
+        "feed_answer": "61228581337",
+        "feed_updated_at": "2026-10-14T00:35:31.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "655411755061",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "DELL",
+        "name": "Dell",
+        "token": "0x941AE714EC6D8130c7B75d67160Ca08f1e7d11Dd",
+        "canonical": true,
+        "raw": "820195598127",
+        "shares_ui": "0.00000082",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x1C6c8cADBe02E19129c39dDB92281cE4c0bf206b",
+        "feed_answer": "57570030235",
+        "feed_updated_at": "2026-10-14T00:16:34.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "820195598127",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 26853518,
+            "time": "2026-08-03T15:00:48.000Z",
+            "effective_at": "2026-08-03T15:10:23.000Z",
+            "tx": "0x8881e24ee42a7fdac96523e3166e8361ea72d24c45f2f6991a1da174acb531a8",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000063708620124549",
+            "ratio": "1.000063708620124549",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "PLTR",
+        "name": "Palantir Technologies",
+        "token": "0x894E1EC2D74FFE5AEF8Dc8A9e84686acCB964F2A",
+        "canonical": true,
+        "raw": "2079705014966",
+        "shares_ui": "0.00000207",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x820ABedFF239034956B7A9d2F0a331f9F075eB4c",
+        "feed_answer": "20808700000",
+        "feed_updated_at": "2026-10-13T18:30:32.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "2079705014966",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "AMC",
+        "name": "AMC Entertainment",
+        "token": "0x05a3d1Cd21d0C88145E82600E62e7E496e0F222B",
+        "canonical": true,
+        "raw": "110471485892228",
+        "shares_ui": "0.00011047",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "110471485892228",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "MRVL",
+        "name": "Marvell Technology",
+        "token": "0x62fd0668e10D8B72339BE2DCF7643001688ff13B",
+        "canonical": true,
+        "raw": "1385050259662",
+        "shares_ui": "0.00000138",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "1385050259662",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 83720133,
+            "time": "2026-10-09T00:01:21.000Z",
+            "effective_at": "2026-10-09T00:10:33.000Z",
+            "tx": "0x6456a1f0869c075f1b797ac9139376c0a8b59e42941becc3e9006db31d4e62c1",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000151336736428647",
+            "ratio": "1.000151336736428647",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "TTWO",
+        "name": "Take-Two Interactive Software",
+        "token": "0x5e81213613b6B86EaB4c6c50d718d34359459786",
+        "canonical": true,
+        "raw": "1158203940648",
+        "shares_ui": "0.00000115",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "1158203940648",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "SNAP",
+        "name": "Snap",
+        "token": "0xF6589F11Bc40b669e584073F428B05562F568733",
+        "canonical": true,
+        "raw": "0",
+        "shares_ui": "0.00000000",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "0",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 17,
+      "univ4": 0,
+      "other_unparsed": 0
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": null,
+    "mdd_usd": null,
+    "gaps": [
+      "unknown_cost_lots",
+      "no_feed",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0x69E7778d46713e17572D610bDaca3943aa4e6219",
+        "symbol_raw": "SPY",
+        "name_raw": "Spy Chip",
+        "imitates": "SPY",
+        "reasons": [
+          "symbol_copies_stock_token",
+          "code_hash_differs",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "received",
+        "counterparty": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+        "mimics": null,
+        "first_seen_block": 87809310,
+        "tx": "0x5f3878076b205ba33c232504f5f4d36d00de9b61286af4bbf455436db9f46612",
+        "amount_raw": "133644093489648216161",
+        "transfers_seen": 10,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 87951356,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 29,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0x615914226792a40cf6d62aea24046d7bb1c4a85a5a73a172ac528b8240d8b5aa",
+        "0xe6888a0713c2473cd51b87a69cff3321ff2f4ad41f75c0db8a39e4687e686039",
+        "0xeacb36be42f43fd02ffa24e4f6bb57305115c3c866ff8e4ce50f68a1470de2ef",
+        "0xb0b8315742e7855f441365fce71d37d244ad0c4857d70819614b7dd54911a382",
+        "0x0171e84b509348f83f8022deaf16daf0e8745334296c6f37b8c1d138bd1ac5ba",
+        "0xc3c4e103f49b30a2e7c3dd95d53ae2ab642fa30d9b8a2ff0c39c8fe0793938a0",
+        "0xebabb93e12a60453fab460df67005e5aa1d0be46b5da358a7da2ed627faa43fc",
+        "0xad13136406a8bd68e0ed2ca6fbe05bc7d0547897af4c3dcf53ec4ff6f67e8392",
+        "0x1b5b9d43a461bff61cf36c82d827e06222094a99c7d164312971c7264561dba7",
+        "0xab4e630e1c36e2ff63e00c66ea90a1d56b24c1f3d935beeb99ad4ac20552e378",
+        "0xc0107b7ab8be3602f92619e055fa4b3f329e183aeddd1fff518775f380c17d09",
+        "0xf16bdd98a6ddf21d0523ed63db4e34ba068a9c024890c0301fd1273ddb6b7fef",
+        "0xad38dec77917dcd82fd4fc9ce85a30f38f90be7191c8bd8da331e9624a1d031e",
+        "0xd5dc8364be7e6e403e01419be2728152ee7f66667c06d6cd172477096802ebbc",
+        "0xa087522771f2356f79c1b1815b6083e6e865960a572f015e7986730d7f16c867",
+        "0xa256344bddda178e4c2595de853a13495c088f8e46891e6e1b7e8fa39443fdf6",
+        "0x0756cf59f32a5ff5ecaa15816719055b4289e403f4b19e504f5997f2f9cc0474"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

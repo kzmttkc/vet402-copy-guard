@@ -1,0 +1,246 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0xe845229CFeD0b23E51AE6C41eB13AE1c61680878?chain=4663",
+  "x_facts_hash": "0x10ef672999f554b94b7d74aa49055a05fec9d0e7a54f522def16cf690a19a0d0",
+  "facts": {
+    "address": "0xe845229CFeD0b23E51AE6C41eB13AE1c61680878",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T00:48:00.000Z",
+    "as_of_block": 87950952,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "DELL",
+        "MSTR",
+        "RDDT",
+        "SNDK",
+        "TTWO"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "DELL",
+        "name": "Dell",
+        "token": "0x941AE714EC6D8130c7B75d67160Ca08f1e7d11Dd",
+        "canonical": true,
+        "raw": "552606557728",
+        "shares_ui": "0.00000055",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x1C6c8cADBe02E19129c39dDB92281cE4c0bf206b",
+        "feed_answer": "57570030235",
+        "feed_updated_at": "2026-10-14T00:16:34.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "552606557728",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 26853518,
+            "time": "2026-08-03T15:00:48.000Z",
+            "effective_at": "2026-08-03T15:10:23.000Z",
+            "tx": "0x8881e24ee42a7fdac96523e3166e8361ea72d24c45f2f6991a1da174acb531a8",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000063708620124549",
+            "ratio": "1.000063708620124549",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "MSTR",
+        "name": "Strategy Inc.",
+        "token": "0xec262a75e413fAfD0dF80480274532C79D42da09",
+        "canonical": true,
+        "raw": "3072972198899",
+        "shares_ui": "0.00000307",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x396118bdFB181e6240E74D243F266B061c0edc3D",
+        "feed_answer": "15311550000",
+        "feed_updated_at": "2026-10-13T22:50:26.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "3072972198899",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "SNDK",
+        "name": "Sandisk Corporation",
+        "token": "0xB90A19fF0Af67f7779afF50A882A9CfF42446400",
+        "canonical": true,
+        "raw": "170389439704",
+        "shares_ui": "0.00000017",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0xfb133Fa4B7b385802B693a293606682Df47109A3",
+        "feed_answer": "149804388063",
+        "feed_updated_at": "2026-10-14T00:36:47.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "170389439704",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "RDDT",
+        "name": "Reddit",
+        "token": "0x05b37Fb53A299a1b874A619e1c4C404D52C36F4C",
+        "canonical": true,
+        "raw": "1445267844616",
+        "shares_ui": "0.00000144",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "1445267844616",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "TTWO",
+        "name": "Take-Two Interactive Software",
+        "token": "0x5e81213613b6B86EaB4c6c50d718d34359459786",
+        "canonical": true,
+        "raw": "1195678718794",
+        "shares_ui": "0.00000119",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "1195678718794",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 10,
+      "univ4": 0,
+      "other_unparsed": 0
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": null,
+    "mdd_usd": null,
+    "gaps": [
+      "no_feed",
+      "unknown_cost_lots",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0x69E7778d46713e17572D610bDaca3943aa4e6219",
+        "symbol_raw": "SPY",
+        "name_raw": "Spy Chip",
+        "imitates": "SPY",
+        "reasons": [
+          "symbol_copies_stock_token",
+          "code_hash_differs",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "received",
+        "counterparty": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+        "mimics": null,
+        "first_seen_block": 87804532,
+        "tx": "0x647ba3dc95767c10875e8005614662e7be735458e80df64781a1bbb8c9c77f69",
+        "amount_raw": "3231746269751851903236375",
+        "transfers_seen": 2,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 87950952,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 27,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0x6f8f43f194ced90c5f563be12ef151e425b71d29e04636137a7f5a84d29924d8",
+        "0x24aa691b1d21fc2d7f5363184a497a8577c120c0a82b4406c45935e307437fab",
+        "0xc2d467e1267927cc6c6a5c69bf704ed636478efa6c9115cfba10a960951a91ff",
+        "0x684816192ec7adaa18f225368ecc8dda27519f8e3f53fd45097323cd5e3cc643",
+        "0x151e3ca109cc4604d35dabb86081fe92c1db99deeee7c3324d04ca16549c55d9",
+        "0x82a9bac7c5e174bffc86e72a7e94c39941b205680f56b57281bdd4030b30c5d3",
+        "0x88b390bf40e83091482eb1be0ba0ed369c19ba934bc1ced3548f9c13b197943b",
+        "0xb546b93be12c52cafa003d120fe62e431369a786d832e8fc8da7f1177090450a",
+        "0xae2a45ed2b844b61386b19baa2a357ea18fe5449cba2b1fac7d436116cb33e93",
+        "0xc4adfa21de8b29ac5b06f3fc4ce3a53d7f088cc758785f48c15a13dc81132d46"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

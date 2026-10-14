@@ -1,0 +1,368 @@
+{
+  "source_url": "https://vet402.com/api/v1/rwa/facts/0x31d93dE13896f8EF6957D50d0208D34a14EAbd30?chain=4663",
+  "x_facts_hash": "0x264f4c1530f1137786a50e2185d0c64b5b89941dc212bc955ef7a063ee840087",
+  "facts": {
+    "address": "0x31d93dE13896f8EF6957D50d0208D34a14EAbd30",
+    "chain_id": 4663,
+    "as_of": "2026-10-14T00:46:58.000Z",
+    "as_of_block": 87950340,
+    "method_version": "rwa-recon-0.3",
+    "identity_binding": "unknown",
+    "r0": "present",
+    "r1_status": "partial",
+    "r2": "no_declaration",
+    "scope": {
+      "registry_taken_at": "2026-09-28T22:24:32.769Z",
+      "registry_tokens": 195,
+      "registry_source": "https://docs.robinhood.com/chain/contracts",
+      "scanned": [
+        "AMC",
+        "DELL",
+        "DJT",
+        "INTC",
+        "NVDA",
+        "RDDT",
+        "SNAP",
+        "SPY"
+      ],
+      "history_not_walked": [],
+      "rule": "every canonical token moved to or from the address up to as_of (alchemy_getAssetTransfers), plus tokens held at as_of"
+    },
+    "tokens": [
+      {
+        "symbol": "INTC",
+        "name": "Intel",
+        "token": "0xc72b96e0E48ecd4DC75E1e45396e26300BC39681",
+        "canonical": true,
+        "raw": "3093914654160894",
+        "shares_ui": "0.00309391",
+        "usd": "0.32",
+        "usd_reason": null,
+        "feed": "0x3f390C5C24628Ac7C489515402235FeAD71D1913",
+        "feed_answer": "10382288750",
+        "feed_updated_at": "2026-10-14T00:29:31.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "3093914654160894",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 1,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "DELL",
+        "name": "Dell",
+        "token": "0x941AE714EC6D8130c7B75d67160Ca08f1e7d11Dd",
+        "canonical": true,
+        "raw": "1122439623426",
+        "shares_ui": "0.00000112",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x1C6c8cADBe02E19129c39dDB92281cE4c0bf206b",
+        "feed_answer": "57570030235",
+        "feed_updated_at": "2026-10-14T00:16:34.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "1122439623426",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 26853518,
+            "time": "2026-08-03T15:00:48.000Z",
+            "effective_at": "2026-08-03T15:10:23.000Z",
+            "tx": "0x8881e24ee42a7fdac96523e3166e8361ea72d24c45f2f6991a1da174acb531a8",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000063708620124549",
+            "ratio": "1.000063708620124549",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "name": "NVIDIA",
+        "token": "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC",
+        "canonical": true,
+        "raw": "1439764393485",
+        "shares_ui": "0.00000144",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x379EC4f7C378F34a1B47E4F3cbeBCbAC3E8E9F15",
+        "feed_answer": "22935264710",
+        "feed_updated_at": "2026-10-13T20:03:51.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "1439764393485",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 58952659,
+            "time": "2026-09-09T23:50:42.000Z",
+            "effective_at": "2026-09-10T00:00:30.000Z",
+            "tx": "0x4ac23f2e58e2c4962dcd701c2beff581e87f3995152a29d527c07a3afd67d956",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1000775159164630595",
+            "ratio": "1.000775159164630595",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "SPY",
+        "name": "SPDR S&P 500 ETF Trust",
+        "token": "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+        "canonical": true,
+        "raw": "1283453860",
+        "shares_ui": "0.00000000",
+        "usd": "0.00",
+        "usd_reason": null,
+        "feed": "0x319724394D3A0e3669269846abE664Cd621f9f6A",
+        "feed_answer": "77893965709",
+        "feed_updated_at": "2026-10-14T00:00:53.000Z",
+        "stale": false,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "1283453860",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 6,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": [
+          {
+            "block": 65779981,
+            "time": "2026-09-18T00:00:49.000Z",
+            "effective_at": "2026-09-18T00:10:33.000Z",
+            "tx": "0x2fe45ab24d1b3fa87883f8b08daf29dae969c5b43d0afe9ccca299c11a641025",
+            "multiplier_before": "1000000000000000000",
+            "multiplier_after": "1001717991187472003",
+            "ratio": "1.001717991187472003",
+            "held": false,
+            "wallet_raw_at": "0",
+            "wallet_shares_before": "0.00000000",
+            "wallet_shares_after": "0.00000000"
+          }
+        ]
+      },
+      {
+        "symbol": "AMC",
+        "name": "AMC Entertainment",
+        "token": "0x05a3d1Cd21d0C88145E82600E62e7E496e0F222B",
+        "canonical": true,
+        "raw": "145490318860307",
+        "shares_ui": "0.00014549",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "145490318860307",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "DJT",
+        "name": "Trump Media & Technology Group",
+        "token": "0x1D11f0496982706C5e14A514D4E79F2e6BdE4516",
+        "canonical": true,
+        "raw": "50474906590294",
+        "shares_ui": "0.00005047",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "50474906590294",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 2,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "RDDT",
+        "name": "Reddit",
+        "token": "0x05b37Fb53A299a1b874A619e1c4C404D52C36F4C",
+        "canonical": true,
+        "raw": "1945850351095",
+        "shares_ui": "0.00000194",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "1945850351095",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 4,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      },
+      {
+        "symbol": "SNAP",
+        "name": "Snap",
+        "token": "0xF6589F11Bc40b669e584073F428B05562F568733",
+        "canonical": true,
+        "raw": "25852095329714",
+        "shares_ui": "0.00002585",
+        "usd": null,
+        "usd_reason": "no_feed",
+        "feed": null,
+        "feed_answer": null,
+        "feed_updated_at": null,
+        "stale": null,
+        "stale_reasons": [],
+        "weekend": false,
+        "replayed_raw": "25852095329714",
+        "realized_usd": null,
+        "realized_status": "partial",
+        "events_summary": {
+          "transfer": 0,
+          "univ3": 4,
+          "univ4": 0,
+          "other_unparsed": 0
+        },
+        "corporate_actions": []
+      }
+    ],
+    "events_summary": {
+      "transfer": 0,
+      "univ3": 23,
+      "univ4": 0,
+      "other_unparsed": 0
+    },
+    "realized_usd": null,
+    "realized_status": "partial",
+    "unrealized_usd": null,
+    "mdd_usd": null,
+    "gaps": [
+      "no_feed",
+      "unknown_cost_lots",
+      "mdd_pending"
+    ],
+    "lookalikes": [
+      {
+        "token": "0x69E7778d46713e17572D610bDaca3943aa4e6219",
+        "symbol_raw": "SPY",
+        "name_raw": "Spy Chip",
+        "imitates": "SPY",
+        "reasons": [
+          "symbol_copies_stock_token",
+          "code_hash_differs",
+          "not_canonical_address"
+        ],
+        "needs_review": false,
+        "direction": "received",
+        "counterparty": "0x8366a39cc670b4001a1121b8f6a443a643e40951",
+        "mimics": null,
+        "first_seen_block": 87807703,
+        "tx": "0xd257d34483f93fa600b90a9ebcfba2b0f11d52429be498b29294c988392ca0ee",
+        "amount_raw": "22031106361315693918034330",
+        "transfers_seen": 11,
+        "counted": false,
+        "found_by": "alchemy"
+      }
+    ],
+    "lookalikes_scope": {
+      "complete": true,
+      "searched": [
+        {
+          "source": "alchemy",
+          "from_block": 0,
+          "to_block": 87950340,
+          "detail": "every ERC-20 transfer to and from the wallet (alchemy_getAssetTransfers)"
+        }
+      ],
+      "not_scanned": [],
+      "tokens_judged": 29,
+      "tokens_not_judged": 0
+    },
+    "evidence": {
+      "txs": [
+        "0x0b6727a9efefc85de3569ab7d11b965163b04c360b74f0cc0edb3b3a436e3c2e",
+        "0xf2886c3c95f87678475f3ca075a52218101f3ae27d3f49eb40021611de02cefd",
+        "0x81e31c6c41e01fe6411dd698efdd5f8d9f9d388d23db134aba5b85311a3f8ee5",
+        "0x784044a8e28a341f429cdfd5b50b0b8f628d14127b9cb5be64d19be3ddc1e0c0",
+        "0x152882300e1775d5a32ef8eae84fa97167f662db7fbc6075ce07c86cf1704298",
+        "0xbd10a8d9af18ebad1b14aa0e4e6603a80c928cda838e6788bfa0b779acbd633f",
+        "0x27592770a331ef2f368703ad1e4c1a0689efb324e4e287159ad0aa9a4dd4cdca",
+        "0x2c5482083b01299915347412ca8453a476da58d868338a2b52fd5f94286b7ed5",
+        "0xaccc1984fbe345efb448ea25acb87a4012546acb4a512992b05ae7d28c964d65",
+        "0xb775f2822cdbdc97d873bf93b1574ba0f16651acade8035de8ec7f5b3f999c1c",
+        "0x2267b7971c29fbc10eaf5ee708599e055777315acbc76b622e31c03c7ffdedbc",
+        "0xd7527c28a0465f28c75b9427513c92fd1e639b5586a4be62bd21227002456a22",
+        "0x6df9dd99bd0c5dd194390e1885810b40f679211af0edd50034c317c8568dc75c",
+        "0x029c6bc5a19bbfc40a0a106acb13b0a6404d5ecc07bedc9a2e01e7f6fe3ad09e",
+        "0x351fe2f6165642dabdce0805c27d8b040dfe6d1049ca0b1cb95407731711313f",
+        "0x2ed1200d0f18f03cc5d56f842e743c7486ce0f6c8e1e783f39ef51c9ea41bc4c",
+        "0x06c87c09758a8964ea0ffc040c1ad34c5caea67570d5fe81e678abb03a8c0fd9",
+        "0x6034d628b1c410d679aab06f4bc5e7c2ac23c3b9fc33f59c978a52cdddad9380",
+        "0x105997d13ae0b600be580c452a03d1bb120c7c247d3aa94c08d8d5ef0eb67e76",
+        "0xe20f5129a48d9ebc1790b544f1dcdaec5b06b69235590fb325c71170647562c5",
+        "0x9d3368897ab0359b9fcbfc4c2d321e86c4e0e8413da7797e36b63b3f32ed57e1",
+        "0x6ef8e7f107ce81abe4d2800304f186b121fcd4cd389d0bb8131f1fdd97393265",
+        "0x2f6e63ec2519304c308afc5db1e673f00e41464899a537dbca996918ff7de7b8"
+      ],
+      "fixture_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "disclaimer": "Reconstruction of public chain data. Not investment advice. Not an offer of Stock Tokens."
+  }
+}

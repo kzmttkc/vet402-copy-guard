@@ -4,139 +4,115 @@
   "why": "the demo wallet: the only wallet vet402 has anchored a record for"
  },
  {
-  "wallet": "0xaec71f6d068b76379ae5bbeca8ddbc5e7894fa63",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
- },
- {
-  "wallet": "0x3039ae4de69a238e00d23898a937b60c9936b47b",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
- },
- {
   "wallet": "0x35eb8c43c7f8da87eb21749787c92cfab6cdf751",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x31d93de13896f8ef6957d50d0208d34a14eabd30",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x6b7242ab2d4bc3b7547780673778dc5b29b1344d",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x8261321126e04390d2f6eff169ac399c83cb2e26",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0xb9c1ea30b0c01a6aa795084e8d1f7a96e460a952",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x6ab99e7001c4514be26e294fff6c5417d9c2eb01",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0xe845229cfed0b23e51ae6c41eb13ae1c61680878",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0xdc1ed1d35d700762f58b67f795bad2bd45785bb1",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x6b5c87e26cbea7e1811cebb47ec74e7a176ea153",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x8db35c80c6e4f2d942a6112baad0b26b89cb3a15",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x0fc47c7d4058aef603ff55b8ebb34ce9cc365b63",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0xa0e727e45c523bb71b96fdb23a67ba41f859d34c",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x82b36ad20db012ec41377cc33c6f772ff772f088",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0xccbb6e8ac480c5a7b54274453a87a96411ed3815",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0xe86761414d72cbb66962cbfca198fd18e6a74d8b",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0xba0b003a12cfb218c7624ef6328e45b8f8df05aa",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0xc8cfbc11358edd01a49ef85939af883f68d01b14",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x64d386406c6a9c90e03e4678dc7443672700dd41",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x02e462d9a45dd25140b9f858d4246aa52273c861",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x92d3f66287a21e12f04fc6389d65f14a52e01d21",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0xebf23da0f3ef7e5c9048a914565face014238eec",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0xf51695083382c833c7b237f5f100ffff6be7a403",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x60d93ed0005c9e022e7f9a9da67209ac537c9323",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
- },
- {
-  "wallet": "0x9c9e97b6ad9a74e865ee7586049c479f147343ec",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0xf5bd34eb7ff40cdc1d76fcb45afa8b1171a12753",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
- },
- {
-  "wallet": "0x2c9ad806abf9c94ba9863ccb73b2a82bc7e2004c",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x096b752f213226971d17dc91bcd460401f1e91ac",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x3c8d9d957000e671e9a4b4cfbfa6b84554df50bf",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x52fe15f476b586056a9ee7d6cf528d106f8d8861",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
- },
- {
-  "wallet": "0xff4e07c20b0921d445f74278ccf7f1c420e186ef",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  },
  {
   "wallet": "0x4218ee29cf8ccfc01aecea3c6699c2f612df9ca0",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
- },
- {
-  "wallet": "0x318088ae74b56bb0f4627ac8e28ef6b7bf39cd6b",
-  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools"
+  "why": "found by scripts/find-copy-candidate.ts, pass 1: a plain account that traded quiet Stock Tokens through official Uniswap pools, with at most 31 moves in its record"
  }
 ]
