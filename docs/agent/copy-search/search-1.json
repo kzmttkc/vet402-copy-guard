@@ -1,0 +1,846 @@
+{
+  "searched_at": "2026-10-14T00:21:10.409Z",
+  "chain_id": 4663,
+  "from_block": 84930665,
+  "to_block": 87930664,
+  "feed_tokens": 33,
+  "recent_transfer_counts": [
+    {
+      "symbol": "AAPL",
+      "token": "0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9",
+      "recent": 852
+    },
+    {
+      "symbol": "AMD",
+      "token": "0x86923f96303D656E4aa86D9d42D1e57ad2023fdC",
+      "recent": 259
+    },
+    {
+      "symbol": "AMZN",
+      "token": "0x12f190a9F9d7D37a250758b26824B97CE941bF54",
+      "recent": 136
+    },
+    {
+      "symbol": "ASML",
+      "token": "0x47F93d52cBeC7C6D2CfC080e154002370a60dAEA",
+      "recent": 15
+    },
+    {
+      "symbol": "BABA",
+      "token": "0xad25Ac6C84D497db898fa1E8387bf6Af3532a1c4",
+      "recent": 7
+    },
+    {
+      "symbol": "CLSK",
+      "token": "0xcBB95BBF36099d34dA091dc6Fa6F49EfA257Cee3",
+      "recent": 0
+    },
+    {
+      "symbol": "COIN",
+      "token": "0x6330D8C3178a418788dF01a47479c0ce7CCF450b",
+      "recent": 22
+    },
+    {
+      "symbol": "CRCL",
+      "token": "0xdF0992E440dD0be65BD8439b609d6D4366bf1CB5",
+      "recent": 58
+    },
+    {
+      "symbol": "CRWV",
+      "token": "0x5f10A1C971B69e47e059e1dC91901B59b3fB49C3",
+      "recent": 0
+    },
+    {
+      "symbol": "DELL",
+      "token": "0x941AE714EC6D8130c7B75d67160Ca08f1e7d11Dd",
+      "recent": 9
+    },
+    {
+      "symbol": "EWY",
+      "token": "0x7f0aBeF0C07280F82c6a08ead09dEd6BAE2C13Fc",
+      "recent": 10
+    },
+    {
+      "symbol": "GME",
+      "token": "0x1b0E319c6A659F002271B69dB8A7df2F911c153E",
+      "recent": 297
+    },
+    {
+      "symbol": "GOOGL",
+      "token": "0x2e0847E8910a9732eB3fb1bb4b70a580ADAD4FE3",
+      "recent": 514
+    },
+    {
+      "symbol": "INTC",
+      "token": "0xc72b96e0E48ecd4DC75E1e45396e26300BC39681",
+      "recent": 107
+    },
+    {
+      "symbol": "IONQ",
+      "token": "0x558378E000D634A36593E338eBacdd6207640EfE",
+      "recent": 0
+    },
+    {
+      "symbol": "META",
+      "token": "0xc0D6457C16Cc70d6790Dd43521C899C87ce02f35",
+      "recent": 227
+    },
+    {
+      "symbol": "MSFT",
+      "token": "0xe93237C50D904957Cf27E7B1133b510C669c2e74",
+      "recent": 359
+    },
+    {
+      "symbol": "MSTR",
+      "token": "0xec262a75e413fAfD0dF80480274532C79D42da09",
+      "recent": 174
+    },
+    {
+      "symbol": "MU",
+      "token": "0xfF080c8ce2E5feadaCa0Da81314Ae59D232d4afD",
+      "recent": 401
+    },
+    {
+      "symbol": "NBIS",
+      "token": "0x9D9c6684F596F66a64C030B93A886D51Fd4D7931",
+      "recent": 0
+    },
+    {
+      "symbol": "NVDA",
+      "token": "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC",
+      "recent": 2327
+    },
+    {
+      "symbol": "ORCL",
+      "token": "0xb0992820E760d836549ba69BC7598b4af75dEE03",
+      "recent": 0
+    },
+    {
+      "symbol": "PLTR",
+      "token": "0x894E1EC2D74FFE5AEF8Dc8A9e84686acCB964F2A",
+      "recent": 260
+    },
+    {
+      "symbol": "QQQ",
+      "token": "0xD5f3879160bc7c32ebb4dC785F8a4F505888de68",
+      "recent": 190
+    },
+    {
+      "symbol": "RGTI",
+      "token": "0x284358abc07F9359f19f4b5b4aC91901Be2597Ba",
+      "recent": 0
+    },
+    {
+      "symbol": "RKLB",
+      "token": "0x3b14C39E89D60D627b42a1A4CA45b5bb45Fc12e2",
+      "recent": 5
+    },
+    {
+      "symbol": "SLV",
+      "token": "0x411eFb0E7f985935DAec3D4C3ebaEa0d0AD7D89f",
+      "recent": 17
+    },
+    {
+      "symbol": "SNDK",
+      "token": "0xB90A19fF0Af67f7779afF50A882A9CfF42446400",
+      "recent": 163
+    },
+    {
+      "symbol": "SPCX",
+      "token": "0x4a0E65A3EcceC6dBe60AE065F2e7bb85Fae35eEa",
+      "recent": 637
+    },
+    {
+      "symbol": "SPY",
+      "token": "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+      "recent": 1380
+    },
+    {
+      "symbol": "TSLA",
+      "token": "0x322F0929c4625eD5bAd873c95208D54E1c003b2d",
+      "recent": 1326
+    },
+    {
+      "symbol": "TSM",
+      "token": "0x58FfE4a942d3885bAa22D7520691F611EF09e7AA",
+      "recent": 43
+    },
+    {
+      "symbol": "USO",
+      "token": "0xa30FA36Db767ad9eD3f7a60fC79526fB4d56D344",
+      "recent": 80
+    }
+  ],
+  "scanned": [
+    {
+      "symbol": "CLSK",
+      "transfers": 16
+    },
+    {
+      "symbol": "CRWV",
+      "transfers": 1048
+    },
+    {
+      "symbol": "IONQ",
+      "transfers": 96
+    },
+    {
+      "symbol": "NBIS",
+      "transfers": 2591
+    },
+    {
+      "symbol": "ORCL",
+      "transfers": 1328
+    },
+    {
+      "symbol": "RGTI",
+      "transfers": 3
+    },
+    {
+      "symbol": "RKLB",
+      "transfers": 338
+    },
+    {
+      "symbol": "BABA",
+      "transfers": 3019
+    },
+    {
+      "symbol": "DELL",
+      "transfers": 5981
+    },
+    {
+      "symbol": "EWY",
+      "transfers": 583
+    },
+    {
+      "symbol": "ASML",
+      "transfers": 1370
+    },
+    {
+      "symbol": "SLV",
+      "transfers": 4265
+    }
+  ],
+  "wallets_seen": 1926,
+  "shaped": 101,
+  "candidates": 40,
+  "rpc_calls": 239,
+  "rwa_free_route_calls": 40,
+  "records": [
+    {
+      "wallet": "0x2ad619381f9c72bdafef9ed620a3ea5cf8cf61ec",
+      "transfers_in_window": 2,
+      "http": 422
+    },
+    {
+      "wallet": "0xaec71f6d068b76379ae5bbeca8ddbc5e7894fa63",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": "-0.01",
+      "lookalikes": 0,
+      "priced_holdings": [
+        "AMZN",
+        "RKLB",
+        "ORCL",
+        "META",
+        "CRWV",
+        "INTC",
+        "MSTR"
+      ],
+      "as_of_block": 87931625,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 42,
+      "c3": false,
+      "c4": false,
+      "c5_possible": true,
+      "fit": false
+    },
+    {
+      "wallet": "0x3039ae4de69a238e00d23898a937b60c9936b47b",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 0,
+      "priced_holdings": [],
+      "as_of_block": 87931775,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 124,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0x35eb8c43c7f8da87eb21749787c92cfab6cdf751",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 0,
+      "priced_holdings": [
+        "TSM"
+      ],
+      "as_of_block": 87931892,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": true,
+      "fit": false
+    },
+    {
+      "wallet": "0x31d93de13896f8ef6957d50d0208d34a14eabd30",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [
+        "INTC"
+      ],
+      "as_of_block": 87932006,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": true,
+      "fit": false
+    },
+    {
+      "wallet": "0x6b7242ab2d4bc3b7547780673778dc5b29b1344d",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [
+        "TSM"
+      ],
+      "as_of_block": 87932100,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": true,
+      "fit": false
+    },
+    {
+      "wallet": "0x8261321126e04390d2f6eff169ac399c83cb2e26",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [],
+      "as_of_block": 87932196,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0xb9c1ea30b0c01a6aa795084e8d1f7a96e460a952",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [],
+      "as_of_block": 87932284,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0x6ab99e7001c4514be26e294fff6c5417d9c2eb01",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 0,
+      "priced_holdings": [],
+      "as_of_block": 87932376,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0xe845229cfed0b23e51ae6c41eb13ae1c61680878",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [],
+      "as_of_block": 87932454,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0xdc1ed1d35d700762f58b67f795bad2bd45785bb1",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 0,
+      "priced_holdings": [],
+      "as_of_block": 87932540,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0x6b5c87e26cbea7e1811cebb47ec74e7a176ea153",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [],
+      "as_of_block": 87932620,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0x8db35c80c6e4f2d942a6112baad0b26b89cb3a15",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [
+        "COIN"
+      ],
+      "as_of_block": 87932735,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": true,
+      "fit": false
+    },
+    {
+      "wallet": "0x0fc47c7d4058aef603ff55b8ebb34ce9cc365b63",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 0,
+      "priced_holdings": [],
+      "as_of_block": 87932827,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0xa0e727e45c523bb71b96fdb23a67ba41f859d34c",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [],
+      "as_of_block": 87932905,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0x82b36ad20db012ec41377cc33c6f772ff772f088",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [
+        "MU"
+      ],
+      "as_of_block": 87932999,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": true,
+      "fit": false
+    },
+    {
+      "wallet": "0xccbb6e8ac480c5a7b54274453a87a96411ed3815",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [],
+      "as_of_block": 87933091,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0xe86761414d72cbb66962cbfca198fd18e6a74d8b",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [],
+      "as_of_block": 87933170,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0xba0b003a12cfb218c7624ef6328e45b8f8df05aa",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 0,
+      "priced_holdings": [
+        "NVDA"
+      ],
+      "as_of_block": 87933255,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": true,
+      "fit": false
+    },
+    {
+      "wallet": "0xc8cfbc11358edd01a49ef85939af883f68d01b14",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [],
+      "as_of_block": 87933328,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0x64d386406c6a9c90e03e4678dc7443672700dd41",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [],
+      "as_of_block": 87933408,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0x02e462d9a45dd25140b9f858d4246aa52273c861",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [],
+      "as_of_block": 87933502,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0x92d3f66287a21e12f04fc6389d65f14a52e01d21",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 0,
+      "priced_holdings": [
+        "QQQ"
+      ],
+      "as_of_block": 87933588,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": true,
+      "fit": false
+    },
+    {
+      "wallet": "0xebf23da0f3ef7e5c9048a914565face014238eec",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [],
+      "as_of_block": 87933663,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0xf51695083382c833c7b237f5f100ffff6be7a403",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [],
+      "as_of_block": 87933748,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0x60d93ed0005c9e022e7f9a9da67209ac537c9323",
+      "transfers_in_window": 2,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 0,
+      "priced_holdings": [],
+      "as_of_block": 87933833,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0x9c9e97b6ad9a74e865ee7586049c479f147343ec",
+      "transfers_in_window": 3,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 0,
+      "priced_holdings": [
+        "MSTR",
+        "DELL",
+        "MU",
+        "INTC",
+        "PLTR",
+        "GME",
+        "MSFT",
+        "AMZN",
+        "AAPL"
+      ],
+      "as_of_block": 87933914,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 64,
+      "c3": false,
+      "c4": false,
+      "c5_possible": true,
+      "fit": false
+    },
+    {
+      "wallet": "0xf5bd34eb7ff40cdc1d76fcb45afa8b1171a12753",
+      "transfers_in_window": 3,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 0,
+      "priced_holdings": [],
+      "as_of_block": 87934028,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0x1caa1962428382106eb3f29b9719bdf797621c90",
+      "transfers_in_window": 4,
+      "http": 422
+    },
+    {
+      "wallet": "0x2c9ad806abf9c94ba9863ccb73b2a82bc7e2004c",
+      "transfers_in_window": 4,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [
+        "DELL"
+      ],
+      "as_of_block": 87934183,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 60,
+      "c3": false,
+      "c4": false,
+      "c5_possible": true,
+      "fit": false
+    },
+    {
+      "wallet": "0x096b752f213226971d17dc91bcd460401f1e91ac",
+      "transfers_in_window": 4,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [],
+      "as_of_block": 87934269,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0x3c8d9d957000e671e9a4b4cfbfa6b84554df50bf",
+      "transfers_in_window": 4,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [],
+      "as_of_block": 87934354,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0x52fe15f476b586056a9ee7d6cf528d106f8d8861",
+      "transfers_in_window": 4,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [],
+      "as_of_block": 87934438,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 0,
+      "c3": false,
+      "c4": false,
+      "c5_possible": false,
+      "fit": false
+    },
+    {
+      "wallet": "0x8fb2d52df8b218c6457763e1f29b7cf0c96853cb",
+      "transfers_in_window": 5,
+      "http": 422
+    },
+    {
+      "wallet": "0xff4e07c20b0921d445f74278ccf7f1c420e186ef",
+      "transfers_in_window": 5,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": "-1.03",
+      "lookalikes": 1,
+      "priced_holdings": [
+        "SLV"
+      ],
+      "as_of_block": 87934606,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 204,
+      "c3": false,
+      "c4": false,
+      "c5_possible": true,
+      "fit": false
+    },
+    {
+      "wallet": "0x4218ee29cf8ccfc01aecea3c6699c2f612df9ca0",
+      "transfers_in_window": 5,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [
+        "SLV"
+      ],
+      "as_of_block": 87934742,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 19,
+      "c3": false,
+      "c4": false,
+      "c5_possible": true,
+      "fit": false
+    },
+    {
+      "wallet": "0x6e2749b762cc048089dfdae19f7083e1f0e00fb7",
+      "transfers_in_window": 6,
+      "http": 422
+    },
+    {
+      "wallet": "0x318088ae74b56bb0f4627ac8e28ef6b7bf39cd6b",
+      "transfers_in_window": 8,
+      "http": 200,
+      "r1_status": "partial",
+      "realized_usd": null,
+      "lookalikes": 1,
+      "priced_holdings": [
+        "ASML"
+      ],
+      "as_of_block": 87934903,
+      "method_version": "rwa-recon-0.3",
+      "other_unparsed": 53,
+      "c3": false,
+      "c4": false,
+      "c5_possible": true,
+      "fit": false
+    },
+    {
+      "wallet": "0xd5beda146abee7546b5bf9e725b32546f62d8961",
+      "transfers_in_window": 9,
+      "http": 422
+    },
+    {
+      "wallet": "0x8de5778f19a228cf7b02d93d66f6c568972468b1",
+      "transfers_in_window": 9,
+      "http": 422
+    }
+  ],
+  "fits": []
+}

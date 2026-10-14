@@ -1,0 +1,58 @@
+copy candidate search, Robinhood Chain 4663, blocks 84930665..87930664 (3000000 blocks), 2026-10-14T00:13:41.852Z
+tokens with a feed: 33; transfers in the newest 20,000 blocks: AAPL 852, AMD 259, AMZN 136, ASML 15, BABA 7, CLSK 0, COIN 22, CRCL 58, CRWV 0, DELL 9, EWY 10, GME 297, GOOGL 514, INTC 107, IONQ 0, META 227, MSFT 359, MSTR 174, MU 401, NBIS 0, NVDA 2327, ORCL 0, PLTR 260, QQQ 190, RGTI 0, RKLB 5, SLV 17, SNDK 163, SPCX 637, SPY 1380, TSLA 1326, TSM 43, USO 80
+scanning the 12 quietest: CLSK, CRWV, IONQ, NBIS, ORCL, RGTI, RKLB, BABA, DELL, EWY, ASML, SLV
+  CLSK: 16 transfers
+  CRWV: 1048 transfers
+  IONQ: 96 transfers
+  NBIS: 2591 transfers
+  ORCL: 1328 transfers
+  RGTI: 3 transfers
+  RKLB: 338 transfers
+  BABA: 3019 transfers
+  DELL: 5981 transfers
+  EWY: 583 transfers
+  ASML: 1370 transfers
+  SLV: 4265 transfers
+wallets seen: 1926; with 2 to 14 transfers, a buy, a sell, at most 3 counterparties and a balance left in the window: 101
+of those, plain accounts whose every counterparty is the v4 PoolManager or an official v3 pool: 40 (checked until 40 were found)
+  1/40 0x2ad619381f9c72bdafef9ed620a3ea5cf8cf61ec http 422  realized - holds -
+  2/40 0xaec71f6d068b76379ae5bbeca8ddbc5e7894fa63 http 200 partial realized -0.01 holds AMZN/RKLB/ORCL/META/CRWV/INTC/MSTR
+  3/40 0x3039ae4de69a238e00d23898a937b60c9936b47b http 200 partial realized - holds -
+  4/40 0x35eb8c43c7f8da87eb21749787c92cfab6cdf751 http 200 partial realized - holds TSM
+  5/40 0x31d93de13896f8ef6957d50d0208d34a14eabd30 http 200 partial realized - holds INTC
+  6/40 0x6b7242ab2d4bc3b7547780673778dc5b29b1344d http 200 partial realized - holds TSM
+  7/40 0x8261321126e04390d2f6eff169ac399c83cb2e26 http 200 partial realized - holds -
+  8/40 0xb9c1ea30b0c01a6aa795084e8d1f7a96e460a952 http 200 partial realized - holds -
+  9/40 0x6ab99e7001c4514be26e294fff6c5417d9c2eb01 http 200 partial realized - holds -
+  10/40 0xe845229cfed0b23e51ae6c41eb13ae1c61680878 http 200 partial realized - holds -
+  11/40 0xdc1ed1d35d700762f58b67f795bad2bd45785bb1 http 200 partial realized - holds -
+  12/40 0x6b5c87e26cbea7e1811cebb47ec74e7a176ea153 http 200 partial realized - holds -
+  13/40 0x8db35c80c6e4f2d942a6112baad0b26b89cb3a15 http 200 partial realized - holds COIN
+  14/40 0x0fc47c7d4058aef603ff55b8ebb34ce9cc365b63 http 200 partial realized - holds -
+  15/40 0xa0e727e45c523bb71b96fdb23a67ba41f859d34c http 200 partial realized - holds -
+  16/40 0x82b36ad20db012ec41377cc33c6f772ff772f088 http 200 partial realized - holds MU
+  17/40 0xccbb6e8ac480c5a7b54274453a87a96411ed3815 http 200 partial realized - holds -
+  18/40 0xe86761414d72cbb66962cbfca198fd18e6a74d8b http 200 partial realized - holds -
+  19/40 0xba0b003a12cfb218c7624ef6328e45b8f8df05aa http 200 partial realized - holds NVDA
+  20/40 0xc8cfbc11358edd01a49ef85939af883f68d01b14 http 200 partial realized - holds -
+  21/40 0x64d386406c6a9c90e03e4678dc7443672700dd41 http 200 partial realized - holds -
+  22/40 0x02e462d9a45dd25140b9f858d4246aa52273c861 http 200 partial realized - holds -
+  23/40 0x92d3f66287a21e12f04fc6389d65f14a52e01d21 http 200 partial realized - holds QQQ
+  24/40 0xebf23da0f3ef7e5c9048a914565face014238eec http 200 partial realized - holds -
+  25/40 0xf51695083382c833c7b237f5f100ffff6be7a403 http 200 partial realized - holds -
+  26/40 0x60d93ed0005c9e022e7f9a9da67209ac537c9323 http 200 partial realized - holds -
+  27/40 0x9c9e97b6ad9a74e865ee7586049c479f147343ec http 200 partial realized - holds MSTR/DELL/MU/INTC/PLTR/GME/MSFT/AMZN/AAPL
+  28/40 0xf5bd34eb7ff40cdc1d76fcb45afa8b1171a12753 http 200 partial realized - holds -
+  29/40 0x1caa1962428382106eb3f29b9719bdf797621c90 http 422  realized - holds -
+  30/40 0x2c9ad806abf9c94ba9863ccb73b2a82bc7e2004c http 200 partial realized - holds DELL
+  31/40 0x096b752f213226971d17dc91bcd460401f1e91ac http 200 partial realized - holds -
+  32/40 0x3c8d9d957000e671e9a4b4cfbfa6b84554df50bf http 200 partial realized - holds -
+  33/40 0x52fe15f476b586056a9ee7d6cf528d106f8d8861 http 200 partial realized - holds -
+  34/40 0x8fb2d52df8b218c6457763e1f29b7cf0c96853cb http 422  realized - holds -
+  35/40 0xff4e07c20b0921d445f74278ccf7f1c420e186ef http 200 partial realized -1.03 holds SLV
+  36/40 0x4218ee29cf8ccfc01aecea3c6699c2f612df9ca0 http 200 partial realized - holds SLV
+  37/40 0x6e2749b762cc048089dfdae19f7083e1f0e00fb7 http 422  realized - holds -
+  38/40 0x318088ae74b56bb0f4627ac8e28ef6b7bf39cd6b http 200 partial realized - holds ASML
+  39/40 0xd5beda146abee7546b5bf9e725b32546f62d8961 http 422  realized - holds -
+  40/40 0x8de5778f19a228cf7b02d93d66f6c568972468b1 http 422  realized - holds -
+/rwa records read: 40; complete history: 0; complete with a realized profit: 0; also still holding a priced Stock Token: 0

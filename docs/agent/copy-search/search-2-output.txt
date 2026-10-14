@@ -1,0 +1,28 @@
+copy candidate search, Robinhood Chain 4663, blocks 84935819..87935818 (3000000 blocks), 2026-10-14T00:22:26.452Z
+tokens with a feed: 33; transfers in the newest 20,000 blocks: AAPL 875, AMD 286, AMZN 149, ASML 18, BABA 6, CLSK 0, COIN 46, CRCL 84, CRWV 2, DELL 11, EWY 7, GME 232, GOOGL 633, INTC 118, IONQ 0, META 257, MSFT 406, MSTR 181, MU 380, NBIS 0, NVDA 2675, ORCL 0, PLTR 224, QQQ 203, RGTI 0, RKLB 0, SLV 22, SNDK 185, SPCX 679, SPY 1524, TSLA 1386, TSM 52, USO 60
+scanning the 22 quietest: CLSK, IONQ, NBIS, ORCL, RGTI, RKLB, CRWV, BABA, EWY, DELL, ASML, SLV, COIN, TSM, USO, CRCL, INTC, AMZN, MSTR, SNDK, QQQ, PLTR
+  CLSK: 16 transfers
+  IONQ: 96 transfers
+  NBIS: 2591 transfers
+  ORCL: 1327 transfers
+  RGTI: 3 transfers
+  RKLB: 338 transfers
+  CRWV: 1050 transfers
+  BABA: 3020 transfers
+  EWY: 583 transfers
+  DELL: 5983 transfers
+  ASML: 1373 transfers
+  SLV: 4276 transfers
+  COIN: 13601 transfers
+  TSM: 13300 transfers
+  USO: 20451 transfers
+  CRCL: 31471 transfers
+  INTC: 25886 transfers
+  AMZN: 27988 transfers
+  MSTR: 43273 transfers
+  SNDK: 17309 transfers
+  QQQ: 34174 transfers
+  PLTR: 34453 transfers
+wallets seen: 13730; with 2 to 14 transfers, a buy, a sell, at most 3 counterparties and a balance left in the window: 915
+plain accounts whose every counterparty is the v4 PoolManager or an official v3 pool: 217; of those, every Stock Token move paid or was paid in USDG in the same tx: 6; of those, sells above average cost and a balance left: 0
+/rwa records read: 0; complete history: 0; complete with a realized profit: 0; also still holding a priced Stock Token: 0

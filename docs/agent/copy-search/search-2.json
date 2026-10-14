@@ -1,0 +1,273 @@
+{
+  "searched_at": "2026-10-14T00:31:22.304Z",
+  "pass": "2",
+  "usdg_quoted_only": true,
+  "chain_id": 4663,
+  "from_block": 84935819,
+  "to_block": 87935818,
+  "feed_tokens": 33,
+  "recent_transfer_counts": [
+    {
+      "symbol": "AAPL",
+      "token": "0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9",
+      "recent": 875
+    },
+    {
+      "symbol": "AMD",
+      "token": "0x86923f96303D656E4aa86D9d42D1e57ad2023fdC",
+      "recent": 286
+    },
+    {
+      "symbol": "AMZN",
+      "token": "0x12f190a9F9d7D37a250758b26824B97CE941bF54",
+      "recent": 149
+    },
+    {
+      "symbol": "ASML",
+      "token": "0x47F93d52cBeC7C6D2CfC080e154002370a60dAEA",
+      "recent": 18
+    },
+    {
+      "symbol": "BABA",
+      "token": "0xad25Ac6C84D497db898fa1E8387bf6Af3532a1c4",
+      "recent": 6
+    },
+    {
+      "symbol": "CLSK",
+      "token": "0xcBB95BBF36099d34dA091dc6Fa6F49EfA257Cee3",
+      "recent": 0
+    },
+    {
+      "symbol": "COIN",
+      "token": "0x6330D8C3178a418788dF01a47479c0ce7CCF450b",
+      "recent": 46
+    },
+    {
+      "symbol": "CRCL",
+      "token": "0xdF0992E440dD0be65BD8439b609d6D4366bf1CB5",
+      "recent": 84
+    },
+    {
+      "symbol": "CRWV",
+      "token": "0x5f10A1C971B69e47e059e1dC91901B59b3fB49C3",
+      "recent": 2
+    },
+    {
+      "symbol": "DELL",
+      "token": "0x941AE714EC6D8130c7B75d67160Ca08f1e7d11Dd",
+      "recent": 11
+    },
+    {
+      "symbol": "EWY",
+      "token": "0x7f0aBeF0C07280F82c6a08ead09dEd6BAE2C13Fc",
+      "recent": 7
+    },
+    {
+      "symbol": "GME",
+      "token": "0x1b0E319c6A659F002271B69dB8A7df2F911c153E",
+      "recent": 232
+    },
+    {
+      "symbol": "GOOGL",
+      "token": "0x2e0847E8910a9732eB3fb1bb4b70a580ADAD4FE3",
+      "recent": 633
+    },
+    {
+      "symbol": "INTC",
+      "token": "0xc72b96e0E48ecd4DC75E1e45396e26300BC39681",
+      "recent": 118
+    },
+    {
+      "symbol": "IONQ",
+      "token": "0x558378E000D634A36593E338eBacdd6207640EfE",
+      "recent": 0
+    },
+    {
+      "symbol": "META",
+      "token": "0xc0D6457C16Cc70d6790Dd43521C899C87ce02f35",
+      "recent": 257
+    },
+    {
+      "symbol": "MSFT",
+      "token": "0xe93237C50D904957Cf27E7B1133b510C669c2e74",
+      "recent": 406
+    },
+    {
+      "symbol": "MSTR",
+      "token": "0xec262a75e413fAfD0dF80480274532C79D42da09",
+      "recent": 181
+    },
+    {
+      "symbol": "MU",
+      "token": "0xfF080c8ce2E5feadaCa0Da81314Ae59D232d4afD",
+      "recent": 380
+    },
+    {
+      "symbol": "NBIS",
+      "token": "0x9D9c6684F596F66a64C030B93A886D51Fd4D7931",
+      "recent": 0
+    },
+    {
+      "symbol": "NVDA",
+      "token": "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC",
+      "recent": 2675
+    },
+    {
+      "symbol": "ORCL",
+      "token": "0xb0992820E760d836549ba69BC7598b4af75dEE03",
+      "recent": 0
+    },
+    {
+      "symbol": "PLTR",
+      "token": "0x894E1EC2D74FFE5AEF8Dc8A9e84686acCB964F2A",
+      "recent": 224
+    },
+    {
+      "symbol": "QQQ",
+      "token": "0xD5f3879160bc7c32ebb4dC785F8a4F505888de68",
+      "recent": 203
+    },
+    {
+      "symbol": "RGTI",
+      "token": "0x284358abc07F9359f19f4b5b4aC91901Be2597Ba",
+      "recent": 0
+    },
+    {
+      "symbol": "RKLB",
+      "token": "0x3b14C39E89D60D627b42a1A4CA45b5bb45Fc12e2",
+      "recent": 0
+    },
+    {
+      "symbol": "SLV",
+      "token": "0x411eFb0E7f985935DAec3D4C3ebaEa0d0AD7D89f",
+      "recent": 22
+    },
+    {
+      "symbol": "SNDK",
+      "token": "0xB90A19fF0Af67f7779afF50A882A9CfF42446400",
+      "recent": 185
+    },
+    {
+      "symbol": "SPCX",
+      "token": "0x4a0E65A3EcceC6dBe60AE065F2e7bb85Fae35eEa",
+      "recent": 679
+    },
+    {
+      "symbol": "SPY",
+      "token": "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+      "recent": 1524
+    },
+    {
+      "symbol": "TSLA",
+      "token": "0x322F0929c4625eD5bAd873c95208D54E1c003b2d",
+      "recent": 1386
+    },
+    {
+      "symbol": "TSM",
+      "token": "0x58FfE4a942d3885bAa22D7520691F611EF09e7AA",
+      "recent": 52
+    },
+    {
+      "symbol": "USO",
+      "token": "0xa30FA36Db767ad9eD3f7a60fC79526fB4d56D344",
+      "recent": 60
+    }
+  ],
+  "scanned": [
+    {
+      "symbol": "CLSK",
+      "transfers": 16
+    },
+    {
+      "symbol": "IONQ",
+      "transfers": 96
+    },
+    {
+      "symbol": "NBIS",
+      "transfers": 2591
+    },
+    {
+      "symbol": "ORCL",
+      "transfers": 1327
+    },
+    {
+      "symbol": "RGTI",
+      "transfers": 3
+    },
+    {
+      "symbol": "RKLB",
+      "transfers": 338
+    },
+    {
+      "symbol": "CRWV",
+      "transfers": 1050
+    },
+    {
+      "symbol": "BABA",
+      "transfers": 3020
+    },
+    {
+      "symbol": "EWY",
+      "transfers": 583
+    },
+    {
+      "symbol": "DELL",
+      "transfers": 5983
+    },
+    {
+      "symbol": "ASML",
+      "transfers": 1373
+    },
+    {
+      "symbol": "SLV",
+      "transfers": 4276
+    },
+    {
+      "symbol": "COIN",
+      "transfers": 13601
+    },
+    {
+      "symbol": "TSM",
+      "transfers": 13300
+    },
+    {
+      "symbol": "USO",
+      "transfers": 20451
+    },
+    {
+      "symbol": "CRCL",
+      "transfers": 31471
+    },
+    {
+      "symbol": "INTC",
+      "transfers": 25886
+    },
+    {
+      "symbol": "AMZN",
+      "transfers": 27988
+    },
+    {
+      "symbol": "MSTR",
+      "transfers": 43273
+    },
+    {
+      "symbol": "SNDK",
+      "transfers": 17309
+    },
+    {
+      "symbol": "QQQ",
+      "transfers": 34174
+    },
+    {
+      "symbol": "PLTR",
+      "transfers": 34453
+    }
+  ],
+  "wallets_seen": 13730,
+  "shaped": 915,
+  "candidates": 0,
+  "rpc_calls": 1201,
+  "rwa_free_route_calls": 0,
+  "records": [],
+  "fits": []
+}

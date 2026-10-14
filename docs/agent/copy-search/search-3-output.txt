@@ -1,0 +1,39 @@
+copy candidate search, Robinhood Chain 4663, blocks 87441508..87941507 (500000 blocks), 2026-10-14T00:32:04.827Z
+tokens with a feed: 33; transfers in the newest 20,000 blocks: AAPL 1018, AMD 438, AMZN 135, ASML 18, BABA 9, CLSK 0, COIN 45, CRCL 98, CRWV 2, DELL 13, EWY 18, GME 281, GOOGL 665, INTC 181, IONQ 0, META 270, MSFT 425, MSTR 252, MU 460, NBIS 8, NVDA 3015, ORCL 0, PLTR 193, QQQ 204, RGTI 0, RKLB 0, SLV 27, SNDK 183, SPCX 761, SPY 1752, TSLA 1450, TSM 51, USO 46
+scanning the 33 quietest: CLSK, IONQ, ORCL, RGTI, RKLB, CRWV, NBIS, BABA, DELL, ASML, EWY, SLV, COIN, USO, TSM, CRCL, AMZN, INTC, SNDK, PLTR, QQQ, MSTR, META, GME, MSFT, AMD, MU, GOOGL, SPCX, AAPL, TSLA, SPY, NVDA
+  CLSK: 6 transfers
+  IONQ: 46 transfers
+  ORCL: 328 transfers
+  RGTI: 0 transfers
+  RKLB: 99 transfers
+  CRWV: 242 transfers
+  NBIS: 246 transfers
+  BABA: 764 transfers
+  DELL: 1190 transfers
+  ASML: 467 transfers
+  EWY: 116 transfers
+  SLV: 1217 transfers
+  COIN: 2455 transfers
+  USO: 4219 transfers
+  TSM: 2980 transfers
+  CRCL: 8376 transfers
+  AMZN: 6584 transfers
+  INTC: 6485 transfers
+  SNDK: 5257 transfers
+  PLTR: 8220 transfers
+  QQQ: 9670 transfers
+  MSTR: 9923 transfers
+  META: 27823 transfers
+  GME: 17752 transfers
+  MSFT: 6244 transfers
+  AMD: 7718 transfers
+  MU: 13702 transfers
+  GOOGL: 22021 transfers
+  SPCX: 25364 transfers
+  AAPL: 31836 transfers
+  TSLA: 14090 transfers
+  SPY: too many transfers
+  NVDA: too many transfers
+wallets seen: 10944; with 2 to 14 transfers, a buy, a sell, at most 3 counterparties and a balance left in the window: 763
+plain accounts whose every counterparty is the v4 PoolManager or an official v3 pool: 144; of those, every Stock Token move paid or was paid in USDG in the same tx: 13; of those, sells above average cost and a balance left: 0
+/rwa records read: 0; complete history: 0; complete with a realized profit: 0; also still holding a priced Stock Token: 0
