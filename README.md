@@ -264,7 +264,7 @@ Walked 2026-10-14 00:59 UTC, marked at Robinhood Chain block 87957817. Moves fro
 
 **At one size.** copy-guard's positions in this walk are 25.00 USD each. At that size the ticker copy would have put in 5000.00 USD. What its 20 positions in other tokens were worth afterwards is not measured in this walk, so no result in USD is compared here.
 
-These are practice (paper) positions on past public moves. The tables are not a forecast and not a track record. A position in a token that is not the issuer's is valued only where the price of its own pool could be read from public logs. Otherwise it is listed as not measured and left out of every sum. Nothing is assumed to be worth zero.
+These are practice (paper) positions on past public moves. The tables are not a forecast and not a track record. A position in a token that is not the issuer's is valued only where the price of its own pool could be read from public logs. Otherwise it is listed as not measured and left out of every sum. Nothing is assumed to be worth zero. A pool value compares the pool's last swap with the swap the wallet bought in. It leaves out the move of the pool's other asset in USD, and it does not say that a position of that size could have been sold there.
 
 No move reached the full size in this walk. No position, by leading reason: a moved token is not classified (171), no Chainlink price at the block (81), daily limit reached (59), not a buy by the wallet (46), wallet not in profit (43), fake SPY (19), not bought on an official venue (7), position limit reached (4), fake USDG (3), fake NVDA (1).
 
