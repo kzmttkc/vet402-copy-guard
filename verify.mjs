@@ -980,6 +980,7 @@ export function ledgerOf(trails, feeds, markBlock) {
 			move_time: inp.move.time,
 			tier: t.decision.tier,
 			failed: t.decision.decisive,
+			checks: { passed: t.decision.rule_results.filter((r) => r.ok).length, total: t.decision.rule_results.length, flags: t.decision.rule_results.filter((r) => !r.ok).map((r) => r.id) },
 			card: t.card,
 			book,
 			copy_guard: { opened: p ? { tier: p.tier, notional_usd: p.notional_usd, entry_price_usd: p.price_usd, shares: p.shares } : null, closed_here: closedGuard },
@@ -1696,7 +1697,7 @@ async function verifyGate(rep) {
 		return [ok, ok ? `the gate answered 402 for ${new URL(x.resource).pathname}: exact, eip155:4663, ${usdg(a.amount)} to ${shortAddr(lc(a.payTo))} (vet402), Permit2` : `the saved 402 does not carry the published terms: ${canonicalJson(a)}`]
 	})
 	if (!x) return
-	await rep.check('unsigned payment', () => {
+	await rep.check('payment built', () => {
 		const t = x.permit2_typed_data
 		const m = t.message
 		const bad = []

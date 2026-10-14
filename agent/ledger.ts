@@ -183,6 +183,8 @@ export type LedgerRow = {
 	move_time: string
 	tier: Tier
 	failed: string[]
+	/** How many of the rules passed, out of how many, and every rule that did not: the red flags. */
+	checks: { passed: number; total: number; flags: string[] }
 	card: TrailV2['card']
 	book: Book
 	copy_guard: { opened: null | { tier: Tier; notional_usd: string; entry_price_usd: string; shares: string }; closed_here: number[] }
@@ -264,6 +266,7 @@ export function buildLedger(trails: TrailV2[], feeds: Feeds, markBlock: number):
 			move_time: inp.move.time,
 			tier: t.decision.tier,
 			failed: t.decision.decisive,
+			checks: { passed: t.decision.rule_results.filter((r) => r.ok).length, total: t.decision.rule_results.length, flags: t.decision.rule_results.filter((r) => !r.ok).map((r) => r.id) },
 			card: t.card,
 			book,
 			copy_guard: { opened: p ? { tier: p.tier, notional_usd: p.notional_usd, entry_price_usd: p.price_usd, shares: p.shares } : null, closed_here: closedGuard },

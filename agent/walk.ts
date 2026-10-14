@@ -239,7 +239,13 @@ async function main() {
 
 	writeFileSync(join(out, 'trails.jsonl'), `${trails.map((t) => JSON.stringify(t)).join('\n')}\n`)
 	writeFileSync(join(out, 'feeds.json'), `${JSON.stringify(feeds, null, 1)}\n`)
-	writeFileSync(chainFile, `${JSON.stringify(chain)}\n`)
+	// Save only the chain answers this walk rests on.
+	const walked = new Set(moves.map((mo) => `${mo.mv.tx}:${mo.wallet}`))
+	const blocks = new Set(moves.map((mo) => String(mo.mv.block)))
+	const pick = <T,>(o: Record<string, T>, keep: (k: string) => boolean) => Object.fromEntries(Object.entries(o).filter(([k]) => keep(k)))
+	const tokens = new Set(moves.flatMap((mo) => mo.mv.transfers.map((t) => lc(t.token))))
+	const venues = new Set(trails.flatMap((t) => t.inputs.venue.map((v) => v.address)))
+	writeFileSync(chainFile, `${JSON.stringify({ receipts: pick(chain.receipts, (k) => walked.has(k)), blocks: pick(chain.blocks, (k) => blocks.has(k)), decimals: pick(chain.decimals, (k) => tokens.has(k)), venues: pick(chain.venues, (k) => venues.has(k)) })}\n`)
 	writeFileSync(join(REPO, 'docs/ledger.json'), `${JSON.stringify(ledger, null, 1)}\n`)
 	// One write for the whole walk: the CRE workflow recomputes the Merkle root from the leaves and delivers it.
 	const anchored = simulate<{ root: string; ledgerTx: string }>(
