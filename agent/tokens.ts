@@ -46,6 +46,18 @@ export function loadTokenCheck(file: string, source: string): TokenCheckRef | nu
 	return { source, keccak: keccak256(bytes), tokens }
 }
 
+/** The text a name() or symbol() call answered: an ABI string, or a bytes32 padded with zeros. '' when neither. */
+export function abiText(hex: string): string {
+	const d = String(hex ?? '').replace(/^0x/, '')
+	const utf8 = (h: string) => new TextDecoder('utf-8').decode(Uint8Array.from(h.match(/../g) ?? [], (b) => Number.parseInt(b, 16)))
+	if (d.length >= 128 && BigInt(`0x${d.slice(0, 64)}`) === 32n) {
+		const len = Number(BigInt(`0x${d.slice(64, 128)}`))
+		if (len * 2 <= d.length - 128) return utf8(d.slice(128, 128 + len * 2))
+	}
+	if (d.length === 64) return utf8(d).replace(/\0+$/, '')
+	return ''
+}
+
 /** keccak256("Swap(address,address,int256,int256,uint160,uint128,int24)"), a Uniswap v3 pool's swap log. */
 export const V3_SWAP_TOPIC = '0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67'
 /** Every log that says a liquidity position was touched. */

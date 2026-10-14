@@ -106,6 +106,7 @@ function happened(inp: DecisionInputsV2, leg: Leg | null): string {
 	else return `The wallet ${t.direction === 'in' ? 'received' : 'sent'} ${amt} of a token at ${shortAddr(m.token)} that is not a Stock Token, USDG or WETH. ${signedText(inp)}`
 	const SENTENCE: Record<Arrival, string> = {
 		purchase: `The wallet bought ${what} in a swap on ${swapVenue(inp, leg)} and paid ${paidText(inp)}. ${relayed}`,
+		purchase_off_venue: `The wallet bought ${what} through a venue outside the official Uniswap pools, paying ${paidText(inp)}. No official swap put the token out in the transaction. ${relayed}`,
 		rotation: `The wallet received ${what} and gave ${rotatedOut(inp, leg)} in the same transaction: one Stock Token exchanged for another. ${signedText(inp)}`,
 		liquidity: `The wallet received ${what} from ${counterparty(inp, leg)} in a transaction that changes a liquidity position (${inp.move.liquidity.join(', ')}). That is not a purchase. ${signedText(inp)}`,
 		swapped_unpaid: `${what.charAt(0).toUpperCase()}${what.slice(1)} came to the wallet out of a swap on ${swapVenue(inp, leg)}, and the wallet itself paid no USDG, WETH or ETH in the transaction. ${signedText(inp)}`,
@@ -155,6 +156,7 @@ const D1_HEADLINE: Record<Arrival, string> = {
 	liquidity: 'a liquidity operation, not a purchase',
 	rotation: 'one Stock Token exchanged for another, not a purchase',
 	swapped_unpaid: 'swapped, but not paid for by the wallet',
+	purchase_off_venue: 'bought outside the official Uniswap pools',
 	received: 'sent to the wallet, not bought by it',
 }
 
@@ -219,6 +221,7 @@ function reason(id: string, inp: DecisionInputsV2): string[] {
 			if (how === 'liquidity') return [`The transaction changes a liquidity position (${inp.move.liquidity.join(', ')}). Adding to a pool, taking from it and collecting from it move tokens in and out of a wallet, and none of them is a purchase.`]
 			if (how === 'rotation') return ['Another Stock Token left the wallet in the same transaction. Exchanging one Stock Token for another is a rotation, and copy-guard copies purchases paid in USDG, WETH or ETH only.']
 			if (how === 'swapped_unpaid') return ['An official swap put the Stock Token out, but the wallet itself paid no USDG, WETH or ETH in the transaction. Someone else paid, or it was paid in something whose worth is not known, so it is not counted as a purchase.']
+			if (how === 'purchase_off_venue') return [`The wallet itself paid ${paidText(inp)} for the Stock Token, but no official Uniswap venue (the v4 PoolManager or a pool of the official v3 factory) swapped it out: it was bought somewhere else. copy-guard copies purchases on an official venue only (rule V1). A ticker copy, which does not look at the venue, copies it.`]
 			return ['No official swap put the Stock Token out in this transaction. It was sent to the wallet: a transfer, an airdrop or a bridge delivery, not a purchase.']
 		}
 		case 'P1':

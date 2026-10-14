@@ -16,10 +16,10 @@ import liquidityMove from './fixtures/move-liquidity.json'
 import rotationMove from './fixtures/move-rotation.json'
 import routedBuy from './fixtures/move-routed-buy.json'
 import spyBuy from './fixtures/move-same-ticker-buy-87804532.json'
-import { blindEntry, buildLedger, medianUsd, merkleRoot, poolRatio, PracticeBook } from './ledger'
+import { blindEntry, buildLedger, medianUsd, merkleRoot, moveUsd, poolRatio, PracticeBook } from './ledger'
 import { MAY_NOT_ACT } from './mandate-text'
 import { groupMovements } from './movement'
-import { ISSUER_LIST, NO_RECORD, poolEntryOf, receiptFacts } from './tokens'
+import { abiText, ISSUER_LIST, NO_RECORD, poolEntryOf, receiptFacts } from './tokens'
 import { type Limits, limitsKeccak, parseLimits, paymentCapAtomic } from './limits'
 import { type Mandate, mandateMessage, mandateRef, mandateSigner, personalHash, recoverAddress } from './mandate'
 import { arrival, type DecisionInputsV2, decideV2, type MovedToken, type Price, type Venue } from './rules-v2'
@@ -27,7 +27,7 @@ import { CRE_MATCH, DRY_PURCHASE, FAKE_NVDA, FAKE_USDG, inputs, LIVE, liveRecord
 import { buildTrailV2, recheckTrail, type TrailV2 } from './trail'
 import { readWalkText, walkFileExists } from './walk-files'
 import { MAX_SPEND_ATOMIC, permit2TypedData } from './x402'
-import { movedTokens } from './rules-v2'
+import { movedTokens, otherName, shown } from './rules-v2'
 import { USDG } from './rules'
 
 const REPO = join(import.meta.dir, '..')
@@ -211,7 +211,15 @@ describe('the size a decision ends in', () => {
 		expect(both(await v2(QQQ_BUY, { decided_at: '2027-01-01T00:00:00.000Z' })).decisive).toEqual(['M1'])
 		const unofficial = await v2(QQQ_BUY, { venue: [{ address: `0x${'9'.repeat(40)}`, kind: 'other', swapped: true }] })
 		expect(both(unofficial).decisive).toEqual(['V1', 'D1'])
-		expect(buildCard(unofficial, both(unofficial)).headline).toBe('No position: sent to the wallet, not bought by it')
+		// The wallet paid USDG, but no official venue swapped: a purchase outside the official venues, not a delivery
+		expect(arrival(unofficial, { token: QQQ, direction: 'in' })).toBe('purchase_off_venue')
+		expect(buildCard(unofficial, both(unofficial)).headline).toBe('No position: bought outside the official Uniswap pools')
+		expect(buildCard(unofficial, both(unofficial)).happened).toBe('The wallet bought 6.86032 QQQ (Invesco QQQ) through a venue outside the official Uniswap pools, paying 5,000 USDG. No official swap put the token out in the transaction. The wallet signed the transaction.')
+		expect(blindEntry(unofficial)).toMatchObject({ token: QQQ, asset: 'stock' })
+		const gift = await v2({ ...QQQ_BUY, transfers: QQQ_BUY.transfers.filter((t) => t.direction === 'in') }, { venue: unofficial.venue, price: PRICE, tokens_moved: unofficial.tokens_moved.filter((m) => m.kind === 'stock') })
+		expect(arrival(gift, { token: QQQ, direction: 'in' })).toBe('received')
+		expect(buildCard(gift, both(gift)).headline).toBe('No position: sent to the wallet, not bought by it')
+		expect(blindEntry(gift)).toBeNull()
 		// signed by a relayer: still a purchase, because the payment left the wallet itself
 		const relayed = await v2(QQQ_BUY, { move: { time: '2026-09-21T13:36:17.000Z', signer: '0x1111111111111111111111111111111111111111', ...MOVE } })
 		expect(both(relayed).tier).toBe('FULL')
@@ -439,6 +447,17 @@ describe('the ledger walk', () => {
 		expect(JSON.stringify(mine.rows.map((r) => r.card))).not.toMatch(/\bfake\b|\bscam\b|look-alike/i)
 		expect(mine.totals.decisions).toBeGreaterThanOrEqual(100)
 		expect(mine.totals.full + mine.totals.reduced + mine.totals.none).toBe(mine.totals.decisions)
+		// the three groups add up to the whole book, and each says how much of it one wallet holds
+		const g = Object.values(mine.totals.by_group)
+		expect(g.reduce((x, y) => x + y.opened, 0)).toBe(mine.totals.copy_guard.opened)
+		expect(g.reduce((x, y) => x + y.decisions, 0)).toBe(mine.totals.decisions)
+		expect(g.reduce((x, y) => x + y.followed_purchases_usd.count, 0)).toBe(mine.totals.copy_guard.followed_purchases_usd.count)
+		for (const x of g) {
+			expect(x.opened + x.declined).toBe(x.decisions)
+			if (x.top_wallet) expect(Number(x.top_wallet.share_pct)).toBeCloseTo((100 * x.top_wallet.opened) / x.opened, 1)
+		}
+		// every name of a different token under a listed ticker is filled
+		for (const o of mine.totals.other_tokens.list) expect(o.name.trim()).not.toBe('')
 		for (const t of trails.slice(0, 40)) {
 			expect(recheckTrail(t).ok).toBe(true)
 			expect(canonicalJson(V.decideV2(t.inputs))).toBe(canonicalJson(t.decision))
@@ -462,6 +481,54 @@ describe('the ledger walk', () => {
 			expect(merkleRoot([...leaves].reverse())).not.toBe(merkleRoot(leaves))
 		}
 		expect(merkleRoot([h(1), h(2)])).toBe(viemKeccak(`0x${h(1).slice(2)}${h(2).slice(2)}`))
+	})
+})
+
+describe('names read from the chain, and the money of a move', () => {
+	test('name() and symbol() answers are decoded, invisible characters are marked, and a name is never blank', () => {
+		const abi = (text: string) => {
+			const hex = Buffer.from(text, 'utf8').toString('hex')
+			return `0x${(32).toString(16).padStart(64, '0')}${(hex.length / 2).toString(16).padStart(64, '0')}${hex.padEnd(Math.ceil(hex.length / 64) * 64, '0')}`
+		}
+		for (const text of ['Spy Chip', 'U\u17b5S\u17b5DG', 'Global Dolar ', '']) {
+			expect(abiText(abi(text))).toBe(text)
+			expect(V.textOfCall(abi(text))).toBe(text)
+		}
+		const bytes32 = `0x${Buffer.from('SPY', 'utf8').toString('hex').padEnd(64, '0')}`
+		expect(abiText(bytes32)).toBe('SPY')
+		expect(V.textOfCall(bytes32)).toBe('SPY')
+		expect(abiText('0x')).toBe('')
+		expect(shown('U\u17b5S\u17b5DG')).toBe('U⟨U+17B5⟩S⟨U+17B5⟩DG')
+		expect(shown('U\u206fS\u206fDG')).toBe('U⟨U+206F⟩S⟨U+206F⟩DG')
+		expect(shown('NV\u200bDA\u0000')).toBe('NV⟨U+200B⟩DA⟨U+0000⟩')
+		for (const x of ['Spy Chip', 'U\u17b5S\u17b5DG', 'a\u{e0041}b', 'Global Dollar']) expect(V.markInvisible(x)).toBe(shown(x))
+		const token = '0x69e7778d46713e17572d610bdaca3943aa4e6219'
+		expect(otherName(token, { [token]: { name: 'Spy Chip', symbol: 'SPY' } }, '')).toBe('Spy Chip')
+		expect(otherName(token, {}, 'from the record')).toBe('from the record')
+		expect(otherName(token, { [token]: { name: '', symbol: 'SPY' } }, '')).toBe('(no name; symbol SPY)')
+		expect(otherName(token, {}, '')).toBe('(no name)')
+		const cre = { source: 'x', keccak: `0x${'1'.repeat(64)}`, tokens: { [token]: { issuer_token: false, ticker: 'SPY', reasons: ['TICKER_SAME_AS_ISSUER_TOKEN'] } } }
+		const names = { [token]: { name: 'Spy Chip', symbol: 'SPY' } }
+		const mine = movedTokens(null, [{ token }], {}, USDG, ISSUER_LIST, cre, names)
+		expect(mine[0]).toMatchObject({ kind: 'same_ticker', ticker: 'SPY', name: 'Spy Chip' })
+		const list = Object.fromEntries(Object.entries(ISSUER_LIST).map(([k, v]) => [k, { symbol: v.symbol, name: v.name }]))
+		expect(canonicalJson(V.movedTokensFrom(null, [{ token }], {}, list, cre, names))).toBe(canonicalJson(mine))
+	})
+	test('move_usd is the amount times the feed answer, rounded once to the cent, the same in both writings', async () => {
+		const buy = await v2()
+		const exact = (raw: bigint, answer: bigint, dec: number, fdec: number) => {
+			const x = raw * answer * 100n
+			const d = 10n ** BigInt(dec + fdec)
+			const q = x / d
+			return x % d * 2n >= d ? q + 1n : q
+		}
+		for (const answer of ['72928510000', '72928515000', '72928514999', '1']) {
+			const inp = { ...buy, price: { ...(buy.price as NonNullable<typeof buy.price>), answer } }
+			const raw = inp.movement.transfers.filter((t) => t.token === QQQ && t.direction === 'in').reduce((x, t) => x + BigInt(t.amount_raw), 0n)
+			const c = exact(raw, BigInt(answer), 18, inp.price.decimals)
+			const want = `${c / 100n}.${(c % 100n).toString().padStart(2, '0')}`
+			expect(moveUsd(inp)).toBe(want)
+		}
 	})
 })
 

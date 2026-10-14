@@ -42,9 +42,9 @@ import { groupMovements } from './movement'
 import { ledgerPath } from './pay'
 import { recordInputs } from './record'
 import { type CreInputs, type Movement, type RecordInputs, USDG } from './rules'
-import { arrival, type DecisionInputsV2, movedTokens, stockLegV2, type Venue } from './rules-v2'
+import { arrival, type ChainNames, type DecisionInputsV2, movedTokens, stockLegV2, type Venue } from './rules-v2'
 import { buildTrailV2, type Purchase, recheckTrailV2, type TrailV2 } from './trail'
-import { ISSUER_LIST, loadTokenCheck, NO_RECORD, poolEntryOf, receiptFacts, V4_SWAP_TOPIC } from './tokens'
+import { abiText, ISSUER_LIST, loadTokenCheck, NO_RECORD, poolEntryOf, receiptFacts, V4_SWAP_TOPIC } from './tokens'
 import { readWalkText, walkFileExists, writeWalkGz } from './walk-files'
 import { decodeRequired, loadLedger, MAX_SPEND_ATOMIC, pickAccept, spentAtomic, termsOf } from './x402'
 
@@ -148,9 +148,9 @@ async function main() {
 	}
 	// Chain answers saved by an earlier walk are read from the file. A transaction, a block time, a token's decimals and a pool's factory do not change.
 	const chainFile = join(out, 'chain.json')
-	const chain: { receipts: Record<string, any>; blocks: Record<string, string>; decimals: Record<string, number>; venues: Record<string, Venue['kind']> } = walkFileExists(chainFile)
-		? JSON.parse(readWalkText(chainFile))
-		: { receipts: {}, blocks: {}, decimals: {}, venues: {} }
+	const chain: { receipts: Record<string, any>; blocks: Record<string, string>; decimals: Record<string, number>; venues: Record<string, Venue['kind']>; names: ChainNames } = walkFileExists(chainFile)
+		? { names: {}, ...JSON.parse(readWalkText(chainFile)) }
+		: { receipts: {}, blocks: {}, decimals: {}, venues: {}, names: {} }
 	let lastFacts = 0
 	let factsCalls = 0
 	const receiver = JSON.parse(readFileSync(join(REPO, 'rwa-verify/config.json'), 'utf8')).receiverAddress
@@ -247,6 +247,17 @@ async function main() {
 					chain.decimals[token] = 18
 				}
 			}
+			// name() and symbol() of every token that is not a Stock Token, USDG or WETH, as the chain answers them. A revert is ''.
+			if (!ISSUER_LIST[token] && token !== lc(USDG) && token !== '0x0bd7d308f8e1639fab988df18a8011f41eacad73' && chain.names[token] === undefined) {
+				const text = async (data: string) => {
+					try {
+						return abiText(await rpc('eth_call', [{ to: token, data }, 'latest']))
+					} catch {
+						return ''
+					}
+				}
+				chain.names[token] = { name: await text('0x06fdde03'), symbol: await text('0x95d89b41') }
+			}
 			const stock = ISSUER_LIST[token]
 			if (stock?.feed && (!firstBlock.has(token) || (firstBlock.get(token)?.block ?? 0) > mo.mv.block)) firstBlock.set(token, { block: mo.mv.block, symbol: stock.symbol, feed: stock.feed })
 		}
@@ -266,7 +277,7 @@ async function main() {
 		const ctx = records.get(mo.wallet) as { facts: any; record: RecordInputs; cre: CreInputs; fetch: { url: string; http_status: number } }
 		const n = trails.length + 1
 		book.advance(mo.mv.block)
-		const tokensMoved = movedTokens(ctx.facts, mo.mv.transfers, chain.decimals, USDG, ISSUER_LIST, tokenCheck)
+		const tokensMoved = movedTokens(ctx.facts, mo.mv.transfers, chain.decimals, USDG, ISSUER_LIST, tokenCheck, chain.names)
 		const base = { wallet: mo.wallet, movement: mo.mv, move: { time: mo.time, signer: mo.signer, value_wei: mo.value, to: mo.to, selector: mo.selector, liquidity: mo.liquidity }, tokens_moved: tokensMoved, venue: [], other_venue: [] } as unknown as DecisionInputsV2
 		/** Who a leg's token came from: the swapping addresses that sent it in the transaction, then the wallet's own counterparties. */
 		const venuesOf = async (token: string, direction: 'in' | 'out'): Promise<Venue[]> => {
@@ -356,14 +367,15 @@ async function main() {
 	writeFileSync(join(out, 'feeds.json'), `${JSON.stringify(feeds, null, 1)}\n`)
 	writeFileSync(join(out, 'context.json'), `${JSON.stringify(context, null, 1)}\n`)
 	const allTokens = [...new Set(moves.flatMap((mo) => mo.mv.transfers.map((t) => lc(t.token))))].sort()
-	writeFileSync(join(out, 'tokens.json'), `${JSON.stringify({ note: 'Every token that moved in the walk, once. The input of the CRE token-check workflow (docs/token-check/results.json).', count: allTokens.length, tokens: allTokens }, null, 1)}\n`)
+	const names = Object.fromEntries(allTokens.filter((t) => chain.names[t]).map((t) => [t, chain.names[t]]))
+	writeFileSync(join(out, 'tokens.json'), `${JSON.stringify({ note: 'Every token that moved in the walk, once. The input of the CRE token-check workflow (docs/token-check/results.json). `names`: what name() and symbol() answered on Robinhood Chain for every token that is not a Stock Token, USDG or WETH, as decoded text (empty when the call reverted).', count: allTokens.length, tokens: allTokens, names }, null, 1)}\n`)
 	// Save only the chain answers this walk rests on.
 	const walked = new Set(moves.map((mo) => `${mo.mv.tx}:${mo.wallet}`))
 	const blocks = new Set(moves.map((mo) => String(mo.mv.block)))
 	const pick = <T,>(o: Record<string, T>, keep: (k: string) => boolean) => Object.fromEntries(Object.entries(o).filter(([k]) => keep(k)))
 	const tokens = new Set(allTokens)
 	const venues = new Set(trails.flatMap((t) => t.inputs.venue.map((v) => v.address)))
-	writeWalkGz(REPO, chainFile, `${JSON.stringify({ receipts: pick(chain.receipts, (k) => walked.has(k)), blocks: pick(chain.blocks, (k) => blocks.has(k)), decimals: pick(chain.decimals, (k) => tokens.has(k)), venues: pick(chain.venues, (k) => venues.has(k)) })}\n`)
+	writeWalkGz(REPO, chainFile, `${JSON.stringify({ receipts: pick(chain.receipts, (k) => walked.has(k)), blocks: pick(chain.blocks, (k) => blocks.has(k)), decimals: pick(chain.decimals, (k) => tokens.has(k)), venues: pick(chain.venues, (k) => venues.has(k)), names: pick(chain.names, (k) => tokens.has(k)) })}\n`)
 	writeFileSync(join(REPO, 'docs/ledger.json'), `${JSON.stringify(ledger, null, 1)}\n`)
 	// One write for the whole walk: the CRE workflow recomputes the Merkle root from the leaves and delivers it.
 	const anchored = simulate<{ root: string; ledgerTx: string }>(
@@ -381,9 +393,11 @@ async function main() {
 	say('')
 	say(`  CRE       root recomputed from ${ledger.rows.length} leaves${anchored.tx ? `, LedgerAnchored tx ${anchored.tx}` : ' (simulated, not broadcast)'}`)
 	say(`  decisions ${t.decisions} about ${t.wallets} wallets (${t.wallets_without_record} without a record, ${t.decisions_without_record} decisions): FULL ${t.full}, REDUCED ${t.reduced}, NONE ${t.none}`)
-	say(`  other tokens under a listed ticker: ${t.other_tokens.moves} moves in ${t.other_tokens.tokens} tokens (${t.other_tokens.tickers.join(', ')}): ${t.other_tokens.sent_to_the_wallet} sent to the wallet, ${t.other_tokens.bought_by_the_wallet} bought by it, ${t.other_tokens.received_unpaid} received unpaid, ${t.other_tokens.logged_as_sent_by_the_wallet} logged as sent by it`)
+	say(`  other tokens under a listed ticker: ${t.other_tokens.moves} moves in ${t.other_tokens.tokens} tokens (${t.other_tokens.tickers.join(', ')}): ${t.other_tokens.sent_to_the_wallet} sent to the wallet, ${t.other_tokens.bought_by_the_wallet} bought by it on an official venue, ${t.other_tokens.bought_off_venue} bought by it elsewhere, ${t.other_tokens.received_unpaid} received unpaid, ${t.other_tokens.logged_as_sent_by_the_wallet} logged as sent by it`)
 	say(`  copy-guard  opened ${t.copy_guard.opened} (${t.copy_guard.put_in_usd} USD of practice money), closed ${t.copy_guard.closed}, open ${t.copy_guard.open}, result ${t.copy_guard.result_usd} USD; the purchases it followed: median ${t.copy_guard.followed_purchases_usd.median} USD, sum ${t.copy_guard.followed_purchases_usd.sum} USD`)
 	say(`  ticker copy opened ${t.blind_copy.opened}: ${t.blind_copy.in_stock_tokens.count} in Stock Tokens (result ${t.blind_copy.in_stock_tokens.result_usd} USD), ${t.blind_copy.in_other_tokens.count} in ${t.blind_copy.in_other_tokens.tokens} other tokens (${t.blind_copy.in_other_tokens.measured} valued at a pool: ${t.blind_copy.in_other_tokens.result_measured_usd ?? 'n/a'} USD, ${t.blind_copy.in_other_tokens.not_measured} not measured)`)
+	for (const [g, x] of Object.entries(t.by_group)) say(`  ${g.padEnd(28)} ${x.wallets} wallets, ${x.decisions} decisions: copy-guard opened ${x.opened} (${x.put_in_usd} USD, result ${x.result_usd} USD; at ${x.same_size.size_usd} USD each ${x.same_size.result_usd} USD), followed purchases median ${x.followed_purchases_usd.median} USD${x.top_wallet ? `, ${x.top_wallet.share_pct}% from ${x.top_wallet.wallet}` : ''}`)
+	say(`  incoming Stock Tokens: ${Object.entries(t.stock_moves).map(([k, v]) => `${k} ${v}`).join(', ')}`)
 	say(`  same size   ${t.same_size.size_usd} USD each: opened by both ${t.same_size.opened_by_both.count} (${t.same_size.opened_by_both.result_usd} USD), by ticker copy only ${t.same_size.opened_by_ticker_copy_only_stock.count} Stock Token positions (${t.same_size.opened_by_ticker_copy_only_stock.result_usd} USD)`)
 	say(`  root      ${ledger.root}`)
 	say(`  read      ${factsCalls} records from the free route, ${rpc.calls()} RPC calls`)

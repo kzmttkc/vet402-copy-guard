@@ -167,33 +167,44 @@ export function paidFor(inp: DecisionInputsV2): { tokens: { token: string; amoun
 	return { tokens: [...sums].filter(([, v]) => v > 0n).map(([token, v]) => ({ token, amount_raw: v.toString() })), eth_wei: own && /^\d+$/.test(inp.move.value_wei ?? '') ? inp.move.value_wei : '0' }
 }
 
+/** A payment in raw amounts, for a rule row's detail. */
+const paidRaw = (paid: ReturnType<typeof paidFor>) => [...paid.tokens.map((p) => `${p.amount_raw} of ${p.token}`), ...(BigInt(paid.eth_wei) > 0n ? [`${paid.eth_wei} wei of ETH`] : [])].join(' and ')
+
 /** How much more of a token the wallet holds after the transaction than before, from the transfers that name it. */
 export function netIn(inp: DecisionInputsV2, token: string): bigint {
 	return inp.movement.transfers.filter((t) => lc(t.token) === lc(token)).reduce((s, t) => s + (t.direction === 'in' ? BigInt(t.amount_raw) : -BigInt(t.amount_raw)), 0n)
 }
 
 /**
- * How a token came into the wallet, from the facts of the transaction alone. Tested in this order:
- *   out             the token left the wallet
- *   liquidity       the transaction holds a liquidity log: a position was added to, taken from or collected
- *   rotation        another Stock Token left the wallet: one Stock Token exchanged for another
- *   purchase        an official venue swapped and sent the token, the wallet ended with more of it,
- *                   and the wallet itself paid USDG, WETH or ETH. The signer may be a relayer
- *   swapped_unpaid  an official swap put the token out, and the wallet itself paid none of the three
- *   received        no official swap put the token out: a transfer, an airdrop, a bridge delivery
- * Only a purchase opens a practice position, in either book.
+ * How a token came into the wallet, from the facts of the transaction alone. `leg` is the first
+ * transfer of the token that names the wallet, in log order: its direction decides in or out, even
+ * when the same token also moved the other way in the transaction. Tested in this order:
+ *   out                 the token left the wallet
+ *   liquidity           the transaction holds a liquidity log: a position was added to, taken from or collected
+ *   rotation            another Stock Token left the wallet: one Stock Token exchanged for another
+ *   purchase            an official venue swapped and sent the token, the wallet ended with more of it,
+ *                       and the wallet itself paid USDG, WETH or ETH. The signer may be a relayer
+ *   swapped_unpaid      an official swap put the token out, and the wallet itself paid none of the three
+ *   purchase_off_venue  no official swap put the token out, the wallet ended with more of it, and the
+ *                       wallet itself paid USDG, WETH or ETH: bought, but not on an official Uniswap venue
+ *   received            anything else: a transfer, an airdrop, a bridge delivery, or a token that came in
+ *                       and went out again in the same transaction
+ * copy-guard opens a position only on a purchase. The ticker copy opens one on a purchase and on a
+ * purchase_off_venue, because a bot that goes by the ticker does not look at the venue.
  */
-export type Arrival = 'purchase' | 'rotation' | 'liquidity' | 'swapped_unpaid' | 'received' | 'out'
+export type Arrival = 'purchase' | 'purchase_off_venue' | 'rotation' | 'liquidity' | 'swapped_unpaid' | 'received' | 'out'
+export const ARRIVALS: Arrival[] = ['purchase', 'purchase_off_venue', 'rotation', 'liquidity', 'swapped_unpaid', 'received', 'out']
 export function arrival(inp: DecisionInputsV2, leg: { token: string; direction: 'in' | 'out' }): Arrival {
 	if (leg.direction !== 'in') return 'out'
 	if (inp.move.liquidity.length > 0) return 'liquidity'
 	const kindOf = (token: string) => inp.tokens_moved.find((m) => m.token === lc(token))?.kind
 	if (inp.movement.transfers.some((t) => t.direction === 'out' && lc(t.token) !== lc(leg.token) && kindOf(t.token) === 'stock')) return 'rotation'
 	const venues = kindOf(leg.token) === 'stock' ? inp.venue : inp.other_venue
-	const swapOut = venues.some((v) => v.kind !== 'other' && v.swapped) && netIn(inp, leg.token) > 0n
-	if (!swapOut) return 'received'
+	const more = netIn(inp, leg.token) > 0n
 	const paid = paidFor(inp)
-	return paid.tokens.length > 0 || BigInt(paid.eth_wei) > 0n ? 'purchase' : 'swapped_unpaid'
+	const paidAny = paid.tokens.length > 0 || BigInt(paid.eth_wei) > 0n
+	if (more && venues.some((v) => v.kind !== 'other' && v.swapped)) return paidAny ? 'purchase' : 'swapped_unpaid'
+	return more && paidAny ? 'purchase_off_venue' : 'received'
 }
 
 /** The feed's answer as a USD price with four decimals, or null. */
@@ -283,7 +294,8 @@ export function decideV2(inp: DecisionInputsV2): DecisionV2 {
 		out: `sent, signed by ${signer}`,
 		liquidity: `received in a transaction with liquidity logs (${inp.move.liquidity.join(', ')}): a liquidity operation, not a purchase`,
 		rotation: 'received while another Stock Token left the wallet: a rotation, not a purchase',
-		purchase: `bought: an official swap put it out and the wallet paid ${[...paid.tokens.map((p) => `${p.amount_raw} of ${p.token}`), ...(BigInt(paid.eth_wei) > 0n ? [`${paid.eth_wei} wei of ETH`] : [])].join(' and ')}, signed by ${signer}`,
+		purchase: `bought: an official swap put it out and the wallet paid ${paidRaw(paid)}, signed by ${signer}`,
+		purchase_off_venue: `bought outside the official venues: no official swap put it out, and the wallet paid ${paidRaw(paid)}, signed by ${signer}`,
 		swapped_unpaid: `an official swap put it out, but the wallet itself paid no USDG, WETH or ETH, signed by ${signer}`,
 		received: `received with no official swap of it in the transaction, signed by ${signer}`,
 	}
@@ -361,13 +373,71 @@ export type IssuerList = Record<string, { symbol: string; name: string; feed: st
 export const LISTED_MARKS = ['TICKER_SAME_AS_ISSUER_TOKEN', 'TICKER_SAME_AFTER_FOLDING', 'NAME_SAME_AS_ISSUER_TOKEN', 'NAME_ENDS_LIKE_ISSUER_TOKEN', 'TICKER_OR_NAME_READS_AS_USDG', 'ISSUER_CODE_AT_UNLISTED_ADDRESS']
 
 /**
+ * Code points that render as nothing: the same table as token-check/check.ts (Unicode
+ * default-ignorables, format controls, the braille blank), plus the C0 and C1 controls.
+ */
+const HIDDEN: [number, number][] = [
+	[0x0000, 0x001f],
+	[0x007f, 0x009f],
+	[0x00ad, 0x00ad],
+	[0x034f, 0x034f],
+	[0x0600, 0x0605],
+	[0x061c, 0x061c],
+	[0x06dd, 0x06dd],
+	[0x070f, 0x070f],
+	[0x0890, 0x0891],
+	[0x08e2, 0x08e2],
+	[0x115f, 0x1160],
+	[0x17b4, 0x17b5],
+	[0x180b, 0x180f],
+	[0x200b, 0x200f],
+	[0x202a, 0x202e],
+	[0x2060, 0x206f],
+	[0x2800, 0x2800],
+	[0x3164, 0x3164],
+	[0xfe00, 0xfe0f],
+	[0xfeff, 0xfeff],
+	[0xffa0, 0xffa0],
+	[0xfff0, 0xfffb],
+	[0x110bd, 0x110bd],
+	[0x110cd, 0x110cd],
+	[0x13430, 0x1343f],
+	[0x1bca0, 0x1bca3],
+	[0x1d173, 0x1d17a],
+	[0xe0000, 0xe0fff],
+]
+
+/** A token's name or symbol as read from the chain, with every character that renders as nothing shown as ⟨U+XXXX⟩. */
+export function shown(text: string): string {
+	let out = ''
+	for (const ch of text) {
+		const cp = ch.codePointAt(0) as number
+		out += HIDDEN.some(([a, b]) => cp >= a && cp <= b) ? `⟨U+${cp.toString(16).toUpperCase().padStart(4, '0')}⟩` : ch
+	}
+	return out
+}
+
+/** What `name()` and `symbol()` of a token answered on the chain, as decoded text ('' when it answered nothing). */
+export type ChainNames = Record<string, { name: string; symbol: string }>
+
+/** The name a different token under a listed ticker is shown by: its own name() on the chain, then the record's, never blank. */
+export function otherName(token: string, names: ChainNames, recordName: string): string {
+	const chain = shown(names[token]?.name ?? '').trim()
+	if (chain) return chain
+	if (recordName.trim()) return recordName
+	const symbol = shown(names[token]?.symbol ?? '').trim()
+	return symbol ? `(no name; symbol ${symbol})` : '(no name)'
+}
+
+/**
  * What each moved token is. In this order: USDG and WETH by address, the CRE token-check's
  * reading of the chain when its results name the token, the tokens the vet402 record names
  * as using a listed ticker, the issuer's list, and otherwise unknown. A listed address the
  * CRE token-check did not confirm is unknown, not a Stock Token. decimals come from the
- * token contracts.
+ * token contracts. A different token under a listed ticker carries its own name() as read
+ * from the chain (`names`), then the record's, and never a blank (otherName).
  */
-export function movedTokens(facts: any, transfers: { token: string }[], decimals: Record<string, number>, usdg: string, list: IssuerList, check: TokenCheckRef | null): MovedToken[] {
+export function movedTokens(facts: any, transfers: { token: string }[], decimals: Record<string, number>, usdg: string, list: IssuerList, check: TokenCheckRef | null, names: ChainNames = {}): MovedToken[] {
 	const seen = new Set<string>()
 	const out: MovedToken[] = []
 	const at = (ticker: string) => (ticker === 'USDG' ? lc(usdg) : (Object.keys(list).find((k) => list[k].symbol === ticker) ?? null))
@@ -379,7 +449,7 @@ export function movedTokens(facts: any, transfers: { token: string }[], decimals
 		const listed = list[token]
 		const cre = check?.tokens[token]
 		const dec = decimals[token] ?? 18
-		const nameOf = String(named?.name_raw ?? '')
+		const nameOf = otherName(token, names, String(named?.name_raw ?? ''))
 		const row = (kind: MovedToken['kind'], ticker: string, name: string, by: MovedToken['by']): MovedToken => ({ token, kind, ticker, name, decimals: dec, by, listed_at: kind === 'same_ticker' ? at(ticker) : null })
 		if (token === lc(usdg)) out.push(row('usdg', 'USDG', 'Global Dollar', 'address'))
 		else if (token === WETH) out.push(row('weth', 'WETH', 'Wrapped Ether', 'address'))

@@ -28,14 +28,14 @@
 import { canonicalJson, keccakHex, keccakText } from '../rwa-verify/verify'
 import { mainLeg } from './card'
 import type { Arrival } from './rules-v2'
-import { arrival } from './rules-v2'
+import { ARRIVALS, arrival } from './rules-v2'
 import type { FeedSeries, Point } from './facts'
 import { cents, type Limits, usd } from './limits'
 import { type Book, type DecisionInputsV2, feedPrice, priceGap, stockLegV2, type Tier } from './rules-v2'
 import type { TrailV2 } from './trail'
 
 export const BASELINE =
-	'Ticker copy opens the full size on every purchase of a token with a stock ticker: a Robinhood Stock Token with a usable Chainlink price, or a different token that uses a listed stock ticker. A purchase is the one definition copy-guard and the selection use (an official swap, paid by the wallet in USDG, WETH or ETH, no liquidity operation, no other Stock Token out). It goes by the ticker. It buys no record, does not ask whose token it is, and has no daily or open-position limit. For a Stock Token it uses the same entry price and the same exit rules as copy-guard.'
+	'Ticker copy opens the full size on every purchase of a token with a stock ticker: a Robinhood Stock Token with a usable Chainlink price, or a different token that uses a listed stock ticker. A purchase is what the wallet itself paid for in USDG, WETH or ETH, with no liquidity operation and no other Stock Token out, on an official Uniswap venue or outside one: it goes by the ticker and the amount and does not look at the venue. It buys no record, does not ask whose token it is, and has no daily or open-position limit. For a Stock Token it uses the same entry price and the same exit rules as copy-guard.'
 export const NOTE =
 	'Practice (paper) trades only. No real trade was placed. The two columns compare two policies on past public moves. This is not a forecast, not a record of real trading and not advice. A position in a token without a Chainlink feed is valued only from a Uniswap v4 pool the wallet itself bought in, otherwise it is not measured and is left out of every sum.'
 
@@ -47,11 +47,44 @@ export type PoolEntry = { pool_id: string; token_is_currency0: boolean; sqrt_pri
 /** The last Swap log of a pool at or before the mark block. */
 export type PoolMark = { block: number; tx: string; log_index: number; sqrt_price_x96: string }
 export type Cohort = 'watched' | 'top_buyers' | 'same_ticker_buyers'
+/**
+ * The three groups the copy-guard book is counted in, one per cohort:
+ *   selected                     the wallets the selection picked (cohort top_buyers)
+ *   observed_other_token_buyers  the first buyers of one token under a listed ticker (cohort same_ticker_buyers)
+ *   demo                         the one watched wallet (cohort watched)
+ */
+export type Group = 'selected' | 'observed_other_token_buyers' | 'demo'
+export const GROUP_OF: Record<Cohort, Group> = { top_buyers: 'selected', same_ticker_buyers: 'observed_other_token_buyers', watched: 'demo' }
+export type GroupTotals = {
+	cohort: Cohort
+	/** wallets in the group, and those with at least one decision */
+	wallets: number
+	wallets_with_decisions: number
+	decisions: number
+	/** copy-guard positions opened, and decisions in which copy-guard opened none */
+	opened: number
+	declined: number
+	/** practice money put in and the result, at the sizes copy-guard chose */
+	put_in_usd: string
+	result_usd: string
+	/** the wallets' own purchases those positions followed, at the feed */
+	followed_purchases_usd: { count: number; median: string; sum: string; min: string; max: string }
+	/** the same positions, each at the one size of the second pass */
+	same_size: { size_usd: string; count: number; put_in_usd: string; result_usd: string }
+	/** decisions in which the ticker copy opened a position, and those in a different token under a listed ticker */
+	ticker_copy_opened: number
+	ticker_copy_in_other_tokens: number
+	/** wallets with at least one position */
+	wallets_opened: number
+	/** the wallet with the most positions (ties: the lower address), and its share of the group's positions in percent, one decimal */
+	top_wallet: null | { wallet: string; opened: number; share_pct: string }
+}
 /** What the ledger knows besides the trails: which wallet is in the walk for which reason, the window, and the pool marks. Saved as docs/walk/context.json. */
 export type WalkContext = {
 	window: { from_block: number; to_block: number; from_time: string; to_time: string }
 	/** How the wallets were picked: the addresses asked, the ones selected, the ones vet402 could build no record for, and why the asking stopped. */
-	selection: { asked: number; selected: number; stop: string; no_record: { wallet: string; bound_rank: number; bound_usd: string; has_code: boolean; http_status: number; reason: string }[] }
+	/** `no_record`: every address passed over, in ranking order: a router or another contract (`asked` false, `http_status` null), or an address vet402 could build no record for. */
+	selection: { asked: number; selected: number; stop: string; no_record: { wallet: string; bound_rank: number; bound_usd: string; direct_usd?: string; routed_usd?: string; has_code: boolean; asked?: boolean; not_a_wallet?: null | 'router' | 'contract'; http_status: number | null; reason: string }[] }
 	/** How a price at a past block was read. */
 	price_source: string
 	wallets: { wallet: string; cohort: Cohort; rank: number | null; purchases_usd: string | null; record_http: number }[]
@@ -219,20 +252,26 @@ export function saleOf(inp: DecisionInputsV2): string | null {
 export function blindEntry(inp: DecisionInputsV2): { token: string; symbol: string; entry: string | null; asset: 'stock' | 'same_ticker'; pool: PoolEntry | null } | null {
 	const leg = mainLeg(inp)
 	if (!leg || leg.t.direction !== 'in') return null
-	// The same definition of a purchase as rule D1 and the selection: anything else opens nothing in either book.
-	if (arrival(inp, { token: leg.t.token, direction: 'in' }) !== 'purchase') return null
+	// A purchase as rule D1 and the selection define it, or the same purchase made outside the official venues: a bot that goes by the ticker does not look at the venue. Anything else opens nothing.
+	const how = arrival(inp, { token: leg.t.token, direction: 'in' })
+	if (how !== 'purchase' && how !== 'purchase_off_venue') return null
 	if (leg.m.kind === 'same_ticker') return leg.m.ticker === 'USDG' ? null : { token: leg.m.token, symbol: leg.m.ticker, entry: null, asset: 'same_ticker', pool: inp.pool_entry ?? null }
 	if (leg.m.kind === 'stock' && priceGap(inp) === '') return { token: leg.m.token, symbol: leg.m.ticker, entry: feedPrice(inp.price), asset: 'stock', pool: null }
 	return null
 }
 
-/** The wallet's own move in USD: the Stock Token it received times the feed's value at the block. Null when no Stock Token came in or no price can be used. */
+/**
+ * The wallet's own move in USD: the Stock Token it received times the feed's value at the block.
+ * Null when no Stock Token came in or no price can be used. Exact: the raw amount times the feed's
+ * raw answer, in integers, rounded half up to the cent once at the end. No price is rounded first.
+ */
 export function moveUsd(inp: DecisionInputsV2): string | null {
 	const leg = stockLegV2(inp)
-	if (!leg || leg.direction !== 'in' || priceGap(inp) !== '') return null
+	if (!leg || leg.direction !== 'in' || priceGap(inp) !== '' || !inp.price) return null
 	const m = inp.tokens_moved.find((x) => x.token === lc(leg.token))
 	const raw = inp.movement.transfers.filter((t) => lc(t.token) === lc(leg.token) && t.direction === 'in').reduce((s, t) => s + BigInt(t.amount_raw), 0n)
-	return ((Number(raw) / 10 ** (m?.decimals ?? 18)) * Number(feedPrice(inp.price))).toFixed(2)
+	const scale = 10n ** BigInt((m?.decimals ?? 18) + inp.price.decimals)
+	return usd((raw * BigInt(inp.price.answer) * 100n * 2n + scale) / (2n * scale))
 }
 
 export type LedgerRow = {
@@ -287,6 +326,8 @@ export type Ledger = {
 		first_move_time: string
 		/** How every incoming Stock Token came, from the transactions: only a purchase can open a position. */
 		stock_moves: Record<Arrival, number>
+		/** The copy-guard book by group of wallets, so that the selected wallets and the observations are never read as one sample. */
+		by_group: Record<Group, GroupTotals>
 		last_move_time: string
 		full: number
 		reduced: number
@@ -299,6 +340,8 @@ export type Ledger = {
 			tickers: string[]
 			sent_to_the_wallet: number
 			bought_by_the_wallet: number
+			/** bought and paid for by the wallet, but not on an official Uniswap venue */
+			bought_off_venue: number
 			/** came in by a swap the wallet did not pay for, a liquidity operation or a rotation */
 			received_unpaid: number
 			by_arrival: Record<Arrival, number>
@@ -335,6 +378,11 @@ const sideOf = (ps: PositionRow[]): Side => ({ count: ps.length, put_in_usd: sum
 const otherOf = (ps: PositionRow[]): OtherSide => {
 	const measured = ps.filter((p) => p.result_usd !== null)
 	return { count: ps.length, put_in_usd: sumUsd(ps.map((p) => p.notional_usd)), measured: measured.length, result_measured_usd: measured.length ? sumUsd(measured.map((p) => p.result_usd)) : null, not_measured: ps.length - measured.length }
+}
+/** a / b with one decimal, rounded half up. a is already times 1000 for a percentage. */
+const tenths = (a: bigint, b: bigint) => {
+	const t = (a + b / 2n) / b
+	return `${t / 10n}.${t % 10n}`
 }
 /** The middle value of amounts in USD, in cents. With an even count, the mean of the two middle values, rounded down. */
 export function medianUsd(xs: string[]): string {
@@ -405,7 +453,7 @@ export function buildLedger(trails: TrailV2[], feeds: Feeds, markBlock: number, 
 	for (const r of rows) if (r.tier === 'NONE') reasons.set(r.card.headline.replace('No position: ', ''), (reasons.get(r.card.headline.replace('No position: ', '')) ?? 0) + 1)
 	// Different tokens under a listed ticker: one entry per token, and how each move came about.
 	const others = new Map<string, { token: string; ticker: string; name: string; moves: number }>()
-	const how: Record<Arrival, number> = { purchase: 0, rotation: 0, liquidity: 0, swapped_unpaid: 0, received: 0, out: 0 }
+	const how = Object.fromEntries(ARRIVALS.map((a) => [a, 0])) as Record<Arrival, number>
 	let hidden = 0
 	let otherMoves = 0
 	trails.forEach((t) => {
@@ -428,6 +476,34 @@ export function buildLedger(trails: TrailV2[], feeds: Feeds, markBlock: number, 
 	const stockBlind = blindPositions.filter((p) => p.asset === 'stock')
 	const otherBlind = blindPositions.filter((p) => p.asset === 'same_ticker')
 	const times = rows.map((r) => r.move_time).sort()
+	const groupTotals = (g: Group): GroupTotals => {
+		const cohort = (Object.keys(GROUP_OF) as Cohort[]).find((c) => GROUP_OF[c] === g) as Cohort
+		const rs = rows.filter((r) => r.cohort === cohort)
+		const mine = new Set(rs.map((r) => r.n))
+		const ps = guardPositions.filter((p) => mine.has(p.n))
+		const fol = rs.filter((r) => r.copy_guard.opened && r.move_usd !== null).map((r) => r.move_usd as string)
+		const sorted = fol.map((x) => cents(x)).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+		const same = samePositions.filter((p) => mine.has(p.n) && opened.has(p.n))
+		const per = new Map<string, number>()
+		for (const p of ps) per.set(p.wallet, (per.get(p.wallet) ?? 0) + 1)
+		const top = [...per].sort((x, y) => y[1] - x[1] || (x[0] < y[0] ? -1 : 1))[0]
+		return {
+			cohort,
+			wallets: context.wallets.filter((w) => w.cohort === cohort).length,
+			wallets_with_decisions: new Set(rs.map((r) => r.wallet)).size,
+			decisions: rs.length,
+			opened: ps.length,
+			declined: rs.length - ps.length,
+			put_in_usd: sumUsd(ps.map((p) => p.notional_usd)),
+			result_usd: sumUsd(ps.map((p) => p.result_usd)),
+			followed_purchases_usd: { count: fol.length, median: medianUsd(fol), sum: sumUsd(fol), min: sorted.length ? usd(sorted[0]) : '0.00', max: sorted.length ? usd(sorted[sorted.length - 1]) : '0.00' },
+			same_size: { size_usd: same.length ? same[0].notional_usd : limits.size.reduced_usd, count: same.length, put_in_usd: sumUsd(same.map((p) => p.notional_usd)), result_usd: sumUsd(same.map((p) => p.result_usd)) },
+			ticker_copy_opened: rs.filter((r) => r.blind_copy.opened).length,
+			ticker_copy_in_other_tokens: rs.filter((r) => r.blind_copy.opened?.asset === 'same_ticker').length,
+			wallets_opened: per.size,
+			top_wallet: top ? { wallet: top[0], opened: top[1], share_pct: tenths(BigInt(top[1]) * 1000n, BigInt(ps.length)) } : null,
+		}
+	}
 	const cohortTotals = (c: Cohort) => {
 		const rs = rows.filter((r) => r.cohort === c)
 		return {
@@ -476,8 +552,9 @@ export function buildLedger(trails: TrailV2[], feeds: Feeds, markBlock: number, 
 			wallets_without_record: noRecord.length,
 			decisions_without_record: rows.filter((r) => noRecord.includes(r.wallet)).length,
 			first_move_time: times[0],
+			by_group: { selected: groupTotals('selected'), observed_other_token_buyers: groupTotals('observed_other_token_buyers'), demo: groupTotals('demo') },
 			stock_moves: (() => {
-				const c: Record<Arrival, number> = { purchase: 0, rotation: 0, liquidity: 0, swapped_unpaid: 0, received: 0, out: 0 }
+				const c = Object.fromEntries(ARRIVALS.map((a) => [a, 0])) as Record<Arrival, number>
 				for (const t of trails) {
 					const leg = stockLegV2(t.inputs)
 					if (leg) c[arrival(t.inputs, leg)]++
@@ -495,6 +572,7 @@ export function buildLedger(trails: TrailV2[], feeds: Feeds, markBlock: number, 
 				tickers: [...new Set([...others.values()].map((o) => o.ticker))].sort(),
 				sent_to_the_wallet: how.received,
 				bought_by_the_wallet: how.purchase,
+				bought_off_venue: how.purchase_off_venue,
 				received_unpaid: how.swapped_unpaid + how.liquidity + how.rotation,
 				by_arrival: how,
 				logged_as_sent_by_the_wallet: how.out,

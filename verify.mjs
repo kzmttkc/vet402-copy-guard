@@ -10,6 +10,8 @@
 //   --only paid-run       sections 1 to 4: the paid run of 2026-10-08
 //   --only ledger         section 5: the practice ledger, the mandate and the user's limits
 //   --only gate           section 6: the x402 gate in front of the CRE workflow
+//   --quick               only the payment, the anchor, the CRE verdicts, the four cards at the top of the
+//                         page and the ledger root, in about 20 seconds (the full run takes about 90)
 //   --deep                check every decision of the ledger against the chain, not a sample
 //   --offline             skip the chain reads; those lines are reported as not checked
 //   --rpc URL             another RPC for Robinhood Chain (4663)
@@ -639,7 +641,13 @@ function whatWasPaid(inp) {
 	return { tokens: order.filter((k) => sums[k] > 0n).map((k) => ({ token: k, amount_raw: sums[k].toString() })), eth_wei: signedByWallet && typeof v === 'string' && /^\d+$/.test(v) ? v : '0' }
 }
 
-/** out, liquidity, rotation, purchase, swapped_unpaid or received, tested in that order (docs/walk/SELECTION.md, section 2). */
+/**
+ * out, liquidity, rotation, then purchase or swapped_unpaid (an official swap put it out and the
+ * wallet ended with more), then purchase_off_venue (no official swap, the wallet ended with more and
+ * paid), else received. `leg` is the first transfer of the token that names the wallet: its direction
+ * decides in or out (docs/walk/SELECTION.md, section 2).
+ */
+const ARRIVAL_KINDS = ['purchase', 'purchase_off_venue', 'rotation', 'liquidity', 'swapped_unpaid', 'received', 'out']
 function howItCame(inp, leg) {
 	if (leg.direction !== 'in') return 'out'
 	if (inp.move.liquidity.length > 0) return 'liquidity'
@@ -649,9 +657,11 @@ function howItCame(inp, leg) {
 	let net = 0n
 	for (const t of inp.movement.transfers) if (lc(t.token) === token) net += t.direction === 'in' ? BigInt(t.amount_raw) : -BigInt(t.amount_raw)
 	const venues = kind === 'stock' ? inp.venue : inp.other_venue
-	if (!(net > 0n && venues.some((v) => v.kind !== 'other' && v.swapped))) return 'received'
 	const paid = whatWasPaid(inp)
-	return paid.tokens.length > 0 || BigInt(paid.eth_wei) > 0n ? 'purchase' : 'swapped_unpaid'
+	const paidSomething = paid.tokens.length > 0 || BigInt(paid.eth_wei) > 0n
+	if (net > 0n && venues.some((v) => v.kind !== 'other' && v.swapped)) return paidSomething ? 'purchase' : 'swapped_unpaid'
+	if (net > 0n && paidSomething) return 'purchase_off_venue'
+	return 'received'
 }
 
 /**
@@ -724,9 +734,10 @@ export function decideV2(inp) {
 	if (how === 'out') d1detail = `sent, signed by ${signer}`
 	else if (how === 'liquidity') d1detail = `received in a transaction with liquidity logs (${inp.move.liquidity.join(', ')}): a liquidity operation, not a purchase`
 	else if (how === 'rotation') d1detail = 'received while another Stock Token left the wallet: a rotation, not a purchase'
-	else if (how === 'purchase') {
+	else if (how === 'purchase' || how === 'purchase_off_venue') {
 		const paid = whatWasPaid(inp)
-		d1detail = `bought: an official swap put it out and the wallet paid ${[...paid.tokens.map((p) => `${p.amount_raw} of ${p.token}`), ...(BigInt(paid.eth_wei) > 0n ? [`${paid.eth_wei} wei of ETH`] : [])].join(' and ')}, signed by ${signer}`
+		const money = [...paid.tokens.map((p) => `${p.amount_raw} of ${p.token}`), ...(BigInt(paid.eth_wei) > 0n ? [`${paid.eth_wei} wei of ETH`] : [])].join(' and ')
+		d1detail = how === 'purchase' ? `bought: an official swap put it out and the wallet paid ${money}, signed by ${signer}` : `bought outside the official venues: no official swap put it out, and the wallet paid ${money}, signed by ${signer}`
 	} else if (how === 'swapped_unpaid') d1detail = `an official swap put it out, but the wallet itself paid no USDG, WETH or ETH, signed by ${signer}`
 	else if (how === 'received') d1detail = `received with no official swap of it in the transaction, signed by ${signer}`
 	add('D1', how === 'purchase', 'the wallet bought: an official swap put the Stock Token out, the wallet ended with more of it, the wallet itself paid USDG, WETH or ETH, no liquidity log is in the transaction and no other Stock Token left the wallet', d1detail)
@@ -747,12 +758,44 @@ export function decideV2(inp) {
 
 const MARKS = new Set(['TICKER_SAME_AS_ISSUER_TOKEN', 'TICKER_SAME_AFTER_FOLDING', 'NAME_SAME_AS_ISSUER_TOKEN', 'NAME_ENDS_LIKE_ISSUER_TOKEN', 'TICKER_OR_NAME_READS_AS_USDG', 'ISSUER_CODE_AT_UNLISTED_ADDRESS'])
 
+/** Code points that render as nothing (Unicode default-ignorables, format controls, the braille blank) and the C0 and C1 controls. */
+const INVISIBLE = [[0x0, 0x1f], [0x7f, 0x9f], [0xad, 0xad], [0x34f, 0x34f], [0x600, 0x605], [0x61c, 0x61c], [0x6dd, 0x6dd], [0x70f, 0x70f], [0x890, 0x891], [0x8e2, 0x8e2], [0x115f, 0x1160], [0x17b4, 0x17b5], [0x180b, 0x180f], [0x200b, 0x200f], [0x202a, 0x202e], [0x2060, 0x206f], [0x2800, 0x2800], [0x3164, 0x3164], [0xfe00, 0xfe0f], [0xfeff, 0xfeff], [0xffa0, 0xffa0], [0xfff0, 0xfffb], [0x110bd, 0x110bd], [0x110cd, 0x110cd], [0x13430, 0x1343f], [0x1bca0, 0x1bca3], [0x1d173, 0x1d17a], [0xe0000, 0xe0fff]]
+/** Text with every invisible character written as ⟨U+XXXX⟩. */
+export function markInvisible(text) {
+	return [...String(text ?? '')]
+		.map((ch) => {
+			const cp = ch.codePointAt(0)
+			return INVISIBLE.some(([a, b]) => cp >= a && cp <= b) ? `⟨U+${cp.toString(16).toUpperCase().padStart(4, '0')}⟩` : ch
+		})
+		.join('')
+}
+/** What a name() or symbol() call answered: an ABI string, or a zero-padded bytes32. '' otherwise. */
+export function textOfCall(hex) {
+	const d = String(hex ?? '').replace(/^0x/, '')
+	const bytesOf = (h) => new TextDecoder().decode(new Uint8Array((h.match(/../g) ?? []).map((b) => Number.parseInt(b, 16))))
+	if (d.length >= 128 && BigInt(`0x${d.slice(0, 64)}`) === 32n) {
+		const n = Number(BigInt(`0x${d.slice(64, 128)}`))
+		if (n * 2 <= d.length - 128) return bytesOf(d.slice(128, 128 + n * 2))
+	}
+	return d.length === 64 ? bytesOf(d).replace(/\0+$/, '') : ''
+}
+/** The name a different token under a listed ticker carries: its own name() on the chain, else the record's, else a note. Never blank. */
+function nameForOther(token, names, fromRecord) {
+	const onChain = markInvisible(names?.[token]?.name ?? '').trim()
+	if (onChain) return onChain
+	if (fromRecord.trim()) return fromRecord
+	const sym = markInvisible(names?.[token]?.symbol ?? '').trim()
+	return sym ? `(no name; symbol ${sym})` : '(no name)'
+}
+
 /**
  * What each moved token is, rebuilt from the saved record, the issuer's list (token to
  * { symbol, name }) and the CRE token-check results when the decision read any. USDG and
  * WETH by address first, then the CRE results, then the record's names, then the list.
+ * A different token under a listed ticker is named by its own name() as the walk read it
+ * from the chain (`names` in docs/walk/tokens.json), then by the record.
  */
-export function movedTokensFrom(facts, transfers, decimals, list, check) {
+export function movedTokensFrom(facts, transfers, decimals, list, check, names = {}) {
 	const seen = new Set()
 	const out = []
 	const listedAt = (ticker) => (ticker === 'USDG' ? USDG : (Object.keys(list).find((k) => list[k].symbol === ticker) ?? null))
@@ -763,7 +806,7 @@ export function movedTokensFrom(facts, transfers, decimals, list, check) {
 		const named = (facts?.lookalikes ?? []).find((l) => lc(l.token) === token)
 		const listed = list[token]
 		const cre = check?.tokens?.[token]
-		const name = String(named?.name_raw ?? '')
+		const name = nameForOther(token, names, String(named?.name_raw ?? ''))
 		const make = (kind, ticker, nm, by) => ({ token, kind, ticker, name: nm, decimals: decimals[token] ?? 18, by, listed_at: kind === 'same_ticker' ? listedAt(ticker) : null })
 		if (token === USDG) out.push(make('usdg', 'USDG', 'Global Dollar', 'address'))
 		else if (token === WETH_ADDRESS) out.push(make('weth', 'WETH', 'Wrapped Ether', 'address'))
@@ -901,6 +944,7 @@ function cardReason(id, inp) {
 		if (how === 'liquidity') return [`The transaction changes a liquidity position (${inp.move.liquidity.join(', ')}). Adding to a pool, taking from it and collecting from it move tokens in and out of a wallet, and none of them is a purchase.`]
 		if (how === 'rotation') return ['Another Stock Token left the wallet in the same transaction. Exchanging one Stock Token for another is a rotation, and copy-guard copies purchases paid in USDG, WETH or ETH only.']
 		if (how === 'swapped_unpaid') return ['An official swap put the Stock Token out, but the wallet itself paid no USDG, WETH or ETH in the transaction. Someone else paid, or it was paid in something whose worth is not known, so it is not counted as a purchase.']
+		if (how === 'purchase_off_venue') return [`The wallet itself paid ${paidWords(inp)} for the Stock Token, but no official Uniswap venue (the v4 PoolManager or a pool of the official v3 factory) swapped it out: it was bought somewhere else. copy-guard copies purchases on an official venue only (rule V1). A ticker copy, which does not look at the venue, copies it.`]
 		return ['No official swap put the Stock Token out in this transaction. It was sent to the wallet: a transfer, an airdrop or a bridge delivery, not a purchase.']
 	}
 	if (id === 'P1') return [`No Chainlink feed value can be used as the price at the block of the move (${gapInPrice(inp)}), so a practice position cannot be entered.`]
@@ -933,6 +977,7 @@ export function cardOf(inp, d) {
 			const what = m.kind === 'same_ticker' ? `${amt} tokens with the ticker ${m.ticker}${label}` : `${amt} ${m.name ? `${m.ticker} (${m.name})` : m.ticker}`
 			const marks = m.kind === 'same_ticker' && `${m.name}${m.ticker}`.includes('⟨U+') ? ` The marks ⟨U+…⟩ stand for invisible characters in the name: without them it reads ${m.ticker}.` : ''
 			if (how === 'purchase') happened = `The wallet bought ${what} in a swap on ${swappedBy(inp, leg)} and paid ${paidWords(inp)}. ${relayed}`
+			else if (how === 'purchase_off_venue') happened = `The wallet bought ${what} through a venue outside the official Uniswap pools, paying ${paidWords(inp)}. No official swap put the token out in the transaction. ${relayed}`
 			else if (how === 'rotation') happened = `The wallet received ${what} and gave ${rotatedAway(inp, leg)} in the same transaction: one Stock Token exchanged for another. ${sig}`
 			else if (how === 'liquidity') happened = `The wallet received ${what} from ${otherParty(inp, leg)} in a transaction that changes a liquidity position (${inp.move.liquidity.join(', ')}). That is not a purchase. ${sig}`
 			else if (how === 'swapped_unpaid') happened = `${what.charAt(0).toUpperCase()}${what.slice(1)} came to the wallet out of a swap on ${swappedBy(inp, leg)}, and the wallet itself paid no USDG, WETH or ETH in the transaction. ${sig}`
@@ -978,7 +1023,7 @@ export function cardOf(inp, d) {
 	let head = NONE_HEAD[lead[0]] ?? 'a rule failed'
 	if (lead[0] === 'D1') {
 		const sl = stockLeg2(inp)
-		const words = { out: 'a sale or a transfer out, not a purchase', liquidity: 'a liquidity operation, not a purchase', rotation: 'one Stock Token exchanged for another, not a purchase', swapped_unpaid: 'swapped, but not paid for by the wallet', received: 'sent to the wallet, not bought by it' }
+		const words = { out: 'a sale or a transfer out, not a purchase', liquidity: 'a liquidity operation, not a purchase', rotation: 'one Stock Token exchanged for another, not a purchase', swapped_unpaid: 'swapped, but not paid for by the wallet', purchase_off_venue: 'bought outside the official Uniswap pools', received: 'sent to the wallet, not bought by it' }
 		if (sl) head = words[howItCame(inp, sl)] ?? head
 	}
 	if (noRecord) head = 'vet402 has no record for this wallet'
@@ -1002,7 +1047,7 @@ export function cardOf(inp, d) {
 // to be worth zero, and what is not measured is in no sum.
 
 export const BLIND_BASELINE =
-	'Ticker copy opens the full size on every purchase of a token with a stock ticker: a Robinhood Stock Token with a usable Chainlink price, or a different token that uses a listed stock ticker. A purchase is the one definition copy-guard and the selection use (an official swap, paid by the wallet in USDG, WETH or ETH, no liquidity operation, no other Stock Token out). It goes by the ticker. It buys no record, does not ask whose token it is, and has no daily or open-position limit. For a Stock Token it uses the same entry price and the same exit rules as copy-guard.'
+	'Ticker copy opens the full size on every purchase of a token with a stock ticker: a Robinhood Stock Token with a usable Chainlink price, or a different token that uses a listed stock ticker. A purchase is what the wallet itself paid for in USDG, WETH or ETH, with no liquidity operation and no other Stock Token out, on an official Uniswap venue or outside one: it goes by the ticker and the amount and does not look at the venue. It buys no record, does not ask whose token it is, and has no daily or open-position limit. For a Stock Token it uses the same entry price and the same exit rules as copy-guard.'
 export const LEDGER_NOTE =
 	'Practice (paper) trades only. No real trade was placed. The two columns compare two policies on past public moves. This is not a forecast, not a record of real trading and not advice. A position in a token without a Chainlink feed is valued only from a Uniswap v4 pool the wallet itself bought in, otherwise it is not measured and is left out of every sum.'
 
@@ -1116,7 +1161,8 @@ function newBook(feeds, limits, marks = {}) {
 function blindOpens(inp) {
 	const leg = cardLeg(inp)
 	if (!leg || leg.t.direction !== 'in') return null
-	if (howItCame(inp, { token: leg.t.token, direction: 'in' }) !== 'purchase') return null
+	// A bot that goes by the ticker copies a purchase wherever it was made: on an official venue or outside one.
+	if (!['purchase', 'purchase_off_venue'].includes(howItCame(inp, { token: leg.t.token, direction: 'in' }))) return null
 	if (leg.m.kind === 'same_ticker') return leg.m.ticker === 'USDG' ? null : { token: leg.m.token, symbol: leg.m.ticker, entry: null, asset: 'same_ticker', pool: inp.pool_entry ?? null }
 	if (leg.m.kind === 'stock' && gapInPrice(inp) === '') return { token: leg.m.token, symbol: leg.m.ticker, entry: feedUsd(inp.price), asset: 'stock', pool: null }
 	return null
@@ -1127,7 +1173,10 @@ function moveInUsd(inp) {
 	const leg = stockLeg2(inp)
 	if (!leg || leg.direction !== 'in' || gapInPrice(inp) !== '') return null
 	const raw = sumRaw(inp, (t) => lc(t.token) === lc(leg.token) && t.direction === 'in')
-	return ((Number(raw) / 10 ** (movedKind(inp, leg.token)?.decimals ?? 18)) * Number(feedUsd(inp.price))).toFixed(2)
+	// Exact: amount times the feed's raw answer in integers, rounded half up to the cent once. No price rounded first.
+	const den = 10n ** BigInt((movedKind(inp, leg.token)?.decimals ?? 18) + inp.price.decimals)
+	const c = raw * BigInt(inp.price.answer) * 100n
+	return fromCents(c / den + (c % den >= den - c % den ? 1n : 0n))
 }
 
 /** A binary Merkle root over the leaves in order. An odd last node moves up unchanged. */
@@ -1222,7 +1271,7 @@ export function ledgerOf(trails, feeds, markBlock, context) {
 		reasonCount[reason] = (reasonCount[reason] ?? 0) + 1
 	}
 	const otherList = {}
-	const came = { purchase: 0, rotation: 0, liquidity: 0, swapped_unpaid: 0, received: 0, out: 0 }
+	const came = Object.fromEntries(ARRIVAL_KINDS.map((k) => [k, 0]))
 	let hidden = 0
 	let otherMoves = 0
 	for (const t of trails) {
@@ -1258,7 +1307,42 @@ export function ledgerOf(trails, feeds, markBlock, context) {
 		}
 	}
 	const otherBlind = blindPositions.filter((p) => p.asset === 'same_ticker')
-	const stockMoves = { purchase: 0, rotation: 0, liquidity: 0, swapped_unpaid: 0, received: 0, out: 0 }
+	const stockMoves = Object.fromEntries(ARRIVAL_KINDS.map((k) => [k, 0]))
+	// The copy-guard book per group: the selected wallets, the observed buyers of another token, and the demo wallet.
+	const groupOf = { selected: 'top_buyers', observed_other_token_buyers: 'same_ticker_buyers', demo: 'watched' }
+	const groupTotals = (cohort) => {
+		const rs = rows.filter((r) => r.cohort === cohort)
+		const ns = new Set(rs.map((r) => r.n))
+		const ps = guardPositions.filter((p) => ns.has(p.n))
+		const fol = rs.filter((r) => r.copy_guard.opened && r.move_usd !== null).map((r) => r.move_usd)
+		const fsorted = sortedCents(fol)
+		const one = onePositions.filter((p) => ns.has(p.n) && openedByGuard.has(p.n))
+		const per = {}
+		for (const p of ps) per[p.wallet] = (per[p.wallet] ?? 0) + 1
+		let best = null
+		for (const [w, k] of Object.entries(per)) if (!best || k > best[1] || (k === best[1] && w < best[0])) best = [w, k]
+		let share = null
+		if (best) {
+			const tenthsOfPct = (BigInt(best[1]) * 1000n * 2n + BigInt(ps.length)) / (2n * BigInt(ps.length))
+			share = `${tenthsOfPct / 10n}.${tenthsOfPct % 10n}`
+		}
+		return {
+			cohort,
+			wallets: inCohort(cohort),
+			wallets_with_decisions: new Set(rs.map((r) => r.wallet)).size,
+			decisions: rs.length,
+			opened: ps.length,
+			declined: rs.length - ps.length,
+			put_in_usd: total(ps.map((p) => p.notional_usd)),
+			result_usd: total(ps.map((p) => p.result_usd)),
+			followed_purchases_usd: { count: fol.length, median: median(fol), sum: total(fol), min: fsorted.length ? fromCents(fsorted[0]) : '0.00', max: fsorted.length ? fromCents(fsorted[fsorted.length - 1]) : '0.00' },
+			same_size: { size_usd: one.length ? one[0].notional_usd : oneSize, count: one.length, put_in_usd: total(one.map((p) => p.notional_usd)), result_usd: total(one.map((p) => p.result_usd)) },
+			ticker_copy_opened: rs.filter((r) => r.blind_copy.opened).length,
+			ticker_copy_in_other_tokens: rs.filter((r) => r.blind_copy.opened?.asset === 'same_ticker').length,
+			wallets_opened: Object.keys(per).length,
+			top_wallet: best ? { wallet: best[0], opened: best[1], share_pct: share } : null,
+		}
+	}
 	for (const t of trails) {
 		const sl = stockLeg2(t.inputs)
 		if (sl) stockMoves[howItCame(t.inputs, sl)]++
@@ -1297,6 +1381,7 @@ export function ledgerOf(trails, feeds, markBlock, context) {
 			wallets_without_record: noRecord.length,
 			decisions_without_record: rows.filter((r) => noRecord.includes(r.wallet)).length,
 			first_move_time: times[0],
+			by_group: Object.fromEntries(Object.entries(groupOf).map(([g, c]) => [g, groupTotals(c)])),
 			stock_moves: stockMoves,
 			last_move_time: times[times.length - 1],
 			full: tierCount(rows, 'FULL'),
@@ -1311,6 +1396,7 @@ export function ledgerOf(trails, feeds, markBlock, context) {
 				tickers: [...new Set(Object.values(otherList).map((o) => o.ticker))].sort(),
 				sent_to_the_wallet: came.received,
 				bought_by_the_wallet: came.purchase,
+				bought_off_venue: came.purchase_off_venue,
 				received_unpaid: came.swapped_unpaid + came.liquidity + came.rotation,
 				by_arrival: came,
 				logged_as_sent_by_the_wallet: came.out,
@@ -1880,6 +1966,12 @@ async function chainFacts(main, t) {
 			},
 		)
 		if (d !== m.decimals) bad.push(`${m.token} has ${d} decimals, the trail says ${m.decimals}`)
+		if (m.kind === 'same_ticker') {
+			// The name the trail carries is the token's own name() on the chain, with invisible characters marked.
+			const said = await main('eth_call', [{ to: m.token, data: '0x06fdde03' }, 'latest']).then(textOfCall, (e) => (/execution reverted/i.test(String(e?.message)) ? '' : Promise.reject(e)))
+			const shownName = markInvisible(said).trim()
+			if (shownName && shownName !== m.name) bad.push(`${m.token} answers name() "${shownName}", the trail says "${m.name}"`)
+		}
 	}
 	for (const v of inp.venue) {
 		let kind = 'other'
@@ -1906,6 +1998,28 @@ async function chainFacts(main, t) {
 	const how = sl ? howItCame(inp, sl) : null
 	const came = how === 'purchase' ? `, a purchase: an official swap, paid ${paidWords(inp)} by the wallet` : how ? `, ${how}${inp.move.liquidity.length ? ` (${inp.move.liquidity.join(', ')})` : ''}` : ''
 	return [true, `${short(lc(mv.tx))} in block ${mv.block} (${inp.move.time}): ${mv.transfers.length} transfer${mv.transfers.length === 1 ? '' : 's'} as listed, signed by ${signer}${came}${inp.venue.length ? `, venue ${inp.venue.map((v) => v.kind).join(' and ')}` : ''}${p ? `, feed value ${feedUsd(p)} USD from round ${p.round_id}` : ''}`]
+}
+
+/** The Merkle root of the ledger, against anchor.json and the LedgerAnchored log on Robinhood Testnet. */
+async function checkLedgerRoot(rep, test, ledger, dir) {
+	await rep.check('root onchain', async () => {
+		const anchor = readJson(join(dir, 'anchor.json'))
+		if (lc(anchor.root) !== lc(ledger.root)) return [false, `${CLAIMS.walkDir}/anchor.json names root ${anchor.root}, the ledger gives ${ledger.root}`]
+		if (!anchor.ledger_tx) return [false, 'the walk was only simulated: its root is not onchain']
+		const r = await test('eth_getTransactionReceipt', [anchor.ledger_tx])
+		const log = (r?.logs ?? []).find((l) => l.address.toLowerCase() === LEDGER_RECEIVER && l.topics?.[0]?.toLowerCase() === LEDGER_TOPIC)
+		if (!log || r.status !== '0x1') return [false, `no LedgerAnchored from LedgerRootReceiver in ${short(anchor.ledger_tx)}`]
+		const t = ledger.totals
+		const bad = []
+		if (lc(log.topics[1]) !== lc(ledger.root)) bad.push(`onchain root ${lc(log.topics[1])}`)
+		if (lc(log.topics[2]) !== ledger.mandate.keccak) bad.push('another mandate')
+		if (lc(log.topics[3]) !== ledger.limits_keccak) bad.push('other limits')
+		if (word(log.data, 0) !== keccak256(canonicalJson(ledger.rules))) bad.push('other rules')
+		const n = (i) => Number(BigInt(word(log.data, i)))
+		if (n(1) !== t.decisions || n(2) !== t.full || n(3) !== t.reduced || n(4) !== t.none) bad.push(`counts ${n(1)}/${n(2)}/${n(3)}/${n(4)}`)
+		if (n(5) !== ledger.mark_block) bad.push(`mark block ${n(5)}`)
+		return [bad.length === 0, bad.length ? `LedgerAnchored in ${short(anchor.ledger_tx)} differs: ${bad.join('; ')}` : `LedgerAnchored in ${short(anchor.ledger_tx)} on Robinhood Testnet has the Merkle root ${short(lc(ledger.root))} of all ${t.decisions} decisions, the same mandate, limits and rules, and the same counts`]
+	})
 }
 
 /** 5. The practice ledger: every decision of the walk, both books, the mandate, the user's limits, the root and the page. */
@@ -1942,29 +2056,35 @@ async function verifyLedger(rep, main, test, deep) {
 		if (canonicalJson(listed.map((w) => [lc(w.wallet), w.cohort, w.rank, w.purchases_usd])) !== canonicalJson(context.wallets.map((w) => [lc(w.wallet), w.cohort, w.rank, w.purchases_usd]))) bad.push('the walk did not follow the wallets the selection wrote')
 		if (canonicalJson([selection.window.from, selection.window.to]) !== canonicalJson([context.window.from_block, context.window.to_block])) bad.push('the window of the walk is not the window of the selection')
 		const c = selection.counts
-		if (c.asked !== c.selected + c.no_record || selection.wallets.length !== c.selected || selection.no_record.length !== c.no_record) bad.push('the counts of the selection do not add up')
-		if (!(c.selected >= selection.top || c.asked >= selection.max_asked)) bad.push('the selection stopped before either limit')
-		// every address asked, in the order of the ranking, with the answer saved for it
-		const asked = [...selection.wallets.map((w) => ({ ...w, ok: true })), ...selection.no_record.map((w) => ({ ...w, ok: false }))].sort((x, y) => x.bound_rank - y.bound_rank)
+		// Every place of the ranking gone through is either selected or passed over: a router or another contract (not asked), or an address vet402 could build no record for.
+		const passed = selection.no_record
+		const notAsked = passed.filter((w) => w.asked === false)
+		if (c.considered !== c.selected + passed.length || c.asked !== c.selected + passed.length - notAsked.length || c.no_record !== passed.length - notAsked.length || selection.wallets.length !== c.selected) bad.push('the counts of the selection do not add up')
+		if (!(c.selected >= selection.top || c.asked >= selection.max_asked || c.considered >= c.receivers)) bad.push('the selection stopped before either limit')
+		const routers = new Set((selection.routers ?? []).map((r) => lc(r.address)))
+		for (const w of notAsked) if (!(w.not_a_wallet === 'router' ? routers.has(lc(w.wallet)) : w.not_a_wallet === 'contract' && w.has_code === true)) bad.push(`${w.wallet} was passed over without asking, and is neither a listed router nor a contract`)
+		const asked = [...selection.wallets.map((w) => ({ ...w, ok: true })), ...passed.map((w) => ({ ...w, ok: false }))].sort((x, y) => x.bound_rank - y.bound_rank)
 		asked.forEach((w, i) => {
 			if (w.bound_rank !== i + 1) bad.push(`rank ${i + 1} was skipped`)
 			if (i > 0 && Number(asked[i - 1].bound_usd) < Number(w.bound_usd)) bad.push(`${w.wallet} is out of order`)
+			if (w.asked === false) return
 			const file = join(dir, 'records', `${lc(w.wallet)}.json`)
 			if (!existsSync(file)) return void bad.push(`no saved answer for ${w.wallet}`)
 			const saved = readJson(file)
 			if ((saved.http_status === 200 && Boolean(saved.facts)) !== w.ok) bad.push(`${w.wallet}: the saved answer says ${saved.http_status}, the selection says ${w.ok ? 'selected' : 'no record'}`)
 		})
 		const ranked = (selection.ranking_top ?? []).slice(0, asked.length)
-		if (canonicalJson(ranked.map((r) => lc(r.wallet))) !== canonicalJson(asked.map((w) => lc(w.wallet)))) bad.push('the addresses asked are not the top of the ranking')
+		if (canonicalJson(ranked.map((r) => lc(r.wallet))) !== canonicalJson(asked.map((w) => lc(w.wallet)))) bad.push('the addresses gone through are not the top of the ranking')
 		if (canonicalJson(context.selection.no_record) !== canonicalJson(selection.no_record)) bad.push("the walk's context lists other addresses with no record")
 		const strangers = [...new Set(trails.map((t) => lc(t.inputs.wallet)))].filter((w) => !context.wallets.some((x) => lc(x.wallet) === w))
 		if (strangers.length) bad.push(`${strangers.length} wallets in the walk are not in the selection`)
 		const by = (k) => context.wallets.filter((w) => w.cohort === k).length
-		return [bad.length === 0, bad.length ? bad.slice(0, 3).join('; ') : `${CLAIMS.walkDir}/selection.json asked vet402 about the top ${c.asked} addresses by what official venues sent them in blocks ${selection.window.from} to ${selection.window.to} (${selection.window.from_time.slice(0, 10)} to ${selection.window.to_time.slice(0, 10)}): ${c.selected} selected, ${c.no_record} with no record, each with its saved answer. ${selection.stop} Observations apart: ${by('watched')} watched wallet and ${by('same_ticker_buyers')} buyers of one token with the ticker ${selection.same_ticker_buyers?.ticker ?? '?'}`]
+		return [bad.length === 0, bad.length ? bad.slice(0, 3).join('; ') : `${CLAIMS.walkDir}/selection.json went through the top ${c.considered} addresses by what official venues sent them, directly or through ${routers.size} listed routers, in blocks ${selection.window.from} to ${selection.window.to} (${selection.window.from_time.slice(0, 10)} to ${selection.window.to_time.slice(0, 10)}): ${notAsked.length} routers or other contracts passed over without asking, ${c.asked} asked, ${c.selected} selected, ${c.no_record} with no record, each with its saved answer. ${selection.stop} Observations apart: ${by('watched')} watched wallet and ${by('same_ticker_buyers')} buyers of one token with the ticker ${selection.same_ticker_buyers?.ticker ?? '?'}`]
 	})
 	if (!context) return
 	await rep.check('records', () => {
 		const snapshot = readJson(join(REPO, 'token-check/registry-snapshot.json'))
+		const chainNames = existsSync(join(dir, 'tokens.json')) ? (readJson(join(dir, 'tokens.json')).names ?? {}) : {}
 		const list = Object.fromEntries(snapshot.tokens.map((t) => [lc(t.token), { symbol: t.symbol, name: t.name }]))
 		const resultsPath = join(REPO, 'docs/token-check/results.json')
 		const results = existsSync(resultsPath) ? { keccak: keccak256(new Uint8Array(readFileSync(resultsPath))), tokens: readJson(resultsPath).tokens ?? {} } : null
@@ -1994,7 +2114,7 @@ async function verifyLedger(rep, main, test, deep) {
 					if (!f || (f.issuer_token === true) !== said.issuer_token || (f.ticker ?? null) !== said.ticker || canonicalJson(f.reasons ?? []) !== canonicalJson(said.reasons)) return [false, `a decision about ${w} says something else about ${token} than docs/token-check/results.json`]
 				}
 				const decimals = Object.fromEntries(t.inputs.tokens_moved.map((m) => [m.token, m.decimals]))
-				if (canonicalJson(movedTokensFrom(saved.facts, t.inputs.movement.transfers, decimals, list, tc)) !== canonicalJson(t.inputs.tokens_moved)) return [false, `a decision about ${w} names a moved token differently from the issuer's list, the token-check results and the record`]
+				if (canonicalJson(movedTokensFrom(saved.facts, t.inputs.movement.transfers, decimals, list, tc, chainNames)) !== canonicalJson(t.inputs.tokens_moved)) return [false, `a decision about ${w} names a moved token differently from the issuer's list, the token-check results and the record`]
 			}
 		}
 		return [wallets.length > 0, `${wallets.length - without} records in ${CLAIMS.walkDir}/records hash to the X-Facts-Hash vet402 sent with them and give the fields every decision read. For ${without} wallets vet402 gave no record, and their decisions say so. Every moved token is named as the issuer's list (${snapshot.count} Stock Tokens, taken ${snapshot.list_taken_at.slice(0, 10)})${results ? `, the CRE token-check results ${short(results.keccak)}` : ''} and the record give it${results ? '' : '. No CRE token-check results file is present, so no decision names one'}`]
@@ -2034,6 +2154,15 @@ async function verifyLedger(rep, main, test, deep) {
 		]
 	})
 	if (!ledger) return
+	await rep.check('groups', () => {
+		// Recomputed here from the rows and the positions, not read from the ledger: the copy-guard book per group of wallets.
+		const rebuilt = ledgerOf(trails, feeds, ledger.mark_block, context).totals.by_group
+		if (canonicalJson(rebuilt) !== canonicalJson(ledger.totals.by_group ?? null)) return [false, `totals.by_group of ${CLAIMS.ledger} is not what the walk gives`]
+		const sum = (k) => Object.values(rebuilt).reduce((x, g) => x + g[k], 0)
+		if (sum('opened') !== ledger.totals.copy_guard.opened || sum('decisions') !== ledger.totals.decisions) return [false, 'the groups do not add up to the whole book']
+		const line = (name, g) => `${name}: ${g.wallets} wallets, ${g.decisions} decisions, copy-guard opened ${g.opened} and declined ${g.declined}, followed purchases median ${g.followed_purchases_usd.median} USD (sum ${g.followed_purchases_usd.sum}), at ${g.same_size.size_usd} USD each ${g.same_size.result_usd} USD${g.top_wallet ? `, ${g.top_wallet.opened} of ${g.opened} from ${shortAddr(g.top_wallet.wallet)}` : ''}`
+		return [true, `copy-guard per group, recomputed: ${Object.entries(rebuilt).map(([k, g]) => line(k, g)).join('; ')}`]
+	})
 	await rep.check('page', () => {
 		const html = readFileSync(join(REPO, CLAIMS.page), 'utf8')
 		const block = (id) => {
@@ -2109,24 +2238,7 @@ async function verifyLedger(rep, main, test, deep) {
 		}
 		return [byPrincipal, byPrincipal ? `SAMPLE mandate ${CLAIMS.sampleMandate} (${short(refs[0])}): the signature in every decision recovers to its principal ${shortAddr(signer)}, a testnet-only key that stands in for the principal. The real mandate, ${CLAIMS.mandate}, is not signed yet` : `the sample mandate is not signed by its principal`]
 	})
-	await rep.check('root onchain', async () => {
-		const anchor = readJson(join(dir, 'anchor.json'))
-		if (lc(anchor.root) !== lc(ledger.root)) return [false, `${CLAIMS.walkDir}/anchor.json names root ${anchor.root}, the ledger gives ${ledger.root}`]
-		if (!anchor.ledger_tx) return [false, 'the walk was only simulated: its root is not onchain']
-		const r = await test('eth_getTransactionReceipt', [anchor.ledger_tx])
-		const log = (r?.logs ?? []).find((l) => l.address.toLowerCase() === LEDGER_RECEIVER && l.topics?.[0]?.toLowerCase() === LEDGER_TOPIC)
-		if (!log || r.status !== '0x1') return [false, `no LedgerAnchored from LedgerRootReceiver in ${short(anchor.ledger_tx)}`]
-		const t = ledger.totals
-		const bad = []
-		if (lc(log.topics[1]) !== lc(ledger.root)) bad.push(`onchain root ${lc(log.topics[1])}`)
-		if (lc(log.topics[2]) !== ledger.mandate.keccak) bad.push('another mandate')
-		if (lc(log.topics[3]) !== ledger.limits_keccak) bad.push('other limits')
-		if (word(log.data, 0) !== keccak256(canonicalJson(ledger.rules))) bad.push('other rules')
-		const n = (i) => Number(BigInt(word(log.data, i)))
-		if (n(1) !== t.decisions || n(2) !== t.full || n(3) !== t.reduced || n(4) !== t.none) bad.push(`counts ${n(1)}/${n(2)}/${n(3)}/${n(4)}`)
-		if (n(5) !== ledger.mark_block) bad.push(`mark block ${n(5)}`)
-		return [bad.length === 0, bad.length ? `LedgerAnchored in ${short(anchor.ledger_tx)} differs: ${bad.join('; ')}` : `LedgerAnchored in ${short(anchor.ledger_tx)} on Robinhood Testnet has the Merkle root ${short(lc(ledger.root))} of all ${t.decisions} decisions, the same mandate, limits and rules, and the same counts`]
-	})
+	await checkLedgerRoot(rep, test, ledger, dir)
 	const seenVerdict = new Set()
 	for (const t of trails) {
 		const vtx = lc(t.inputs.cre.verdict_tx)
@@ -2157,6 +2269,69 @@ async function verifyLedger(rep, main, test, deep) {
 	}
 	rep.say(deep ? `  every decision against Robinhood Chain` : `  ${picked.size} of the ${trails.length} decisions against Robinhood Chain (--deep checks every one)`)
 	for (const i of [...picked].sort((a, b) => a - b)) await rep.check(`decision ${i + 1}`, () => chainFacts(main, trails[i]))
+}
+
+/**
+ * --quick: what a reader checks first, in seconds. The x402 payment, the record vet402
+ * anchored and the CRE verdict on it, the cards at the top of the page (each decision
+ * rerun and read against the chain), and the ledger's Merkle root against the testnet.
+ */
+async function verifyQuick(rep, main, test) {
+	const dir = join(REPO, CLAIMS.runDir)
+	let paid = []
+	rep.say('1. The x402 payment')
+	await rep.check('evidence', () => {
+		paid = loadTrails(dir)
+		return [paid.length > 0, `${rel(dir)} holds the record, the 402 exchange and ${paid.length} trails`]
+	})
+	await checkPayment(rep, main, {
+		tx: CLAIMS.paymentTx,
+		payer: CLAIMS.payer,
+		payee: CLAIMS.payee,
+		amount: CLAIMS.priceAtomic,
+		alsoNamedBy: [[`${CLAIMS.runDir}/x402-paid.json`, readJson(join(dir, 'x402-paid.json')).settlement?.transaction], ...paid.map((t) => [basename(t.path), t.trail.purchase.payment_tx])],
+	})
+	rep.say('2. The record vet402 anchored, and the CRE verdict on it')
+	await checkAnchor(rep, main, test, paid)
+	rep.say('3. The cards at the top of the page, and the ledger root')
+	const walk = join(REPO, CLAIMS.walkDir)
+	let ledger = null
+	let trails = []
+	let featured = []
+	await rep.check('cards', () => {
+		ledger = readJson(join(REPO, CLAIMS.ledger))
+		trails = readWalkFile(join(walk, 'trails.jsonl')).toString('utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l))
+		const html = readFileSync(join(REPO, CLAIMS.page), 'utf8')
+		const m = html.match(/<script type="application\/json" id="rows-data">([\s\S]*?)<\/script>/)
+		featured = m ? JSON.parse(m[1]).featured : []
+		const bad = []
+		for (const r of featured) {
+			const t = trails[r.n - 1]
+			if (!t) bad.push(`card ${r.n} has no decision`)
+			else {
+				const { problems } = trailProblems(t)
+				if (problems.length) bad.push(`card ${r.n}: ${problems[0]}`)
+				if (keccak256(canonicalJson(t)) !== lc(r.leaf)) bad.push(`card ${r.n} is not the decision whose leaf it names`)
+				if (canonicalJson(r.card) !== canonicalJson(t.card)) bad.push(`card ${r.n} on the page is not the card of its decision`)
+			}
+			if (canonicalJson(r) !== canonicalJson(ledger.rows[r.n - 1] ?? null)) bad.push(`card ${r.n} is not row ${r.n} of ${CLAIMS.ledger}`)
+		}
+		return [featured.length > 0 && bad.length === 0, bad.length ? bad.slice(0, 3).join('; ') : `the ${featured.length} cards at the top of ${CLAIMS.page} (decisions ${featured.map((r) => r.n).join(', ')}) rerun to the size, the rule rows and the card they show, and are rows of ${CLAIMS.ledger} with their leaves`]
+	})
+	for (const r of featured) await rep.check(`card ${r.n}`, () => chainFacts(main, trails[r.n - 1]))
+	if (!ledger) return
+	await rep.check('ledger leaves', () => {
+		const root = merkleRootOf(ledger.rows.map((r) => r.leaf))
+		return [root === lc(ledger.root), root === lc(ledger.root) ? `the ${ledger.rows.length} leaves of ${CLAIMS.ledger} give its root ${short(root)}` : `the leaves give ${root}, the ledger says ${ledger.root}`]
+	})
+	await checkLedgerRoot(rep, test, ledger, walk)
+	const seen = new Set()
+	for (const t of trails) {
+		const v = lc(t.inputs.cre.verdict_tx)
+		if (!v || seen.has(v)) continue
+		seen.add(v)
+		await checkVerdict(rep, test, t, null)
+	}
 }
 
 /** 6. The gate: the saved 402 exchange, the payment the agent built and did not sign, and the agent card. No chain read. */
@@ -2210,7 +2385,7 @@ export class Usage extends Error {}
 const SECTIONS = ['paid-run', 'ledger', 'gate']
 
 export function parseArgs(argv) {
-	const a = { offline: false, target: null, rpc: null, testnetRpc: null, only: null, deep: false }
+	const a = { offline: false, target: null, rpc: null, testnetRpc: null, only: null, deep: false, quick: false }
 	for (let i = 0; i < argv.length; i++) {
 		const k = argv[i]
 		const value = () => {
@@ -2221,6 +2396,7 @@ export function parseArgs(argv) {
 		else if (k === '--rpc') a.rpc = value()
 		else if (k === '--testnet-rpc') a.testnetRpc = value()
 		else if (k === '--deep') a.deep = true
+		else if (k === '--quick') a.quick = true
 		else if (k === '--only') {
 			a.only = argv[++i]
 			if (!SECTIONS.includes(a.only)) throw new Usage(`--only takes one of: ${SECTIONS.join(', ')}`)
@@ -2245,8 +2421,9 @@ export function resolveTarget(target) {
 	return target
 }
 
-const USAGE = `usage: node verify.mjs [trail.json | block number] [--only paid-run|ledger|gate] [--deep] [--offline] [--rpc URL] [--testnet-rpc URL]
+const USAGE = `usage: node verify.mjs [trail.json | block number] [--quick] [--only paid-run|ledger|gate] [--deep] [--offline] [--rpc URL] [--testnet-rpc URL]
   no argument    recheck the paid run in ${CLAIMS.runDir}, the practice ledger ${CLAIMS.ledger} and the gate
+  --quick        only the payment, the anchor, the CRE verdicts, the cards at the top of the page and the ledger root (seconds)
   block number   one of ${Object.keys(CLAIMS.decisions).join(', ')}
 exit code: 0 MATCH, 1 MISMATCH, 2 usage, 3 NOT CHECKED (an RPC could not be reached and nothing failed)`
 
@@ -2271,6 +2448,7 @@ export async function run(argv, { print = console.log, fetchImpl = fetch, sleep,
 	rep.say(args.offline ? '  chains  not read (--offline)' : `  chains  ${mainChain.name} ${mainChain.id} at ${new URL(mainChain.rpcs[0]).host}, ${testChain.name} ${testChain.id} at ${new URL(testChain.rpcs[0]).host}`)
 	await rep.check('keccak256', () => [checkKeccak(), checkKeccak() ? 'the built-in hash gives the published test values' : 'the built-in hash is broken; no other line can be trusted'])
 	if (path) await verifyOne(rep, main, test, path)
+	else if (args.quick) await verifyQuick(rep, main, test)
 	else {
 		if (!args.only || args.only === 'paid-run') await verifyPaidRun(rep, main, test)
 		if (!args.only || args.only === 'ledger') await verifyLedger(rep, main, test, args.deep)
@@ -2281,6 +2459,7 @@ export async function run(argv, { print = console.log, fetchImpl = fetch, sleep,
 	rep.say('')
 	rep.say(`${count('OK')} OK, ${count('FAIL')} FAIL, ${count('NOT CHECKED')} not checked${session.retries ? ` (an RPC was busy: asked again ${session.retries} ${session.retries === 1 ? 'time' : 'times'})` : ''}`)
 	rep.say(`RESULT: ${res.text}`)
+	if (args.quick && !path) rep.say('To check every decision, the selection, the page and the gate: node verify.mjs (about 90 seconds)')
 	return res.code
 }
 
