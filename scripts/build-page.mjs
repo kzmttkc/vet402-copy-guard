@@ -18,6 +18,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { canonicalJson, keccak256 } from '../verify.mjs'
+import { ARRIVALS, arrivalsOf, concentration, groupOf, groupsBrief, groupsOf, groupWords, observedToken, selectionSentence, verifyTimes } from './groups.mjs'
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => readFileSync(join(REPO, p), 'utf8')
@@ -101,7 +102,22 @@ const verifyOut = maybe('docs/verify/verify-output.txt', read)
 const tcAnchor = maybe('docs/token-check/anchor.json', json)
 const tcResults = maybe('docs/token-check/results.json', json)
 const recheck = maybe('docs/token-check/recheck-output.txt', (p) => read(p).trimEnd().split('\n').pop().match(/RECHECK: (\d+) of (\d+) rows agree, (\d+) differ/))
+// What the page says about the groups, the arrivals, the selection and the recheck: scripts/groups.mjs,
+// the same words and counts the README has.
+const selectionJson = maybe('docs/walk/selection.json', json)
+const groups = groupsOf(ledger, selectionJson)
+const vt = verifyTimes((p) => maybe(p, read), read('verify.mjs'))
 const extra = {
+	groups,
+	groups_brief: groupsBrief(groups),
+	concentration: concentration(groups),
+	selection_sentence: selectionSentence(selectionJson, groups),
+	observed_token: observedToken(selectionJson),
+	group_names: Object.fromEntries([...new Set([...rows.map((r) => r.cohort), 'top_buyers', 'same_ticker_buyers', 'watched'])].map((c) => [c, groupWords(groupOf(c), selectionJson).name])),
+	arrivals: arrivalsOf(ledger),
+	arrival_words: ARRIVALS.map(([key, label, means]) => ({ key, label, means })),
+	copy_guard_in_other_tokens: ledger.copy_guard_positions.filter((p) => p.asset === 'same_ticker' || p.fake === true).length,
+	verify_times: { quick: vt.quick, full: vt.full, has_quick: vt.hasQuick, promise: vt.promise, quick_tail: vt.quickOutput ? vt.quickOutput.trimEnd().split('\n').slice(-2).join(' / ') : null },
 	cards: chosen.map((x) => ({ slot: x.slot, caption: x.caption, n: x.row.n })),
 	anchor: maybe('docs/walk/anchor.json', json),
 	// The same fact as ledger.mandate.status === 'sample', kept under its old name for the template.
