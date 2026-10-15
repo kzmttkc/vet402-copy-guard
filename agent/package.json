@@ -9,6 +9,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@vet402/sdk": "0.7.1",
     "viem": "2.34.0"
   },
   "devDependencies": {

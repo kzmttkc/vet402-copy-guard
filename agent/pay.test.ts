@@ -1,4 +1,5 @@
 // The paying path without a network: ledger, lock, cap, chain floor, settlement.
+import { guardCheck, vet402SpendGuard } from './spend-guard'
 import { describe, expect, test } from 'bun:test'
 import { spawn, spawnSync } from 'node:child_process'
 import { existsSync, mkdtempSync, readdirSync, readFileSync, utimesSync, writeFileSync } from 'node:fs'
@@ -38,6 +39,7 @@ const opts = (file: string, over: Partial<PayOnceOpts> = {}): PayOnceOpts => ({
 	chainSpentAtomic: 0n,
 	allowance: 1_000_000n,
 	send: async () => ({ httpStatus: 200, settlement: { success: true, transaction: TX } }),
+	guard: async () => {},
 	...over,
 })
 
@@ -302,5 +304,41 @@ describe('fixed places and windows', () => {
 		expect(validitySeconds({ ...a, maxTimeoutSeconds: -5 })).toBe(120)
 		const t = permit2TypedData({ ...a, maxTimeoutSeconds: 86_400 }, PAYER, 1_791_500_000, 1n)
 		expect(t.authorization.deadline).toBe(String(1_791_500_000 + 120))
+	})
+})
+
+
+describe('payOnce: vet402 SpendGuard is asked before anything is signed', () => {
+	test('a refusal stops the payment: no pending entry, send never called', async () => {
+		const file = fresh()
+		let sent = false
+		const guard = guardCheck(vet402SpendGuard(5_000n, 1_000_000n), PAYER)
+		await expect(
+			payOnce(opts(file, { amount: 10_000n, guard, send: async () => { sent = true; return { httpStatus: 200, settlement: { success: true, transaction: TX } } } })),
+		).rejects.toThrow(/vet402 SpendGuard refused \(max_per_tx_exceeded\); nothing signed/)
+		expect(sent).toBe(false)
+		expect(existsSync(file) ? read(file).entries.length : 0).toBe(0)
+	})
+
+	test('within the user limits it allows, and the daily budget refuses the payment that would pass it', async () => {
+		const g = vet402SpendGuard(10_000n, 20_000n)
+		const check = guardCheck(g, PAYER)
+		await check(10_000n)
+		await check(10_000n)
+		await expect(check(10_000n)).rejects.toThrow(/daily_budget_exceeded/)
+	})
+
+	test('the guard runs after the cap check: a payment over the cap is refused by the cap, not the guard', async () => {
+		const file = fresh()
+		ledgerAt(file, ['1000000'])
+		let asked = false
+		await expect(payOnce(opts(file, { guard: async () => { asked = true } }))).rejects.toThrow()
+		expect(asked).toBe(false)
+	})
+
+	test('the guard never looks up the payee on Robinhood Chain (trustPolicy custom)', async () => {
+		const d = await vet402SpendGuard(10_000n, 1_000_000n).evaluate({ payee: PAYER, amountUsd: 0.01 })
+		expect(d.allow).toBe(true)
+		expect(d.payeeScore).toBeNull()
 	})
 })

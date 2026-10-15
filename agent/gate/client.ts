@@ -17,6 +17,7 @@ import { effectiveSpent, payOnce, readChainSpend } from '../pay'
 import { type Terms, USDG } from '../rules'
 import type { Purchase } from '../trail'
 import { assertUnderCap, decodeRequired, loadLedger, MAX_SPEND_ATOMIC, PERMIT2, paymentHeader, permit2TypedData, pickAccept, RefusedTerms, termsOf, X402_PERMIT2_PROXY } from '../x402'
+import { guardCheck, vet402SpendGuard } from '../spend-guard'
 
 export type GateVerdict = {
 	workflow: string
@@ -131,6 +132,7 @@ export async function payGate(gateUrl: string, input: unknown, o: GateOpts, deps
 	let paid: Response | null = null
 	let signedDigest = built.digest
 	const result = await payOnce({
+		guard: guardCheck(vet402SpendGuard(o.perDecisionAtomic, o.capAtomic), accept.payTo),
 		ledgerFile: o.ledgerFile,
 		payer: o.payer,
 		amount,

@@ -5,6 +5,7 @@
     "": {
       "name": "vet402-copy-guard-agent",
       "dependencies": {
+        "@vet402/sdk": "0.7.1",
         "viem": "2.34.0",
       },
       "devDependencies": {
@@ -33,6 +34,8 @@
     "@types/node": ["@types/node@26.6.4", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-ldVPDCzj7fsaGZrLB0NuHuTvJcsNasysBAqMolr/cgxrLd1xbqxIr3XJiPnHHJUCxj5sNF1vnRj9aWnrVh5Jcg=="],
 
     "@types/ws": ["@types/ws@8.5.14", "", { "dependencies": { "@types/node": "*" } }, "sha512-bd/YFLW+URhBzMXurx7lWByOu+xzU9+kb3RboOteXYDfW+tr+JZa99OyNmPINEGB/ahzKrEuc8rcv4gnpJmxTw=="],
+
+    "@vet402/sdk": ["@vet402/sdk@0.7.1", "", { "peerDependencies": { "@solana/web3.js": "^1.98.4", "viem": "^2.55.1" }, "optionalPeers": ["@solana/web3.js", "viem"] }, "sha512-FkuBs1vbmO1Loa6HeKC6Cpg+WvpW2CzkzXenfFv36HDIuL9kkhFiwHKMT8sml82o+gZ2/xXa/jljU8ayMd5lng=="],
 
     "abitype": ["abitype@1.0.8", "", { "peerDependencies": { "typescript": ">=5.0.4", "zod": "^3 >=3.22.0" }, "optionalPeers": ["typescript", "zod"] }, "sha512-ZeiI6h3GnW06uYDLx0etQtX/p8E24UaHHBj57RSjK7YBFe7iuVn07EDpOeP451D06sF27VOz9JJPlIKJmXgkEg=="],
 
