@@ -276,7 +276,7 @@ const fence = (body) => `\`\`\`\n${body}\n\`\`\``
 const VT = verifyTimes((p) => (has(p) ? read(p) : null), read('verify.mjs'))
 const jump = `| If you are judging | Start here |
 |---|---|
-| **Anyone** | [Verify it yourself in 60 seconds, 4 steps](#${slug(VT.heading)}) |
+| **Anyone** | [Verify it yourself in 20 seconds, 4 steps](#${slug(VT.heading)}) |
 | **Chainlink**, Best workflow with CRE | [Chainlink: Best workflow with CRE](#chainlink-best-workflow-with-cre). The one \`cre workflow simulate\` line, the bounty text line by line, the CRE code guide |
 | **RYO-CHAN**, Autonomous Agents | [RYO-CHAN: Autonomous Agents](#ryo-chan-autonomous-agents). The bounty text phrase by phrase, the practice trade ledger, one sentence turned into limits |
 | **BLI**, LegalTech and RegTech | [BLI: LegalTech and RegTech](#bli-legaltech-and-regtech). Who the agent acts for, two questions from BLI's own stage, the regulators' words |
@@ -406,7 +406,7 @@ const changes = `The last column holds only times read from saved runs on this m
 |---|---|---|---|
 | A person opens a block explorer and compares a token's contract with the issuer's list by eye, if they think of it | \`token-check\` reads the code hash, the beacon and the official list from the chain | the check runs before the agent acts and returns a reason code a machine can read | ${tcSecs !== null ? `${tcSecs} s for ${plural((tcLog.match(/\] (NOT_)?ISSUER_TOKEN /g) ?? []).length, 'token', 'tokens')} at one block ([\`${batchFile.replace('.payload.json', '.cre.txt')}\`](${batchDir}/${batchFile.replace('.payload.json', '.cre.txt')}))` : 'not measured'} |
 | A reader trusts the site that shows a wallet's record | \`rwa-verify\` recomputes the record's hash and reads its anchor | MATCH or MISMATCH with one bit per failed check, as an event | ${rwaSecs !== null ? `${rwaSecs} s ([\`${rwaLogPath}\`](${rwaLogPath}))` : 'not measured'} |
-| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | ${VT.quick ? `${secondsWords(VT.quick)} for \`node verify.mjs --quick\`, ` : ''}${runTimes.length ? `${range(runTimes.map((r) => r.s))} s for \`node verify.mjs\` on this walk, ${runTimes.length} runs back to back${fiveDay ? ` on ${fiveDay}` : ''}${allMatch ? ', each RESULT: MATCH' : ''} ([\`docs/verify/verify-five-runs.txt\`](docs/verify/verify-five-runs.txt)). Most of it is waiting on the public RPC` : 'not measured'} |`
+| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | ${VT.quick ? `${secondsWords(VT.quick)} for \`node verify.mjs --quick\`, ` : ''}${runTimes.length ? `${range(runTimes.map((r) => r.s))} s for \`node verify.mjs\` on this walk, ${runTimes.length} runs back to back${fiveDay ? ` on ${fiveDay}` : ''}${allMatch ? ', each RESULT: MATCH' : ''} ([\`docs/verify/verify-five-runs.txt\`](docs/verify/verify-five-runs.txt)). Most of it is local computation, not the network: \`node verify.mjs --offline\` reads no RPC and still took 165 s on the author's laptop on 2026-10-15` : 'not measured'} |`
 
 const creSimulate = [
 	'Both lines run from the root of the repo, after `cre login` and `bun install` in the workflow\'s folder. No key is needed. The time at the start of each saved log line is the machine\'s local clock printed with a `Z` (row 3 of the notes below), so the excerpts leave it out.',

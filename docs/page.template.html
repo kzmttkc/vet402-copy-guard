@@ -201,7 +201,6 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 <tr><td>&ldquo;record the practice trades they would make&rdquo;</td><td><a href="#ledger">The practice ledger</a>: every decision, the position it opened or did not open, with entry, size and exit.</td></tr>
 <tr><td>&ldquo;show cause and effect&rdquo;</td><td><a href="#cards">Every card</a>: what happened, why, and the action that follows.</td></tr>
 <tr><td>&ldquo;preserve a repeatable reasoning trail&rdquo;</td><td>No language model. The same inputs and the same limits give the same trail, and <a href="#verify">the recheck</a> repeats it with separate code.</td></tr>
-<tr><td>&ldquo;transparent signal rules and user-defined risk limits&rdquo;</td><td>Fixed rules, and <a href="#bli">the limits the user wrote</a>.</td></tr>
 <tr><td>&ldquo;Explain selected and rejected candidates&rdquo;</td><td>Declined moves stay in the ledger, each with its reasons.</td></tr>
 </table></div>
 <p class="note"><b>One sentence, two values.</b> A person who says &ldquo;put at most $50 on one stock and stop the loss at 15%&rdquo; changes two lines of <code>limits.json</code>: <code>"full_usd": "50.00"</code> and <code>"stop_loss_pct": "15"</code>. The file is edited by hand, and there is no parser for the sentence. Every later decision names the new file by hash, and the mandate has to be signed again, because new limits need the principal's consent.</p>

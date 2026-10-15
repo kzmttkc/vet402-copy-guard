@@ -7,7 +7,7 @@ Anyone can deploy a token called NVDA. copy-guard is an agent that checks which 
 <!-- JUMP:BEGIN -->
 | If you are judging | Start here |
 |---|---|
-| **Anyone** | [Verify it yourself in 60 seconds, 4 steps](#verify-it-yourself-in-20-seconds) |
+| **Anyone** | [Verify it yourself in 20 seconds, 4 steps](#verify-it-yourself-in-20-seconds) |
 | **Chainlink**, Best workflow with CRE | [Chainlink: Best workflow with CRE](#chainlink-best-workflow-with-cre). The one `cre workflow simulate` line, the bounty text line by line, the CRE code guide |
 | **RYO-CHAN**, Autonomous Agents | [RYO-CHAN: Autonomous Agents](#ryo-chan-autonomous-agents). The bounty text phrase by phrase, the practice trade ledger, one sentence turned into limits |
 | **BLI**, LegalTech and RegTech | [BLI: LegalTech and RegTech](#bli-legaltech-and-regtech). Who the agent acts for, two questions from BLI's own stage, the regulators' words |
@@ -300,7 +300,7 @@ The last column holds only times read from saved runs on this machine: the simul
 |---|---|---|---|
 | A person opens a block explorer and compares a token's contract with the issuer's list by eye, if they think of it | `token-check` reads the code hash, the beacon and the official list from the chain | the check runs before the agent acts and returns a reason code a machine can read | 6 s for 12 tokens at one block ([`batch-7.cre.txt`](docs/token-check/batch/batch-7.cre.txt)) |
 | A reader trusts the site that shows a wallet's record | `rwa-verify` recomputes the record's hash and reads its anchor | MATCH or MISMATCH with one bit per failed check, as an event | 3 s ([`docs/simulate-match.txt`](docs/simulate-match.txt)) |
-| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 11 to 12 s for `node verify.mjs --quick`, 153 to 232 s for `node verify.mjs` on this walk, 5 runs back to back on 2026-10-14, each RESULT: MATCH ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)). Most of it is waiting on the public RPC |
+| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 11 to 12 s for `node verify.mjs --quick`, 153 to 232 s for `node verify.mjs` on this walk, 5 runs back to back on 2026-10-14, each RESULT: MATCH ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)). Most of it is local computation, not the network: `node verify.mjs --offline` reads no RPC and still took 165 s on the author's laptop on 2026-10-15 |
 <!-- CHANGES:END -->
 
 ### Why CRE
