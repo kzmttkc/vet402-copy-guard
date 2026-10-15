@@ -1,5 +1,5 @@
 // The paying path without a network: ledger, lock, cap, chain floor, settlement.
-import { guardCheck, vet402SpendGuard } from './spend-guard'
+import { guardCheck, resetGuardsForTests, vet402SpendGuard } from './spend-guard'
 import { describe, expect, test } from 'bun:test'
 import { spawn, spawnSync } from 'node:child_process'
 import { existsSync, mkdtempSync, readdirSync, readFileSync, utimesSync, writeFileSync } from 'node:fs'
@@ -312,6 +312,7 @@ describe('payOnce: vet402 SpendGuard is asked before anything is signed', () => 
 	test('a refusal stops the payment: no pending entry, send never called', async () => {
 		const file = fresh()
 		let sent = false
+		resetGuardsForTests()
 		const guard = guardCheck(vet402SpendGuard(5_000n, 1_000_000n), PAYER)
 		await expect(
 			payOnce(opts(file, { amount: 10_000n, guard, send: async () => { sent = true; return { httpStatus: 200, settlement: { success: true, transaction: TX } } } })),
@@ -320,11 +321,21 @@ describe('payOnce: vet402 SpendGuard is asked before anything is signed', () => 
 		expect(existsSync(file) ? read(file).entries.length : 0).toBe(0)
 	})
 
-	test('within the user limits it allows, and the daily budget refuses the payment that would pass it', async () => {
-		const g = vet402SpendGuard(10_000n, 20_000n)
-		const check = guardCheck(g, PAYER)
-		await check(10_000n)
-		await check(10_000n)
+	test('one guard per process: the daily budget adds up across payments and refuses the one that would pass it', async () => {
+		resetGuardsForTests()
+		expect(vet402SpendGuard(10_000n, 20_000n)).toBe(vet402SpendGuard(10_000n, 20_000n))
+		const file = fresh()
+		const pay = () => payOnce(opts(file, { amount: 10_000n, guard: guardCheck(vet402SpendGuard(10_000n, 20_000n), PAYER) }))
+		await pay()
+		await pay()
+		await expect(pay()).rejects.toThrow(/daily_budget_exceeded/)
+		expect(read(file).entries.length).toBe(2)
+	})
+
+	test('a 1.00 budget allows exactly 100 payments of 0.01 (no floating-point drift)', async () => {
+		resetGuardsForTests()
+		const check = guardCheck(vet402SpendGuard(10_000n, 1_000_000n), PAYER)
+		for (let i = 0; i < 100; i++) await check(10_000n)
 		await expect(check(10_000n)).rejects.toThrow(/daily_budget_exceeded/)
 	})
 
@@ -332,11 +343,12 @@ describe('payOnce: vet402 SpendGuard is asked before anything is signed', () => 
 		const file = fresh()
 		ledgerAt(file, ['1000000'])
 		let asked = false
-		await expect(payOnce(opts(file, { guard: async () => { asked = true } }))).rejects.toThrow()
+		await expect(payOnce(opts(file, { guard: async () => { asked = true } }))).rejects.toBeInstanceOf(CapReached)
 		expect(asked).toBe(false)
 	})
 
 	test('the guard never looks up the payee on Robinhood Chain (trustPolicy custom)', async () => {
+		resetGuardsForTests()
 		const d = await vet402SpendGuard(10_000n, 1_000_000n).evaluate({ payee: PAYER, amountUsd: 0.01 })
 		expect(d.allow).toBe(true)
 		expect(d.payeeScore).toBeNull()

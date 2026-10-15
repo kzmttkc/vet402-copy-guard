@@ -17,14 +17,37 @@ export function atomicToUsd(a: bigint): number {
 	return Number(a) / USDG_DECIMALS
 }
 
-/** One guard per process. Its daily counter lives in memory, so it is a brake, not the ledger. */
+// SpendGuard adds amounts as floating-point dollars: 100 payments of 0.01 against a 1.00
+// budget reach 0.99000000000000007 after 99, and the 100th is refused. A budget one
+// nanodollar above the cap keeps exactly the cap's number of payments allowed, and is far
+// below one atomic USDG (0.000001), so it can never let an extra payment through.
+const FLOAT_SLACK_USD = 1e-9
+
+const guards = new Map<string, SpendGuard>()
+
+/**
+ * The guard for this process. It is made once per (limit for one decision, cap) and reused,
+ * so its in-memory daily counter adds up every payment this process makes in a UTC day.
+ * The ledger cap and the chain floor still bound the total across processes.
+ */
 export function vet402SpendGuard(perDecisionAtomic: bigint, capAtomic: bigint): SpendGuard {
-	return new SpendGuard(
-		{ maxPerTxUsd: atomicToUsd(perDecisionAtomic), dailyBudgetUsd: atomicToUsd(capAtomic), trustPolicy: 'custom' },
-		async () => {
-			throw new Error('payee lookup is off: vet402 has no payee verdict on Robinhood Chain yet')
-		},
-	)
+	const key = `${perDecisionAtomic}:${capAtomic}`
+	let g = guards.get(key)
+	if (!g) {
+		g = new SpendGuard(
+			{ maxPerTxUsd: atomicToUsd(perDecisionAtomic), dailyBudgetUsd: atomicToUsd(capAtomic) + FLOAT_SLACK_USD, trustPolicy: 'custom' },
+			async () => {
+				throw new Error('payee lookup is off: vet402 has no payee verdict on Robinhood Chain yet')
+			},
+		)
+		guards.set(key, g)
+	}
+	return g
+}
+
+/** Tests only: forget the guards made so far. */
+export function resetGuardsForTests() {
+	guards.clear()
 }
 
 export function guardCheck(guard: SpendGuard, payTo: string): GuardCheck {
