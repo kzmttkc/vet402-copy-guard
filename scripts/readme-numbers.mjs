@@ -276,10 +276,11 @@ const fence = (body) => `\`\`\`\n${body}\n\`\`\``
 const VT = verifyTimes((p) => (has(p) ? read(p) : null), read('verify.mjs'))
 const jump = `| If you are judging | Start here |
 |---|---|
+| **Anyone** | [Verify it yourself in 60 seconds, 4 steps](#${slug(VT.heading)}) |
 | **Chainlink**, Best workflow with CRE | [Chainlink: Best workflow with CRE](#chainlink-best-workflow-with-cre). The one \`cre workflow simulate\` line, the bounty text line by line, the CRE code guide |
 | **RYO-CHAN**, Autonomous Agents | [RYO-CHAN: Autonomous Agents](#ryo-chan-autonomous-agents). The bounty text phrase by phrase, the practice trade ledger, one sentence turned into limits |
 | **BLI**, LegalTech and RegTech | [BLI: LegalTech and RegTech](#bli-legaltech-and-regtech). Who the agent acts for, two questions from BLI's own stage, the regulators' words |
-| Any of them | [${VT.heading}](#${slug(VT.heading)}), [Details](#details), [What it does not claim](#what-it-does-not-claim) |`
+| Any of them | [Details](#details), [What it does not claim](#what-it-does-not-claim) |`
 const clone = 'git clone https://github.com/kzmttkc/vet402-copy-guard && cd vet402-copy-guard'
 const quickTail = VT.quickOutput ? VT.quickOutput.trimEnd().split('\n').slice(-2).join('\n') : null
 const fullTimes = VT.full ? `, ${secondsWords(VT.full)} in ${plural(VT.full.runs, 'saved run', 'saved runs')}${VT.full.day ? ` of ${VT.full.day}` : ''}` : ''
@@ -291,7 +292,7 @@ node verify.mjs --quick
 
 \`--quick\` rechecks the payment, the anchors, the CRE verdicts, the first four cards of the page and the ledger's root against both chains${VT.quick ? `, in ${secondsWords(VT.quick)} (${plural(VT.quick.runs, 'saved run', 'saved runs')}${VT.quick.day ? ` of ${VT.quick.day}` : ''})` : ''}.${quickTail ? ` Its last two lines:\n\n${fence(quickTail)}` : ''}
 
-The whole ledger, every decision and every rule, is one more line${fullTimes}. Most of that time is waiting on the public RPC.
+The whole ledger, every decision and every rule, is one more line${fullTimes}. Most of that time is local computation: \`node verify.mjs --offline\`, which reads no RPC, took 165 s on the author's laptop on 2026-10-15.
 
 \`\`\`bash
 node verify.mjs
@@ -424,10 +425,8 @@ if (tcAnchor && tcResults) {
 	const not = rows.filter((r) => !r.issuer_token)
 	const usdg = not.filter((r) => r.reasons.includes('USDG_ADDRESS'))
 	const listedUnconfirmed = not.filter((r) => r.reasons.includes('IN_ISSUER_LIST'))
-	const sameTicker = not.filter((r) => r.reasons.includes('NOT_IN_ISSUER_LIST') && r.reasons.some((x) => ['TICKER_SAME_AS_ISSUER_TOKEN', 'TICKER_SAME_AFTER_FOLDING', 'NAME_SAME_AS_ISSUER_TOKEN', 'NAME_ENDS_LIKE_ISSUER_TOKEN', 'ISSUER_CODE_AT_UNLISTED_ADDRESS'].includes(x)))
-	const readsUsdg = not.filter((r) => r.reasons.includes('TICKER_OR_NAME_READS_AS_USDG') && !sameTicker.includes(r))
+	const lookalike = not.filter((r) => r.reasons.includes('NOT_IN_ISSUER_LIST') && r.reasons.some((x) => MARKS.includes(x)))
 	const plain = not.filter((r) => r.reasons.includes('NOT_IN_ISSUER_LIST') && !r.reasons.some((x) => MARKS.includes(x)))
-	const invisible = not.filter((r) => r.reasons.includes('INVISIBLE_CHARACTERS'))
 	const updated = issuer.filter((r) => r.multiplier_updates > 0)
 	const recheck = has('docs/token-check/recheck-output.txt') ? read('docs/token-check/recheck-output.txt').trimEnd().split('\n').pop() : null
 	const runs = tcDetails?.runs ?? tcResults.cre_runs.map((r, i) => ({ run: i + 1, tx: r.tx }))
@@ -437,11 +436,9 @@ if (tcAnchor && tcResults) {
 |---|---|
 | the issuer's Stock Tokens, every mark confirmed from the chain (the list, the code hash, the beacon, the factory's log) | ${issuer.length} |
 | of them with a share multiplier update logged | ${updated.length} |
-| not the issuer's | ${not.length} |
-| of them USDG itself | ${usdg.length} |
-| of them at an address outside the list with the ticker or the name of a listed Stock Token | ${sameTicker.length} |
-| of them at an address outside the list whose ticker or name reads as USDG${invisible.length ? ` (${invisible.length} with invisible characters)` : ''} | ${readsUsdg.length} |
-| of them at an address outside the list with no mark of a listed token | ${plain.length} |
+| USDG itself | ${usdg.length} |
+| at an address outside the list with the ticker or name of a listed Stock Token or of USDG | ${lookalike.length} |
+| at an address outside the list with no mark of a listed Stock Token or of USDG | ${plain.length} |
 ${listedUnconfirmed.length ? `| of them in the list, with a mark the chain did not confirm | ${listedUnconfirmed.length} |\n` : ''}
 Each run wrote the hash of its rows in a \`TokenBatchChecked\` event (${runs.map((r) => `[run ${r.run}](https://explorer.testnet.chain.robinhood.com/tx/${r.tx}?tab=logs)`).join(', ')}). One more run read those receipts back over the EVM capability and wrote \`keccak256(results.json)\` = \`${short(tcAnchor.results_keccak)}\` in [\`${short(tcAnchor.anchor_tx)}\`](https://explorer.testnet.chain.robinhood.com/tx/${tcAnchor.anchor_tx}?tab=logs), to \`TokenCheckReceiver\` on Robinhood Testnet. Every decision of the walk names that file by the same hash. ${recheck ? `\`node token-check/recheck.mjs\` reads every row again over plain JSON-RPC, with no CRE and no code shared with the workflow. Its last line: \`${recheck}\`.` : ''} The codes say what was read. None of them says who made a token or why.`
 }

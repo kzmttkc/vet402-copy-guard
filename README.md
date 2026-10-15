@@ -1,18 +1,21 @@
 # vet402 copy-guard
 
+copy-guard is the RWA rule set of vet402. vet402 buys what x402 APIs sell with real USDC, re-reads settlement on-chain and publishes every attempt: 8,000+ paid calls on Base since Aug 14, 2026, plus Solana, Tempo, XRPL, Arc and Celo ([export](https://vet402.com/api/v1/observatory/export.csv)).
+
 Anyone can deploy a token called NVDA. copy-guard is an agent that checks which token really moved before it would copy a wallet, and it leaves a record that anyone can recheck.
 
 <!-- JUMP:BEGIN -->
 | If you are judging | Start here |
 |---|---|
+| **Anyone** | [Verify it yourself in 60 seconds, 4 steps](#verify-it-yourself-in-20-seconds) |
 | **Chainlink**, Best workflow with CRE | [Chainlink: Best workflow with CRE](#chainlink-best-workflow-with-cre). The one `cre workflow simulate` line, the bounty text line by line, the CRE code guide |
 | **RYO-CHAN**, Autonomous Agents | [RYO-CHAN: Autonomous Agents](#ryo-chan-autonomous-agents). The bounty text phrase by phrase, the practice trade ledger, one sentence turned into limits |
 | **BLI**, LegalTech and RegTech | [BLI: LegalTech and RegTech](#bli-legaltech-and-regtech). Who the agent acts for, two questions from BLI's own stage, the regulators' words |
-| Any of them | [Verify it yourself in 20 seconds](#verify-it-yourself-in-20-seconds), [Details](#details), [What it does not claim](#what-it-does-not-claim) |
+| Any of them | [Details](#details), [What it does not claim](#what-it-does-not-claim) |
 <!-- JUMP:END -->
 
 > "$600 out the window in seconds"
-> @DCA_Sean, a Robinhood Chain user, after a coin that Protos reports as a scam appeared in the sell screen of the wallet app. Quoted by [Protos, 2026-07-10](https://protos.com/robinhood-chain-scams-are-already-costing-users-dearly/).
+> @DCA_Sean, a Robinhood Chain user, after a coin that Protos reports appeared in the sell screen of the wallet app. Quoted by [Protos, 2026-07-10](https://protos.com/robinhood-chain-scams-are-already-costing-users-dearly/).
 
 > "I was asleep when the losses accumulated."
 > crypto_chris, writing about an AI agent that was left to trade alone. [BlockEden forum, 2026-02-06](https://blockeden.xyz/forum/t/my-ai-agent-lost-12k-in-a-weekend-a-cautionary-tale-about-autonomous-defi/368).
@@ -50,7 +53,7 @@ RESULT: MATCH
 To check every decision, the selection, the page and the gate: node verify.mjs (about 3 minutes)
 ```
 
-The whole ledger, every decision and every rule, is one more line, 153 to 232 s in 5 saved runs of 2026-10-14. Most of that time is waiting on the public RPC.
+The whole ledger, every decision and every rule, is one more line, 153 to 232 s in 5 saved runs of 2026-10-14. Most of that time is local computation: `node verify.mjs --offline`, which reads no RPC, took 165 s on the author's laptop on 2026-10-15.
 
 ```bash
 node verify.mjs
@@ -247,11 +250,9 @@ From [`docs/simulate-match.txt`](docs/simulate-match.txt), saved 2026-10-08. The
 |---|---|
 | the issuer's Stock Tokens, every mark confirmed from the chain (the list, the code hash, the beacon, the factory's log) | 51 |
 | of them with a share multiplier update logged | 16 |
-| not the issuer's | 92 |
-| of them USDG itself | 1 |
-| of them at an address outside the list with the ticker or the name of a listed Stock Token | 12 |
-| of them at an address outside the list whose ticker or name reads as USDG (26 with invisible characters) | 55 |
-| of them at an address outside the list with no mark of a listed token | 24 |
+| USDG itself | 1 |
+| at an address outside the list with the ticker or name of a listed Stock Token or of USDG | 67 |
+| at an address outside the list with no mark of a listed Stock Token or of USDG | 24 |
 
 Each run wrote the hash of its rows in a `TokenBatchChecked` event ([run 1](https://explorer.testnet.chain.robinhood.com/tx/0xda1a216baab1af12ccc41a92be94d7c6558a8abd1396b7aa06ea77d9fc9b1929?tab=logs), [run 2](https://explorer.testnet.chain.robinhood.com/tx/0x1b629f69f76bfc82ee050d90990c2bd55a7ba3c866a28d4e1a0eddc46b7719c3?tab=logs), [run 3](https://explorer.testnet.chain.robinhood.com/tx/0x5a056b974b3648747c236dfe58f5fd6c849d955d70e86431d028093346f8f373?tab=logs), [run 4](https://explorer.testnet.chain.robinhood.com/tx/0xbcc95f7cb393854cc5e5b0562466dc778d3cf92d4d9eeb896b6177f3baa58d25?tab=logs), [run 5](https://explorer.testnet.chain.robinhood.com/tx/0x189e0eb9900d602c71adec6a0a8d1ac52fe92bc6d5e14c2de632f9e745c1abf3?tab=logs), [run 6](https://explorer.testnet.chain.robinhood.com/tx/0x021ae09aadf4517a3d880dd55e69648e68c4edfa21cc8242c198a9070a8cb546?tab=logs), [run 7](https://explorer.testnet.chain.robinhood.com/tx/0xf580989891b9050e23fff002fab8090a627d287f0fba8d3162ef613b10b439f2?tab=logs), [run 8](https://explorer.testnet.chain.robinhood.com/tx/0xc9ba3818f454796da12a5b6efd1074f1c3470dcd50cb52671014993ece89d616?tab=logs), [run 9](https://explorer.testnet.chain.robinhood.com/tx/0x83b8ed7206c3359d489b9359937876fb6e8dcbe3682263c680549204bf83adf9?tab=logs), [run 10](https://explorer.testnet.chain.robinhood.com/tx/0xaae6dad2b49ceda82c1bf4ff797ab8b7743f14ef2922f7d491d67ca6ccc84c2b?tab=logs), [run 11](https://explorer.testnet.chain.robinhood.com/tx/0xe46ea6a7a70441c60f6d837caa88171f77fc949ff7487de64f9962df71a04298?tab=logs), [run 12](https://explorer.testnet.chain.robinhood.com/tx/0x694ddb03aeb9b49ef4d8b99c358d3173fa661527de8748f7aef12ac09039c49e?tab=logs), [run 13](https://explorer.testnet.chain.robinhood.com/tx/0x977bb55a90a6257287d4e99de3a2c3ee6ff77ec3cff84755b921be4ccbc39994?tab=logs), [run 14](https://explorer.testnet.chain.robinhood.com/tx/0xae8bb10664177f9ea48a9e3a523a6628a9d32cccc5267c64eba52755d4664a5b?tab=logs), [run 15](https://explorer.testnet.chain.robinhood.com/tx/0xb5a2fb15bb5a9a4314535de154fad69f0400472e6d7811743c25d731eb11abe2?tab=logs)). One more run read those receipts back over the EVM capability and wrote `keccak256(results.json)` = `0xe2fcacc3…535975` in [`0x2328a939…1225af`](https://explorer.testnet.chain.robinhood.com/tx/0x2328a9398ddf7ad80aa7a1149bc4417cfb57783c57be6e095d44f0df311225af?tab=logs), to `TokenCheckReceiver` on Robinhood Testnet. Every decision of the walk names that file by the same hash. `node token-check/recheck.mjs` reads every row again over plain JSON-RPC, with no CRE and no code shared with the workflow. Its last line: `RECHECK: 143 of 143 rows agree, 0 differ; state read at the checked block for 143, as it is now for 0; 0 problems with the onchain trail; 1001 RPC requests`. The codes say what was read. None of them says who made a token or why.
 <!-- CRE_NUMBERS:END -->
@@ -299,7 +300,7 @@ The last column holds only times read from saved runs on this machine: the simul
 |---|---|---|---|
 | A person opens a block explorer and compares a token's contract with the issuer's list by eye, if they think of it | `token-check` reads the code hash, the beacon and the official list from the chain | the check runs before the agent acts and returns a reason code a machine can read | 6 s for 12 tokens at one block ([`batch-7.cre.txt`](docs/token-check/batch/batch-7.cre.txt)) |
 | A reader trusts the site that shows a wallet's record | `rwa-verify` recomputes the record's hash and reads its anchor | MATCH or MISMATCH with one bit per failed check, as an event | 3 s ([`docs/simulate-match.txt`](docs/simulate-match.txt)) |
-| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 11 to 12 s for `node verify.mjs --quick`, 153 to 232 s for `node verify.mjs` on this walk, 5 runs back to back on 2026-10-14, each RESULT: MATCH ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)). Most of it is local computation, not the network: `node verify.mjs --offline` reads no RPC and still took 165 s (164 s of CPU) on the author's laptop on 2026-10-15 |
+| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 11 to 12 s for `node verify.mjs --quick`, 153 to 232 s for `node verify.mjs` on this walk, 5 runs back to back on 2026-10-14, each RESULT: MATCH ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)). Most of it is waiting on the public RPC |
 <!-- CHANGES:END -->
 
 ### Why CRE
@@ -345,7 +346,6 @@ RYO-CHAN protects investors with an anti-rug scanner. copy-guard does a neighbou
 | "record the practice trades they would make" | [the practice ledger](#the-practice-ledger) below: every decision, the position it opened or did not open, with entry, size and exit |
 | "show cause and effect" | every card: what happened, why, and the action that follows. Every decision: one row per rule with the value it read |
 | "preserve a repeatable reasoning trail" | no language model. The same inputs and the same limits give the same trail, and `verify.mjs` repeats it with separate code |
-| "transparent signal rules and user-defined risk limits" | [the rules](#the-rules) in two files, and [`limits.json`](#the-users-limits), which the user writes |
 | "Explain selected and rejected candidates" | rejected moves stay in the ledger, each with its reasons |
 | "entry, sizing, and exit as one decision" | one position object: the feed's value at the block, the size from the limits, the exit rule |
 | Whale Movement Tracker, "notable wallet activity" to "a final market verdict" | see the sentence under this table for how the wallets were chosen and how large their purchases were |
@@ -457,7 +457,7 @@ The three headings below are the words the Blockchain Legal Institute uses for i
 The principal is an address. It is not a legal identity: nothing here ties that address to a named person or company, and nothing here is a registration.
 
 <!-- MANDATE:BEGIN -->
-**Mandate: sample, not yet signed by the principal.** This walk used `mandate/sample/mandate.json`. Its principal `0xbb62…f48d` is a testnet-only key that stands in for the principal. The mandate meant for signing, `mandate/mandate.json`, names `0x2FFb…AE9e` and has no signature yet, so no decision in this walk carries the principal's own signature. After that signature the walk is run again.
+**Mandate: sample, not yet signed by the principal.** This walk used `mandate/sample/mandate.json`. Its principal `0xbb62…f48d` is a testnet-only key that stands in for the principal. The mandate meant for signing, `mandate/mandate.json`, names `0x502B…b8e6` and has no signature yet, so no decision in this walk carries the principal's own signature. After that signature the walk is run again.
 <!-- MANDATE:END -->
 
 What the mandate allows and forbids, in its own words (`scope` in `mandate/mandate.json`):
@@ -499,11 +499,25 @@ Each row reads the same way: a rule maker or regulator has asked in these words,
 | [Robinhood's description of Stock Tokens](https://docs.robinhood.com/chain/stock-tokens/) | no "legal or beneficial rights" in the underlying security | the page identifies each token by its ticker. A ticker is not unique on a permissionless chain. The agent identifies tokens by contract address |
 | [BLI, Legal Compliance Tech Tools](https://bli.tools/legal-compliance-tech-tools/) | "evidentiary standards", "audit readiness", "tamper-evident" | an auditor can recheck every number here from public data with one command and no account |
 
+### Privacy
+
+- The per-wallet pages exist so a reader can recheck the practice decisions. They are not ratings of people.
+- Only public chain data is shown (addresses, transactions, blocks). No names, no off-chain data.
+- The owner of a wallet can ask support@vet402.com to remove its page. It is removed within 7 days and the ledger keeps only the hash.
+
+## What vet402 already has behind this
+
+- [adctx](https://adctx.com/posts/what-an-agent-purchase-costs/): "vet402's purchase from t.adctx.com on Oct 13, 2026 was adctx's first payment from outside the company, and adctx then added the output schema declaration that vet402's public row showed was missing."
+- Goldsky: "vet402 paid 11 Goldsky Edge endpoints through Circle Gateway on Arc on Sept 28, 2026. The public record counts all 11 as charged and all 11 as delivered."
+- probe402's report MCRI-002 cites vet402's numbers.
+- ETHOnline 2026: Bazantic prize.
+- Outside reaction to copy-guard itself so far: none. The paid run of the gate is a test I paid to myself.
+
 ## Details
 
 ### Tokens that share a ticker
 
-On a permissionless chain anyone can give a token any ticker. This table lists every token in the walk that carries the ticker of a Robinhood Stock Token or of USDG at an address the issuer did not list. It is a record that tickers are not unique. It does not call any of these tokens, or the people behind them, a scam, and it says nothing about who made a token or why.
+On a permissionless chain anyone can give a token any ticker. This table lists every token in the walk that carries the ticker of a Robinhood Stock Token or of USDG at an address the issuer did not list. It is a record that tickers are not unique. It names each token by address only, and it says nothing about who made a token or why. Of the 143 tokens in [`docs/token-check/results.json`](docs/token-check/results.json), 51 are the issuer's Stock Tokens, 1 is USDG itself, 67 carry a listed Stock Token or USDG ticker or name at an address outside the list, and 24 carry neither.
 
 The table separates things that a ticker-only view mixes up. A token can be sent to a wallet in a transaction the wallet never signed. A wallet can also buy such a token itself and pay for it, at an official venue or outside the official venues. Only the first can be planted by a stranger. A purchase outside the official venues is counted apart from both: copy-guard does not follow it, because rule V1 asks for an official venue, and a ticker copy does.
 
@@ -735,7 +749,7 @@ bun agent/main.ts --mandate mandate/sample --gate http://127.0.0.1:4021/v1/workf
 ## What it does not claim
 
 - Practice (paper) trades only. No real trade was placed. Nothing here says that copying any wallet makes money. The two books compare two policies on past moves. That comparison is not a forecast, not a track record and not advice.
-- No token and no person is called a scam here. The record says which contract moved and that its address is not the one the issuer listed.
+- The record says which contract moved and whether its address is on the issuer's list. A token is named as look-alike only when it carries a listed Stock Token or USDG ticker or name at an address the issuer did not list.
 - The principal is an address. Nothing here ties it to a legal identity, and nothing here is a registration.
 - The walk is a replay. Each wallet's record was read once, after the moves, so the rules judge a wallet with what is known now.
 - Feed values arrive a few times a day. An entry price can be hours older than the move, within the age limit the user set.
