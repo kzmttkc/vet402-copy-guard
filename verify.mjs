@@ -61,7 +61,7 @@ export const CLAIMS = {
 	/** The agent's wallet. */
 	payer: '0xc380d9f41d90765a4820429b9da151889e8bed94',
 	/** The principal the mandate names: the person the agent acts for. Its own key, not the vet402 wallet that is paid. */
-	principal: '0x2ffbaead3acb0f99c851a5ce683b5e578c7eae9e',
+	principal: '0x502b59fbff30e21b02ade06ed0328fe03b35b8e6',
 	/** The vet402 wallet. It receives the payment and it is the operator that writes anchors. */
 	payee: '0x973cd8a91a771c2c04c6036888f8175d6b4f6227',
 	/** 0.01 USDG, 6 decimals. */

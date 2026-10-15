@@ -71,7 +71,7 @@ function write(dir: string, m: Mandate) {
  * that receives the evidence payments (PAY_TO), so that the one who authorizes and the one who is
  * paid are not the same address. The principal signs mandate/mandate.message.txt with that key.
  */
-export const PRINCIPAL = '0x2FFbAeAD3Acb0f99c851A5CE683B5E578C7eAE9e'
+export const PRINCIPAL = '0x502B59FbfF30E21B02Ade06ed0328FE03B35b8e6'
 
 write('mandate', mandate(PRINCIPAL, 'vet402 copy-guard practice mandate'))
 
