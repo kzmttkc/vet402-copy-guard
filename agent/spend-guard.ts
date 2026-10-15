@@ -11,7 +11,8 @@ import { SpendGuard } from '@vet402/sdk'
 
 const USDG_DECIMALS = 1_000_000
 
-export type GuardCheck = (amountAtomic: bigint) => Promise<void>
+/** Resolves to a release function when allowed: call it only when the payment is known not to have moved money. */
+export type GuardCheck = (amountAtomic: bigint) => Promise<() => void>
 
 export function atomicToUsd(a: bigint): number {
 	return Number(a) / USDG_DECIMALS
@@ -54,5 +55,6 @@ export function guardCheck(guard: SpendGuard, payTo: string): GuardCheck {
 	return async (amountAtomic) => {
 		const d = await guard.evaluate({ payee: payTo, amountUsd: atomicToUsd(amountAtomic) })
 		if (!d.allow) throw new Error(`vet402 SpendGuard refused (${d.reasons.join(', ')}); nothing signed`)
+		return () => guard.release(atomicToUsd(amountAtomic))
 	}
 }

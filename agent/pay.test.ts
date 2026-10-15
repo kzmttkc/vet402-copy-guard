@@ -39,7 +39,7 @@ const opts = (file: string, over: Partial<PayOnceOpts> = {}): PayOnceOpts => ({
 	chainSpentAtomic: 0n,
 	allowance: 1_000_000n,
 	send: async () => ({ httpStatus: 200, settlement: { success: true, transaction: TX } }),
-	guard: async () => {},
+	guard: async () => () => {},
 	...over,
 })
 
@@ -343,7 +343,7 @@ describe('payOnce: vet402 SpendGuard is asked before anything is signed', () => 
 		const file = fresh()
 		ledgerAt(file, ['1000000'])
 		let asked = false
-		await expect(payOnce(opts(file, { guard: async () => { asked = true } }))).rejects.toBeInstanceOf(CapReached)
+		await expect(payOnce(opts(file, { guard: async () => { asked = true; return () => {} } }))).rejects.toBeInstanceOf(CapReached)
 		expect(asked).toBe(false)
 	})
 
@@ -352,5 +352,19 @@ describe('payOnce: vet402 SpendGuard is asked before anything is signed', () => 
 		const d = await vet402SpendGuard(10_000n, 1_000_000n).evaluate({ payee: PAYER, amountUsd: 0.01 })
 		expect(d.allow).toBe(true)
 		expect(d.payeeScore).toBeNull()
+	})
+
+	test('a failed payment gives the budget back, an unknown one does not', async () => {
+		resetGuardsForTests()
+		const guard = () => guardCheck(vet402SpendGuard(10_000n, 20_000n), PAYER)
+		const failed = async () => ({ httpStatus: 402, settlement: { success: false } })
+		await payOnce(opts(fresh(), { guard: guard(), send: failed }))
+		await payOnce(opts(fresh(), { guard: guard(), send: failed }))
+		await payOnce(opts(fresh(), { guard: guard(), send: failed }))
+		expect(vet402SpendGuard(10_000n, 20_000n).state().spentTodayUsd).toBeLessThan(0.000001)
+		const unknown = async () => ({ httpStatus: 502, settlement: null })
+		await payOnce(opts(fresh(), { guard: guard(), send: unknown }))
+		await payOnce(opts(fresh(), { guard: guard(), send: unknown }))
+		await expect(payOnce(opts(fresh(), { guard: guard(), send: unknown }))).rejects.toThrow(/daily_budget_exceeded/)
 	})
 })

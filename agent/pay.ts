@@ -215,7 +215,7 @@ export type PayOnceOpts = {
 	send: () => Promise<{ httpStatus: number; settlement: unknown }>
 	cap?: bigint
 	/** vet402's SpendGuard (agent/spend-guard.ts). Asked after the cap check and before anything is signed or written; a refusal throws. */
-	guard: (amount: bigint) => Promise<void>
+	guard: (amount: bigint) => Promise<(() => void) | void>
 }
 
 export type PayOnceResult = { spentBefore: bigint; outcome: SettleView; httpStatus: number; settlement: unknown }
@@ -226,7 +226,7 @@ export async function payOnce(o: PayOnceOpts): Promise<PayOnceResult> {
 		const ledger = loadLedger(o.ledgerFile, o.payer)
 		const spent = effectiveSpent(o.ledgerFile, ledger, o.chainSpentAtomic)
 		assertUnderCap(spent, o.amount, cap)
-		await o.guard(o.amount)
+		const release = await o.guard(o.amount)
 		if (o.allowance < o.amount) {
 			if (!o.approve) throw new Error('Permit2 allowance is short; rerun with --pay --approve (needs a little ETH on 4663)')
 			await o.approve(cap - spent)
@@ -244,6 +244,8 @@ export async function payOnce(o: PayOnceOpts): Promise<PayOnceResult> {
 			throw e
 		}
 		const outcome = settlementOutcome(sent.httpStatus, sent.settlement)
+		// Give the guard's daily budget back only when no money moved. 'unknown' keeps it spent.
+		if (outcome.status === 'failed' && release) release()
 		last.status = outcome.status
 		last.tx = outcome.tx
 		writeLedgerAtomic(o.ledgerFile, ledger)
