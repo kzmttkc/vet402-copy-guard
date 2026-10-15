@@ -43,6 +43,7 @@ import { type Book, type DecisionInputsV2, movedTokens, RULES_V2, type RulesRef,
 import { effectiveSpent, ledgerPath, payOnce, readChainSpend } from './pay'
 import { ISSUER_LIST, loadTokenCheck, receiptFacts } from './tokens'
 import { buildTrailV2, type Purchase, type TrailV2, trailHash } from './trail'
+import { guardCheck, vet402SpendGuard } from './spend-guard'
 import {
 	assertUnderCap,
 	CHAIN_ID,
@@ -227,6 +228,7 @@ export async function buyRecord(
 	let paid: Response | null = null
 	let signedDigest = built.digest
 	const result = await payOnce({
+		guard: guardCheck(vet402SpendGuard(opts.perDecisionAtomic ?? cap, cap), accept.payTo),
 		ledgerFile: LEDGER_FILE,
 		payer,
 		amount,
