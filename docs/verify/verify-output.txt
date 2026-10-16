@@ -71,10 +71,14 @@ vet402 copy-guard: recheck with no key, no account and no install
   OK    decision 6000   0x1b838f40…77b51b in block 73953009 (2026-09-27T12:52:47.000Z): 1 transfer as listed, signed by 0x3433…abd0, not the wallet, received
   OK    decision 7351   0xf7cb51a2…478717 in block 81262132 (2026-10-06T01:57:36.000Z): 1 transfer as listed, signed by 0x5739…dc19, not the wallet, out
   OK    decision 8345   0x1bd25c5e…86cce4 in block 87803686 (2026-10-13T20:39:01.000Z): 1 transfer as listed, signed by the wallet, a purchase: an official swap, paid 0.000059 ETH by the wallet
-6. The x402 gate in front of the CRE workflow (a dry run: nothing signed, nothing paid)
+6. The x402 gate in front of the CRE workflow: the saved dry run, then the one paid call
   OK    gate 402        the gate answered 402 for /v1/workflows/rwa-verify: exact, eip155:4663, 0.01 USDG to 0x973c…6227 (vet402), Permit2
   OK    payment built   the payment the agent built and did not sign hashes to 0xe08bf1dc…e39735: 0.01 USDG, spender the x402 Permit2 proxy, recipient pinned to 0x973c…6227, valid 120 s
   OK    agent card      agent.json and SKILL.md offer the workflow rwa-verify under the same terms: 0.01 USDG on eip155:4663 to 0x973c…6227
+  OK    paid gate       docs/agent/paid-gate-run names the paid gate call 0x7d8d9384…c1eb6c, settled, from 0xc380…ed94
+  OK    settlement tx   0x7d8d9384…c1eb6c succeeded in block 89694056 on Robinhood Chain
+  OK    USDG moved      0.01 USDG from 0xc380…ed94 (the agent) to 0x973c…6227 (vet402), the only USDG transfer in the tx
+  OK    self-paid       the 0.01 USDG came from the payee 0x973c…6227 in 0x6edc973b…e4afc5 (block 89692865): both wallets are the author's, so this is a self-paid test, not revenue
 
-65 OK, 0 FAIL, 0 not checked
+69 OK, 0 FAIL, 0 not checked
 RESULT: MATCH

@@ -60,6 +60,10 @@ export const CLAIMS = {
 	paymentTx: '0x65c314bd758a59dfc79c78d8da76e557450fa1144726ddc4bfc77e183287af61',
 	/** The agent's wallet. */
 	payer: '0xc380d9f41d90765a4820429b9da151889e8bed94',
+	/** The one paid gate call (2026-10-16, self-paid: payer and payee are both the author's), and the transfer that funded it. */
+	paidGateTx: '0x7d8d9384d5a529781ad65f1246fc5002c289396137c22950604bc50b13c1eb6c',
+	paidGateFundTx: '0x6edc973bdb4eb9ea6aa90ef466f71b0e1e71ad1a800e3abc807aa88ca8e4afc5',
+	paidGateDir: 'docs/agent/paid-gate-run',
 	/** The principal the mandate names: the person the agent acts for. Its own key, not the vet402 wallet that is paid. */
 	principal: '0x502b59fbff30e21b02ade06ed0328fe03b35b8e6',
 	/** The vet402 wallet. It receives the payment and it is the operator that writes anchors. */
@@ -2402,7 +2406,7 @@ async function verifyQuick(rep, main, test) {
 
 /** 6. The gate: the saved 402 exchange, the payment the agent built and did not sign, and the agent card. No chain read. */
 async function verifyGate(rep) {
-	rep.say(`6. The x402 gate in front of the CRE workflow (a dry run: nothing signed, nothing paid)`)
+	rep.say(`6. The x402 gate in front of the CRE workflow: the saved dry run, then the one paid call`)
 	let x = null
 	await rep.check('gate 402', () => {
 		x = readJson(join(REPO, CLAIMS.gateDryRun))
@@ -2431,6 +2435,27 @@ async function verifyGate(rep) {
 		const front = /^---\nname: \S.*\ndescription: \S.*\n---\n/.test(readFileSync(join(REPO, CLAIMS.skill), 'utf8').replace(/\r\n/g, '\n'))
 		const ok = p.protocol === 'x402' && p.network === 'eip155:4663' && lc(p.asset_address) === USDG && lc(p.pay_to) === CLAIMS.payee && p.atomic === CLAIMS.priceAtomic && (c.skills ?? []).some((k) => k.id === 'rwa-verify') && front
 		return [ok, ok ? `${CLAIMS.agentCard} and ${CLAIMS.skill} offer the workflow rwa-verify under the same terms: 0.01 USDG on eip155:4663 to ${shortAddr(CLAIMS.payee)}` : `${CLAIMS.agentCard} or ${CLAIMS.skill} does not carry the gate's terms`]
+	})
+}
+
+/** 6b. The one paid gate call: the saved trail names the tx, the tx moved 0.01 USDG from the agent to the payee, and the payee funded the agent just before (a self-paid test). */
+async function verifyPaidGate(rep, main) {
+	let trail = null
+	await rep.check('paid gate', () => {
+		const f = readdirSync(join(REPO, CLAIMS.paidGateDir)).find((n) => /^trail-\d+-[0-9a-f]+\.json$/.test(n))
+		trail = f ? (readJson(join(REPO, CLAIMS.paidGateDir, f)).trail ?? null) : null
+		const p = trail?.purchase ?? {}
+		const ok = p.mode === 'paid' && p.settlement === 'settled' && lc(p.payment_tx) === CLAIMS.paidGateTx && lc(p.payer) === CLAIMS.payer && /\/v1\/workflows\/rwa-verify$/.test(p.resource ?? '')
+		return [ok, ok ? `${CLAIMS.paidGateDir} names the paid gate call ${short(CLAIMS.paidGateTx)}, settled, from ${shortAddr(CLAIMS.payer)}` : `${CLAIMS.paidGateDir} does not name the paid gate call ${CLAIMS.paidGateTx}`]
+	})
+	if (!trail) return
+	await checkPayment(rep, main, { tx: CLAIMS.paidGateTx, payer: CLAIMS.payer, payee: CLAIMS.payee, amount: CLAIMS.priceAtomic })
+	await rep.check('self-paid', async () => {
+		const r = await main('eth_getTransactionReceipt', [CLAIMS.paidGateFundTx])
+		const moves = (r?.logs ?? []).filter((l) => l.address.toLowerCase() === USDG && l.topics?.[0]?.toLowerCase() === TRANSFER_TOPIC && l.topics.length === 3)
+		const hit = moves.filter((l) => addrOf(l.topics[1]) === CLAIMS.payee && addrOf(l.topics[2]) === CLAIMS.payer && BigInt(l.data) === BigInt(CLAIMS.priceAtomic))
+		const ok = r?.status === '0x1' && hit.length === 1
+		return [ok, ok ? `the 0.01 USDG came from the payee ${shortAddr(CLAIMS.payee)} in ${short(CLAIMS.paidGateFundTx)} (block ${Number(BigInt(r.blockNumber))}): both wallets are the author's, so this is a self-paid test, not revenue` : `${short(CLAIMS.paidGateFundTx)} does not move 0.01 USDG from ${CLAIMS.payee} to ${CLAIMS.payer}`]
 	})
 }
 
@@ -2518,7 +2543,10 @@ export async function run(argv, { print = console.log, fetchImpl = fetch, sleep,
 	else {
 		if (!args.only || args.only === 'paid-run') await verifyPaidRun(rep, main, test)
 		if (!args.only || args.only === 'ledger') await verifyLedger(rep, main, test, args.deep)
-		if (!args.only || args.only === 'gate') await verifyGate(rep)
+		if (!args.only || args.only === 'gate') {
+			await verifyGate(rep)
+			await verifyPaidGate(rep, main)
+		}
 	}
 	const res = rep.result()
 	const count = (s) => rep.rows.filter((r) => r.status === s).length

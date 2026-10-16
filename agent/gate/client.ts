@@ -132,7 +132,7 @@ export async function payGate(gateUrl: string, input: unknown, o: GateOpts, deps
 	let paid: Response | null = null
 	let signedDigest = built.digest
 	const result = await payOnce({
-		guard: guardCheck(vet402SpendGuard(o.perDecisionAtomic, o.capAtomic), accept.payTo),
+		guard: guardCheck(vet402SpendGuard(o.perDecisionAtomic, o.capAtomic), accept.payTo, o.say),
 		ledgerFile: o.ledgerFile,
 		payer: o.payer,
 		amount,

@@ -29,7 +29,7 @@ copy-guard is an autonomous agent that checks a move before it would copy it. It
 Nobody has to take my word for this, or the agent's, or a server's. One command with no key, no account and nothing to install rechecks the payment, the records, every decision and the whole practice ledger against two public chains. Without a terminal, [`docs/index.html`](docs/index.html) shows the same ledger as one page.
 
 <!-- FACTS:BEGIN -->
-**The walk of 2026-10-16, practice only.** copy-guard looked at 8396 moves of 51 wallets. 136 of them were in 67 tokens that carry the ticker of a Stock Token or of USDG at an address the issuer did not list, and each of those tokens is [named by address](#tokens-that-share-a-ticker). How they reached the wallet: 75 sent to a wallet that did not sign, 22 bought by the wallet itself at an official venue, 2 bought by the wallet outside the official venues, 37 logged with the wallet as the sender. copy-guard opened no position in any of them. The ticker copy opened 24. 20 of the 51 wallets are in the walk because they bought such a token, so these counts are not a rate. The practice positions copy-guard did open come from 2 groups, counted apart. 212 follow purchases of 5.75 to 144,454.24 USD by the selected wallets. 24 follow purchases of 0.22 to 0.48 USD by the wallets observed buying the other SPY. In all it opened 236, each at the reduced size the user's limits give for weaker evidence, and declined 8160, each with a reason in plain sentences.
+**The walk of 2026-10-16, practice only.** copy-guard looked at 8396 moves of 51 wallets. 136 of them were in 67 tokens that carry the ticker of a Stock Token or of USDG at an address the issuer did not list, and each of those tokens is [named by address](#tokens-that-share-a-ticker). How they reached the wallet: 75 sent to a wallet that did not sign, 22 bought by the wallet itself at an official venue, 2 bought by the wallet outside the official venues, 37 logged with the wallet as the sender. copy-guard opened no position in any of them. The ticker copy opened 24. 20 of the 51 wallets are in the walk because they bought such a token, so these counts are not a rate. The practice positions copy-guard did open come from 2 groups, counted apart. 212 follow purchases of 5.75 to 144,454.24 USD by the selected wallets. 24 follow purchases of 0.22 to 0.48 USD by the wallets observed buying the other SPY. In all it opened 236, each at the reduced size the user's limits give for weaker evidence, and declined 8160, each with a reason in plain sentences. In the wallets the walk follows (the 30 that official Uniswap venues sent the most Stock Tokens in 30 days, a choice that favors liquidity providers), 214 of the 223 arrivals of 100,000 USD or more that the wallet signed were liquidity operations, not purchases.
 <!-- FACTS:END -->
 
 <!-- VERIFY_HEAD:BEGIN -->
@@ -46,14 +46,14 @@ git clone https://github.com/kzmttkc/vet402-copy-guard && cd vet402-copy-guard
 node verify.mjs --quick
 ```
 
-`--quick` rechecks the payment, the anchors, the CRE verdicts, the first four cards of the page and the ledger's root against both chains, in 11 to 12 s (5 saved runs of 2026-10-14). Its last two lines:
+`--quick` rechecks the payment, the anchors, the CRE verdicts, the first five cards of the page and the ledger's root against both chains, in 11 to 13 s (5 saved runs of 2026-10-16). Its last two lines:
 
 ```
 RESULT: MATCH
 To check every decision, the selection, the page and the gate: node verify.mjs (about 3 minutes)
 ```
 
-The whole ledger, every decision and every rule, is one more line, 153 to 232 s in 5 saved runs of 2026-10-14. Most of that time is local computation: `node verify.mjs --offline`, which reads no RPC, took 165 s on the author's laptop on 2026-10-15.
+The whole ledger, every decision and every rule, is one more line, 128 to 148 s in 5 saved runs of 2026-10-16. Most of that time is local computation: `node verify.mjs --offline`, which reads no RPC, took 165 s on the author's laptop on 2026-10-15.
 
 ```bash
 node verify.mjs
@@ -64,7 +64,7 @@ node verify.mjs
 
 <!-- VERIFY_TAIL:BEGIN -->
 ```
-65 OK, 0 FAIL, 0 not checked
+69 OK, 0 FAIL, 0 not checked
 RESULT: MATCH
 ```
 <!-- VERIFY_TAIL:END -->
@@ -147,12 +147,16 @@ vet402 copy-guard: recheck with no key, no account and no install
   OK    decision 6000   0x1b838f40…77b51b in block 73953009 (2026-09-27T12:52:47.000Z): 1 transfer as listed, signed by 0x3433…abd0, not the wallet, received
   OK    decision 7351   0xf7cb51a2…478717 in block 81262132 (2026-10-06T01:57:36.000Z): 1 transfer as listed, signed by 0x5739…dc19, not the wallet, out
   OK    decision 8345   0x1bd25c5e…86cce4 in block 87803686 (2026-10-13T20:39:01.000Z): 1 transfer as listed, signed by the wallet, a purchase: an official swap, paid 0.000059 ETH by the wallet
-6. The x402 gate in front of the CRE workflow (a dry run: nothing signed, nothing paid)
+6. The x402 gate in front of the CRE workflow: the saved dry run, then the one paid call
   OK    gate 402        the gate answered 402 for /v1/workflows/rwa-verify: exact, eip155:4663, 0.01 USDG to 0x973c…6227 (vet402), Permit2
   OK    payment built   the payment the agent built and did not sign hashes to 0xe08bf1dc…e39735: 0.01 USDG, spender the x402 Permit2 proxy, recipient pinned to 0x973c…6227, valid 120 s
   OK    agent card      agent.json and SKILL.md offer the workflow rwa-verify under the same terms: 0.01 USDG on eip155:4663 to 0x973c…6227
+  OK    paid gate       docs/agent/paid-gate-run names the paid gate call 0x7d8d9384…c1eb6c, settled, from 0xc380…ed94
+  OK    settlement tx   0x7d8d9384…c1eb6c succeeded in block 89694056 on Robinhood Chain
+  OK    USDG moved      0.01 USDG from 0xc380…ed94 (the agent) to 0x973c…6227 (vet402), the only USDG transfer in the tx
+  OK    self-paid       the 0.01 USDG came from the payee 0x973c…6227 in 0x6edc973b…e4afc5 (block 89692865): both wallets are the author's, so this is a self-paid test, not revenue
 
-65 OK, 0 FAIL, 0 not checked
+69 OK, 0 FAIL, 0 not checked
 RESULT: MATCH
 ```
 <!-- VERIFY:END -->
@@ -182,7 +186,7 @@ A public RPC that is busy is asked again up to five times, and the line then end
 
 **4. Open the anchor** (Robinhood Chain). [`0x15f9ed8a…585c7f`](https://robinhoodchain.blockscout.com/tx/0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f?tab=logs): one `Anchored` log from `RwaAnchor` with `factsHash` `0x9d0e83d9…f721ee`, the value step 1 recomputes from `rwa-verify/fixtures/anchored-record.json`.
 
-**What this shows and what it leaves open.** The one payment so far is my own test. The agent's wallet and the wallet that received the 0.01 USDG are both mine. Every trade in the ledger is a practice (paper) trade. The ledger is a replay of past public moves, and it says nothing about whether copying any wallet makes money.
+**What this shows and what it leaves open.** There are two payments so far, both self-paid tests: 0.01 USDG on 2026-10-08 ([`0x65c314bd…87af61`](https://robinhoodchain.blockscout.com/tx/0x65c314bd758a59dfc79c78d8da76e557450fa1144726ddc4bfc77e183287af61)) and the paid gate call on 2026-10-16 ([`0x7d8d9384…eb6c`](https://robinhoodchain.blockscout.com/tx/0x7d8d9384d5a529781ad65f1246fc5002c289396137c22950604bc50b13c1eb6c)). I own both the payer and the payee. Neither is revenue. Every trade in the ledger is a practice (paper) trade. The ledger is a replay of past public moves, and it says nothing about whether copying any wallet makes money.
 
 ## Chainlink: Best workflow with CRE
 
@@ -300,7 +304,7 @@ The last column holds only times read from saved runs on this machine: the simul
 |---|---|---|---|
 | A person opens a block explorer and compares a token's contract with the issuer's list by eye, if they think of it | `token-check` reads the code hash, the beacon and the official list from the chain | the check runs before the agent acts and returns a reason code a machine can read | 6 s for 12 tokens at one block ([`batch-7.cre.txt`](docs/token-check/batch/batch-7.cre.txt)) |
 | A reader trusts the site that shows a wallet's record | `rwa-verify` recomputes the record's hash and reads its anchor | MATCH or MISMATCH with one bit per failed check, as an event | 3 s ([`docs/simulate-match.txt`](docs/simulate-match.txt)) |
-| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 11 to 12 s for `node verify.mjs --quick`, 153 to 232 s for `node verify.mjs` on this walk, 5 runs back to back on 2026-10-14, each RESULT: MATCH ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)). Most of it is local computation, not the network: `node verify.mjs --offline` reads no RPC and still took 165 s on the author's laptop on 2026-10-15 |
+| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 11 to 13 s for `node verify.mjs --quick`, 128 to 148 s for `node verify.mjs` on this walk, 5 runs back to back on 2026-10-16, each RESULT: MATCH ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)). Most of it is local computation, not the network: `node verify.mjs --offline` reads no RPC and still took 165 s on the author's laptop on 2026-10-15 |
 <!-- CHANGES:END -->
 
 ### Why CRE
@@ -325,11 +329,11 @@ Notes for the CRE team, each with what I did, what I expected, what happened and
 | 5 | `evm.writeReport` in a simulation without `--broadcast`, to a receiver address with no code (`0x…dEaD`) | a result that says nothing was sent | `TxStatus.SUCCESS` with an all-zero tx hash (`docs/simulate-match.txt`) | `agent/cre.ts` treats a zero hash as "not written". A distinct status for a dry run would be clearer |
 | 6 | `cre workflow simulate` on a fresh machine | a local run with no account | it asks for `cre login` first | log in once. Worth a line in the README of the templates, since judges reproduce on fresh machines |
 | 7 | several JSON-RPC calls in one node-mode function against a public RPC | all answered | HTTP 429 from the RPC when the calls follow each other at once | space the calls with the runtime's host `sleep`, `token-check/workflow.ts` L144 |
-| 8 | read many tokens' state and logs over the HTTP capability in one execution | the 15 calls per execution are enough | one listed token needs up to 9 log queries, and the public RPC answers 429 to a whole batch above what the caller's address has left of its rate (requests of 10 items passed on a quiet line; with another reader on the same address, 3 did not), so at 10 items per request the call limit is reached at about 9 listed tokens | plan the run before reading (`plannedHttpCalls` in `token-check/batch.ts`), refuse a payload that cannot fit, and let the caller split the list. A per-execution budget the workflow can ask for at run time would remove the guesswork |
+| 8 | read many tokens' state and logs over the HTTP capability in one execution | the 15 calls per execution are enough | one listed token needs up to 9 log queries, and the public RPC answers 429 to a whole batch above what the caller's address has left of its rate (requests of 10 items passed on a quiet line. with another reader on the same address, 3 did not), so at 10 items per request the call limit is reached at about 9 listed tokens | plan the run before reading (`plannedHttpCalls` in `token-check/batch.ts`), refuse a payload that cannot fit, and let the caller split the list. A per-execution budget the workflow can ask for at run time would remove the guesswork |
 | 9 | have every node read the same block of a chain CRE does not list | a way to pin "the block" across nodes | each node's `eth_blockNumber` can differ, so an answer read at "latest" would not be identical across nodes (not observed: a simulation is one node) | two rounds: median on the head, then every read pinned to head minus 20 with identical aggregation (`token-check/workflow.ts` L495, L505). Worth a template: it is the general recipe for reading an unlisted chain over HTTP |
 | 10 | `eth_getCode` for many unknown tokens in one HTTP answer | fits in 250 kb | a contract can be 24 kb, 49 kb as hex, so six tokens can pass the limit | an `eth_call` without `to` whose init code returns `EXTCODEHASH` (`extcodehashCall`, L326): 32 bytes per token |
 | 11 | `evm.getTransactionReceipt` in a simulation, for a transaction a run of a minute earlier wrote with `--broadcast` | the receipt | the receipt, with logs, on Robinhood Testnet. It worked the first time | none needed. It let the workflow check its own earlier writes before anchoring |
-| 12 | test `getTransactionReceipt` with `EvmMock` | a documented shape for the mocked receipt | the JSON form wants base64 for `address`, `topics`, `data` and a string for `status`; I found it in the generated types | `token-check/batch-workflow.test.ts`, `b64hex` |
+| 12 | test `getTransactionReceipt` with `EvmMock` | a documented shape for the mocked receipt | the JSON form wants base64 for `address`, `topics`, `data` and a string for `status`. I found it in the generated types | `token-check/batch-workflow.test.ts`, `b64hex` |
 
 What worked well: the HTTP trigger plus `--http-payload` made each workflow a function I could call from the agent, from a gate and from a shell script with the same payload. The same `token-check` handler took three payloads, so the agent, a shell script and the anchor all call one workflow. `consensusMedianAggregation` and `consensusIdenticalAggregation` could be used in one execution, each on its own HTTP read. Running the same TypeScript in `bun test` and in the WASM runtime let the workflows share the rule code with the agent.
 <!-- CRE_FEEDBACK:END -->
@@ -415,7 +419,7 @@ No move reached the full size in this walk. No position, by leading reason: a sa
 The Merkle root of all 8396 decisions is `0x4cf309f5af3ea7ba456ae8e60a1e6741e09cb61fe6f1564fe2cbe36e47910664`. It is in one `LedgerAnchored` event on Robinhood Testnet: [`0x62986233…04b386`](https://explorer.testnet.chain.robinhood.com/tx/0x6298623367c61505efd7a7b5f9e3c9c9c2f3b506dbe70147b55f1081cc04b386?tab=logs).
 <!-- LEDGER:END -->
 
-Each decision is one line of [`docs/walk/trails.jsonl.gz`](docs/walk/trails.jsonl.gz) (gzipped; `gunzip -k` gives `trails.jsonl`, and [`docs/verify/compressed.json`](docs/verify/compressed.json) keeps its sha256 from before it was gzipped): everything the rules read, every rule row, the size, the practice position with its exit, and a card. [`docs/ledger.json`](docs/ledger.json) holds the rows, both books and the totals. [`docs/index.html`](docs/index.html) carries the totals, both books and every decision that opened a position, and loads the other decisions from [`docs/rows/`](docs/rows/), one file per wallet, when they are asked for. `verify.mjs` rebuilds the ledger from the trails and the saved feed values, and checks that the page and `docs/rows/` hold exactly its rows.
+Each decision is one line of [`docs/walk/trails.jsonl.gz`](docs/walk/trails.jsonl.gz) (gzipped. `gunzip -k` gives `trails.jsonl`, and [`docs/verify/compressed.json`](docs/verify/compressed.json) keeps its sha256 from before it was gzipped): everything the rules read, every rule row, the size, the practice position with its exit, and a card. [`docs/ledger.json`](docs/ledger.json) holds the rows, both books and the totals. [`docs/index.html`](docs/index.html) carries the totals, both books and every decision that opened a position, and loads the other decisions from [`docs/rows/`](docs/rows/), one file per wallet, when they are asked for. `verify.mjs` rebuilds the ledger from the trails and the saved feed values, and checks that the page and `docs/rows/` hold exactly its rows.
 
 A card reads like this. Every sentence is a fixed template filled with values from the trail.
 
@@ -691,7 +695,7 @@ These trails and events are unchanged. The same three moves are in the v2 ledger
 
 ### The paid gate run (2026-10-16, 01:38 UTC)
 
-The agent paid the gate in front of the CRE workflow once, under the mandate signed by the principal. vet402's SpendGuard allowed the payment, and the agent paid 0.01 USDG in [`0x7d8d9384…eb6c`](https://robinhoodchain.blockscout.com/tx/0x7d8d9384d5a529781ad65f1246fc5002c289396137c22950604bc50b13c1eb6c), settled. The gate then ran `rwa-verify` (simulated), and the answer was MATCH. This is a self-paid demonstration: the payer `0xc380…ED94` and the payee `0x973c…6227` are both my own wallets, and the 0.01 USDG came from `0x973c…6227` in [`0x6edc973b…afc5`](https://robinhoodchain.blockscout.com/tx/0x6edc973bdb4eb9ea6aa90ef466f71b0e1e71ad1a800e3abc807aa88ca8e4afc5). It is not revenue and not a payment from anyone else. The run is saved in [`docs/agent/paid-gate-run/`](docs/agent/paid-gate-run/).
+The agent paid the gate in front of the CRE workflow once, under the mandate signed by the principal. vet402's SpendGuard allowed the payment ([`docs/agent/paid-gate-run/spendguard.txt`](docs/agent/paid-gate-run/spendguard.txt) says what shows this, since this run did not yet print the guard's decision), and the agent paid 0.01 USDG in [`0x7d8d9384…eb6c`](https://robinhoodchain.blockscout.com/tx/0x7d8d9384d5a529781ad65f1246fc5002c289396137c22950604bc50b13c1eb6c), settled. The gate then ran `rwa-verify` (simulated), and the answer was MATCH. This is a self-paid demonstration: the payer `0xc380…ED94` and the payee `0x973c…6227` are both my own wallets, and the 0.01 USDG came from `0x973c…6227` in [`0x6edc973b…afc5`](https://robinhoodchain.blockscout.com/tx/0x6edc973bdb4eb9ea6aa90ef466f71b0e1e71ad1a800e3abc807aa88ca8e4afc5). It is not revenue and not a payment from anyone else. The run is saved in [`docs/agent/paid-gate-run/`](docs/agent/paid-gate-run/).
 
 ### Paying, and the cap
 
@@ -756,13 +760,13 @@ bun agent/main.ts --mandate mandate/sample --gate http://127.0.0.1:4021/v1/workf
 - Practice (paper) trades only. No real trade was placed. Nothing here says that copying any wallet makes money. The two books compare two policies on past moves. That comparison is not a forecast, not a track record and not advice.
 - The record says which contract moved and whether its address is on the issuer's list. A token is named as look-alike only when it carries a listed Stock Token or USDG ticker or name at an address the issuer did not list.
 - The principal is an address. Nothing here ties it to a legal identity, and nothing here is a registration.
-- token-check read 143 of the 144 tokens the walk names. The one it did not read is `0xf51f…606a` ("NVDA 3x Long", symbol NVDAx3L), whose runtime code starts with the byte 0xef. The workflow does not classify that kind of code yet, so this token has no token-check row. Its symbol is not a listed ticker and its address is not on the issuer's list.
+- token-check read 143 of the 144 tokens the walk names. It ran on 2026-10-14 08:33 UTC over the tokens the walk named at that time, and the final walk names one more: `0xf51f…606a` ("NVDA 3x Long", symbol NVDAx3L). That token was never sent to token-check, so it has no row. Its runtime code is a beacon proxy (beacon `0x50e1…de5f`), and its address is not on the issuer's list.
 - The walk is a replay. Each wallet's record was read once, after the moves, so the rules judge a wallet with what is known now.
 - Feed values arrive a few times a day. An entry price can be hours older than the move, within the age limit the user set.
 - The ticker copy is a baseline I defined, stated in the ledger. A real copier may be less naive.
 - "Sent to the wallet" and "bought outside the official venues" are different kinds of arrival and are never added together. The first is a token the wallet paid nothing for. In the second the wallet paid, somewhere other than the Uniswap v4 PoolManager or an official v3 pool. copy-guard follows neither. A ticker copy follows the second.
 - The groups of wallets were chosen in different ways, so their counts are shown apart and are not a sample of the chain. A group whose positions all follow one wallet says how the rules treat that wallet.
-- The one payment so far is my own test. I own the agent's wallet and the wallet that was paid. The gate has not been paid.
+- There are two payments so far, both self-paid tests: 0.01 USDG on 2026-10-08 ([`0x65c314bd…87af61`](https://robinhoodchain.blockscout.com/tx/0x65c314bd758a59dfc79c78d8da76e557450fa1144726ddc4bfc77e183287af61)) and the paid gate call on 2026-10-16 ([`0x7d8d9384…eb6c`](https://robinhoodchain.blockscout.com/tx/0x7d8d9384d5a529781ad65f1246fc5002c289396137c22950604bc50b13c1eb6c)). I own both the payer and the payee. Neither is revenue.
 - Nothing is deployed to a DON. All testnet receivers trust CRE's simulation forwarder, as described above.
 - The rules are a policy. Anyone can read, rerun or disagree with every row.
 - This is not legal advice and not investment advice. vet402 reports what public chain data shows and is not affiliated with Robinhood, Chainlink, RYO or any token issuer.

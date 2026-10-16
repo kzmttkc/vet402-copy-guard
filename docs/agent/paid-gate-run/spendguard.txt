@@ -1,0 +1,7 @@
+vet402 SpendGuard on the paid gate call of 2026-10-16 (tx 0x7d8d9384d5a529781ad65f1246fc5002c289396137c22950604bc50b13c1eb6c)
+
+This run did not print the guard's decision. The agent printed it only from the next commit on.
+What shows that the guard allowed it:
+- agent/pay.ts calls the guard after the cap check and before the pending entry and any signature. A refusal throws there, so nothing is signed (test: "a refusal stops the payment: no pending entry, send never called" in agent/pay.test.ts).
+- This run signed and settled the payment (summary.txt, x402-gate-paid.json, and the tx on Robinhood Chain), so the guard returned allow.
+- The guard in force: per payment at most 0.010000 USD (limits.json payments.max_usdg_per_decision), per UTC day at most 1.000000 USD (the cap in force), trustPolicy custom, no payee lookup.

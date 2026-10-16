@@ -228,7 +228,7 @@ export async function buyRecord(
 	let paid: Response | null = null
 	let signedDigest = built.digest
 	const result = await payOnce({
-		guard: guardCheck(vet402SpendGuard(opts.perDecisionAtomic ?? cap, cap), accept.payTo),
+		guard: guardCheck(vet402SpendGuard(opts.perDecisionAtomic ?? cap, cap), accept.payTo, say),
 		ledgerFile: LEDGER_FILE,
 		payer,
 		amount,

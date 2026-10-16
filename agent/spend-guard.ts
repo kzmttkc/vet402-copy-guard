@@ -51,10 +51,11 @@ export function resetGuardsForTests() {
 	guards.clear()
 }
 
-export function guardCheck(guard: SpendGuard, payTo: string): GuardCheck {
+export function guardCheck(guard: SpendGuard, payTo: string, say?: (s: string) => void): GuardCheck {
 	return async (amountAtomic) => {
 		const d = await guard.evaluate({ payee: payTo, amountUsd: atomicToUsd(amountAtomic) })
 		if (!d.allow) throw new Error(`vet402 SpendGuard refused (${d.reasons.join(', ')}); nothing signed`)
+		say?.(`  spendguard  allowed ${amountAtomic} USDG atomic to ${payTo}: spent today ${d.spentTodayUsd.toFixed(6)} USD, left ${d.remainingDailyBudgetUsd === null ? 'no daily limit' : `${d.remainingDailyBudgetUsd.toFixed(6)} USD`} (vet402 @vet402/sdk SpendGuard, trustPolicy custom)`)
 		return () => guard.release(atomicToUsd(amountAtomic))
 	}
 }

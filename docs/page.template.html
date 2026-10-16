@@ -224,7 +224,7 @@ node verify.mjs</pre><span id="verifyresult" class="small mute"></span></li>
 <li>Feed values arrive a few times a day. An entry price can be hours older than the move, within the age limit the user set.</li>
 <li>&ldquo;Sent to the wallet&rdquo; and &ldquo;bought outside the official venues&rdquo; are different kinds of arrival and are never added together. The first is a token the wallet paid nothing for. In the second the wallet paid, somewhere other than the Uniswap v4 PoolManager or an official v3 pool. copy-guard follows neither. A ticker copy follows the second.</li>
 <li>The groups of wallets were chosen in different ways, so their counts are shown apart and are not a sample of the chain. A group whose positions all follow one wallet says how the rules treat that wallet.</li>
-<li>No customer yet. The one payment so far is my own test.</li>
+<li>No customer yet. The two payments so far are my own tests: 0.01 USDG on 2026-10-08 and the paid gate call on 2026-10-16. I own the payer and the payee. Neither is revenue.</li>
 <li>This is not legal advice and not investment advice. vet402 reports what public chain data shows and is not affiliated with Robinhood, Chainlink, RYO or any token issuer.</li>
 </ul>
 <p class="last">A ticker is a string that anyone can reuse. This page says which contract moved, who signed for it and who allowed the agent to act. Don't take my word for it. <a href="#verify">Run it.</a></p>
@@ -516,7 +516,7 @@ const secs = (x) => (x ? (x.min === x.max ? `${x.min} s` : `${x.min} to ${x.max}
 if (VT.has_quick) {
 	$('verify').textContent = VT.promise ? `Check it yourself in ${VT.promise} seconds` : 'Check it yourself'
 	$('verifystep').innerHTML = `<b>Run the recheck.</b> Node 20 or newer, no key, no account, nothing to install.<pre>git clone https://github.com/kzmttkc/vet402-copy-guard &amp;&amp; cd vet402-copy-guard
-node verify.mjs --quick</pre><p class="small"><code>--quick</code> rechecks the payment, the anchors, the CRE verdicts, the first four cards and the ledger's root against both chains${VT.quick ? `, in ${secs(VT.quick)} (${plural(VT.quick.runs, 'saved run', 'saved runs')})` : ''}.${VT.quick_tail ? ` Last lines: ${esc(VT.quick_tail)}` : ''}</p><pre>node verify.mjs</pre><p class="small">The whole ledger, every decision and every rule${VT.full ? `, in ${secs(VT.full)} (${plural(VT.full.runs, 'saved run', 'saved runs')})` : ''}. Most of that time is waiting on the public RPC.</p><span id="verifyresult" class="small mute"></span>`
+node verify.mjs --quick</pre><p class="small"><code>--quick</code> rechecks the payment, the anchors, the CRE verdicts, the first five cards and the ledger's root against both chains${VT.quick ? `, in ${secs(VT.quick)} (${plural(VT.quick.runs, 'saved run', 'saved runs')})` : ''}.${VT.quick_tail ? ` Last lines: ${esc(VT.quick_tail)}` : ''}</p><pre>node verify.mjs</pre><p class="small">The whole ledger, every decision and every rule${VT.full ? `, in ${secs(VT.full)} (${plural(VT.full.runs, 'saved run', 'saved runs')})` : ''}. Most of that time is waiting on the public RPC.</p><span id="verifyresult" class="small mute"></span>`
 }
 $('verifyresult').textContent = X.verify ? `Last saved run of node verify.mjs: ${X.verify}` : ''
 const C = X.token_check
