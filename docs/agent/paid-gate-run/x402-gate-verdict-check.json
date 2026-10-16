@@ -1,0 +1,44 @@
+{
+  "gate": "http://127.0.0.1:4021/v1/workflows/rwa-verify",
+  "gate_answer": {
+    "workflow": "vet402-rwa-verify",
+    "mode": "simulate",
+    "result": {
+      "verdict": "MATCH",
+      "reasons": [],
+      "reasonBits": 0,
+      "anchorTx": "0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f",
+      "anchorBlock": 76177721,
+      "subject": "0xa158baaf573f2b072b47acaa019ef60de680571a8a2a6ad234faf0e8a3d3bfc5",
+      "recomputedFactsHash": "0x9d0e83d968786570beebf0d322b36e0836dc81ebe896bd186304405ba8f721ee",
+      "anchoredFactsHash": "0x9d0e83d968786570beebf0d322b36e0836dc81ebe896bd186304405ba8f721ee",
+      "record": {
+        "source": "https://raw.githubusercontent.com/kzmttkc/vet402/main/fixtures/rwa/anchors/rwa-recon-0.3-76177721.json",
+        "wallet": "0xe9b08727131e34010b34006c660d4c1b436ec25f",
+        "methodVersion": "rwa-recon-0.3",
+        "asOf": "2026-09-30T03:00:07.000Z"
+      },
+      "live": {
+        "asOf": "2026-10-16T01:37:59.000Z",
+        "xFactsHashMatchesBody": true
+      }
+    },
+    "verdict_tx": null,
+    "receiver": "0x8bf4d455d38301e9d330B12144AdE02F16BC2Cb3",
+    "written_through": "CRE's simulation forwarder (MockKeystoneForwarder). Not a DON attestation.",
+    "payment": {
+      "status": "settled",
+      "transaction": "0x7d8d9384d5a529781ad65f1246fc5002c289396137c22950604bc50b13c1eb6c",
+      "payer": "0xc380D9F41D90765A4820429B9Da151889E8bED94",
+      "network": "eip155:4663"
+    }
+  },
+  "read_from": "https://rpc.testnet.chain.robinhood.com",
+  "receiver": "0x8bf4d455d38301e9d330B12144AdE02F16BC2Cb3",
+  "check": {
+    "ok": false,
+    "why": [
+      "the gate names no verdict tx (it only simulated the workflow)"
+    ]
+  }
+}

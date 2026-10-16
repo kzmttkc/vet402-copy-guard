@@ -1,7 +1,7 @@
 {
-  "root": "0x0829cd645caa979dbf725c34f519634060b4c116a71b10b25d5afb2848d8e3c1",
+  "root": "0x4cf309f5af3ea7ba456ae8e60a1e6741e09cb61fe6f1564fe2cbe36e47910664",
   "decisions": 8396,
-  "ledger_tx": "0xb8f605d9825e4b41da68990bfcdfab20538e1c62db41990b309a6ebf45b76812",
+  "ledger_tx": "0x6298623367c61505efd7a7b5f9e3c9c9c2f3b506dbe70147b55f1081cc04b386",
   "receiver": "0xe3f0cA4f474E15364017eE3f6fc0D0949e5aF0C9",
   "network": "robinhood-testnet (46630)",
   "written_through": "CRE's simulation forwarder (MockKeystoneForwarder). Not a DON attestation."

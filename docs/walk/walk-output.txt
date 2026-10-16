@@ -1,5 +1,5 @@
-copy-guard v2 walk, 51 wallets, decided 2026-10-14T08:40:03.875Z, marked at block 88230479
-  mandate  0xdd7b06e179a356d69cc86ba99e0093f7bb37f6b2fac8da40753e7654503c4425 principal 0xBB621a68f7C142CD340C5D5e71056Ecd42f8f48D signed by the principal (mandate/sample/)
+copy-guard v2 walk, 51 wallets, decided 2026-10-16T04:31:00.902Z, marked at block 89796552
+  mandate  0xe8bfafb6a0335572d779478ec29bdcb4de83cfec7fe91b525a2a3dbc899bbc1e principal 0x502B59FbfF30E21B02Ade06ed0328FE03B35b8e6 signed by the principal (mandate/)
   limits   0x1e7624863e095cbdb3475e8f01b8e6befbe53ed24389a2b51c3dcb479d72c2cf full 100.00 USD, reduced 25.00 USD, 300.00 USD per day, 10 open
   tokens   CRE token-check results 0xe2fcacc3ae7ebf4e60cc2d18fa34c1b58e0f747aa3f919b8f87c20ba79535975 (143 tokens)
   0xe9b08727131e34010b34006c660d4c1b436ec25f watched: record partial, realized -81.19, anchor MATCH, 93 moves of 93 listed txs
@@ -53,43 +53,43 @@ copy-guard v2 walk, 51 wallets, decided 2026-10-14T08:40:03.875Z, marked at bloc
   0x9a26c0dcd3d3f6f194301a17a66232b84cd1e5f3 same_ticker_buyers 18: record partial, realized unknown, no anchor, 6 moves of 6 listed txs
   0xa634f171b85c0c29df154d64b48edc0284cd05fd same_ticker_buyers 19: record partial, realized unknown, no anchor, 20 moves of 20 listed txs
   0xe845229cfed0b23e51ae6c41eb13ae1c61680878 same_ticker_buyers 20: record partial, realized unknown, no anchor, 11 moves of 11 listed txs
-  feed NVDA 974 values from block 5167202
-  feed QQQ 179 values from block 27388024
-  feed SPY 105 values from block 18871121
-  feed AMZN 278 values from block 44936792
-  feed META 663 values from block 45690442
-  feed TSM 362 values from block 41682031
-  feed CRCL 2969 values from block 26000474
-  feed SPCX 2651 values from block 6783716
-  feed MU 2698 values from block 18856595
-  feed BABA 484 values from block 47951525
-  feed TSLA 506 values from block 48143109
-  feed AAPL 270 values from block 41010201
-  feed GOOGL 764 values from block 6826227
-  feed MSFT 256 values from block 47072167
-  feed INTC 816 values from block 60416477
-  feed AMD 873 values from block 42402112
-  feed USO 1097 values from block 26928344
-  feed MSTR 2395 values from block 35934466
-  feed SLV 1085 values from block 11915891
-  feed CRWV 1477 values from block 47218278
-  feed RKLB 1206 values from block 51800858
-  feed COIN 1296 values from block 48151771
-  feed PLTR 628 values from block 48153262
-  feed GME 1090 values from block 11331735
-  feed SNDK 4624 values from block 16420942
-  feed DELL 193 values from block 81107809
+  feed NVDA 1007 values from block 5167202
+  feed QQQ 189 values from block 27388024
+  feed SPY 110 values from block 18871121
+  feed AMZN 303 values from block 44936792
+  feed META 688 values from block 45690442
+  feed TSM 417 values from block 41682031
+  feed CRCL 3101 values from block 26000474
+  feed SPCX 2716 values from block 6783716
+  feed MU 2799 values from block 18856595
+  feed BABA 527 values from block 47951525
+  feed TSLA 539 values from block 48143109
+  feed AAPL 278 values from block 41010201
+  feed GOOGL 791 values from block 6826227
+  feed MSFT 272 values from block 47072167
+  feed INTC 940 values from block 60416477
+  feed AMD 973 values from block 42402112
+  feed USO 1119 values from block 26928344
+  feed MSTR 2522 values from block 35934466
+  feed SLV 1114 values from block 11915891
+  feed CRWV 1726 values from block 47218278
+  feed RKLB 1427 values from block 51800858
+  feed COIN 1393 values from block 48151771
+  feed PLTR 687 values from block 48153262
+  feed GME 1174 values from block 11331735
+  feed SNDK 4764 values from block 16420942
+  feed DELL 332 values from block 81107809
 
-  CRE       root recomputed from 8396 leaves, LedgerAnchored tx 0xb8f605d9825e4b41da68990bfcdfab20538e1c62db41990b309a6ebf45b76812
+  CRE       root recomputed from 8396 leaves, LedgerAnchored tx 0x6298623367c61505efd7a7b5f9e3c9c9c2f3b506dbe70147b55f1081cc04b386
   decisions 8396 about 51 wallets (1 without a record, 1 decisions): FULL 0, REDUCED 236, NONE 8160
   other tokens under a listed ticker: 136 moves in 67 tokens (FLY, GME, IBM, NET, NVDA, SPY, USDG, WMETA, WTSM): 75 sent to the wallet, 22 bought by it on an official venue, 2 bought by it elsewhere, 0 received unpaid, 37 logged as sent by it
-  copy-guard  opened 236 (5900.00 USD of practice money), closed 229, open 7, result 26.62 USD; the purchases it followed: median 2680.11 USD, sum 2508223.60 USD
-  ticker copy opened 1565: 1541 in Stock Tokens (result 298.27 USD), 24 in 4 other tokens (21 valued at a pool: -1922.29 USD, 3 not measured)
-  selected                     30 wallets, 8093 decisions: copy-guard opened 212 (5300.00 USD, result 26.60 USD; at 25.00 USD each 26.60 USD), followed purchases median 3295.74 USD, 38.2% from 0x30ce12193e609283abec6dc223eb398705b26576
-  observed_other_token_buyers  20 wallets, 210 decisions: copy-guard opened 24 (600.00 USD, result 0.02 USD; at 25.00 USD each 0.02 USD), followed purchases median 0.40 USD, 16.7% from 0xa634f171b85c0c29df154d64b48edc0284cd05fd
+  copy-guard  opened 236 (5900.00 USD of practice money), closed 230, open 6, result 19.76 USD; the purchases it followed: median 2680.11 USD, sum 2508223.60 USD
+  ticker copy opened 1565: 1541 in Stock Tokens (result 218.38 USD), 24 in 4 other tokens (21 valued at a pool: -1923.69 USD, 3 not measured)
+  selected                     30 wallets, 8093 decisions: copy-guard opened 212 (5300.00 USD, result 23.05 USD; at 25.00 USD each 23.05 USD), followed purchases median 3295.74 USD, 38.2% from 0x30ce12193e609283abec6dc223eb398705b26576
+  observed_other_token_buyers  20 wallets, 210 decisions: copy-guard opened 24 (600.00 USD, result -3.29 USD; at 25.00 USD each -3.29 USD), followed purchases median 0.40 USD, 16.7% from 0xa634f171b85c0c29df154d64b48edc0284cd05fd
   demo                         1 wallets, 93 decisions: copy-guard opened 0 (0.00 USD, result 0.00 USD; at 25.00 USD each 0.00 USD), followed purchases median 0.00 USD
   incoming Stock Tokens: purchase 1184, purchase_off_venue 565, rotation 3, liquidity 2217, swapped_unpaid 5, received 263, out 4029
-  same size   25.00 USD each: opened by both 236 (26.62 USD), by ticker copy only 1305 Stock Token positions (48.01 USD)
-  root      0x0829cd645caa979dbf725c34f519634060b4c116a71b10b25d5afb2848d8e3c1
-  read      0 records from the free route, 344 RPC calls
+  same size   25.00 USD each: opened by both 236 (19.76 USD), by ticker copy only 1305 Stock Token positions (34.90 USD)
+  root      0x4cf309f5af3ea7ba456ae8e60a1e6741e09cb61fe6f1564fe2cbe36e47910664
+  read      0 records from the free route, 347 RPC calls
   saved     docs/walk/ and docs/ledger.json

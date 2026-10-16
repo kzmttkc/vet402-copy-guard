@@ -29,7 +29,7 @@ copy-guard is an autonomous agent that checks a move before it would copy it. It
 Nobody has to take my word for this, or the agent's, or a server's. One command with no key, no account and nothing to install rechecks the payment, the records, every decision and the whole practice ledger against two public chains. Without a terminal, [`docs/index.html`](docs/index.html) shows the same ledger as one page.
 
 <!-- FACTS:BEGIN -->
-**The walk of 2026-10-14, practice only.** copy-guard looked at 8396 moves of 51 wallets. 136 of them were in 67 tokens that carry the ticker of a Stock Token or of USDG at an address the issuer did not list, and each of those tokens is [named by address](#tokens-that-share-a-ticker). How they reached the wallet: 75 sent to a wallet that did not sign, 22 bought by the wallet itself at an official venue, 2 bought by the wallet outside the official venues, 37 logged with the wallet as the sender. copy-guard opened no position in any of them. The ticker copy opened 24. 20 of the 51 wallets are in the walk because they bought such a token, so these counts are not a rate. The practice positions copy-guard did open come from 2 groups, counted apart. 212 follow purchases of 5.75 to 144,454.24 USD by the selected wallets. 24 follow purchases of 0.22 to 0.48 USD by the wallets observed buying the other SPY. In all it opened 236, each at the reduced size the user's limits give for weaker evidence, and declined 8160, each with a reason in plain sentences.
+**The walk of 2026-10-16, practice only.** copy-guard looked at 8396 moves of 51 wallets. 136 of them were in 67 tokens that carry the ticker of a Stock Token or of USDG at an address the issuer did not list, and each of those tokens is [named by address](#tokens-that-share-a-ticker). How they reached the wallet: 75 sent to a wallet that did not sign, 22 bought by the wallet itself at an official venue, 2 bought by the wallet outside the official venues, 37 logged with the wallet as the sender. copy-guard opened no position in any of them. The ticker copy opened 24. 20 of the 51 wallets are in the walk because they bought such a token, so these counts are not a rate. The practice positions copy-guard did open come from 2 groups, counted apart. 212 follow purchases of 5.75 to 144,454.24 USD by the selected wallets. 24 follow purchases of 0.22 to 0.48 USD by the wallets observed buying the other SPY. In all it opened 236, each at the reduced size the user's limits give for weaker evidence, and declined 8160, each with a reason in plain sentences.
 <!-- FACTS:END -->
 
 <!-- VERIFY_HEAD:BEGIN -->
@@ -110,21 +110,21 @@ vet402 copy-guard: recheck with no key, no account and no install
   OK    move on chain   0xf7cb51a2…478717 in block 81262132: 1 transfer of the wallet, as the trail lists
   OK    trail onchain   DecisionRecorded in 0xfd3df929…563199 on Robinhood Testnet has this hash, DO_NOT_COPY, the same record, move and payment
 5. The practice ledger: a walk through every decision, copy-guard next to a ticker copy
-  OK    gzipped         trails.jsonl.gz and chain.json.gz unpack to the bytes whose sha256 docs/verify/compressed.json recorded before they were gzipped (109.8 MB and 26.0 MB)
+  OK    gzipped         trails.jsonl.gz and chain.json.gz unpack to the bytes whose sha256 docs/verify/compressed.json recorded before they were gzipped (109.2 MB and 26.0 MB)
   OK    decisions       8396 decisions rerun, 18 rules each: FULL 0, REDUCED 236, NONE 8160. Every row, card, mandate and limits hash is the one its inputs give
   OK    selection       docs/walk/selection.json went through the top 262 addresses by what official venues sent them, directly or through 3 listed routers, in blocks 62420751 to 87977834 (2026-09-14 to 2026-10-14): 181 routers or other contracts passed over without asking, 81 asked, 30 selected, 51 with no record, each with its saved answer. Stopped because 30 addresses were selected: 262 places of the ranking gone through, 181 of them routers or other contracts (not asked), 81 addresses asked, 30 selected, 51 with no record. Observations apart: 1 watched wallet and 20 buyers of one token with the ticker SPY
   OK    records         50 records in docs/walk/records hash to the X-Facts-Hash vet402 sent with them and give the fields every decision read. For 1 wallets vet402 gave no record, and their decisions say so. Every moved token is named as the issuer's list (195 Stock Tokens, taken 2026-09-28), the CRE token-check results 0xe2fcacc3…535975 and the record give it
-  OK    prices          7252 decisions read a price, each the last Chainlink feed value at or before the block of the move, out of 29939 values of 26 feeds saved in docs/walk/feeds.json
-  OK    ledger          docs/ledger.json is what the walk gives: 8396 decisions about 51 wallets (FULL 0, REDUCED 236, NONE 8160). Incoming Stock Tokens by kind: purchase 1184, purchase_off_venue 565, rotation 3, liquidity 2217, swapped_unpaid 5, received 263, out 4029. copy-guard opened 236 practice positions, every one on a purchase (an official swap the wallet itself paid for, median 2680.11 USD), and none in a token the issuer did not list. A ticker copy opened 1565: 1541 in Stock Tokens and 24 in 4 other tokens under a listed ticker. Different tokens under a listed ticker were part of 136 moves (67 tokens: FLY, GME, IBM, NET, NVDA, SPY, USDG, WMETA, WTSM): 75 sent to the wallet, 22 bought by it, 0 received unpaid, 37 logged as sent by it. At one size (25.00 USD each): the 236 both opened 26.62 USD, the 1305 Stock Token positions only the ticker copy opened 48.01 USD, and its 24 in other tokens: 21 valued at a pool (-480.55 USD), 3 not measured and in no sum
-  OK    groups          copy-guard per group, recomputed: selected: 30 wallets, 8093 decisions, copy-guard opened 212 and declined 7881, followed purchases median 3295.74 USD (sum 2508214.48), at 25.00 USD each 26.60 USD, 81 of 212 from 0x30ce…6576; observed_other_token_buyers: 20 wallets, 210 decisions, copy-guard opened 24 and declined 186, followed purchases median 0.40 USD (sum 9.12), at 25.00 USD each 0.02 USD, 4 of 24 from 0xa634…05fd; demo: 1 wallets, 93 decisions, copy-guard opened 0 and declined 93, followed purchases median 0.00 USD (sum 0.00), at 25.00 USD each 0.00 USD
-  OK    page            docs/index.html carries the totals, both books with every position, the 4 cards at the top as full rows and 1677 decisions in short form (every one that opened a position, moved a different token under a listed ticker or was not NONE), all as docs/ledger.json has them. The other decisions are in 51 files of docs/rows, one per wallet, which hold the 8396 rows exactly and give the page's counts per wallet
+  OK    prices          7252 decisions read a price, each the last Chainlink feed value at or before the block of the move, out of 31908 values of 26 feeds saved in docs/walk/feeds.json
+  OK    ledger          docs/ledger.json is what the walk gives: 8396 decisions about 51 wallets (FULL 0, REDUCED 236, NONE 8160). Incoming Stock Tokens by kind: purchase 1184, purchase_off_venue 565, rotation 3, liquidity 2217, swapped_unpaid 5, received 263, out 4029. copy-guard opened 236 practice positions, every one on a purchase (an official swap the wallet itself paid for, median 2680.11 USD), and none in a token the issuer did not list. A ticker copy opened 1565: 1541 in Stock Tokens and 24 in 4 other tokens under a listed ticker. Different tokens under a listed ticker were part of 136 moves (67 tokens: FLY, GME, IBM, NET, NVDA, SPY, USDG, WMETA, WTSM): 75 sent to the wallet, 22 bought by it, 0 received unpaid, 37 logged as sent by it. At one size (25.00 USD each): the 236 both opened 19.76 USD, the 1305 Stock Token positions only the ticker copy opened 34.90 USD, and its 24 in other tokens: 21 valued at a pool (-480.89 USD), 3 not measured and in no sum
+  OK    groups          copy-guard per group, recomputed: selected: 30 wallets, 8093 decisions, copy-guard opened 212 and declined 7881, followed purchases median 3295.74 USD (sum 2508214.48), at 25.00 USD each 23.05 USD, 81 of 212 from 0x30ce…6576; observed_other_token_buyers: 20 wallets, 210 decisions, copy-guard opened 24 and declined 186, followed purchases median 0.40 USD (sum 9.12), at 25.00 USD each -3.29 USD, 4 of 24 from 0xa634…05fd; demo: 1 wallets, 93 decisions, copy-guard opened 0 and declined 93, followed purchases median 0.00 USD (sum 0.00), at 25.00 USD each 0.00 USD
+  OK    page            docs/index.html carries the totals, both books with every position, the 5 cards at the top as full rows and 1677 decisions in short form (every one that opened a position, moved a different token under a listed ticker or was not NONE), all as docs/ledger.json has them. The other decisions are in 51 files of docs/rows, one per wallet, which hold the 8396 rows exactly and give the page's counts per wallet
   OK    limits          limits.json hashes to 0x1e762486…72c2cf, the limits every decision and the mandate name: full 100.00 USD, reduced 25.00 USD, 300.00 USD per day, a wallet at a loss opens nothing
   OK    rules files     agent/rules.ts hashes to 0x2abeff7f…e93b12, the file the paid run's trails name, and agent/rules-v2.ts to 0x051a62db…14cf18, as every decision and the mandate say
-  OK    mandate         SAMPLE mandate mandate/sample/mandate.json (0xdd7b06e1…3c4425): the signature in every decision recovers to its principal 0xbb62…f48d, a testnet-only key that stands in for the principal. The real mandate, mandate/mandate.json, is not signed yet
-  OK    root onchain    LedgerAnchored in 0xb8f605d9…b76812 on Robinhood Testnet has the Merkle root 0x0829cd64…d8e3c1 of all 8396 decisions, the same mandate, limits and rules, and the same counts
-  OK    CRE verdict     the CRE workflow wrote MATCH for anchor 0x15f9ed8a…585c7f in 0x447a2eeb…f2219e on Robinhood Testnet
-  OK    pool mark       the last swap of Uniswap v4 pool 0x04263541…9cce27 at or before block 88230479 is in 0x92677c01…ada53b (block 88191169), the price 1 ticker-copy position is marked at
-  OK    pool mark       the last swap of Uniswap v4 pool 0x9f0f44d4…87ef34 at or before block 88230479 is in 0x602fda94…004144 (block 87883602), the price 20 ticker-copy positions are marked at
+  OK    mandate         mandate/mandate.json hashes to 0xe8bfafb6…9bbc1e, and the signature in every decision recovers to its principal 0x502b…b8e6: practice only, payment key 0xc380…ed94, valid 2026-10-14T00:00:00Z to 2026-12-31T23:59:59Z
+  OK    root onchain    LedgerAnchored in 0x62986233…04b386 on Robinhood Testnet has the Merkle root 0x4cf309f5…910664 of all 8396 decisions, the same mandate, limits and rules, and the same counts
+  OK    CRE verdict     the CRE workflow wrote MATCH for anchor 0x15f9ed8a…585c7f in 0x8764f151…40f71b on Robinhood Testnet
+  OK    pool mark       the last swap of Uniswap v4 pool 0x04263541…9cce27 at or before block 89796552 is in 0x0848299c…01257b (block 89796498), the price 1 ticker-copy position is marked at
+  OK    pool mark       the last swap of Uniswap v4 pool 0x9f0f44d4…87ef34 at or before block 89796552 is in 0x15899c21…cd45c3 (block 88776704), the price 20 ticker-copy positions are marked at
   21 of the 8396 decisions against Robinhood Chain (--deep checks every one)
   OK    decision 1      0x3b146d42…4e2f14 in block 11167202 (2026-07-16T09:58:34.000Z): 2 transfers as listed, signed by 0x6ce9…8571, not the wallet, purchase_off_venue, venue other, feed value 209.6849 USD from round 337
   OK    decision 2      0x7412e5f2…01c341 in block 11168196 (2026-07-16T10:00:12.000Z): 1 transfer as listed, signed by the wallet, out (ModifyLiquidity), venue uniswap-v4-pool-manager, feed value 209.6849 USD from round 337
@@ -365,7 +365,7 @@ The walk follows 51 wallets in 3 groups, and every count is kept per group. The 
 Both enter a Stock Token at the Chainlink feed's value at the block of the move and leave by the same exit rules: the copied wallet sells or sends the token, the feed crosses the stop loss or the take profit, or the time limit passes. Whatever is still open is marked at the feed's last value.
 
 <!-- LEDGER:BEGIN -->
-Walked 2026-10-14 08:40 UTC, marked at Robinhood Chain block 88230479. Moves from 2026-07-16 09:58 UTC to 2026-10-14 03:51 UTC.
+Walked 2026-10-16 04:31 UTC, marked at Robinhood Chain block 89796552. Moves from 2026-07-16 09:58 UTC to 2026-10-14 03:51 UTC.
 
 **What each book did with the same 8396 moves**
 
@@ -374,7 +374,7 @@ Walked 2026-10-14 08:40 UTC, marked at Robinhood Chain block 88230479. Moves fro
 | Practice positions opened | 236 (full size 0, reduced size 236) | 1565 |
 | Of them in a token under a listed ticker at an address the issuer did not list | 0 | 24, in 4 tokens |
 | Declined, each with a reason | 8160 | 0. It has no rule to decline by |
-| Closed / still open at the mark | 229 / 7 | 1523 / 42 |
+| Closed / still open at the mark | 230 / 6 | 1529 / 36 |
 
 **The same moves by group of wallets.** The groups were chosen in different ways, so each is shown apart and the totals above are only their sum.
 
@@ -390,11 +390,11 @@ Of the 212 positions copy-guard opened for the selected wallets, the busiest wal
 
 | | Positions | Put in | Result at the exit or the mark |
 |---|---|---|---|
-| Opened by both books, following the selected wallets | 212 | 5300.00 USD | 26.60 USD |
-| Opened by both books, following the wallets observed buying the other SPY | 24 | 600.00 USD | 0.02 USD |
-| Opened by both books, all groups | 236 | 5900.00 USD | 26.62 USD, the same in both books |
-| Opened by the ticker copy only, in Stock Tokens | 1305 | 32625.00 USD | 48.01 USD |
-| Opened by the ticker copy only, in other tokens under a listed ticker | 24 | 600.00 USD | 21 positions measured at the pool's own price: -480.55 USD. 3 positions not measured |
+| Opened by both books, following the selected wallets | 212 | 5300.00 USD | 23.05 USD |
+| Opened by both books, following the wallets observed buying the other SPY | 24 | 600.00 USD | -3.29 USD |
+| Opened by both books, all groups | 236 | 5900.00 USD | 19.76 USD, the same in both books |
+| Opened by the ticker copy only, in Stock Tokens | 1305 | 32625.00 USD | 34.90 USD |
+| Opened by the ticker copy only, in other tokens under a listed ticker | 24 | 600.00 USD | 21 positions measured at the pool's own price: -480.89 USD. 3 positions not measured |
 
 **How each token reached the wallet.** Every move is one of these kinds, read from the transaction alone ([`docs/walk/SELECTION.md`](docs/walk/SELECTION.md), section 2). Stock Tokens are counted per incoming token, the books per decision.
 
@@ -412,7 +412,7 @@ These are practice (paper) positions on past public moves. The tables are not a 
 
 No move reached the full size in this walk. No position, by leading reason: a sale or a transfer out, not a purchase (3983), a liquidity operation, not a purchase (2213), wallet not in profit (603), bought outside the official Uniswap pools (565), sent to the wallet, not bought by it (254), no Chainlink price at the block (187), position limit reached (148), not USDG, a different token with the same ticker (93), a moved token the agent cannot name (58), not the Stock Token SPY, a different token with the same ticker (20), daily limit reached (10), not the Stock Token NVDA, a different token with the same ticker (10), not the Stock Token WTSM, a different token with the same ticker (6), one Stock Token exchanged for another, not a purchase (3), not the Stock Token NET, a different token with the same ticker (2), not the Stock Token WMETA, a different token with the same ticker (2), not the Stock Token FLY, a different token with the same ticker (1), not the Stock Token GME, a different token with the same ticker (1), not the Stock Token IBM, a different token with the same ticker (1).
 
-The Merkle root of all 8396 decisions is `0x0829cd645caa979dbf725c34f519634060b4c116a71b10b25d5afb2848d8e3c1`. It is in one `LedgerAnchored` event on Robinhood Testnet: [`0xb8f605d9…b76812`](https://explorer.testnet.chain.robinhood.com/tx/0xb8f605d9825e4b41da68990bfcdfab20538e1c62db41990b309a6ebf45b76812?tab=logs).
+The Merkle root of all 8396 decisions is `0x4cf309f5af3ea7ba456ae8e60a1e6741e09cb61fe6f1564fe2cbe36e47910664`. It is in one `LedgerAnchored` event on Robinhood Testnet: [`0x62986233…04b386`](https://explorer.testnet.chain.robinhood.com/tx/0x6298623367c61505efd7a7b5f9e3c9c9c2f3b506dbe70147b55f1081cc04b386?tab=logs).
 <!-- LEDGER:END -->
 
 Each decision is one line of [`docs/walk/trails.jsonl.gz`](docs/walk/trails.jsonl.gz) (gzipped; `gunzip -k` gives `trails.jsonl`, and [`docs/verify/compressed.json`](docs/verify/compressed.json) keeps its sha256 from before it was gzipped): everything the rules read, every rule row, the size, the practice position with its exit, and a card. [`docs/ledger.json`](docs/ledger.json) holds the rows, both books and the totals. [`docs/index.html`](docs/index.html) carries the totals, both books and every decision that opened a position, and loads the other decisions from [`docs/rows/`](docs/rows/), one file per wallet, when they are asked for. `verify.mjs` rebuilds the ledger from the trails and the saved feed values, and checks that the page and `docs/rows/` hold exactly its rows.
@@ -457,7 +457,7 @@ The three headings below are the words the Blockchain Legal Institute uses for i
 The principal is an address. It is not a legal identity: nothing here ties that address to a named person or company, and nothing here is a registration.
 
 <!-- MANDATE:BEGIN -->
-**Mandate: sample, not yet signed by the principal.** This walk used `mandate/sample/mandate.json`. Its principal `0xbb62…f48d` is a testnet-only key that stands in for the principal. The mandate meant for signing, `mandate/mandate.json`, names `0x502B…b8e6` and has no signature yet, so no decision in this walk carries the principal's own signature. After that signature the walk is run again.
+**Mandate: signed by the principal.** `mandate/mandate.json` is signed by `0x502B…b8e6`, and every decision of this walk carries that signature.
 <!-- MANDATE:END -->
 
 What the mandate allows and forbids, in its own words (`scope` in `mandate/mandate.json`):
@@ -688,6 +688,10 @@ The agent replayed three moves of the demo wallet with `--pay` under the v1 rule
 | [`0xf7cb51a2…8717`](https://robinhoodchain.blockscout.com/tx/0xf7cb51a25f62bfbe63760404055b36d380eed0d47c68f99cdccaa17e9c478717) | 20,000 USDG sent | DO_NOT_COPY: not USDG, a different token whose name reads USDG with invisible characters in it. The wallet did not sign | [`0xfd3df929…563199`](https://explorer.testnet.chain.robinhood.com/tx/0xfd3df9297c75c65df6651251485c355b31d44ae692db652ced3c1e68c9563199) |
 
 These trails and events are unchanged. The same three moves are in the v2 ledger too, decided again under the v2 rules.
+
+### The paid gate run (2026-10-16, 01:38 UTC)
+
+The agent paid the gate in front of the CRE workflow once, under the mandate signed by the principal. vet402's SpendGuard allowed the payment, and the agent paid 0.01 USDG in [`0x7d8d9384…eb6c`](https://robinhoodchain.blockscout.com/tx/0x7d8d9384d5a529781ad65f1246fc5002c289396137c22950604bc50b13c1eb6c), settled. The gate then ran `rwa-verify` (simulated), and the answer was MATCH. This is a self-paid demonstration: the payer `0xc380…ED94` and the payee `0x973c…6227` are both my own wallets, and the 0.01 USDG came from `0x973c…6227` in [`0x6edc973b…afc5`](https://robinhoodchain.blockscout.com/tx/0x6edc973bdb4eb9ea6aa90ef466f71b0e1e71ad1a800e3abc807aa88ca8e4afc5). It is not revenue and not a payment from anyone else. The run is saved in [`docs/agent/paid-gate-run/`](docs/agent/paid-gate-run/).
 
 ### Paying, and the cap
 

@@ -3,9 +3,9 @@
  "files": [
   {
    "file": "docs/walk/trails.jsonl",
-   "bytes": 109759931,
-   "sha256": "7a7e76b424c4f058764b527d894bccb808228373e6c24266b867aedcd1175066",
-   "gz_bytes": 4579243
+   "bytes": 109222587,
+   "sha256": "f9fefb3f439d055b1e0c1769404aaa9d5d4a4a306f7efcdb49fdd9da70b19dad",
+   "gz_bytes": 4575464
   },
   {
    "file": "docs/walk/chain.json",

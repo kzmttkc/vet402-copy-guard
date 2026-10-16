@@ -1,0 +1,55 @@
+$ cre workflow simulate trail-anchor --target local-simulation --non-interactive --trigger-index 0 --http-payload agent/state/runs/2026-10-16T01-37-58-842Z/trail-73953009-1b838f40.payload.json
+✓ Workflow compiled
+✓ Simulation limits enabled
+  HTTP: req=120kb resp=250kb timeout=10s | ConfHTTP: req=125kb resp=500kb timeout=1m30s | Consensus obs=25kb | ChainWrite evm_report=50kb evm_gas=10000000 solana_report=265b solana_cu=300000 | WASM binary=100mb compressed=20mb
+  Binary hash: ad55fd32e62a1361ac3ae64712f6b2f31d077c7b4c3e9e9c12adafe056131e11
+  Config hash: 7edfb96886909b1c396bda344488c826b74a143fe92b6780995abb35238505de
+✓ Loaded JSON from file: ~/vet402-bli/agent/state/runs/2026-10-16T01-37-58-842Z/trail-73953009-1b838f40.payload.json
+✓ Created HTTP trigger payload with 1 fields
+2026-10-16T08:38:32Z [SIMULATION] Simulator Initialized
+
+2026-10-16T08:38:32Z [SIMULATION] Running trigger trigger=http-trigger@1.0.0-alpha
+2026-10-16T08:38:32Z [USER LOG] OK    A1  exact eip155:4663 0x5fc5360d0400a0fd4f2af552add042d716f1d168 amount 10000 payTo 0x973cd8a91a771c2c04c6036888f8175d6b4f6227 permit2
+2026-10-16T08:38:32Z [USER LOG] OK    A2  header 0x9d584805d66162af38cc51a193bd6ebb8e8edfb0b440dac3a1302168b6bf6018 recomputed 0x9d584805d66162af38cc51a193bd6ebb8e8edfb0b440dac3a1302168b6bf6018
+2026-10-16T08:38:32Z [USER LOG] OK    A3  record 0xe9b08727131e34010b34006c660d4c1b436ec25f chain 4663 rwa-recon-0.3
+2026-10-16T08:38:32Z [USER LOG] OK    A4  MATCH reasons 0 anchor tx 0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f
+2026-10-16T08:38:32Z [USER LOG] OK    A5  r1_status partial
+2026-10-16T08:38:32Z [USER LOG] OK    A6  3 look-alikes, 0 counted or needing review
+2026-10-16T08:38:32Z [USER LOG] OK    B1  record block 89693859, movement block 73953009
+2026-10-16T08:38:32Z [USER LOG] OK    B2  0x5dd716fe12275b69f04b26beeca343843c8e3539 same_ticker
+2026-10-16T08:38:32Z [USER LOG] FAIL  C1  0x5dd716fe12275b69f04b26beeca343843c8e3539 uses NVDA (cre)
+2026-10-16T08:38:32Z [USER LOG] FAIL  C2  no Stock Token moved
+2026-10-16T08:38:32Z [USER LOG] FAIL  C3  r1_status partial
+2026-10-16T08:38:32Z [USER LOG] FAIL  C4  realized_usd -81.19
+2026-10-16T08:38:32Z [USER LOG] OK    M1  principal 0x502b59fbff30e21b02ade06ed0328fe03b35b8e6 signer 0x502b59fbff30e21b02ade06ed0328fe03b35b8e6 mandate 0xe8bfafb6a0335572d779478ec29bdcb4de83cfec7fe91b525a2a3dbc899bbc1e
+2026-10-16T08:38:32Z [USER LOG] FAIL  V1  no Stock Token moved
+2026-10-16T08:38:32Z [USER LOG] FAIL  D1  no Stock Token moved
+2026-10-16T08:38:32Z [USER LOG] FAIL  P1  no Stock Token moved
+2026-10-16T08:38:32Z [USER LOG] OK    L1  300.00 USD per day, 0.00 USD used on 2026-09-27, room 300.00 USD
+2026-10-16T08:38:32Z [USER LOG] OK    L2  0 open, limit 10
+2026-10-16T08:38:32Z [USER LOG] rules copy-guard v2 give DO_NOT_COPY, the trail says DO_NOT_COPY
+2026-10-16T08:38:33Z [USER LOG] movement 0x1b838f40a43d54b7ce3364f08f723516170be2d03fdbcd6ab801c79f7f77b51b: 1 transfers in block 73953009 as listed
+2026-10-16T08:38:33Z [USER LOG] payment: 10000 USDG atomic from 0xc380d9f41d90765a4820429b9da151889e8bed94 to 0x973cd8a91a771c2c04c6036888f8175d6b4f6227
+2026-10-16T08:38:33Z [USER LOG] trail hash 0x94cc0c547f439805f47bc37e9475486f92642ec6973d65bcb1c06e216dd8e244
+2026-10-16T08:38:34Z [USER LOG] trail written to 0x991311C2ECA78B83dA3593C7500804af6FEEa0B3 on robinhood-testnet, tx 0x0000000000000000000000000000000000000000000000000000000000000000
+
+✓ Workflow Simulation Result:
+"{\"trailHash\":\"0x94cc0c547f439805f47bc37e9475486f92642ec6973d65bcb1c06e216dd8e244\",\"conclusion\":\"DO_NOT_COPY\",\"decisive\":[\"C1\",\"C2\",\"C4\",\"V1\",\"D1\",\"P1\"],\"movementTx\":\"0x1b838f40a43d54b7ce3364f08f723516170be2d03fdbcd6ab801c79f7f77b51b\",\"paymentTx\":\"0x7d8d9384d5a529781ad65f1246fc5002c289396137c22950604bc50b13c1eb6c\",\"verdictTx\":\"0x0000000000000000000000000000000000000000000000000000000000000000\",\"rules\":\"copy-guard v2\",\"trailTx\":\"0x0000000000000000000000000000000000000000000000000000000000000000\"}"
+
+2026-10-16T08:38:34Z [SIMULATION] Execution finished signal received
+2026-10-16T08:38:34Z [SIMULATION] Skipping WorkflowEngineV2
+
+╭──────────────────────────────────────────────────────╮
+│ Simulation complete! Ready to deploy your workflow?  │
+│                                                      │
+│ Run cre account access to request deployment access. │
+╰──────────────────────────────────────────────────────╯
+Initializing...
+Loading settings...
+! Using default private key for chain write simulation. To use your own key, set CRE_ETH_PRIVATE_KEY in your .env file or system environment.
+Checking RPC connectivity...
+Compiling workflow...
+
+⚠️  Update available! You’re running 1.37.0, but 1.38.0 is the latest.
+Run `cre update` or visit https://github.com/smartcontractkit/cre-cli/releases to upgrade.
+
