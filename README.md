@@ -756,6 +756,7 @@ bun agent/main.ts --mandate mandate/sample --gate http://127.0.0.1:4021/v1/workf
 - Practice (paper) trades only. No real trade was placed. Nothing here says that copying any wallet makes money. The two books compare two policies on past moves. That comparison is not a forecast, not a track record and not advice.
 - The record says which contract moved and whether its address is on the issuer's list. A token is named as look-alike only when it carries a listed Stock Token or USDG ticker or name at an address the issuer did not list.
 - The principal is an address. Nothing here ties it to a legal identity, and nothing here is a registration.
+- token-check read 143 of the 144 tokens the walk names. The one it did not read is `0xf51f…606a` ("NVDA 3x Long", symbol NVDAx3L), whose runtime code starts with the byte 0xef. The workflow does not classify that kind of code yet, so this token has no token-check row. Its symbol is not a listed ticker and its address is not on the issuer's list.
 - The walk is a replay. Each wallet's record was read once, after the moves, so the rules judge a wallet with what is known now.
 - Feed values arrive a few times a day. An entry price can be hours older than the move, within the age limit the user set.
 - The ticker copy is a baseline I defined, stated in the ledger. A real copier may be less naive.
