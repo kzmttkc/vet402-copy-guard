@@ -60,7 +60,7 @@ flowchart TB
 | Payment | From | To | How | Status |
 |---|---|---|---|---|
 | 0.01 USDG for the wallet's record | the agent's wallet `0xc380…ED94` | vet402's wallet `0x973c…6227` | x402 v2, `exact`, Permit2, settled by the Dexter facilitator, which pays the gas | settled once, 2026-10-08, tx `0x65c314bd…87af61`. My own test: both wallets are mine |
-| 0.01 USDG for one run of `rwa-verify` | the agent's wallet | the same vet402 wallet | the same terms, asked for by the gate in front of the workflow | dry run only: the agent read the 402 and built the payment without signing |
+| 0.01 USDG for one run of `rwa-verify` | the agent's wallet | the same vet402 wallet | the same terms, asked for by the gate in front of the workflow | paid once on 2026-10-16 in [`0x7d8d9384…eb6c`](https://robinhoodchain.blockscout.com/tx/0x7d8d9384d5a529781ad65f1246fc5002c289396137c22950604bc50b13c1eb6c), a self-paid test (I own the payer and the payee). The gate ran `rwa-verify` (simulated), got MATCH, and only then settled. The earlier dry run is in `docs/agent/gate-dry-run/` |
 | testnet gas for the CRE writes | a testnet-only key | Robinhood Testnet | `cre workflow simulate --broadcast` | no real value |
 
 The agent can pay one address. `pickAccept` refuses any other payee, token, chain or price before a signature exists, and the Permit2 witness pins the recipient inside the signed message. The cap is 1 USDG in code. The user's `limits.json` can lower it and cannot raise it.
