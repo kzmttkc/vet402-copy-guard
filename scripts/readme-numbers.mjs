@@ -431,7 +431,7 @@ if (tcAnchor && tcResults) {
 	const updated = issuer.filter((r) => r.multiplier_updates > 0)
 	const recheck = has('docs/token-check/recheck-output.txt') ? read('docs/token-check/recheck-output.txt').trimEnd().split('\n').pop() : null
 	const runs = tcDetails?.runs ?? tcResults.cre_runs.map((r, i) => ({ run: i + 1, tx: r.tx }))
-	creNumbers = `**What \`token-check\` has checked so far.** ${plural(tcAnchor.tokens, 'token', 'tokens')} that moved in the walk, in ${plural(tcAnchor.runs, 'CRE run', 'CRE runs')}, the last at Robinhood Chain block ${tcAnchor.last_checked_block}.
+	creNumbers = `**What \`token-check\` has checked (as of the last run below).** ${plural(tcAnchor.tokens, 'token', 'tokens')} that moved in the walk, in ${plural(tcAnchor.runs, 'CRE run', 'CRE runs')}, the last at Robinhood Chain block ${tcAnchor.last_checked_block}.
 
 | What | Count |
 |---|---|
