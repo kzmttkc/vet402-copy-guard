@@ -513,7 +513,7 @@ Each row reads the same way: a rule maker or regulator has asked in these words,
 
 - adctx, in a statement it approved for publication (its own post: [what an agent purchase costs](https://adctx.com/posts/what-an-agent-purchase-costs/)): "vet402's purchase from t.adctx.com on Oct 13, 2026 was adctx's first payment from outside the company, and adctx then added the output schema declaration that vet402's public row showed was missing."
 - Goldsky, in a statement it approved for publication (the public record: [arc-delivery-receipts](https://kzmttkc.github.io/arc-delivery-receipts/)): "vet402 paid 11 Goldsky Edge endpoints through Circle Gateway on Arc on Sept 28, 2026. The public record counts all 11 as charged and all 11 as delivered."
-- probe402's report MCRI-002 cites vet402's numbers.
+- probe402's report [MCRI-002](https://probe402.com/publications/pub_mcri_002) cites vet402's numbers.
 - ETHOnline 2026: vet402 won the Bazantic prize with payOrRefuse ([showcase](https://ethglobal.com/showcase/payorrefuse-opboo)).
 - Outside reaction to copy-guard itself so far: none. The paid run of the gate is a test I paid to myself.
 
