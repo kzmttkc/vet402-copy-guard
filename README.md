@@ -248,7 +248,7 @@ From [`docs/simulate-match.txt`](docs/simulate-match.txt), saved 2026-10-08. The
 <!-- CRE_SIMULATE:END -->
 
 <!-- CRE_NUMBERS:BEGIN -->
-**What `token-check` has checked (as of the last run below).** 143 tokens that moved in the walk, in 15 CRE runs, the last at Robinhood Chain block 88226518.
+**What `token-check` has checked (as of the last run below).** 143 tokens that moved in the walk, in 15 CRE runs, the last at Robinhood Chain block 88226518. `docs/ledger.json` keeps an older split of the same 143 under `totals.token_check`: its 12 stock-ticker and 55 USDG look-alikes are the 67 look-alikes here, and its 25 other assets are USDG itself plus the 24 other tokens here.
 
 | What | Count |
 |---|---|
@@ -511,9 +511,9 @@ Each row reads the same way: a rule maker or regulator has asked in these words,
 
 ## What vet402 already has behind this
 
-- adctx approved this statement for publication: "vet402's purchase from t.adctx.com on Oct 13, 2026 was adctx's first payment from outside the company, and adctx then added the output schema declaration that vet402's public row showed was missing." The purchase is the settled row of 2026-10-13 for `t.adctx.com/check` on Base in the [vet402 export](https://vet402.com/api/v1/observatory/export.csv).
+- adctx says, in a statement it approved for publication: "vet402's purchase from t.adctx.com on Oct 13, 2026 was adctx's first payment from outside the company, and adctx then added the output schema declaration that vet402's public row showed was missing." The purchase is the settled row of 2026-10-13 for `t.adctx.com/check` on Base in the [vet402 export](https://vet402.com/api/v1/observatory/export.csv).
 - Goldsky, in a statement it approved for publication (the public record: [arc-delivery-receipts](https://kzmttkc.github.io/arc-delivery-receipts/)): "vet402 paid 11 Goldsky Edge endpoints through Circle Gateway on Arc on Sept 28, 2026. The public record counts all 11 as charged and all 11 as delivered."
-- probe402's report [MCRI-002](https://probe402.com/publications/pub_mcri_002) cites vet402's numbers.
+- probe402's report [MCRI-002](https://probe402.com/publications/pub_mcri_002) cites vet402's numbers (11,278 paid attempts and 6,022 settled, read on 2 October 2026).
 - ETHOnline 2026: vet402 won the Bazantic prize with payOrRefuse ([showcase](https://ethglobal.com/showcase/payorrefuse-opboo)).
 - Outside reaction to copy-guard itself, as of 2026-10-19 UTC: none. The paid run of the gate is a test I paid to myself.
 
