@@ -24,4 +24,4 @@ vet402 copy-guard: recheck with no key, no account and no install
 
 18 OK, 0 FAIL, 0 not checked
 RESULT: MATCH
-To check every decision, the selection, the page and the gate: node verify.mjs (about 3 minutes)
+To check every decision, the selection, the page and the gate: node verify.mjs (about two and a half minutes)

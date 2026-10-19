@@ -50,7 +50,7 @@ node verify.mjs --quick
 
 ```
 RESULT: MATCH
-To check every decision, the selection, the page and the gate: node verify.mjs (about 3 minutes)
+To check every decision, the selection, the page and the gate: node verify.mjs (about two and a half minutes)
 ```
 
 The whole ledger, every decision and every rule, is one more line, 128 to 148 s in 5 saved runs of 2026-10-16. Most of that time is local computation: `node verify.mjs --offline`, which reads no RPC, took 165 s on the author's laptop on 2026-10-15.
@@ -507,14 +507,14 @@ Each row reads the same way: a rule maker or regulator has asked in these words,
 
 - The per-wallet pages exist so a reader can recheck the practice decisions. They are not ratings of people.
 - Only public chain data is shown (addresses, transactions, blocks). No names, no off-chain data.
-- The owner of a wallet can ask support@vet402.com to remove its page. It is removed within 7 days and the ledger keeps only the hash.
+- The owner of a wallet can ask support@vet402.com to take its page down.
 
 ## What vet402 already has behind this
 
-- [adctx](https://adctx.com/posts/what-an-agent-purchase-costs/): "vet402's purchase from t.adctx.com on Oct 13, 2026 was adctx's first payment from outside the company, and adctx then added the output schema declaration that vet402's public row showed was missing."
-- Goldsky: "vet402 paid 11 Goldsky Edge endpoints through Circle Gateway on Arc on Sept 28, 2026. The public record counts all 11 as charged and all 11 as delivered."
+- adctx, in a statement it approved for publication (its own post: [what an agent purchase costs](https://adctx.com/posts/what-an-agent-purchase-costs/)): "vet402's purchase from t.adctx.com on Oct 13, 2026 was adctx's first payment from outside the company, and adctx then added the output schema declaration that vet402's public row showed was missing."
+- Goldsky, in a statement it approved for publication (the public record: [arc-delivery-receipts](https://kzmttkc.github.io/arc-delivery-receipts/)): "vet402 paid 11 Goldsky Edge endpoints through Circle Gateway on Arc on Sept 28, 2026. The public record counts all 11 as charged and all 11 as delivered."
 - probe402's report MCRI-002 cites vet402's numbers.
-- ETHOnline 2026: Bazantic prize.
+- ETHOnline 2026: vet402 won the Bazantic prize with payOrRefuse ([showcase](https://ethglobal.com/showcase/payorrefuse-opboo)).
 - Outside reaction to copy-guard itself so far: none. The paid run of the gate is a test I paid to myself.
 
 ## Details

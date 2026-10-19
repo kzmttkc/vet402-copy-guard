@@ -96,4 +96,4 @@ The testnet receivers trust CRE's simulation forwarder, which accepts reports fr
 4. Each decision becomes one JSON trail with a card. Its keccak256 is a leaf.
 5. The CRE workflow `trail-anchor` recomputes the Merkle root from the leaves and writes it once to `LedgerRootReceiver`.
 6. `node scripts/build-page.mjs` puts the ledger into `docs/index.html`.
-7. `node verify.mjs` reruns all of it from the saved files and compares with both chains. `node verify.mjs --quick` checks the payment, the anchors, the CRE verdicts, the first four cards and the ledger's root first, for a reader who has a minute.
+7. `node verify.mjs` reruns all of it from the saved files and compares with both chains. `node verify.mjs --quick` checks the payment, the anchors, the CRE verdicts, the first five cards and the ledger's root first, for a reader who has a minute.
