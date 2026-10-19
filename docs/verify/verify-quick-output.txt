@@ -21,7 +21,12 @@ vet402 copy-guard: recheck with no key, no account and no install
   OK    ledger leaves   the 8396 leaves of docs/ledger.json give its root 0x4cf309f5…910664
   OK    root onchain    LedgerAnchored in 0x62986233…04b386 on Robinhood Testnet has the Merkle root 0x4cf309f5…910664 of all 8396 decisions, the same mandate, limits and rules, and the same counts
   OK    CRE verdict     the CRE workflow wrote MATCH for anchor 0x15f9ed8a…585c7f in 0x8764f151…40f71b on Robinhood Testnet
+4. The paid gate call in front of the CRE workflow
+  OK    paid gate       docs/agent/paid-gate-run names the paid gate call 0x7d8d9384…c1eb6c, settled, from 0xc380…ed94
+  OK    settlement tx   0x7d8d9384…c1eb6c succeeded in block 89694056 on Robinhood Chain
+  OK    USDG moved      0.01 USDG from 0xc380…ed94 (the agent) to 0x973c…6227 (vet402), the only USDG transfer in the tx
+  OK    self-paid       the 0.01 USDG came from the payee 0x973c…6227 in 0x6edc973b…e4afc5 (block 89692865): both wallets are the author's, so this is a self-paid test, not revenue
 
-18 OK, 0 FAIL, 0 not checked
+22 OK, 0 FAIL, 0 not checked
 RESULT: MATCH
 To check every decision, the selection, the page and the gate: node verify.mjs (about two and a half minutes)

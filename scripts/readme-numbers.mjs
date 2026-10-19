@@ -291,7 +291,7 @@ ${clone}
 node verify.mjs --quick
 \`\`\`
 
-\`--quick\` rechecks the payment, the anchors, the CRE verdicts, the first five cards of the page and the ledger's root against both chains${VT.quick ? `, in ${secondsWords(VT.quick)} (${plural(VT.quick.runs, 'saved run', 'saved runs')}${VT.quick.day ? ` of ${VT.quick.day}` : ''})` : ''}.${quickTail ? ` Its last two lines:\n\n${fence(quickTail)}` : ''}
+\`--quick\` rechecks the payment, the anchors, the CRE verdicts, the first five cards of the page, the ledger's root and the paid gate call against both chains${VT.quick ? `, in ${secondsWords(VT.quick)} (${plural(VT.quick.runs, 'saved run', 'saved runs')}${VT.quick.day ? ` of ${VT.quick.day}` : ''})` : ''}.${quickTail ? ` Its last two lines:\n\n${fence(quickTail)}` : ''}
 
 The whole ledger, every decision and every rule, is one more line${fullTimes}. Most of that time is local computation: \`node verify.mjs --offline\`, which reads no RPC, took 165 s on the author's laptop on 2026-10-15.
 

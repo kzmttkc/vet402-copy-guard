@@ -11,7 +11,8 @@
 //   --only ledger         section 5: the practice ledger, the mandate and the user's limits
 //   --only gate           section 6: the x402 gate in front of the CRE workflow
 //   --quick               only the payment, the anchor, the CRE verdicts, the five cards at the top of the
-//                         page and the ledger root, in 11 to 13 seconds (the full run takes about two and a half minutes)
+//                         page, the ledger root and the paid gate call,
+//                         in about 15 seconds (the full run takes about two and a half minutes)
 //   --deep                check every decision of the ledger against the chain, not a sample
 //   --offline             skip the chain reads; those lines are reported as not checked
 //   --rpc URL             another RPC for Robinhood Chain (4663)
@@ -2402,6 +2403,8 @@ async function verifyQuick(rep, main, test) {
 		seen.add(v)
 		await checkVerdict(rep, test, t, null)
 	}
+	rep.say('4. The paid gate call in front of the CRE workflow')
+	await verifyPaidGate(rep, main)
 }
 
 /** 6. The gate: the saved 402 exchange, the payment the agent built and did not sign, and the agent card. No chain read. */

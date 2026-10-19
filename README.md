@@ -1,6 +1,6 @@
 # vet402 copy-guard
 
-copy-guard is the RWA rule set of vet402. vet402 buys what x402 APIs sell with real USDC, re-reads settlement on-chain and publishes every attempt: 8,000+ paid calls on Base since Aug 14, 2026, plus Solana, Tempo, XRPL, Arc and Celo ([export](https://vet402.com/api/v1/observatory/export.csv)).
+copy-guard is the RWA rule set of vet402. vet402 buys what x402 APIs sell with real USDC, re-reads settlement on-chain and publishes every attempt: 8,000+ settled paid calls on Base since Aug 14, 2026, plus Solana, Tempo, XRPL, Arc and Celo ([export](https://vet402.com/api/v1/observatory/export.csv)).
 
 Anyone can deploy a token called NVDA. copy-guard is an agent that checks which token really moved before it would copy a wallet, and it leaves a record that anyone can recheck.
 
@@ -46,7 +46,7 @@ git clone https://github.com/kzmttkc/vet402-copy-guard && cd vet402-copy-guard
 node verify.mjs --quick
 ```
 
-`--quick` rechecks the payment, the anchors, the CRE verdicts, the first five cards of the page and the ledger's root against both chains, in 11 to 13 s (5 saved runs of 2026-10-16). Its last two lines:
+`--quick` rechecks the payment, the anchors, the CRE verdicts, the first five cards of the page, the ledger's root and the paid gate call against both chains, in 13 to 15 s (5 saved runs of 2026-10-19). Its last two lines:
 
 ```
 RESULT: MATCH
@@ -304,7 +304,7 @@ The last column holds only times read from saved runs on this machine: the simul
 |---|---|---|---|
 | A person opens a block explorer and compares a token's contract with the issuer's list by eye, if they think of it | `token-check` reads the code hash, the beacon and the official list from the chain | the check runs before the agent acts and returns a reason code a machine can read | 6 s for 12 tokens at one block ([`batch-7.cre.txt`](docs/token-check/batch/batch-7.cre.txt)) |
 | A reader trusts the site that shows a wallet's record | `rwa-verify` recomputes the record's hash and reads its anchor | MATCH or MISMATCH with one bit per failed check, as an event | 3 s ([`docs/simulate-match.txt`](docs/simulate-match.txt)) |
-| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 11 to 13 s for `node verify.mjs --quick`, 128 to 148 s for `node verify.mjs` on this walk, 5 runs back to back on 2026-10-16, each RESULT: MATCH ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)). Most of it is local computation, not the network: `node verify.mjs --offline` reads no RPC and still took 165 s on the author's laptop on 2026-10-15 |
+| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 13 to 15 s for `node verify.mjs --quick`, 128 to 148 s for `node verify.mjs` on this walk, 5 runs back to back on 2026-10-16, each RESULT: MATCH ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)). Most of it is local computation, not the network: `node verify.mjs --offline` reads no RPC and still took 165 s on the author's laptop on 2026-10-15 |
 <!-- CHANGES:END -->
 
 ### Why CRE
