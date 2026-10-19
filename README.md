@@ -7,7 +7,7 @@ Anyone can deploy a token called NVDA. copy-guard is an agent that checks which 
 <!-- JUMP:BEGIN -->
 | If you are judging | Start here |
 |---|---|
-| **Anyone** | [Verify it yourself in 20 seconds, 4 steps](#verify-it-yourself-in-20-seconds) |
+| **Anyone** | [Verify it yourself in 15 seconds, 4 steps](#verify-it-yourself-in-15-seconds) |
 | **Chainlink**, Best workflow with CRE | [Chainlink: Best workflow with CRE](#chainlink-best-workflow-with-cre). The one `cre workflow simulate` line, the bounty text line by line, the CRE code guide |
 | **RYO-CHAN**, Autonomous Agents | [RYO-CHAN: Autonomous Agents](#ryo-chan-autonomous-agents). The bounty text phrase by phrase, the practice trade ledger, one sentence turned into limits |
 | **BLI**, LegalTech and RegTech | [BLI: LegalTech and RegTech](#bli-legaltech-and-regtech). Who the agent acts for, two questions from BLI's own stage, the regulators' words |
@@ -33,7 +33,7 @@ Nobody has to take my word for this, or the agent's, or a server's. One command 
 <!-- FACTS:END -->
 
 <!-- VERIFY_HEAD:BEGIN -->
-## Verify it yourself in 20 seconds
+## Verify it yourself in 15 seconds
 <!-- VERIFY_HEAD:END -->
 
 Step 1 needs Node 20 or newer and a copy of this repo. Steps 2 to 4 need only a browser. Every date and time in this README is UTC.

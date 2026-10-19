@@ -229,8 +229,8 @@ export function verifyTimes(readIf, verifySource) {
 	const quick = span(quickText)
 	const full = span(readIf('docs/verify/verify-five-runs.txt'))
 	const hasQuick = Boolean(quick) || /['"]--quick['"]/.test(verifySource ?? '')
-	// The heading promises the slowest saved quick run, rounded up to a multiple of ten, and never less than 20.
-	const promise = quick ? Math.max(20, Math.ceil(quick.max / 10) * 10) : null
+	// The heading promises the slowest saved quick run, rounded up to a multiple of five.
+	const promise = quick ? Math.max(5, Math.ceil(quick.max / 5) * 5) : null
 	return { quick, full, hasQuick, quickOutput: readIf('docs/verify/verify-quick-output.txt'), heading: promise ? `Verify it yourself in ${promise} seconds` : 'Verify it yourself with one command', promise }
 }
 

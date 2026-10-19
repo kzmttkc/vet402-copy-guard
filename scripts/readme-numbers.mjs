@@ -277,7 +277,7 @@ const fence = (body) => `\`\`\`\n${body}\n\`\`\``
 const VT = verifyTimes((p) => (has(p) ? read(p) : null), read('verify.mjs'))
 const jump = `| If you are judging | Start here |
 |---|---|
-| **Anyone** | [Verify it yourself in 20 seconds, 4 steps](#${slug(VT.heading)}) |
+| **Anyone** | [${VT.heading}, 4 steps](#${slug(VT.heading)}) |
 | **Chainlink**, Best workflow with CRE | [Chainlink: Best workflow with CRE](#chainlink-best-workflow-with-cre). The one \`cre workflow simulate\` line, the bounty text line by line, the CRE code guide |
 | **RYO-CHAN**, Autonomous Agents | [RYO-CHAN: Autonomous Agents](#ryo-chan-autonomous-agents). The bounty text phrase by phrase, the practice trade ledger, one sentence turned into limits |
 | **BLI**, LegalTech and RegTech | [BLI: LegalTech and RegTech](#bli-legaltech-and-regtech). Who the agent acts for, two questions from BLI's own stage, the regulators' words |
