@@ -1,41 +1,37 @@
-$ sed -i.bak 's/"realized_usd": "-170.59"/"realized_usd": "-170.58"/' docs/agent/first-paid-run/record.json
-$ node verify.mjs
+$ node verify.mjs --quick
+v26.3.0
+2026-10-24T03:28:48Z
 vet402 copy-guard: recheck with no key, no account and no install
   chains  Robinhood Chain 4663 at rpc.mainnet.chain.robinhood.com, Robinhood Testnet 46630 at rpc.testnet.chain.robinhood.com
   OK    keccak256       the built-in hash gives the published test values
-1. The record the agent bought
-  OK    evidence        docs/agent/first-paid-run holds the record, the 402 exchange and 3 trails about wallet 0xe9b0…c25f
+1. The x402 payment
+  OK    evidence        docs/agent/first-paid-run holds the record, the 402 exchange and 3 trails
   FAIL  record hash     docs/agent/first-paid-run/record.json hashes to 0x09c7b0888a0c3d94483859326c955a234c3337392224909f5120f523c23fa240, but the X-Facts-Hash the trails name is 0x13271095a747ef27d05c86a5d781a6961b4a35e7fd365708b24612f7b40d6adc
-2. The record vet402 anchored, against RwaAnchor on Robinhood Chain
+  OK    settlement tx   0x65c314bd…87af61 succeeded in block 83662617 on Robinhood Chain
+  OK    USDG moved      0.01 USDG from 0xc380…ed94 (the agent) to 0x973c…6227 (vet402), the only USDG transfer in the tx
+2. The record vet402 anchored, and the CRE verdict on it
   OK    record file     rwa-verify/fixtures/anchored-record.json hashes to 0x9d0e83d9…f721ee, the hash written in it
   OK    anchor tx       0x15f9ed8a…585c7f succeeded in block 76177721 on Robinhood Chain
   OK    anchor contract RwaAnchor 0x1955…c22d runs the pinned build: no owner, no upgrade path
   OK    anchored hash   onchain 0x9d0e83d9…f721ee = recomputed; wallet 0xe9b0…c25f, written by 0x973c…6227, as of 2026-09-30T03:00:07.000Z
   OK    CRE verdict     the CRE workflow wrote MATCH for anchor 0x15f9ed8a…585c7f in 0xc90411c0…4b6cbb on Robinhood Testnet
-3. The x402 payment
-  OK    settlement tx   0x65c314bd…87af61 succeeded in block 83662617 on Robinhood Chain
+3. The cards at the top of the page, and the ledger root
+  OK    cards           the 5 cards at the top of docs/index.html (decisions 6000, 28, 490, 7351, 1) rerun to the size, the rule rows and the card they show, and are rows of docs/ledger.json with their leaves
+  OK    card 6000       0x1b838f40…77b51b in block 73953009 (2026-09-27T12:52:47.000Z): 1 transfer as listed, signed by 0x3433…abd0, not the wallet, received
+  OK    card 28         0xafe7fc3b…2b815a in block 14537500 (2026-07-20T07:54:42.000Z): 2 transfers as listed, signed by 0xc912…c247, not the wallet, a purchase: an official swap, paid 76,078.26808 USDG by the wallet, venue uniswap-v4-pool-manager and other, feed value 203.3700 USD from round 381
+  OK    card 490        0x4775909a…b5bb22 in block 43749967 (2026-08-23T05:22:43.000Z): 1 transfer as listed, signed by the wallet, a purchase: an official swap, paid 16.807827 ETH by the wallet
+  OK    card 7351       0xf7cb51a2…478717 in block 81262132 (2026-10-06T01:57:36.000Z): 1 transfer as listed, signed by 0x5739…dc19, not the wallet, out
+  OK    card 1          0x3b146d42…4e2f14 in block 11167202 (2026-07-16T09:58:34.000Z): 2 transfers as listed, signed by 0x6ce9…8571, not the wallet, purchase_off_venue, venue other, feed value 209.6849 USD from round 337
+  OK    ledger leaves   the 8396 leaves of docs/ledger.json give its root 0x4cf309f5…910664
+  OK    root onchain    LedgerAnchored in 0x62986233…04b386 on Robinhood Testnet has the Merkle root 0x4cf309f5…910664 of all 8396 decisions, the same mandate, limits and rules, and the same counts
+  OK    CRE verdict     the CRE workflow wrote MATCH for anchor 0x15f9ed8a…585c7f in 0x8764f151…40f71b on Robinhood Testnet
+4. The paid gate call in front of the CRE workflow
+  OK    paid gate       docs/agent/paid-gate-run names the paid gate call 0x7d8d9384…c1eb6c, settled, from 0xc380…ed94
+  OK    settlement tx   0x7d8d9384…c1eb6c succeeded in block 89694056 on Robinhood Chain
   OK    USDG moved      0.01 USDG from 0xc380…ed94 (the agent) to 0x973c…6227 (vet402), the only USDG transfer in the tx
-4. The three decisions
-  OK    rules file      agent/rules.ts hashes to 0x2abeff7f…e93b12, the rules every trail names
-  trail-68837431-0eac7685.json: the wallet's move in block 68837431
-  OK    trail hash      the trail hashes to 0x26fa5a0f…67b420, as the file says
-  OK    rules           13 rules rerun give DO_NOT_COPY (failed: C3 C4), 11 pass, every row as the trail has it
-  FAIL  record fields   the trail's record fields differ from docs/agent/first-paid-run/record.json (it hashes to 0x09c7b0888a0c3d94483859326c955a234c3337392224909f5120f523c23fa240)
-  OK    move on chain   0x0eac7685…6a13f8 in block 68837431: 4 transfers of the wallet, as the trail lists
-  OK    trail onchain   DecisionRecorded in 0x02239201…778e92 on Robinhood Testnet has this hash, DO_NOT_COPY, the same record, move and payment
-  trail-73953009-1b838f40.json: the wallet's move in block 73953009
-  OK    trail hash      the trail hashes to 0x925ab3b6…38e8aa, as the file says
-  OK    rules           13 rules rerun give DO_NOT_COPY (failed: C1 C2 C3 C4 C5), 8 pass, every row as the trail has it
-  FAIL  record fields   the trail's record fields differ from docs/agent/first-paid-run/record.json (it hashes to 0x09c7b0888a0c3d94483859326c955a234c3337392224909f5120f523c23fa240)
-  OK    move on chain   0x1b838f40…77b51b in block 73953009: 1 transfer of the wallet, as the trail lists
-  OK    trail onchain   DecisionRecorded in 0x36dead3c…7fca7b on Robinhood Testnet has this hash, DO_NOT_COPY, the same record, move and payment
-  trail-81262132-f7cb51a2.json: the wallet's move in block 81262132
-  OK    trail hash      the trail hashes to 0x527e16e2…cc1801, as the file says
-  OK    rules           13 rules rerun give DO_NOT_COPY (failed: C1 C2 C3 C4 C5), 8 pass, every row as the trail has it
-  FAIL  record fields   the trail's record fields differ from docs/agent/first-paid-run/record.json (it hashes to 0x09c7b0888a0c3d94483859326c955a234c3337392224909f5120f523c23fa240)
-  OK    move on chain   0xf7cb51a2…478717 in block 81262132: 1 transfer of the wallet, as the trail lists
-  OK    trail onchain   DecisionRecorded in 0xfd3df929…563199 on Robinhood Testnet has this hash, DO_NOT_COPY, the same record, move and payment
+  OK    gate order      the CRE workflow answered MATCH at 2026-10-16T01:38:16.000Z, before the settlement block at 2026-10-16T01:38:19.000Z
+  OK    self-paid       the 0.01 USDG came from the payee 0x973c…6227 in 0x6edc973b…e4afc5 (block 89692865): both wallets are the author's, so this is a self-paid test, not revenue
 
-22 OK, 4 FAIL, 0 not checked
+23 OK, 1 FAIL, 0 not checked
 RESULT: MISMATCH
-exit code 1
+To check every decision, the selection, the page and the gate: node verify.mjs (about 3 minutes)

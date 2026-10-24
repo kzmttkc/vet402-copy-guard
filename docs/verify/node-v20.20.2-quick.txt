@@ -1,0 +1,42 @@
+$ npx -y -p node@20 node verify.mjs --quick
+v20.20.2
+npm notice
+npm notice New major version of npm available! 11.16.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+2026-10-24T03:29:22Z
+vet402 copy-guard: recheck with no key, no account and no install
+  chains  Robinhood Chain 4663 at rpc.mainnet.chain.robinhood.com, Robinhood Testnet 46630 at rpc.testnet.chain.robinhood.com
+  OK    keccak256       the built-in hash gives the published test values
+1. The x402 payment
+  OK    evidence        docs/agent/first-paid-run holds the record, the 402 exchange and 3 trails
+  OK    record hash     docs/agent/first-paid-run/record.json hashes to 0x13271095…0d6adc, the X-Facts-Hash vet402 sent with it, which all 3 trails name
+  OK    settlement tx   0x65c314bd…87af61 succeeded in block 83662617 on Robinhood Chain
+  OK    USDG moved      0.01 USDG from 0xc380…ed94 (the agent) to 0x973c…6227 (vet402), the only USDG transfer in the tx
+2. The record vet402 anchored, and the CRE verdict on it
+  OK    record file     rwa-verify/fixtures/anchored-record.json hashes to 0x9d0e83d9…f721ee, the hash written in it
+  OK    anchor tx       0x15f9ed8a…585c7f succeeded in block 76177721 on Robinhood Chain
+  OK    anchor contract RwaAnchor 0x1955…c22d runs the pinned build: no owner, no upgrade path
+  OK    anchored hash   onchain 0x9d0e83d9…f721ee = recomputed; wallet 0xe9b0…c25f, written by 0x973c…6227, as of 2026-09-30T03:00:07.000Z
+  OK    CRE verdict     the CRE workflow wrote MATCH for anchor 0x15f9ed8a…585c7f in 0xc90411c0…4b6cbb on Robinhood Testnet
+3. The cards at the top of the page, and the ledger root
+  OK    cards           the 5 cards at the top of docs/index.html (decisions 6000, 28, 490, 7351, 1) rerun to the size, the rule rows and the card they show, and are rows of docs/ledger.json with their leaves
+  OK    card 6000       0x1b838f40…77b51b in block 73953009 (2026-09-27T12:52:47.000Z): 1 transfer as listed, signed by 0x3433…abd0, not the wallet, received
+  OK    card 28         0xafe7fc3b…2b815a in block 14537500 (2026-07-20T07:54:42.000Z): 2 transfers as listed, signed by 0xc912…c247, not the wallet, a purchase: an official swap, paid 76,078.26808 USDG by the wallet, venue uniswap-v4-pool-manager and other, feed value 203.3700 USD from round 381
+  OK    card 490        0x4775909a…b5bb22 in block 43749967 (2026-08-23T05:22:43.000Z): 1 transfer as listed, signed by the wallet, a purchase: an official swap, paid 16.807827 ETH by the wallet
+  OK    card 7351       0xf7cb51a2…478717 in block 81262132 (2026-10-06T01:57:36.000Z): 1 transfer as listed, signed by 0x5739…dc19, not the wallet, out
+  OK    card 1          0x3b146d42…4e2f14 in block 11167202 (2026-07-16T09:58:34.000Z): 2 transfers as listed, signed by 0x6ce9…8571, not the wallet, purchase_off_venue, venue other, feed value 209.6849 USD from round 337
+  OK    ledger leaves   the 8396 leaves of docs/ledger.json give its root 0x4cf309f5…910664
+  OK    root onchain    LedgerAnchored in 0x62986233…04b386 on Robinhood Testnet has the Merkle root 0x4cf309f5…910664 of all 8396 decisions, the same mandate, limits and rules, and the same counts
+  OK    CRE verdict     the CRE workflow wrote MATCH for anchor 0x15f9ed8a…585c7f in 0x8764f151…40f71b on Robinhood Testnet
+4. The paid gate call in front of the CRE workflow
+  OK    paid gate       docs/agent/paid-gate-run names the paid gate call 0x7d8d9384…c1eb6c, settled, from 0xc380…ed94
+  OK    settlement tx   0x7d8d9384…c1eb6c succeeded in block 89694056 on Robinhood Chain
+  OK    USDG moved      0.01 USDG from 0xc380…ed94 (the agent) to 0x973c…6227 (vet402), the only USDG transfer in the tx
+  OK    gate order      the CRE workflow answered MATCH at 2026-10-16T01:38:16.000Z, before the settlement block at 2026-10-16T01:38:19.000Z
+  OK    self-paid       the 0.01 USDG came from the payee 0x973c…6227 in 0x6edc973b…e4afc5 (block 89692865): both wallets are the author's, so this is a self-paid test, not revenue
+
+24 OK, 0 FAIL, 0 not checked
+RESULT: MATCH
+To check every decision, the selection, the page and the gate: node verify.mjs (about 3 minutes)

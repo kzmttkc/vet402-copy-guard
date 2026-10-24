@@ -1,8 +1,12 @@
+$ node verify.mjs --quick
+v26.3.0
+2026-10-24T03:14:26Z
 vet402 copy-guard: recheck with no key, no account and no install
   chains  Robinhood Chain 4663 at rpc.mainnet.chain.robinhood.com, Robinhood Testnet 46630 at rpc.testnet.chain.robinhood.com
   OK    keccak256       the built-in hash gives the published test values
 1. The x402 payment
   OK    evidence        docs/agent/first-paid-run holds the record, the 402 exchange and 3 trails
+  OK    record hash     docs/agent/first-paid-run/record.json hashes to 0x13271095…0d6adc, the X-Facts-Hash vet402 sent with it, which all 3 trails name
   OK    settlement tx   0x65c314bd…87af61 succeeded in block 83662617 on Robinhood Chain
   OK    USDG moved      0.01 USDG from 0xc380…ed94 (the agent) to 0x973c…6227 (vet402), the only USDG transfer in the tx
 2. The record vet402 anchored, and the CRE verdict on it
@@ -28,6 +32,6 @@ vet402 copy-guard: recheck with no key, no account and no install
   OK    gate order      the CRE workflow answered MATCH at 2026-10-16T01:38:16.000Z, before the settlement block at 2026-10-16T01:38:19.000Z
   OK    self-paid       the 0.01 USDG came from the payee 0x973c…6227 in 0x6edc973b…e4afc5 (block 89692865): both wallets are the author's, so this is a self-paid test, not revenue
 
-23 OK, 0 FAIL, 0 not checked
+24 OK, 0 FAIL, 0 not checked
 RESULT: MATCH
 To check every decision, the selection, the page and the gate: node verify.mjs (about 2 minutes)

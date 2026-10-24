@@ -1,4 +1,6 @@
 $ node verify.mjs 73953009
+v26.3.0
+2026-10-24T03:28:46Z
 vet402 copy-guard: recheck with no key, no account and no install
   chains  Robinhood Chain 4663 at rpc.mainnet.chain.robinhood.com, Robinhood Testnet 46630 at rpc.testnet.chain.robinhood.com
   OK    keccak256       the built-in hash gives the published test values
@@ -14,4 +16,3 @@ docs/agent/first-paid-run/trail-73953009-1b838f40.json: wallet 0xe9b08727131e340
 
 9 OK, 0 FAIL, 0 not checked
 RESULT: MATCH
-exit code 0
