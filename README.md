@@ -525,6 +525,7 @@ Each row reads the same way: a rule maker or regulator has asked in these words,
 - Goldsky, in a statement it approved for publication (the public record: [arc-delivery-receipts](https://kzmttkc.github.io/arc-delivery-receipts/)): "vet402 paid 11 Goldsky Edge endpoints through Circle Gateway on Arc on Sept 28, 2026. The public record counts all 11 as charged and all 11 as delivered."
 - probe402's report [MCRI-002](https://probe402.com/publications/pub_mcri_002) cites vet402's numbers (11,278 paid attempts and 6,022 settled, read on 2 October 2026).
 - ETHOnline 2026: vet402 won the Bazantic prize with payOrRefuse ([showcase](https://ethglobal.com/showcase/payorrefuse-opboo)).
+- Circle's Arc Microgrants: vet402 is one of the 20 microgrants, for buyer-side receipts of x402 purchases settled through Circle Gateway on Arc ([winners](https://dorahacks.io/hackathon/arc-microgrants/winner), October 2026).
 - Outside reaction to copy-guard itself, as of <!-- AS_OF:BEGIN -->2026-10-24<!-- AS_OF:END --> UTC: none. The paid run of the gate is a test I paid to myself.
 
 ## Details
