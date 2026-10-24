@@ -507,4 +507,22 @@ describe('verify.mjs: the whole recheck', () => {
 		expect(r.stdout.trimEnd().split('\n').pop()).toBe('RESULT: NOT CHECKED')
 		expect(r.stdout).not.toContain('FAIL  ')
 	}, SLOW)
+
+	test('--quick reports MISMATCH when one digit of the bought record changes', () => {
+		const rec = join(REPO, 'docs/agent/first-paid-run/record.json')
+		const orig = readFileSync(rec)
+		const node = spawnSync('node', ['--version']).status === 0 ? 'node' : process.execPath
+		try {
+			const text = orig.toString('utf8')
+			const edited = text.replace('"realized_usd": "-170.59"', '"realized_usd": "-170.58"')
+			expect(edited).not.toBe(text)
+			writeFileSync(rec, edited)
+			const r = spawnSync(node, [join(REPO, 'verify.mjs'), '--quick', '--offline'], { encoding: 'utf8' })
+			expect(r.status).toBe(1)
+			expect(r.stdout).toMatch(/FAIL\s+record hash/)
+			expect(r.stdout).toMatch(/RESULT: MISMATCH/)
+		} finally {
+			writeFileSync(rec, orig)
+		}
+	}, SLOW)
 })

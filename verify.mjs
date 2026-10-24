@@ -11,8 +11,8 @@
 //   --only paid-run       sections 1 to 4: the paid run of 2026-10-08
 //   --only ledger         section 5: the practice ledger, the mandate and the user's limits
 //   --only gate           section 6: the x402 gate in front of the CRE workflow
-//   --quick               only the payment, the anchor, the CRE verdicts, the five cards at the top of the
-//                         page, the ledger root and the paid gate call.
+//   --quick               only the payment, the bought record's hash, the anchor, the CRE verdicts, the five
+//                         cards at the top of the page, the ledger root and the paid gate call.
 //                         After a quick run, one line names the full run as about N minutes. N is the
 //                         median of docs/verify/verify-five-runs.txt, in minutes, rounded.
 //   --deep                check every decision of the ledger against the chain, not a sample
@@ -2237,7 +2237,7 @@ async function verifyLedger(rep, main, test, deep) {
 		const z = t.same_size
 		return [
 			true,
-			`${CLAIMS.ledger} is what the walk gives: ${t.decisions} decisions about ${t.wallets} wallets (FULL ${t.full}, REDUCED ${t.reduced}, NONE ${t.none}). Incoming Stock Tokens by kind: ${Object.entries(t.stock_moves).map(([k, v]) => `${k} ${v}`).join(', ')}. copy-guard opened ${t.copy_guard.opened} practice positions, every one on a purchase (an official swap the wallet itself paid for, median ${t.copy_guard.followed_purchases_usd.median} USD), and none in a token the issuer did not list. A ticker copy opened ${b.opened}: ${b.in_stock_tokens.count} in Stock Tokens and ${b.in_other_tokens.count} in ${b.in_other_tokens.tokens} other token${b.in_other_tokens.tokens === 1 ? '' : 's'} under a listed ticker. Different tokens under a listed ticker were part of ${o.moves} moves (${o.tokens} tokens: ${o.tickers.join(', ')}): ${o.sent_to_the_wallet} sent to the wallet, ${o.bought_by_the_wallet} bought by it, ${o.received_unpaid} received unpaid, ${o.logged_as_sent_by_the_wallet} logged as sent by it. At one size (${z.size_usd} USD each): the ${z.opened_by_both.count} both opened ${z.opened_by_both.result_usd} USD, the ${z.opened_by_ticker_copy_only_stock.count} Stock Token positions only the ticker copy opened ${z.opened_by_ticker_copy_only_stock.result_usd} USD, and its ${z.opened_by_ticker_copy_only_other.count} in other tokens: ${z.opened_by_ticker_copy_only_other.measured} valued at a pool (${z.opened_by_ticker_copy_only_other.result_measured_usd ?? 'none'} USD), ${z.opened_by_ticker_copy_only_other.not_measured} not measured and in no sum`,
+			`${CLAIMS.ledger} is what the walk gives: ${t.decisions} decisions about ${t.wallets} wallets (FULL ${t.full}, REDUCED ${t.reduced}, NONE ${t.none}). Incoming Stock Tokens by kind: ${Object.entries(t.stock_moves).map(([k, v]) => `${k} ${v}`).join(', ')}. copy-guard opened ${t.copy_guard.opened} practice positions, every one on a purchase (an official swap the wallet itself paid for, median ${t.copy_guard.followed_purchases_usd.median} USD), and none in a token the issuer did not list. A ticker copy opened ${b.opened}: ${b.in_stock_tokens.count} in Stock Tokens and ${b.in_other_tokens.count} in ${b.in_other_tokens.tokens} other token${b.in_other_tokens.tokens === 1 ? '' : 's'} under a listed ticker. Different tokens under a listed ticker were part of ${o.moves} moves (${o.tokens} tokens: ${o.tickers.join(', ')}): ${o.sent_to_the_wallet} sent to the wallet, ${o.bought_by_the_wallet} bought by it, ${o.bought_off_venue} bought outside the official venues, ${o.received_unpaid} received unpaid, ${o.logged_as_sent_by_the_wallet} logged as sent by it. At one size (${z.size_usd} USD each): the ${z.opened_by_both.count} both opened ${z.opened_by_both.result_usd} USD, the ${z.opened_by_ticker_copy_only_stock.count} Stock Token positions only the ticker copy opened ${z.opened_by_ticker_copy_only_stock.result_usd} USD, and its ${z.opened_by_ticker_copy_only_other.count} in other tokens: ${z.opened_by_ticker_copy_only_other.measured} valued at a pool (${z.opened_by_ticker_copy_only_other.result_measured_usd ?? 'none'} USD), ${z.opened_by_ticker_copy_only_other.not_measured} not measured and in no sum`,
 		]
 	})
 	if (!ledger) return
@@ -2395,6 +2395,7 @@ async function verifyQuick(rep, main, test) {
 		paid = loadTrails(dir)
 		return [paid.length > 0, `${rel(dir)} holds the record, the 402 exchange and ${paid.length} trails`]
 	})
+	await checkBoughtRecord(rep, dir, paid)
 	await checkPayment(rep, main, {
 		tx: CLAIMS.paymentTx,
 		payer: CLAIMS.payer,
@@ -2671,7 +2672,7 @@ export function pageTailsMatchReadme(html, readme) {
 
 const USAGE = `usage: node verify.mjs [trail.json | block number] [--quick] [--only paid-run|ledger|gate] [--deep] [--offline] [--rpc URL] [--testnet-rpc URL]
   no argument    recheck the paid run in ${CLAIMS.runDir}, the practice ledger ${CLAIMS.ledger} and the gate
-  --quick        only the payment, the anchor, the CRE verdicts, the cards at the top of the page and the ledger root (seconds)
+  --quick        only the payment, the bought record's hash, the anchor, the CRE verdicts, the cards at the top of the page and the ledger root (seconds)
   block number   one of ${Object.keys(CLAIMS.decisions).join(', ')}
 exit code: 0 MATCH, 1 MISMATCH, 2 usage, 3 NOT CHECKED (an RPC could not be reached and nothing failed)`
 
@@ -2712,7 +2713,9 @@ export async function run(argv, { print = console.log, fetchImpl = fetch, sleep,
 	rep.say(`RESULT: ${res.text}`)
 	if (args.quick && !path) {
 		const fivePath = join(REPO, 'docs/verify/verify-five-runs.txt')
-		rep.say(fullRunGuidance(existsSync(fivePath) ? readFileSync(fivePath, 'utf8') : ''))
+		const fiveText = existsSync(fivePath) ? readFileSync(fivePath, 'utf8') : ''
+		const fiveBody = fiveText.split('\n')[0]?.startsWith('$ ') ? fiveText.split('\n').slice(3).join('\n') : fiveText
+		rep.say(fullRunGuidance(fiveBody))
 	}
 	return res.code
 }
