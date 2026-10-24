@@ -2,6 +2,7 @@
 // verify.mjs: recheck what this repo claims, from the saved files and two public chains.
 //
 // Needs Node 20 or newer and nothing else. No npm install, no key, no account, no login.
+// Older than 20 stops at once, with the reason, and runs no check.
 //
 //   node verify.mjs                      every check below
 //   node verify.mjs 73953009             only the decision about the wallet's move in that block
@@ -41,6 +42,22 @@ import { fileURLToPath } from 'node:url'
 import { gunzipSync } from 'node:zlib'
 
 const REPO = dirname(fileURLToPath(import.meta.url))
+
+/** Null when this Node is 20 or newer. Otherwise the reason the script stops. */
+export function nodeVersionBlock(version) {
+	const major = Number(String(version).replace(/^v/, '').split('.')[0])
+	if (Number.isFinite(major) && major >= 20) return null
+	return `verify.mjs needs Node 20 or newer. This is Node ${version}. Stop.`
+}
+
+const enteredAsScript = process.argv[1] && existsSync(process.argv[1]) && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)
+if (enteredAsScript) {
+	const reason = nodeVersionBlock(process.version)
+	if (reason) {
+		console.log(reason)
+		process.exit(1)
+	}
+}
 
 /** The two largest files of a walk are kept gzipped (`name.gz`). Read the .gz when it is there, else the plain file. */
 export function readWalkFile(path) {
@@ -2441,6 +2458,41 @@ async function verifyGate(rep) {
 	})
 }
 
+/**
+ * The CRE CLI that wrote gate-1792114689777-1.cre.txt printed the host's UTC+07:00 clock
+ * and labeled it Z. docs/FIRST-RUN.md records the same habit. A stamp is this run's clock
+ * only when, read that way, it falls in the two minutes after the filename's epoch
+ * (Date.now() when the gate started the workflow). A log that is already UTC does not.
+ */
+export function creLogStampToUtcMs(stamp) {
+	const m = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})Z$/.exec(stamp ?? '')
+	if (!m) return null
+	const ms = Date.parse(`${m[1]}+07:00`)
+	return Number.isFinite(ms) ? ms : null
+}
+
+/** The RESULT: MATCH line. That is when the workflow answered. */
+export function creMatchStamp(logText) {
+	const m = String(logText).match(/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z) \[USER LOG\] RESULT: MATCH\b/m)
+	return m ? m[1] : null
+}
+
+/** The workflow's MATCH must be strictly earlier than the settlement block. */
+export function paidGateOrder(creUtcMs, settlementUtcMs) {
+	if (creUtcMs == null || settlementUtcMs == null) return [false, 'a time is missing']
+	const ok = creUtcMs < settlementUtcMs
+	const a = new Date(creUtcMs).toISOString()
+	const b = new Date(settlementUtcMs).toISOString()
+	return [ok, ok ? `the CRE workflow answered MATCH at ${a}, before the settlement block at ${b}` : `the CRE answer at ${a} is not before the settlement block at ${b}`]
+}
+
+/** True when the +07:00 reading of the MATCH stamp sits just after the gate started. */
+export function creStampFitsRun(creUtcMs, startedUtcMs) {
+	if (creUtcMs == null || startedUtcMs == null) return false
+	const delta = creUtcMs - startedUtcMs
+	return delta > 0 && delta < 120_000
+}
+
 /** 6b. The one paid gate call: the saved trail names the tx, the tx moved 0.01 USDG from the agent to the payee, and the payee funded the agent just before (a self-paid test). */
 async function verifyPaidGate(rep, main) {
 	let trail = null
@@ -2453,6 +2505,19 @@ async function verifyPaidGate(rep, main) {
 	})
 	if (!trail) return
 	await checkPayment(rep, main, { tx: CLAIMS.paidGateTx, payer: CLAIMS.payer, payee: CLAIMS.payee, amount: CLAIMS.priceAtomic })
+	await rep.check('gate order', async () => {
+		const path = join(REPO, CLAIMS.paidGateDir, 'gate-1792114689777-1.cre.txt')
+		if (!existsSync(path)) return [false, `${rel(path)} is not in the repo`]
+		const stamp = creMatchStamp(readFileSync(path, 'utf8'))
+		const creMs = creLogStampToUtcMs(stamp)
+		const started = Number(basename(path).match(/gate-(\d+)-/)?.[1])
+		if (!creStampFitsRun(creMs, started)) return [false, `the MATCH line ${stamp ?? '(missing)'} read as +07:00 is not this run (the filename epoch is ${Number.isFinite(started) ? new Date(started).toISOString() : 'unnamed'})`]
+		const receipt = await main('eth_getTransactionReceipt', [CLAIMS.paidGateTx])
+		if (!receipt?.blockNumber) return [false, `${short(CLAIMS.paidGateTx)} has no block`]
+		const block = await main('eth_getBlockByNumber', [receipt.blockNumber, false])
+		if (!block?.timestamp) return [false, `block ${Number(BigInt(receipt.blockNumber))} has no time`]
+		return paidGateOrder(creMs, Number(BigInt(block.timestamp)) * 1000)
+	})
 	await rep.check('self-paid', async () => {
 		const r = await main('eth_getTransactionReceipt', [CLAIMS.paidGateFundTx])
 		const moves = (r?.logs ?? []).filter((l) => l.address.toLowerCase() === USDG && l.topics?.[0]?.toLowerCase() === TRANSFER_TOPIC && l.topics.length === 3)
