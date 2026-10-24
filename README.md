@@ -1,6 +1,6 @@
 # vet402 copy-guard
 
-copy-guard is the RWA rule set of vet402. vet402 buys what x402 APIs sell with USDC, re-reads settlement on-chain and publishes every attempt: 9,670 settled paid calls on Base since Aug 14, 2026, plus Solana, Tempo, XRPL, Arc, Celo, Stellar, BNB Chain and Arbitrum One, retrieved 2026-10-24 ([export](https://vet402.com/api/v1/observatory/export.csv?days=365)).
+copy-guard is built on vet402's `/rwa` record. vet402 buys what x402 APIs sell with USDC, re-reads settlement on-chain and publishes every attempt: 9,670 settled paid calls on Base since Aug 14, 2026, plus Solana, Tempo, XRPL, Arc, Celo, Stellar, BNB Chain and Arbitrum One, retrieved 2026-10-24 ([export](https://vet402.com/api/v1/observatory/export.csv?days=365)).
 
 Anyone can deploy a token called NVDA. copy-guard is an agent that checks which token really moved before it would copy a wallet, and it leaves a record that anyone can recheck.
 
@@ -26,7 +26,7 @@ Those two people wrote about tokens and agents in general. The same gap is open 
 
 copy-guard is an autonomous agent that checks a move before it would copy it. It looks at which contract moved, who signed the transaction, where the token came from and what the wallet's record says. Then it sizes a practice trade by how strong that evidence is (full, reduced or none) and writes every reason in plain sentences. The rules are fixed and no language model decides, so the same inputs always give the same decision. The person it acts for sets the limits, and a mandate names that person by address. Chainlink CRE workflows check the token and the record before the agent acts, and they put the hash of its reasoning onchain.
 
-Nobody has to take my word for this, or the agent's, or a server's. One command with no key, no account and nothing to install rechecks the payment, the records, every decision and the whole practice ledger against two public chains. Without a terminal, [`docs/index.html`](docs/index.html) shows the same ledger as one page.
+Nobody has to take my word for this, or the agent's, or a server's. One command with no key, no account and nothing to install rechecks the payment, the records, every decision and the whole practice ledger against two public chains. Without a terminal, [`docs/index.html`](docs/index.html) shows the same ledger as one page: on GitHub choose Code, then Download ZIP, unzip it and open `docs/index.html` in a browser (GitHub itself shows the file as source).
 
 <!-- FACTS:BEGIN -->
 **The walk of 2026-10-16, practice only.** In the 30 selected wallets the walk follows, 214 of the 223 arrivals of 100,000 USD or more that the wallet signed were liquidity operations, not purchases, in the 30 days to 2026-10-14, picked by what Uniswap sent them. The 30 were picked by what official Uniswap venues sent them in 30 days, a rule that favors liquidity providers, so this is not a chain-wide rate. copy-guard looked at 8396 moves of 51 wallets. 136 of them were in 67 tokens that carry the ticker of a Stock Token or of USDG at an address the issuer did not list, and each of those tokens is [named by address](#tokens-that-share-a-ticker). How they reached the wallet: 75 sent to a wallet that did not sign, 22 bought by the wallet itself at an official venue, 2 bought by the wallet outside the official venues, 37 logged with the wallet as the sender. copy-guard opened no position in any of them. The ticker copy opened 24. 20 of the 51 wallets are in the walk because they bought such a token, so these counts are not a rate. The practice positions copy-guard did open come from 2 groups, counted apart. 212 follow purchases of 5.75 to 144,454.24 USD by the selected wallets. 24 follow purchases of 0.22 to 0.48 USD by the wallets observed buying the other SPY. In all it opened 236, each at the reduced size the user's limits give for weaker evidence, and declined 8160, each with a reason in plain sentences.
@@ -50,7 +50,7 @@ node verify.mjs --quick
 
 ```
 RESULT: MATCH
-To check every decision, the selection, the page and the gate: node verify.mjs (about two and a half minutes)
+To check every decision, the selection, the page and the gate: node verify.mjs (about three and a half minutes)
 ```
 
 The whole ledger, every decision and every rule, is one more line, 128 to 148 s in 5 saved runs of 2026-10-16. Most of that time is local computation: `node verify.mjs --offline`, which reads no RPC, took 165 s on the author's laptop on 2026-10-15.
@@ -64,7 +64,7 @@ node verify.mjs
 
 <!-- VERIFY_TAIL:BEGIN -->
 ```
-69 OK, 0 FAIL, 0 not checked
+70 OK, 0 FAIL, 0 not checked
 RESULT: MATCH
 ```
 <!-- VERIFY_TAIL:END -->
@@ -156,7 +156,7 @@ vet402 copy-guard: recheck with no key, no account and no install
   OK    USDG moved      0.01 USDG from 0xc380…ed94 (the agent) to 0x973c…6227 (vet402), the only USDG transfer in the tx
   OK    self-paid       the 0.01 USDG came from the payee 0x973c…6227 in 0x6edc973b…e4afc5 (block 89692865): both wallets are the author's, so this is a self-paid test, not revenue
 
-69 OK, 0 FAIL, 0 not checked
+70 OK, 0 FAIL, 0 not checked
 RESULT: MATCH
 ```
 <!-- VERIFY:END -->
@@ -260,6 +260,8 @@ From [`docs/simulate-match.txt`](docs/simulate-match.txt), saved 2026-10-08. The
 
 Each run wrote the hash of its rows in a `TokenBatchChecked` event ([run 1](https://explorer.testnet.chain.robinhood.com/tx/0xda1a216baab1af12ccc41a92be94d7c6558a8abd1396b7aa06ea77d9fc9b1929?tab=logs), [run 2](https://explorer.testnet.chain.robinhood.com/tx/0x1b629f69f76bfc82ee050d90990c2bd55a7ba3c866a28d4e1a0eddc46b7719c3?tab=logs), [run 3](https://explorer.testnet.chain.robinhood.com/tx/0x5a056b974b3648747c236dfe58f5fd6c849d955d70e86431d028093346f8f373?tab=logs), [run 4](https://explorer.testnet.chain.robinhood.com/tx/0xbcc95f7cb393854cc5e5b0562466dc778d3cf92d4d9eeb896b6177f3baa58d25?tab=logs), [run 5](https://explorer.testnet.chain.robinhood.com/tx/0x189e0eb9900d602c71adec6a0a8d1ac52fe92bc6d5e14c2de632f9e745c1abf3?tab=logs), [run 6](https://explorer.testnet.chain.robinhood.com/tx/0x021ae09aadf4517a3d880dd55e69648e68c4edfa21cc8242c198a9070a8cb546?tab=logs), [run 7](https://explorer.testnet.chain.robinhood.com/tx/0xf580989891b9050e23fff002fab8090a627d287f0fba8d3162ef613b10b439f2?tab=logs), [run 8](https://explorer.testnet.chain.robinhood.com/tx/0xc9ba3818f454796da12a5b6efd1074f1c3470dcd50cb52671014993ece89d616?tab=logs), [run 9](https://explorer.testnet.chain.robinhood.com/tx/0x83b8ed7206c3359d489b9359937876fb6e8dcbe3682263c680549204bf83adf9?tab=logs), [run 10](https://explorer.testnet.chain.robinhood.com/tx/0xaae6dad2b49ceda82c1bf4ff797ab8b7743f14ef2922f7d491d67ca6ccc84c2b?tab=logs), [run 11](https://explorer.testnet.chain.robinhood.com/tx/0xe46ea6a7a70441c60f6d837caa88171f77fc949ff7487de64f9962df71a04298?tab=logs), [run 12](https://explorer.testnet.chain.robinhood.com/tx/0x694ddb03aeb9b49ef4d8b99c358d3173fa661527de8748f7aef12ac09039c49e?tab=logs), [run 13](https://explorer.testnet.chain.robinhood.com/tx/0x977bb55a90a6257287d4e99de3a2c3ee6ff77ec3cff84755b921be4ccbc39994?tab=logs), [run 14](https://explorer.testnet.chain.robinhood.com/tx/0xae8bb10664177f9ea48a9e3a523a6628a9d32cccc5267c64eba52755d4664a5b?tab=logs), [run 15](https://explorer.testnet.chain.robinhood.com/tx/0xb5a2fb15bb5a9a4314535de154fad69f0400472e6d7811743c25d731eb11abe2?tab=logs)). One more run read those receipts back over the EVM capability and wrote `keccak256(results.json)` = `0xe2fcacc3…535975` in [`0x2328a939…1225af`](https://explorer.testnet.chain.robinhood.com/tx/0x2328a9398ddf7ad80aa7a1149bc4417cfb57783c57be6e095d44f0df311225af?tab=logs), to `TokenCheckReceiver` on Robinhood Testnet. Every decision of the walk names that file by the same hash. `node token-check/recheck.mjs` reads every row again over plain JSON-RPC, with no CRE and no code shared with the workflow. Its last line: `RECHECK: 143 of 143 rows agree, 0 differ; state read at the checked block for 143, as it is now for 0; 0 problems with the onchain trail; 1001 RPC requests`. The codes say what was read. None of them says who made a token or why.
 <!-- CRE_NUMBERS:END -->
+
+2 of the 67 (wTSM and wMETA) wrap the issuer's own TSM and META: `underlying()` returns the listed address, and on 2026-10-24 their `totalSupply()` was 0. They are counted only because their own address is not on the list. The labels and file names under `docs/token-check/` (for example `fake-nvda`, `SYMBOL_COPIES_LISTED`) are fixed names from the first run, kept because the rows are hashed. Each one states that an address is not on the issuer's list. None of them says who made a token.
 
 ### The bounty text, line by line
 
@@ -511,7 +513,7 @@ Each row reads the same way: a rule maker or regulator has asked in these words,
 
 ## What vet402 already has behind this
 
-- adctx says, in a statement it approved for publication ([what an agent purchase costs](https://adctx.com/posts/what-an-agent-purchase-costs/)): "vet402's purchase from t.adctx.com on Oct 13, 2026 was adctx's first payment from outside the company, and adctx then added the output schema declaration that vet402's public row showed was missing." The purchase is the settled row of 2026-10-13 for `t.adctx.com/check` on Base in the [vet402 export](https://vet402.com/api/v1/observatory/export.csv?days=365).
+- adctx says, in a statement it approved for publication (adctx asked that it link to its post [Who funded the agentic payer?](https://adctx.com/posts/what-an-agent-purchase-costs/)): "vet402's purchase from t.adctx.com on Oct 13, 2026 was adctx's first payment from outside the company, and adctx then added the output schema declaration that vet402's public row showed was missing." The purchase is the settled row of 2026-10-13 for `t.adctx.com/check` on Base in the [vet402 export](https://vet402.com/api/v1/observatory/export.csv?days=365).
 - Goldsky, in a statement it approved for publication (the public record: [arc-delivery-receipts](https://kzmttkc.github.io/arc-delivery-receipts/)): "vet402 paid 11 Goldsky Edge endpoints through Circle Gateway on Arc on Sept 28, 2026. The public record counts all 11 as charged and all 11 as delivered."
 - probe402's report [MCRI-002](https://probe402.com/publications/pub_mcri_002) cites vet402's numbers (11,278 paid attempts and 6,022 settled, read on 2 October 2026).
 - ETHOnline 2026: vet402 won the Bazantic prize with payOrRefuse ([showcase](https://ethglobal.com/showcase/payorrefuse-opboo)).

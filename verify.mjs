@@ -13,7 +13,7 @@
 //   --only gate           section 6: the x402 gate in front of the CRE workflow
 //   --quick               only the payment, the anchor, the CRE verdicts, the five cards at the top of the
 //                         page, the ledger root and the paid gate call,
-//                         in about 15 seconds (the full run takes about two and a half minutes)
+//                         in about 15 seconds (the full run takes about three and a half minutes)
 //   --deep                check every decision of the ledger against the chain, not a sample
 //   --offline             skip the chain reads; those lines are reported as not checked
 //   --rpc URL             another RPC for Robinhood Chain (4663)
@@ -2621,7 +2621,7 @@ export async function run(argv, { print = console.log, fetchImpl = fetch, sleep,
 	rep.say('')
 	rep.say(`${count('OK')} OK, ${count('FAIL')} FAIL, ${count('NOT CHECKED')} not checked${session.retries ? ` (an RPC was busy: asked again ${session.retries} ${session.retries === 1 ? 'time' : 'times'})` : ''}`)
 	rep.say(`RESULT: ${res.text}`)
-	if (args.quick && !path) rep.say('To check every decision, the selection, the page and the gate: node verify.mjs (about two and a half minutes)')
+	if (args.quick && !path) rep.say('To check every decision, the selection, the page and the gate: node verify.mjs (about three and a half minutes)')
 	return res.code
 }
 
