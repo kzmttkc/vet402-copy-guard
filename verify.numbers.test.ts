@@ -162,8 +162,17 @@ describe('published verify numbers', () => {
 
 	test("the 2025 judge line names BLI's hackathon", () => {
 		const readme = read('README.md')
-		expect(readme).toContain("A judge of BLI's 2025 hackathon")
+		expect(readme).toContain("Bourn Collier was a judge of BLI's 2025 hackathon ([BLI, 2025-11-16](https://bli.tools/")
+		expect(readme).toContain('DARA\'s announcement of his talk describes it as a framework for')
 		expect(readme).not.toContain('A 2025 judge of this hackathon')
+	})
+
+	test('the ticker copy is described as the ledger implements it: purchases only', () => {
+		const readme = read('README.md')
+		const ledger = read('agent/ledger.ts')
+		expect(ledger).toContain('Ticker copy opens the full size on every purchase of a token with a stock ticker')
+		expect(readme).toContain('It opens a position on every purchase of a token with a stock ticker, at an official venue or not.')
+		expect(readme + ledger).not.toMatch(/every move in which a token with a stock ticker\s+arrives/)
 	})
 
 	test('does not promise to keep the walk running after the event', () => {

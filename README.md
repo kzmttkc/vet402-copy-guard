@@ -271,7 +271,7 @@ Each run wrote the hash of its rows in a `TokenBatchChecked` event ([run 1](http
 
 ### The bounty text, line by line
 
-The four examples in the bounty text, in its order.
+Four of the eight examples in the bounty text, in its order.
 
 | Example in the bounty text | What this repo does | Evidence |
 |---|---|---|
@@ -372,7 +372,7 @@ The walk follows 51 wallets in 3 groups, and every count is kept per group. The 
 `bun agent/walk.ts` reads each wallet's vet402 /rwa record once from the free route and walks through every move that record lists, in the order the moves happened. Two books run side by side.
 
 - **copy-guard** opens what its rules, its mandate and the user's limits allow.
-- **Ticker copy** is a baseline I defined. It opens a position on every move in which a token with a stock ticker arrives in the wallet. It buys no record and applies no rule or limit.
+- **Ticker copy** is a baseline I defined. It opens a position on every purchase of a token with a stock ticker, at an official venue or not. It buys no record and applies no rule or limit.
 
 Both enter a Stock Token at the Chainlink feed's value at the block of the move and leave by the same exit rules: the copied wallet sells or sends the token, the feed crosses the stop loss or the take profit, or the time limit passes. Whatever is still open is marked at the feed's last value.
 
@@ -441,6 +441,8 @@ A card reads like this. Every sentence is a fixed template filled with values fr
 > Decision 6000 of the walk, move [`0x1b838f40…77b51b`](https://robinhoodchain.blockscout.com/tx/0x1b838f40a43d54b7ce3364f08f723516170be2d03fdbcd6ab801c79f7f77b51b) on 2026-09-27 12:52 UTC. 11 of 18 checks passed.
 <!-- CARD:END -->
 
+The card describes a bot that buys whatever arrives under a ticker. This ledger's ticker copy is narrower: it follows purchases only, so it opened nothing on this move.
+
 ### One sentence, two values
 
 RYO-CHAN's own example of an instruction to its AI Companion ends with "buy each for $50, and set a stop-loss at 15%" ([RYO-CHAN GitBook](https://ryo-chan.gitbook.io/ryo-chan/ryo-chan/what-is-ryo-scan/the-ai-companion)). A person who says that to copy-guard changes two lines of `limits.json`:
@@ -495,7 +497,7 @@ In the same talk House set what was asked for beside what actually happened. Her
 
 Could this be done without a chain? The rules and the cards could. What a chain adds is one thing: a third party can check, without trusting me, that the records were not changed afterwards.
 
-A judge of BLI's 2025 hackathon, Bourn Collier, has described a framework for "tethering AI agents to accountable legal entities" ([DARA announcement, 2026-06-23](https://pr.taosnews.com/article/DARA-to-Convene-International-Regulatory-Task-Forces-and-AI-Regulation-Sessions-in-the-US/6a3ac373564d536c69a53661)). The mandate links an agent to an address that signed for it. Linking that address to a legal entity is outside this build.
+Bourn Collier was a judge of BLI's 2025 hackathon ([BLI, 2025-11-16](https://bli.tools/bli-legal-tech-hackathon-global-projects-address-compliance-challenges/)). DARA's announcement of his talk describes it as a framework for "tethering AI agents to accountable legal entities" ([DARA announcement, 2026-06-23](https://pr.taosnews.com/article/DARA-to-Convene-International-Regulatory-Task-Forces-and-AI-Regulation-Sessions-in-the-US/6a3ac373564d536c69a53661)). The mandate links an agent to an address that signed for it. Linking that address to a legal entity is outside this build.
 
 ### The questions regulators are asking, and what this keeps
 
