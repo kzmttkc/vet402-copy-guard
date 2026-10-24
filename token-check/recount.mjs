@@ -1,0 +1,4 @@
+// Recount the token-check split from docs/token-check/results.json (run from the repo root): node token-check/recount.mjs
+import { createRequire } from 'node:module'
+const require = createRequire(import.meta.url)
+const t=Object.values(require("../docs/token-check/results.json").tokens);const M=["TICKER_SAME_AS_ISSUER_TOKEN","TICKER_SAME_AFTER_FOLDING","NAME_SAME_AS_ISSUER_TOKEN","NAME_ENDS_LIKE_ISSUER_TOKEN","TICKER_OR_NAME_READS_AS_USDG","ISSUER_CODE_AT_UNLISTED_ADDRESS"];const S=["TICKER_SAME_AS_ISSUER_TOKEN","TICKER_SAME_AFTER_FOLDING","NAME_SAME_AS_ISSUER_TOKEN","NAME_ENDS_LIKE_ISSUER_TOKEN"];let i=0,u=0,s=0,g=0,n=0;for(const r of t){const R=r.reasons||[];if(r.issuer_token)i++;else if(R.includes("USDG_ADDRESS"))u++;else if(R.some(x=>M.includes(x))){if(R.some(x=>S.includes(x))&&!R.includes("TICKER_OR_NAME_READS_AS_USDG"))s++;else g++;}else n++;}console.log(JSON.stringify({tokens:t.length,issuer:i,usdg:u,stockTicker:s,usdgMark:g,marked:s+g,neither:n}))
