@@ -38,7 +38,7 @@ while (!existsSync(join(REPO, 'verify.mjs'))) {
 	REPO = dirname(REPO)
 }
 const { canonicalJson, keccak256, readWalkFile } = await import(pathToFileURL(join(REPO, 'verify.mjs')).href)
-const { arrivalsOf, concentration, followedSentence, groupsBrief, groupsOf, observedToken, secondsWords, selectionSentence, slug, usdRange, usdWords, verifyTimes } = await import(pathToFileURL(join(REPO, 'scripts/groups.mjs')).href)
+const { arrivalsOf, concentration, followedSentence, groupsBrief, groupsOf, observedToken, secondsWords, selectionSentence, skipSavedHeader, slug, usdRange, usdWords, verifyTimes } = await import(pathToFileURL(join(REPO, 'scripts/groups.mjs')).href)
 
 const has = (p) => existsSync(join(REPO, p))
 const read = (p) => readFileSync(join(REPO, p), 'utf8')
@@ -270,7 +270,13 @@ const wallets = [
 	.filter(Boolean)
 	.join(' ')
 
-const verifyOut = has('docs/verify/verify-output.txt') ? read('docs/verify/verify-output.txt').trimEnd() : null
+const verifyOut = has('docs/verify/verify-output.txt') ? skipSavedHeader(read('docs/verify/verify-output.txt')).replace(/^\n+/, '').trimEnd() : null
+const vet402Count = maybe('docs/vet402-count.json')
+if (!vet402Count) throw new Error('docs/vet402-count.json is missing; run node scripts/recount-vet402.mjs')
+const settledBase = Number(vet402Count.settled_base_since_2026_08_14).toLocaleString('en-US')
+const asOfDay = String(vet402Count.retrieved_at_utc).slice(0, 10)
+const asOfUntil = `${String(vet402Count.retrieved_at_utc).slice(0, 16).replace('T', ' ')} UTC`
+const vet402Lead = `copy-guard is built on vet402's \`/rwa\` record. vet402 buys what x402 APIs sell with USDC, re-reads settlement on-chain and publishes every attempt: ${settledBase} settled paid calls on Base from 2026-08-14 to ${asOfUntil}, plus Solana, Tempo, XRPL, Arc, Celo, Stellar, BNB Chain and Arbitrum One ([export](${vet402Count.url})).`
 const fence = (body) => `\`\`\`\n${body}\n\`\`\``
 
 // ---- the recheck: its heading, the judges' table that links to it, and step 1 ------------
@@ -285,6 +291,12 @@ const jump = `| If you are judging | Start here |
 const clone = 'git clone https://github.com/kzmttkc/vet402-copy-guard && cd vet402-copy-guard'
 const quickTail = VT.quickOutput ? VT.quickOutput.trimEnd().split('\n').slice(-2).join('\n') : null
 const fullTimes = VT.full ? `, ${secondsWords(VT.full)} in ${plural(VT.full.runs, 'saved run', 'saved runs')}${VT.full.day ? ` of ${VT.full.day}` : ''}` : ''
+const offlineMostlyLocal = Boolean(VT.offline && VT.full && VT.offline.max <= VT.full.min && VT.offline.min * 2 >= VT.full.min)
+const offlineMeasured = VT.offline
+	? `\`node verify.mjs --offline\`, which reads no RPC, took ${secondsWords(VT.offline)} in ${plural(VT.offline.runs, 'saved run', 'saved runs')}${VT.offline.day ? ` of ${VT.offline.day}` : ''}`
+	: ''
+const offlineSentence = VT.offline ? ` ${offlineMostlyLocal ? 'Most of that time is local computation: ' : ''}${offlineMeasured}.` : ''
+const offlineChanges = VT.offline ? (offlineMostlyLocal ? ` Most of it is local computation, not the network: ${offlineMeasured}` : ` ${offlineMeasured}`) : ''
 const verifyRun = VT.hasQuick
 	? `\`\`\`bash
 ${clone}
@@ -293,7 +305,7 @@ node verify.mjs --quick
 
 \`--quick\` rechecks the payment, the anchors, the CRE verdicts, the first five cards of the page, the ledger's root and the paid gate call against both chains${VT.quick ? `, in ${secondsWords(VT.quick)} (${plural(VT.quick.runs, 'saved run', 'saved runs')}${VT.quick.day ? ` of ${VT.quick.day}` : ''})` : ''}.${quickTail ? ` Its last two lines:\n\n${fence(quickTail)}` : ''}
 
-The whole ledger, every decision and every rule, is one more line${fullTimes}. Most of that time is local computation: \`node verify.mjs --offline\`, which reads no RPC, took 165 s on the author's laptop on 2026-10-15.
+The whole ledger, every decision and every rule, is one more line${fullTimes}.${offlineSentence}
 
 \`\`\`bash
 node verify.mjs
@@ -407,7 +419,7 @@ const changes = `The last column holds only times read from saved runs on this m
 |---|---|---|---|
 | A person opens a block explorer and compares a token's contract with the issuer's list by eye, if they think of it | \`token-check\` reads the code hash, the beacon and the official list from the chain | the check runs before the agent acts and returns a reason code a machine can read | ${tcSecs !== null ? `${tcSecs} s for ${plural((tcLog.match(/\] (NOT_)?ISSUER_TOKEN /g) ?? []).length, 'token', 'tokens')} at one block ([\`${batchFile.replace('.payload.json', '.cre.txt')}\`](${batchDir}/${batchFile.replace('.payload.json', '.cre.txt')}))` : 'not measured'} |
 | A reader trusts the site that shows a wallet's record | \`rwa-verify\` recomputes the record's hash and reads its anchor | MATCH or MISMATCH with one bit per failed check, as an event | ${rwaSecs !== null ? `${rwaSecs} s ([\`${rwaLogPath}\`](${rwaLogPath}))` : 'not measured'} |
-| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | ${VT.quick ? `${secondsWords(VT.quick)} for \`node verify.mjs --quick\`, ` : ''}${runTimes.length ? `${range(runTimes.map((r) => r.s))} s for \`node verify.mjs\` on this walk, ${runTimes.length} runs back to back${fiveDay ? ` on ${fiveDay}` : ''}${allMatch ? ', each RESULT: MATCH' : ''} ([\`docs/verify/verify-five-runs.txt\`](docs/verify/verify-five-runs.txt)). Most of it is local computation, not the network: \`node verify.mjs --offline\` reads no RPC and still took 165 s on the author's laptop on 2026-10-15` : 'not measured'} |`
+| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | ${VT.quick ? `${secondsWords(VT.quick)} for \`node verify.mjs --quick\`, ` : ''}${runTimes.length ? `${range(runTimes.map((r) => r.s))} s for \`node verify.mjs\` on this walk, ${runTimes.length} runs back to back${fiveDay ? ` on ${fiveDay}` : ''}${allMatch ? ', each RESULT: MATCH' : ''} ([\`docs/verify/verify-five-runs.txt\`](docs/verify/verify-five-runs.txt)).${offlineChanges}` : 'not measured'} |`
 
 const creSimulate = [
 	'Both lines run from the root of the repo, after `cre login` and `bun install` in the workflow\'s folder. No key is needed. The time at the start of each saved log line is the machine\'s local clock printed with a `Z` (row 3 of the notes below), so the excerpts leave it out.',
@@ -492,7 +504,23 @@ const swap = (text, name, body) => {
 	if (!text.includes(a) || !text.includes(b)) throw new Error(`README.md has no ${name} block`)
 	return `${text.slice(0, text.indexOf(a) + a.length)}\n${body}\n${text.slice(text.indexOf(b))}`
 }
+const swapInlineAll = (text, name, body) => {
+	const a = `<!-- ${name}:BEGIN -->`
+	const b = `<!-- ${name}:END -->`
+	if (!text.includes(a) || !text.includes(b)) throw new Error(`README.md has no ${name} block`)
+	let out = text
+	let from = 0
+	while (true) {
+		const i = out.indexOf(a, from)
+		const j = out.indexOf(b, i)
+		if (i < 0 || j < i) break
+		out = `${out.slice(0, i + a.length)}${body}${out.slice(j)}`
+		from = i + a.length + body.length + b.length
+	}
+	return out
+}
 const blocks = [
+	['VET402_LEAD', vet402Lead],
 	['JUMP', jump],
 	['VERIFY_HEAD', `## ${VT.heading}`],
 	['VERIFY_RUN', verifyRun],
@@ -514,5 +542,6 @@ const blocks = [
 ]
 let readme = read('README.md')
 for (const [name, body] of blocks) readme = swap(readme, name, body)
+readme = swapInlineAll(readme, 'AS_OF', asOfDay)
 writeFileSync(join(REPO, 'README.md'), readme)
 console.log(`README.md: ${blocks.length} blocks rewritten (${blocks.map(([n]) => n).join(', ')}), ledger_version ${L.ledger_version}`)

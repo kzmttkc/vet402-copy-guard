@@ -1,11 +1,17 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, test } from 'bun:test'
 import { creLogStampToUtcMs, creMatchStamp, creStampFitsRun, nodeVersionBlock, paidGateOrder } from './verify.mjs'
 
-const LOG = 'agent/state/gate/gate-1792114689777-1.cre.txt'
+const LOG = 'docs/agent/paid-gate-run/gate-1792114689777-1.cre.txt'
 const SETTLEMENT = '2026-10-16T01:38:19.000Z'
 
 describe('paid gate order', () => {
+	test('the CRE log is the published copy under docs/agent/paid-gate-run, not agent/state', () => {
+		expect(LOG.startsWith('docs/agent/paid-gate-run/')).toBe(true)
+		expect(LOG.includes('agent/state/')).toBe(false)
+		expect(existsSync(LOG)).toBe(true)
+	})
+
 	test('a copy with the CRE answer and the settlement time swapped fails', () => {
 		const log = readFileSync(LOG, 'utf8')
 		const stamp = creMatchStamp(log)

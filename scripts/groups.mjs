@@ -20,10 +20,18 @@
 //   selection.json  routers[] { address, name }   routers a venue's transfer may pass through
 //                   counts.via_router              candidate transfers that came through one of them
 //
-//   docs/verify/verify-quick-runs.txt, docs/verify/verify-five-runs.txt
+//   docs/verify/verify-quick-runs.txt, docs/verify/verify-five-runs.txt, docs/verify/verify-offline-runs.txt
 //     one line per run: "run N (HH:MM:SSZ): exit X, S s, <last lines>"
+//     a saved .txt may start with three header lines ($ command, node -v, UTC). skipSavedHeader drops them.
 
 export const GROUP_KEYS = ['selected', 'observed_other_token_buyers', 'demo']
+
+/** Drop the three-line saved-output header: `$ command`, `node -v`, UTC timestamp. */
+export function skipSavedHeader(text) {
+	const lines = String(text ?? '').split('\n')
+	if (lines[0]?.startsWith('$ ') && lines.length >= 3) return lines.slice(3).join('\n')
+	return String(text ?? '')
+}
 const FROM_COHORT = { top_buyers: 'selected', selected: 'selected', same_ticker_buyers: 'observed_other_token_buyers', observed_other_token_buyers: 'observed_other_token_buyers', watched: 'demo', demo: 'demo' }
 export const groupOf = (cohort) => FROM_COHORT[cohort] ?? cohort
 
@@ -218,20 +226,31 @@ export function arrivalsOf(L) {
 
 /** The recheck's times from the saved runs, and the heading they allow. */
 export function verifyTimes(readIf, verifySource) {
-	const runs = (text) => [...(text ?? '').matchAll(/^run \d+ \((\S+)\): exit (\d+), (\d+) s, (.*)$/gm)].map((m) => ({ exit: Number(m[2]), s: Number(m[3]), tail: m[4] }))
+	const runs = (text) => [...skipSavedHeader(text).matchAll(/^run \d+ \((\S+)\): exit (\d+), (\d+) s, (.*)$/gm)].map((m) => ({ exit: Number(m[2]), s: Number(m[3]), tail: m[4] }))
 	const span = (text) => {
 		const r = runs(text)
 		if (!r.length) return null
 		const xs = r.map((x) => x.s)
-		return { runs: r.length, min: Math.min(...xs), max: Math.max(...xs), all_match: r.every((x) => x.exit === 0 && /RESULT: MATCH/.test(x.tail)), day: text.match(/on (\d{4}-\d{2}-\d{2})/)?.[1] ?? null }
+		const body = skipSavedHeader(text)
+		return { runs: r.length, min: Math.min(...xs), max: Math.max(...xs), all_match: r.every((x) => x.exit === 0 && /RESULT: MATCH/.test(x.tail)), day: body.match(/on (\d{4}-\d{2}-\d{2})/)?.[1] ?? null }
 	}
 	const quickText = readIf('docs/verify/verify-quick-runs.txt')
 	const quick = span(quickText)
 	const full = span(readIf('docs/verify/verify-five-runs.txt'))
+	const offline = span(readIf('docs/verify/verify-offline-runs.txt'))
 	const hasQuick = Boolean(quick) || /['"]--quick['"]/.test(verifySource ?? '')
 	// The heading promises the slowest saved quick run, rounded up to a multiple of five.
 	const promise = quick ? Math.max(5, Math.ceil(quick.max / 5) * 5) : null
-	return { quick, full, hasQuick, quickOutput: readIf('docs/verify/verify-quick-output.txt'), heading: promise ? `Verify it yourself in ${promise} seconds` : 'Verify it yourself with one command', promise }
+	return {
+		quick,
+		full,
+		offline,
+		hasQuick,
+		quickOutput: readIf('docs/verify/verify-quick-output.txt'),
+		offlineOutput: readIf('docs/verify/verify-offline.txt'),
+		heading: promise ? `Verify it yourself in ${promise} seconds` : 'Verify it yourself with one command',
+		promise,
+	}
 }
 
 export const secondsWords = (x) => (x ? (x.min === x.max ? `${x.min} s` : `${x.min} to ${x.max} s`) : null)

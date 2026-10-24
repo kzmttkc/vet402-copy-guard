@@ -18,7 +18,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { canonicalJson, keccak256 } from '../verify.mjs'
-import { ARRIVALS, arrivalsOf, concentration, groupOf, groupsBrief, groupsOf, groupWords, observedToken, selectionSentence, verifyTimes } from './groups.mjs'
+import { ARRIVALS, arrivalsOf, concentration, groupOf, groupsBrief, groupsOf, groupWords, observedToken, selectionSentence, skipSavedHeader, verifyTimes } from './groups.mjs'
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => readFileSync(join(REPO, p), 'utf8')
@@ -98,7 +98,7 @@ const rowsData = { featured: chosen.map((x) => x.row), short: rows.filter(carrie
 
 // ---- what else the page shows ---------------------------------------------------------
 const sample = maybe('mandate/sample/mandate.json', json)
-const verifyOut = maybe('docs/verify/verify-output.txt', read)
+const verifyOut = maybe('docs/verify/verify-output.txt', (p) => skipSavedHeader(read(p)).replace(/^\n+/, '').trimEnd())
 const tcAnchor = maybe('docs/token-check/anchor.json', json)
 const tcResults = maybe('docs/token-check/results.json', json)
 const recheck = maybe('docs/token-check/recheck-output.txt', (p) => read(p).trimEnd().split('\n').pop().match(/RECHECK: (\d+) of (\d+) rows agree, (\d+) differ/))
@@ -117,7 +117,7 @@ const extra = {
 	arrivals: arrivalsOf(ledger),
 	arrival_words: ARRIVALS.map(([key, label, means]) => ({ key, label, means })),
 	copy_guard_in_other_tokens: ledger.copy_guard_positions.filter((p) => p.asset === 'same_ticker' || p.fake === true).length,
-	verify_times: { quick: vt.quick, full: vt.full, has_quick: vt.hasQuick, promise: vt.promise, quick_tail: vt.quickOutput ? vt.quickOutput.trimEnd().split('\n').slice(-2).join(' / ') : null },
+	verify_times: { quick: vt.quick, full: vt.full, offline: vt.offline, has_quick: vt.hasQuick, promise: vt.promise, quick_tail: vt.quickOutput ? skipSavedHeader(vt.quickOutput).trimEnd().split('\n').slice(-2).join(' / ') : null },
 	cards: chosen.map((x) => ({ slot: x.slot, caption: x.caption, n: x.row.n })),
 	anchor: maybe('docs/walk/anchor.json', json),
 	// The same fact as ledger.mandate.status === 'sample', kept under its old name for the template.

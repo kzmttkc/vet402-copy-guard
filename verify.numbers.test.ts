@@ -49,15 +49,21 @@ function okStatusLines(body: string) {
 	return body.split('\n').filter((l) => /^\s+OK\s{2,}/.test(l)).length
 }
 
+function skipSavedHeader(text: string) {
+	const lines = text.split('\n')
+	if (lines[0]?.startsWith('$ ') && lines.length >= 3) return lines.slice(3).join('\n')
+	return text
+}
+
 function summaryOk(text: string) {
-	const m = text.match(/^(\d+) OK,/m)
+	const m = skipSavedHeader(text).match(/^(\d+) OK,/m)
 	if (!m) throw new Error('no "N OK" summary')
 	return Number(m[1])
 }
 
 /** Median of the five saved full runs, as the guidance sentence states it. */
 function phraseFromFiveRuns(text: string) {
-	const xs = [...text.matchAll(/^run \d+ \([^)]*\): exit \d+, (\d+) s,/gm)].map((m) => Number(m[1]))
+	const xs = [...skipSavedHeader(text).matchAll(/^run \d+ \([^)]*\): exit \d+, (\d+) s,/gm)].map((m) => Number(m[1]))
 	if (xs.length !== 5) throw new Error(`verify-five-runs.txt has ${xs.length} runs, expected 5`)
 	const median = [...xs].sort((a, b) => a - b)[2]
 	const n = Math.round(median / 60)
@@ -100,5 +106,63 @@ describe('published verify numbers', () => {
 			? (await import('./verify.mjs')).fullRunGuidance(five).match(/node verify\.mjs \((about [^)]+)\)/)?.[1]
 			: literals[0]
 		expect(said).toBe(phrase)
+	})
+
+	test('the ledger check names off-venue buys so the other-token parts sum to moves', () => {
+		const src = read('verify.mjs')
+		const start = src.indexOf('Different tokens under a listed ticker were part of')
+		expect(start).toBeGreaterThan(0)
+		const chunk = src.slice(start, start + 900)
+		expect(chunk).toContain('bought_off_venue')
+		expect(chunk).toContain('bought outside the official venues')
+		const L = JSON.parse(read('docs/ledger.json')) as {
+			totals: {
+				other_tokens: {
+					moves: number
+					sent_to_the_wallet: number
+					bought_by_the_wallet: number
+					bought_off_venue: number
+					received_unpaid: number
+					logged_as_sent_by_the_wallet: number
+				}
+			}
+		}
+		const o = L.totals.other_tokens
+		const parts = [o.sent_to_the_wallet, o.bought_by_the_wallet, o.bought_off_venue, o.received_unpaid, o.logged_as_sent_by_the_wallet]
+		expect(parts.reduce((a, b) => a + b, 0)).toBe(o.moves)
+	})
+
+	test('Run it installs rwa-verify before agent, then the repo-root tests', () => {
+		const readme = read('README.md')
+		const i = readme.indexOf('### Run it')
+		expect(i).toBeGreaterThan(0)
+		const block = readme.slice(i, readme.indexOf('## What it does not claim', i))
+		const cmds = [...block.matchAll(/^cd (\S+) && bun install && bun test && cd \.\.$/gm)].map((m) => m[1])
+		expect(cmds).toEqual(['rwa-verify', 'trail-anchor', 'token-check', 'agent'])
+		expect(block).toMatch(/bun test verify\.numbers\.test\.ts verify\.order\.test\.ts/)
+	})
+
+	test('the README states no offline recheck time (it varies with the load of the machine)', () => {
+		const readme = read('README.md')
+		const gen = read('scripts/readme-numbers.mjs')
+		expect(readme).not.toMatch(/165 s/)
+		expect(gen).not.toMatch(/165 s/)
+		expect(readme).not.toMatch(/--offline`?,? which reads no RPC,? (still )?took/)
+		expect(readme).not.toMatch(/Most of (that time|it) is local computation/)
+	})
+
+	test('a new limits.json takes effect only through a mandate that names its hash', () => {
+		const readme = read('README.md')
+		expect(readme).toContain('A new `limits.json` takes effect only once the principal signs a mandate that names its hash. Rule M1 refuses limits the mandate does not name.')
+	})
+
+	test("the 2025 judge line names BLI's hackathon", () => {
+		const readme = read('README.md')
+		expect(readme).toContain("A judge of BLI's 2025 hackathon")
+		expect(readme).not.toContain('A 2025 judge of this hackathon')
+	})
+
+	test('does not promise to keep the walk running after the event', () => {
+		expect(read('README.md')).not.toContain('keep the walk running')
 	})
 })
