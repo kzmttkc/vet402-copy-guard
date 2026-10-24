@@ -750,6 +750,7 @@ Tools: [CRE CLI](https://docs.chain.link/cre/getting-started/cli-installation) v
 ```bash
 # the folders import each other's code, so install all four before testing any
 for d in rwa-verify trail-anchor token-check agent; do (cd $d && bun install); done
+# the agent tests rebuild the whole ledger twice and take about 2 minutes
 for d in rwa-verify trail-anchor token-check agent; do (cd $d && bun test); done
 bun test verify.numbers.test.ts verify.order.test.ts check-surfaces.test.ts recount-vet402.test.ts
 cd contracts && forge install foundry-rs/forge-std --no-git && forge test && cd ..

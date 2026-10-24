@@ -427,6 +427,7 @@ describe('the size a decision ends in', () => {
 describe('the ledger walk', () => {
 	const walk = join(REPO, 'docs/walk')
 	const have = walkFileExists(join(walk, 'trails.jsonl')) && existsSync(join(walk, 'context.json')) && existsSync(join(REPO, 'docs/ledger.json'))
+	// Rebuilds all 8396 decisions twice. On 2026-10-24, with the machine loaded, it ran past 120 s in 1 of 4 runs (132 s), so the limit is 10 minutes.
 	test.skipIf(!have)('the saved walk: both writings rebuild docs/ledger.json from the trails and the feed values, row for row, with the same root', () => {
 		const trails = readWalkText(join(walk, 'trails.jsonl')).split('\n').filter(Boolean).map((l) => JSON.parse(l)) as TrailV2[]
 		const feeds = JSON.parse(readFileSync(join(walk, 'feeds.json'), 'utf8'))
@@ -468,7 +469,7 @@ describe('the ledger walk', () => {
 		const leaves = mine.rows.map((r) => r.leaf)
 		expect(V.merkleRootOf(leaves)).toBe(merkleRoot(leaves))
 		expect(merkleRoot([...leaves.slice(0, -1), `0x${'00'.repeat(32)}`])).not.toBe(mine.root)
-	}, 120_000)
+	}, 600_000)
 	test('the median of amounts in USD', () => {
 		expect(medianUsd([])).toBe('0.00')
 		expect(medianUsd(['3.00', '1.00', '2.00'])).toBe('2.00')
