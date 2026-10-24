@@ -1,26 +1,27 @@
-$ README "Run it" steps: install rwa-verify, trail-anchor, token-check, agent, then bun test in each, then the repo-root tests and forge test
+$ scripts/test-all.sh
 v26.3.0
-2026-10-24T03:48:03Z
-bun 1.2.23, commit dee9a37
+2026-10-24T04:22:14Z
+bun 1.4.2, commit 88535ca
 == rwa-verify
  23 pass
  0 fail
-Ran 23 tests across 2 files. [284.00ms]
+Ran 23 tests across 2 files. [1071.00ms]
 == trail-anchor
  8 pass
  0 fail
-Ran 8 tests across 1 file. [280.00ms]
+Ran 8 tests across 1 file. [3.01s]
 == token-check
  130 pass
  0 fail
-Ran 130 tests across 5 files. [356.00ms]
+Ran 130 tests across 5 files. [2.35s]
 == agent
  163 pass
  0 fail
-Ran 163 tests across 10 files. [112.96s]
+Ran 163 tests across 10 files. [134.31s]
 == repo root
- 16 pass
+ 17 pass
  0 fail
-Ran 16 tests across 4 files. [155.00ms]
+Ran 17 tests across 4 files. [133.00ms]
 == contracts
-Ran 5 test suites in 17.83ms (58.67ms CPU time): 36 tests passed, 0 failed, 1 skipped (37 total tests)
+Ran 5 test suites in 24.91ms (84.17ms CPU time): 36 tests passed, 0 failed, 1 skipped (37 total tests)
+git status after the run: 0 changed files
