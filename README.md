@@ -29,7 +29,7 @@ copy-guard is an autonomous agent that checks a move before it would copy it. It
 Nobody has to take my word for this, or the agent's, or a server's. One command with no key, no account and nothing to install rechecks the payment, the records, every decision and the whole practice ledger against two public chains. Without a terminal, [`docs/index.html`](docs/index.html) shows the same ledger as one page: on GitHub choose Code, then Download ZIP, unzip it and open `docs/index.html` in a browser (GitHub itself shows the file as source).
 
 <!-- FACTS:BEGIN -->
-**The walk of 2026-10-16, practice only.** In the 30 selected wallets the walk follows, 214 of the 223 arrivals of 100,000 USD or more that the wallet signed were liquidity operations, not purchases, in the 30 days to 2026-10-14, picked by what Uniswap sent them. The 30 were picked by what official Uniswap venues sent them in 30 days, a rule that favors liquidity providers, so this is not a chain-wide rate. copy-guard looked at 8396 moves of 51 wallets. 136 of them were in 67 tokens that carry the ticker of a Stock Token or of USDG at an address the issuer did not list, and each of those tokens is [named by address](#tokens-that-share-a-ticker). How they reached the wallet: 75 sent to a wallet that did not sign, 22 bought by the wallet itself at an official venue, 2 bought by the wallet outside the official venues, 37 logged with the wallet as the sender. copy-guard opened no position in any of them. The ticker copy opened 24. 20 of the 51 wallets are in the walk because they bought such a token, so these counts are not a rate. The practice positions copy-guard did open come from 2 groups, counted apart. 212 follow purchases of 5.75 to 144,454.24 USD by the selected wallets. 24 follow purchases of 0.22 to 0.48 USD by the wallets observed buying the other SPY. In all it opened 236, each at the reduced size the user's limits give for weaker evidence, and declined 8160, each with a reason in plain sentences.
+**The walk of 2026-10-16, practice only.** In the 30 selected wallets the walk follows, 214 of the 223 arrivals of 100,000 USD or more that the wallet signed were liquidity operations, not purchases. The 30 were picked by what official Uniswap venues sent them in 30 days, a rule that favors liquidity providers, so this is not a chain-wide rate. copy-guard looked at 8396 moves of 51 wallets. 136 of them were in 67 tokens that carry the ticker of a Stock Token or of USDG at an address the issuer did not list, and each of those tokens is [named by address](#tokens-that-share-a-ticker). How they reached the wallet: 75 sent to a wallet that did not sign, 22 bought by the wallet itself at an official venue, 2 bought by the wallet outside the official venues, 37 logged with the wallet as the sender. copy-guard opened no position in any of them. The ticker copy opened 24. 20 of the 51 wallets are in the walk because they bought such a token, so these counts are not a rate. The practice positions copy-guard did open come from 2 groups, counted apart. 212 follow purchases of 5.75 to 144,454.24 USD by the selected wallets. 24 follow purchases of 0.22 to 0.48 USD by the wallets observed buying the other SPY. In all it opened 236, each at the reduced size the user's limits give for weaker evidence, and declined 8160, each with a reason in plain sentences.
 <!-- FACTS:END -->
 
 <!-- VERIFY_HEAD:BEGIN -->
@@ -46,14 +46,14 @@ git clone https://github.com/kzmttkc/vet402-copy-guard && cd vet402-copy-guard
 node verify.mjs --quick
 ```
 
-`--quick` rechecks the payment, the anchors, the CRE verdicts, the first five cards of the page, the ledger's root and the paid gate call against both chains, in 13 to 15 s (5 saved runs of 2026-10-19). Its last two lines:
+`--quick` rechecks the payment, the anchors, the CRE verdicts, the first five cards of the page, the ledger's root and the paid gate call against both chains, in 12 to 13 s (5 saved runs of 2026-10-24). Its last two lines:
 
 ```
 RESULT: MATCH
-To check every decision, the selection, the page and the gate: node verify.mjs (about three and a half minutes)
+To check every decision, the selection, the page and the gate: node verify.mjs (about 2 minutes)
 ```
 
-The whole ledger, every decision and every rule, is one more line, 128 to 148 s in 5 saved runs of 2026-10-16. Most of that time is local computation: `node verify.mjs --offline`, which reads no RPC, took 165 s on the author's laptop on 2026-10-15.
+The whole ledger, every decision and every rule, is one more line, 124 to 127 s in 5 saved runs of 2026-10-24. Most of that time is local computation: `node verify.mjs --offline`, which reads no RPC, took 165 s on the author's laptop on 2026-10-15.
 
 ```bash
 node verify.mjs
@@ -64,7 +64,7 @@ node verify.mjs
 
 <!-- VERIFY_TAIL:BEGIN -->
 ```
-70 OK, 0 FAIL, 0 not checked
+71 OK, 0 FAIL, 0 not checked
 RESULT: MATCH
 ```
 <!-- VERIFY_TAIL:END -->
@@ -116,6 +116,7 @@ vet402 copy-guard: recheck with no key, no account and no install
   OK    records         50 records in docs/walk/records hash to the X-Facts-Hash vet402 sent with them and give the fields every decision read. For 1 wallets vet402 gave no record, and their decisions say so. Every moved token is named as the issuer's list (195 Stock Tokens, taken 2026-09-28), the CRE token-check results 0xe2fcacc3…535975 and the record give it
   OK    prices          7252 decisions read a price, each the last Chainlink feed value at or before the block of the move, out of 31908 values of 26 feeds saved in docs/walk/feeds.json
   OK    ledger          docs/ledger.json is what the walk gives: 8396 decisions about 51 wallets (FULL 0, REDUCED 236, NONE 8160). Incoming Stock Tokens by kind: purchase 1184, purchase_off_venue 565, rotation 3, liquidity 2217, swapped_unpaid 5, received 263, out 4029. copy-guard opened 236 practice positions, every one on a purchase (an official swap the wallet itself paid for, median 2680.11 USD), and none in a token the issuer did not list. A ticker copy opened 1565: 1541 in Stock Tokens and 24 in 4 other tokens under a listed ticker. Different tokens under a listed ticker were part of 136 moves (67 tokens: FLY, GME, IBM, NET, NVDA, SPY, USDG, WMETA, WTSM): 75 sent to the wallet, 22 bought by it, 0 received unpaid, 37 logged as sent by it. At one size (25.00 USD each): the 236 both opened 19.76 USD, the 1305 Stock Token positions only the ticker copy opened 34.90 USD, and its 24 in other tokens: 21 valued at a pool (-480.89 USD), 3 not measured and in no sum
+  OK    large incoming  all 227 moves in totals.large_incoming are in the top_buyers cohort (223 signed by the wallet, 4 signed by another, 0 passed through)
   OK    groups          copy-guard per group, recomputed: selected: 30 wallets, 8093 decisions, copy-guard opened 212 and declined 7881, followed purchases median 3295.74 USD (sum 2508214.48), at 25.00 USD each 23.05 USD, 81 of 212 from 0x30ce…6576; observed_other_token_buyers: 20 wallets, 210 decisions, copy-guard opened 24 and declined 186, followed purchases median 0.40 USD (sum 9.12), at 25.00 USD each -3.29 USD, 4 of 24 from 0xa634…05fd; demo: 1 wallets, 93 decisions, copy-guard opened 0 and declined 93, followed purchases median 0.00 USD (sum 0.00), at 25.00 USD each 0.00 USD
   OK    page            docs/index.html carries the totals, both books with every position, the 5 cards at the top as full rows and 1677 decisions in short form (every one that opened a position, moved a different token under a listed ticker or was not NONE), all as docs/ledger.json has them. The other decisions are in 51 files of docs/rows, one per wallet, which hold the 8396 rows exactly and give the page's counts per wallet
   OK    limits          limits.json hashes to 0x1e762486…72c2cf, the limits every decision and the mandate name: full 100.00 USD, reduced 25.00 USD, 300.00 USD per day, a wallet at a loss opens nothing
@@ -154,9 +155,10 @@ vet402 copy-guard: recheck with no key, no account and no install
   OK    paid gate       docs/agent/paid-gate-run names the paid gate call 0x7d8d9384…c1eb6c, settled, from 0xc380…ed94
   OK    settlement tx   0x7d8d9384…c1eb6c succeeded in block 89694056 on Robinhood Chain
   OK    USDG moved      0.01 USDG from 0xc380…ed94 (the agent) to 0x973c…6227 (vet402), the only USDG transfer in the tx
+  OK    gate order      the CRE workflow answered MATCH at 2026-10-16T01:38:16.000Z, before the settlement block at 2026-10-16T01:38:19.000Z
   OK    self-paid       the 0.01 USDG came from the payee 0x973c…6227 in 0x6edc973b…e4afc5 (block 89692865): both wallets are the author's, so this is a self-paid test, not revenue
 
-70 OK, 0 FAIL, 0 not checked
+71 OK, 0 FAIL, 0 not checked
 RESULT: MATCH
 ```
 <!-- VERIFY:END -->
@@ -248,7 +250,7 @@ From [`docs/simulate-match.txt`](docs/simulate-match.txt), saved 2026-10-08. The
 <!-- CRE_SIMULATE:END -->
 
 <!-- CRE_NUMBERS:BEGIN -->
-**What `token-check` has checked (as of the last run below).** 143 tokens that moved in the walk, in 15 CRE runs, the last at Robinhood Chain block 88226518. `docs/ledger.json` keeps an older split of the same 143 under `totals.token_check`: its 12 stock-ticker and 55 USDG look-alikes are the 67 look-alikes here, and its 25 other assets are USDG itself plus the 24 other tokens here. Of the 12 that carry a stock ticker or a stock name, 2 are wrapper tokens named after issuer tokens, with zero supply (`totalSupply()` was 0 on 2026-10-24: wTSM at `0x17ca…0c06` and wMETA at `0xc9d2…c17f`). Recount the 67 from [`docs/token-check/results.json`](docs/token-check/results.json) with one command: `node -e 'const t=Object.values(require("./docs/token-check/results.json").tokens);const M=["TICKER_SAME_AS_ISSUER_TOKEN","TICKER_SAME_AFTER_FOLDING","NAME_SAME_AS_ISSUER_TOKEN","NAME_ENDS_LIKE_ISSUER_TOKEN","TICKER_OR_NAME_READS_AS_USDG","ISSUER_CODE_AT_UNLISTED_ADDRESS"];const S=["TICKER_SAME_AS_ISSUER_TOKEN","TICKER_SAME_AFTER_FOLDING","NAME_SAME_AS_ISSUER_TOKEN","NAME_ENDS_LIKE_ISSUER_TOKEN"];let i=0,u=0,s=0,g=0,n=0;for(const r of t){const R=r.reasons||[];if(r.issuer_token)i++;else if(R.includes("USDG_ADDRESS"))u++;else if(R.some(x=>M.includes(x))){if(R.some(x=>S.includes(x))&&!R.includes("TICKER_OR_NAME_READS_AS_USDG"))s++;else g++;}else n++;}console.log(JSON.stringify({tokens:t.length,issuer:i,usdg:u,stockTicker:s,usdgMark:g,marked:s+g,neither:n}))'`
+**What `token-check` has checked (as of the last run below).** 143 tokens that moved in the walk, in 15 CRE runs, the last at Robinhood Chain block 88226518. `docs/ledger.json` keeps an older split of the same 143 under `totals.token_check`: its 12 stock-ticker and 55 USDG look-alikes are the 67 look-alikes here, and its 25 other assets are USDG itself plus the 24 other tokens here.
 
 | What | Count |
 |---|---|
@@ -306,7 +308,7 @@ The last column holds only times read from saved runs on this machine: the simul
 |---|---|---|---|
 | A person opens a block explorer and compares a token's contract with the issuer's list by eye, if they think of it | `token-check` reads the code hash, the beacon and the official list from the chain | the check runs before the agent acts and returns a reason code a machine can read | 6 s for 12 tokens at one block ([`batch-7.cre.txt`](docs/token-check/batch/batch-7.cre.txt)) |
 | A reader trusts the site that shows a wallet's record | `rwa-verify` recomputes the record's hash and reads its anchor | MATCH or MISMATCH with one bit per failed check, as an event | 3 s ([`docs/simulate-match.txt`](docs/simulate-match.txt)) |
-| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 13 to 15 s for `node verify.mjs --quick`, 128 to 148 s for `node verify.mjs` on this walk, 5 runs back to back on 2026-10-16, each RESULT: MATCH ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)). Most of it is local computation, not the network: `node verify.mjs --offline` reads no RPC and still took 165 s on the author's laptop on 2026-10-15 |
+| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 12 to 13 s for `node verify.mjs --quick`, 124 to 127 s for `node verify.mjs` on this walk, 5 runs back to back on 2026-10-24, each RESULT: MATCH ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)). Most of it is local computation, not the network: `node verify.mjs --offline` reads no RPC and still took 165 s on the author's laptop on 2026-10-15 |
 <!-- CHANGES:END -->
 
 ### Why CRE

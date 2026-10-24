@@ -25,8 +25,9 @@ vet402 copy-guard: recheck with no key, no account and no install
   OK    paid gate       docs/agent/paid-gate-run names the paid gate call 0x7d8d9384…c1eb6c, settled, from 0xc380…ed94
   OK    settlement tx   0x7d8d9384…c1eb6c succeeded in block 89694056 on Robinhood Chain
   OK    USDG moved      0.01 USDG from 0xc380…ed94 (the agent) to 0x973c…6227 (vet402), the only USDG transfer in the tx
+  OK    gate order      the CRE workflow answered MATCH at 2026-10-16T01:38:16.000Z, before the settlement block at 2026-10-16T01:38:19.000Z
   OK    self-paid       the 0.01 USDG came from the payee 0x973c…6227 in 0x6edc973b…e4afc5 (block 89692865): both wallets are the author's, so this is a self-paid test, not revenue
 
-22 OK, 0 FAIL, 0 not checked
+23 OK, 0 FAIL, 0 not checked
 RESULT: MATCH
-To check every decision, the selection, the page and the gate: node verify.mjs (about two and a half minutes)
+To check every decision, the selection, the page and the gate: node verify.mjs (about 2 minutes)

@@ -12,8 +12,9 @@
 //   --only ledger         section 5: the practice ledger, the mandate and the user's limits
 //   --only gate           section 6: the x402 gate in front of the CRE workflow
 //   --quick               only the payment, the anchor, the CRE verdicts, the five cards at the top of the
-//                         page, the ledger root and the paid gate call,
-//                         in about 15 seconds (the full run takes about three and a half minutes)
+//                         page, the ledger root and the paid gate call.
+//                         After a quick run, one line names the full run as about N minutes. N is the
+//                         median of docs/verify/verify-five-runs.txt, in minutes, rounded.
 //   --deep                check every decision of the ledger against the chain, not a sample
 //   --offline             skip the chain reads; those lines are reported as not checked
 //   --rpc URL             another RPC for Robinhood Chain (4663)
@@ -2240,6 +2241,26 @@ async function verifyLedger(rep, main, test, deep) {
 		]
 	})
 	if (!ledger) return
+	await rep.check('large incoming', () => {
+		// ledger.ts counts every cohort. This check does not change that. It records that, on this walk,
+		// every move inside the total is from the top_buyers cohort, and that the rows add up to the total.
+		const li = ledger.totals.large_incoming
+		if (!li) return [false, `${CLAIMS.ledger} has no totals.large_incoming`]
+		const threshold = toCents(li.threshold_usd)
+		const counted = []
+		for (const r of ledger.rows) {
+			const inp = trails[r.n - 1]?.inputs
+			if (!inp) return [false, `decision ${r.n} has no trail`]
+			const sl = stockLeg2(inp)
+			if (r.move_block < li.from_block || r.move_block > li.to_block || !sl) continue
+			if (sl.direction !== 'in' || r.move_usd === null || toCents(r.move_usd) < threshold) continue
+			counted.push(r)
+		}
+		const buckets = li.signed_by_the_wallet.count + li.signed_by_another.count + li.passed_through.count
+		const other = counted.filter((r) => r.cohort !== 'top_buyers')
+		const ok = counted.length === buckets && other.length === 0
+		return [ok, ok ? `all ${counted.length} moves in totals.large_incoming are in the top_buyers cohort (${li.signed_by_the_wallet.count} signed by the wallet, ${li.signed_by_another.count} signed by another, ${li.passed_through.count} passed through)` : `large_incoming counts ${buckets} moves and the rows give ${counted.length}, of which ${other.length} are not top_buyers`]
+	})
 	await rep.check('groups', () => {
 		// Recomputed here from the rows and the positions, not read from the ledger: the copy-guard book per group of wallets.
 		const rebuilt = ledgerOf(trails, feeds, ledger.mark_block, context).totals.by_group
@@ -2290,6 +2311,8 @@ async function verifyLedger(rep, main, test, deep) {
 			inFiles += mine.length
 		}
 		if (inFiles !== rows.length || files.length !== carried.wallets.length) bad.push(`${CLAIMS.pageRowsDir} holds ${files.length} files with ${inFiles} rows; the ledger has ${rows.length} rows`)
+		const [tailsOk, tailsDetail] = pageTailsMatchReadme(html, readFileSync(join(REPO, 'README.md'), 'utf8'))
+		if (!tailsOk) bad.push(tailsDetail)
 		return [bad.length === 0, bad.length ? bad.slice(0, 3).join('; ') : `${CLAIMS.page} carries the totals, both books with every position, the ${carried.featured.length} cards at the top as full rows and ${carried.short.length} decisions in short form (every one that opened a position, moved a different token under a listed ticker or was not NONE), all as ${CLAIMS.ledger} has them. The other decisions are in ${files.length} files of ${CLAIMS.pageRowsDir}, one per wallet, which hold the ${rows.length} rows exactly and give the page's counts per wallet`]
 	})
 	await rep.check('limits', () => {
@@ -2580,6 +2603,72 @@ export function resolveTarget(target) {
 	return target
 }
 
+/** "about N minutes" from the saved full runs. N is the median length in minutes, rounded. No saved run, no number. */
+export function aboutMinutesPhrase(fiveRunsText) {
+	const xs = [...String(fiveRunsText ?? '').matchAll(/^run \d+ \([^)]*\): exit \d+, (\d+) s,/gm)].map((m) => Number(m[1]))
+	if (!xs.length) return null
+	const sorted = [...xs].sort((a, b) => a - b)
+	const mid = sorted.length >> 1
+	const median = sorted.length % 2 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2)
+	const n = Math.round(median / 60)
+	if (!Number.isFinite(n) || n < 1) return null
+	return `about ${n} minute${n === 1 ? '' : 's'}`
+}
+
+/** The line a quick run prints to point at the full run. The minutes come from aboutMinutesPhrase. */
+export function fullRunGuidance(fiveRunsText) {
+	const phrase = aboutMinutesPhrase(fiveRunsText)
+	return `To check every decision, the selection, the page and the gate: node verify.mjs${phrase ? ` (${phrase})` : ''}`
+}
+
+/**
+ * page-data verify is the full run's last two lines. page-data quick_tail is the quick run's last two.
+ * The README copies the same lines into VERIFY_TAIL and the plain fence of VERIFY_RUN.
+ */
+export function pageTailsMatchReadme(html, readme) {
+	const pageRaw = String(html).match(/<script type="application\/json" id="page-data">([\s\S]*?)<\/script>/)
+	if (!pageRaw) return [false, 'docs/index.html has no page-data']
+	let page
+	try {
+		page = JSON.parse(pageRaw[1])
+	} catch {
+		return [false, 'page-data is not JSON']
+	}
+	const block = (name) => {
+		const a = `<!-- ${name}:BEGIN -->`
+		const b = `<!-- ${name}:END -->`
+		const i = readme.indexOf(a)
+		const j = readme.indexOf(b)
+		if (i < 0 || j < i) return null
+		return readme.slice(i + a.length, j)
+	}
+	// A line that is exactly ``` opens a plain fence. ```bash stays open until its own closing line.
+	const plainFences = (text) => {
+		const bodies = []
+		let open = null
+		let buf = []
+		for (const line of String(text ?? '').split('\n')) {
+			if (open === null) {
+				if (line === '```') {
+					open = 'plain'
+					buf = []
+				} else if (line.startsWith('```')) open = 'other'
+			} else if (line === '```') {
+				if (open === 'plain') bodies.push(buf.join('\n'))
+				open = null
+			} else if (open === 'plain') buf.push(line)
+		}
+		return bodies
+	}
+	const tailFences = plainFences(block('VERIFY_TAIL'))
+	const tail = tailFences.length === 1 ? tailFences[0] : null
+	const quickFences = plainFences(block('VERIFY_RUN'))
+	const bad = []
+	if (!tail || page.verify !== tail.split('\n').join(' / ')) bad.push('page-data verify is not the README VERIFY_TAIL')
+	if (quickFences.length !== 1 || page.verify_times?.quick_tail !== quickFences[0].split('\n').join(' / ')) bad.push('page-data quick_tail is not the quick tail in the README')
+	return [bad.length === 0, bad.join('; ') || 'page-data verify and quick_tail match the README tails']
+}
+
 const USAGE = `usage: node verify.mjs [trail.json | block number] [--quick] [--only paid-run|ledger|gate] [--deep] [--offline] [--rpc URL] [--testnet-rpc URL]
   no argument    recheck the paid run in ${CLAIMS.runDir}, the practice ledger ${CLAIMS.ledger} and the gate
   --quick        only the payment, the anchor, the CRE verdicts, the cards at the top of the page and the ledger root (seconds)
@@ -2621,7 +2710,10 @@ export async function run(argv, { print = console.log, fetchImpl = fetch, sleep,
 	rep.say('')
 	rep.say(`${count('OK')} OK, ${count('FAIL')} FAIL, ${count('NOT CHECKED')} not checked${session.retries ? ` (an RPC was busy: asked again ${session.retries} ${session.retries === 1 ? 'time' : 'times'})` : ''}`)
 	rep.say(`RESULT: ${res.text}`)
-	if (args.quick && !path) rep.say('To check every decision, the selection, the page and the gate: node verify.mjs (about three and a half minutes)')
+	if (args.quick && !path) {
+		const fivePath = join(REPO, 'docs/verify/verify-five-runs.txt')
+		rep.say(fullRunGuidance(existsSync(fivePath) ? readFileSync(fivePath, 'utf8') : ''))
+	}
 	return res.code
 }
 

@@ -1,6 +1,6 @@
-node verify.mjs, five runs back to back on 2026-10-16 (UTC), this machine, public RPCs:
-run 1 (11:50:21Z): exit 0, 130 s, 69 OK, 0 FAIL, 0 not checked RESULT: MATCH 
-run 2 (11:52:31Z): exit 0, 128 s, 69 OK, 0 FAIL, 0 not checked RESULT: MATCH 
-run 3 (11:54:39Z): exit 0, 131 s, 69 OK, 0 FAIL, 0 not checked RESULT: MATCH 
-run 4 (11:56:50Z): exit 0, 130 s, 69 OK, 0 FAIL, 0 not checked RESULT: MATCH 
-run 5 (11:59:00Z): exit 0, 148 s, 69 OK, 0 FAIL, 0 not checked RESULT: MATCH 
+node verify.mjs, five runs back to back on 2026-10-24 (UTC), this machine, public RPCs:
+run 1 (01:36:00Z): exit 0, 125 s, 71 OK, 0 FAIL, 0 not checked RESULT: MATCH
+run 2 (01:38:06Z): exit 0, 124 s, 71 OK, 0 FAIL, 0 not checked RESULT: MATCH
+run 3 (01:40:10Z): exit 0, 126 s, 71 OK, 0 FAIL, 0 not checked RESULT: MATCH
+run 4 (01:42:16Z): exit 0, 125 s, 71 OK, 0 FAIL, 0 not checked RESULT: MATCH
+run 5 (01:44:21Z): exit 0, 127 s, 71 OK, 0 FAIL, 0 not checked RESULT: MATCH

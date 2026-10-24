@@ -13,7 +13,7 @@ const account = privateKeyToAccount(generatePrivateKey())
 const VERDICT = { verdict: 'MATCH', reasonBits: 0, anchorTx: `0x${'15'.repeat(32)}`, recomputedFactsHash: `0x${'9d'.repeat(32)}`, anchoredFactsHash: `0x${'9d'.repeat(32)}` }
 const SETTLE_TX = `0x${'65'.repeat(32)}`
 
-type World = { verify: any; settle: any; calls: string[]; runs: unknown[]; fail?: boolean }
+type World = { verify: any; settle: any; calls: string[]; runs: unknown[]; fail?: boolean; result?: typeof VERDICT }
 function gate(w: World, now = Date.now) {
 	return makeHandler({
 		broadcast: false,
@@ -26,7 +26,7 @@ function gate(w: World, now = Date.now) {
 		runWorkflow: (payload) => {
 			w.runs.push(payload)
 			if (w.fail) throw new Error('cre exited 1')
-			return { result: VERDICT, tx: null }
+			return { result: w.result ?? VERDICT, tx: null }
 		},
 	})
 }
@@ -99,6 +99,26 @@ describe('the gate', () => {
 		}
 		const w = world()
 		expect((await post(gate(w), { 'PAYMENT-SIGNATURE': 'not base64 json' })).status).toBe(402)
+	})
+
+	test('a CRE answer of MISMATCH is still settled; only a workflow that fails is not', async () => {
+		const w = world()
+		w.result = { ...VERDICT, verdict: 'MISMATCH', reasonBits: 288 }
+		const h = gate(w)
+		const res = await post(h, { 'PAYMENT-SIGNATURE': await signed(h) }, JSON.stringify({ tx: VERDICT.anchorTx }))
+		expect(res.status).toBe(200)
+		const body = (await res.json()) as any
+		expect(body.result.verdict).toBe('MISMATCH')
+		expect(body.payment).toMatchObject({ status: 'settled', transaction: SETTLE_TX })
+		expect(w.calls).toEqual(['/verify', '/settle'])
+
+		const failed = world()
+		failed.fail = true
+		const h2 = gate(failed)
+		const res2 = await post(h2, { 'PAYMENT-SIGNATURE': await signed(h2) })
+		expect(res2.status).toBe(502)
+		expect(((await res2.json()) as any).charged).toBe(false)
+		expect(failed.calls).toEqual(['/verify'])
 	})
 
 	test('nobody pays for nothing: a refused verification, a failed workflow or a bad input is never settled', async () => {
