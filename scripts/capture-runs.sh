@@ -10,11 +10,12 @@ utc_now() { date -u +"%Y-%m-%dT%H:%M:%SZ"; }
 utc_hms() { date -u +"%H:%M:%SZ"; }
 DAY=$(date -u +"%Y-%m-%d")
 
+# the third line is the UTC time the run started (given), or now
 header3() {
   local cmd="$1"
   printf '%s\n' "$ $cmd"
   printf '%s\n' "$NODE_V"
-  printf '%s\n' "$(utc_now)"
+  printf '%s\n' "${2:-$(utc_now)}"
 }
 
 summary_line() {
@@ -41,6 +42,7 @@ run_five() {
   while [ "$i" -le 5 ]; do
     local start end secs code out t
     t=$(utc_hms)
+    last_start=$(utc_now)
     start=$(date +%s)
     set +e
     out=$(eval "$cmd" 2>&1)
@@ -54,7 +56,7 @@ run_five() {
     i=$((i + 1))
   done
   {
-    header3 "$cmd"
+    header3 "$cmd" "$last_start"
     cat "$tmpdir/run5.txt"
   } > "$one_file"
   rm -rf "$tmpdir"

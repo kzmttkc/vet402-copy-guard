@@ -1,11 +1,6 @@
 $ npx -y -p node@20 node verify.mjs --quick
 v20.20.2
-npm notice
-npm notice New major version of npm available! 11.16.0 -> 12.2.1
-npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
-npm notice To update run: npm install -g npm@12.2.1
-npm notice
-2026-10-24T03:29:22Z
+2026-10-24T03:50:30Z
 vet402 copy-guard: recheck with no key, no account and no install
   chains  Robinhood Chain 4663 at rpc.mainnet.chain.robinhood.com, Robinhood Testnet 46630 at rpc.testnet.chain.robinhood.com
   OK    keccak256       the built-in hash gives the published test values
