@@ -9,7 +9,7 @@ Anyone can deploy a token called NVDA. copy-guard is an agent that checks which 
 <!-- JUMP:BEGIN -->
 | If you are judging | Start here |
 |---|---|
-| **Anyone** | [Verify it yourself in 20 seconds, 4 steps](#verify-it-yourself-in-20-seconds) |
+| **Anyone** | [Verify it yourself in 15 seconds, 4 steps](#verify-it-yourself-in-15-seconds) |
 | **Chainlink**, Best workflow with CRE | [Chainlink: Best workflow with CRE](#chainlink-best-workflow-with-cre). The one `cre workflow simulate` line, the bounty text line by line, the CRE code guide |
 | **RYO-CHAN**, Autonomous Agents | [RYO-CHAN: Autonomous Agents](#ryo-chan-autonomous-agents). The bounty text phrase by phrase, the practice trade ledger, one sentence turned into limits |
 | **BLI**, LegalTech and RegTech | [BLI: LegalTech and RegTech](#bli-legaltech-and-regtech). Who the agent acts for, two questions from BLI's own stage, the regulators' words |
@@ -35,7 +35,7 @@ Nobody has to take my word for this, or the agent's, or a server's. One command 
 <!-- FACTS:END -->
 
 <!-- VERIFY_HEAD:BEGIN -->
-## Verify it yourself in 20 seconds
+## Verify it yourself in 15 seconds
 <!-- VERIFY_HEAD:END -->
 
 Step 1 needs Node 20 or newer and a copy of this repo. On 2026-10-24 `npx -y -p node@20 node verify.mjs --quick` ran on Node v20.20.2 and printed `RESULT: MATCH`. The whole run is in [`docs/verify/node-v20.20.2-quick.txt`](docs/verify/node-v20.20.2-quick.txt). Node older than 20 stops, with the reason, before any check. Steps 2 to 4 need only a browser. Every date and time in this README is UTC.
@@ -48,14 +48,14 @@ git clone https://github.com/kzmttkc/vet402-copy-guard && cd vet402-copy-guard
 node verify.mjs --quick
 ```
 
-`--quick` rechecks the payment, the anchors, the CRE verdicts, the first five cards of the page, the ledger's root and the paid gate call against both chains, in 14 to 16 s (5 saved runs of 2026-10-24). Its last two lines:
+`--quick` rechecks the payment, the anchors, the CRE verdicts, the first five cards of the page, the ledger's root and the paid gate call against both chains, in 12 to 15 s (5 saved runs of 2026-10-24). Its last two lines:
 
 ```
 RESULT: MATCH
-To check every decision, the selection, the page and the gate: node verify.mjs (about 2 minutes)
+To check every decision, the selection, the page and the gate: node verify.mjs (about 3 minutes)
 ```
 
-The whole ledger, every decision and every rule, is one more line, 135 to 250 s in 5 saved runs of 2026-10-24.
+The whole ledger, every decision and every rule, is one more line, 132 to 178 s in 5 saved runs of 2026-10-24.
 
 ```bash
 node verify.mjs
@@ -312,7 +312,7 @@ The last column holds only times read from saved runs on this machine: the simul
 |---|---|---|---|
 | A person opens a block explorer and compares a token's contract with the issuer's list by eye, if they think of it | `token-check` reads the code hash, the beacon and the official list from the chain | the check runs before the agent acts and returns a reason code a machine can read | 6 s for 12 tokens at one block ([`batch-7.cre.txt`](docs/token-check/batch/batch-7.cre.txt)) |
 | A reader trusts the site that shows a wallet's record | `rwa-verify` recomputes the record's hash and reads its anchor | MATCH or MISMATCH with one bit per failed check, as an event | 3 s ([`docs/simulate-match.txt`](docs/simulate-match.txt)) |
-| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 14 to 16 s for `node verify.mjs --quick`, 135 to 250 s for `node verify.mjs` on this walk, 5 runs back to back on 2026-10-24, each RESULT: MATCH ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)). |
+| An agent's operator keeps its own log | every decision is hashed, and one event carries the Merkle root of the walk | a third party rechecks every decision of a walk without trusting the operator | 12 to 15 s for `node verify.mjs --quick`, 132 to 178 s for `node verify.mjs` on this walk, 5 runs back to back on 2026-10-24, each RESULT: MATCH ([`docs/verify/verify-five-runs.txt`](docs/verify/verify-five-runs.txt)). |
 <!-- CHANGES:END -->
 
 ### Why CRE
@@ -746,10 +746,9 @@ I build this alone. copy-guard sits on vet402 /rwa, a product that already runs:
 Tools: [CRE CLI](https://docs.chain.link/cre/getting-started/cli-installation) v1.37.0, Bun 1.4.2, Foundry.
 
 ```bash
-cd rwa-verify && bun install && bun test && cd ..
-cd trail-anchor && bun install && bun test && cd ..
-cd token-check && bun install && bun test && cd ..
-cd agent && bun install && bun test && cd ..
+# the folders import each other's code, so install all four before testing any
+for d in rwa-verify trail-anchor token-check agent; do (cd $d && bun install); done
+for d in rwa-verify trail-anchor token-check agent; do (cd $d && bun test); done
 bun test verify.numbers.test.ts verify.order.test.ts check-surfaces.test.ts recount-vet402.test.ts
 cd contracts && forge install foundry-rs/forge-std --no-git && forge test && cd ..
 
