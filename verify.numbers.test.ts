@@ -174,6 +174,9 @@ describe('published verify numbers', () => {
 		const baseline = JSON.parse(read('docs/ledger.json')).baseline as string
 		expect(readme).toContain(`"${baseline.split('. ')[0]}."`)
 		expect(readme + ledger).not.toMatch(/every move in which a token with a stock ticker\s+arrives/)
+		const page = read('docs/page.template.html') + read('docs/index.html')
+		expect(page).toContain('it opens a position on every purchase of a token with a stock ticker')
+		expect(readme + ledger + page).not.toMatch(/whenever a token with a stock ticker arrives/)
 	})
 
 	test('bounty quotes in the README are word for word', () => {
