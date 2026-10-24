@@ -750,7 +750,7 @@ cd rwa-verify && bun install && bun test && cd ..
 cd trail-anchor && bun install && bun test && cd ..
 cd token-check && bun install && bun test && cd ..
 cd agent && bun install && bun test && cd ..
-bun test verify.numbers.test.ts verify.order.test.ts
+bun test verify.numbers.test.ts verify.order.test.ts check-surfaces.test.ts recount-vet402.test.ts
 cd contracts && forge install foundry-rs/forge-std --no-git && forge test && cd ..
 
 # the whole practice ledger: walk, anchor the root on Robinhood Testnet, build the page, recheck
