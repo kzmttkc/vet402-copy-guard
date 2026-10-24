@@ -1,0 +1,7 @@
+{
+  "retrieved_at_utc": "2026-10-24T02:56:55.619Z",
+  "url": "https://vet402.com/api/v1/observatory/export.csv?days=365",
+  "settled_base_since_2026_08_14": 9713,
+  "settled_base_before_2026_10_08T11_38Z": 7063,
+  "sha256_of_csv": "ef95e5a386bec240fff16143b840f8d5242f45954b60726699d18a86bf85fc4c"
+}
