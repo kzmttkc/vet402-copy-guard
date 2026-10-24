@@ -1,5 +1,5 @@
 {
-  "rechecked_at": "2026-10-14T08:39:47.375Z",
+  "rechecked_at": "2026-10-24T05:14:32.098Z",
   "results_file": "docs/token-check/results.json",
   "results_keccak": "0xe2fcacc3ae7ebf4e60cc2d18fa34c1b58e0f747aa3f919b8f87c20ba79535975",
   "how": "plain JSON-RPC from Node, one request at a time, no CRE and no code of the workflow: eth_getCode hashed here, eth_getStorageAt, symbol(), uiMultiplier(), eth_getLogs",
@@ -7,13 +7,13 @@
     "mainnet": "https://rpc.mainnet.chain.robinhood.com",
     "testnet": "https://rpc.testnet.chain.robinhood.com"
   },
-  "rpc_requests": 1001,
+  "rpc_requests": 1002,
   "tokens": 143,
   "agree": 143,
   "differ": [],
   "state_read_at": {
-    "checked_block": 143,
-    "latest": 0
+    "checked_block": 0,
+    "latest": 143
   },
   "compared": {
     "fields": [

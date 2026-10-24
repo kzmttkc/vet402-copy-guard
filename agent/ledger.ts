@@ -2,8 +2,9 @@
 // happened, with two books side by side.
 //
 //   copy-guard   opens what its rules, its mandate and the user's limits allow
-//   ticker copy  opens the full size on every purchase of a token with a stock ticker,
-//                at an official venue or not. It buys no record and applies no rule or limit
+//   ticker copy  opens the full size on every purchase of a token with a stock ticker (a Stock
+//                Token with a usable Chainlink price, or a different token under a listed stock
+//                ticker), at an official venue or not. It buys no record and applies no rule or limit
 //
 // Both books enter a Stock Token at the Chainlink feed's value at the block of the move
 // and leave by the same exit rules from limits.json: the copied wallet sells or sends the

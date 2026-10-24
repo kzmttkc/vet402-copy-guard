@@ -441,7 +441,11 @@ if (tcAnchor && tcResults) {
 	const lookalike = not.filter((r) => r.reasons.includes('NOT_IN_ISSUER_LIST') && r.reasons.some((x) => MARKS.includes(x)))
 	const plain = not.filter((r) => r.reasons.includes('NOT_IN_ISSUER_LIST') && !r.reasons.some((x) => MARKS.includes(x)))
 	const updated = issuer.filter((r) => r.multiplier_updates > 0)
-	const recheck = has('docs/token-check/recheck-output.txt') ? read('docs/token-check/recheck-output.txt').trimEnd().split('\n').pop() : null
+	const recheckText = has('docs/token-check/recheck-output.txt') ? read('docs/token-check/recheck-output.txt') : null
+	const recheck = recheckText ? recheckText.trimEnd().split('\n').pop() : null
+	// the saved run's third line is its UTC time (scripts/capture-runs.sh header)
+	const recheckDay = recheckText && recheckText.startsWith('$ ') ? recheckText.split('\n')[2].slice(0, 10) : null
+	const recheckNow = recheck ? Number(recheck.match(/as it is now for (\d+)/)?.[1] ?? 0) : 0
 	const runs = tcDetails?.runs ?? tcResults.cre_runs.map((r, i) => ({ run: i + 1, tx: r.tx }))
 	creNumbers = `**What \`token-check\` has checked (as of the last run below).** ${plural(tcAnchor.tokens, 'token', 'tokens')} that moved in the walk, in ${plural(tcAnchor.runs, 'CRE run', 'CRE runs')}, the last at Robinhood Chain block ${tcAnchor.last_checked_block}. \`docs/ledger.json\` keeps an older split of the same 143 under \`totals.token_check\`: its 12 stock-ticker and 55 USDG look-alikes are the 67 look-alikes here, and its 25 other assets are USDG itself plus the 24 other tokens here.
 
@@ -455,7 +459,7 @@ if (tcAnchor && tcResults) {
 ${listedUnconfirmed.length ? `| of them in the list, with a mark the chain did not confirm | ${listedUnconfirmed.length} |\n` : ''}
 Recount this split from [\`docs/token-check/results.json\`](docs/token-check/results.json) with one command: \`node token-check/recount.mjs\`.
 
-Each run wrote the hash of its rows in a \`TokenBatchChecked\` event (${runs.map((r) => `[run ${r.run}](https://explorer.testnet.chain.robinhood.com/tx/${r.tx}?tab=logs)`).join(', ')}). One more run read those receipts back over the EVM capability and wrote \`keccak256(results.json)\` = \`${short(tcAnchor.results_keccak)}\` in [\`${short(tcAnchor.anchor_tx)}\`](https://explorer.testnet.chain.robinhood.com/tx/${tcAnchor.anchor_tx}?tab=logs), to \`TokenCheckReceiver\` on Robinhood Testnet. Every decision of the walk names that file by the same hash. ${recheck ? `\`node token-check/recheck.mjs\` reads every row again over plain JSON-RPC, with no CRE and no code shared with the workflow. Its last line: \`${recheck}\`.` : ''} The codes say what was read. None of them says who made a token or why.`
+Each run wrote the hash of its rows in a \`TokenBatchChecked\` event (${runs.map((r) => `[run ${r.run}](https://explorer.testnet.chain.robinhood.com/tx/${r.tx}?tab=logs)`).join(', ')}). One more run read those receipts back over the EVM capability and wrote \`keccak256(results.json)\` = \`${short(tcAnchor.results_keccak)}\` in [\`${short(tcAnchor.anchor_tx)}\`](https://explorer.testnet.chain.robinhood.com/tx/${tcAnchor.anchor_tx}?tab=logs), to \`TokenCheckReceiver\` on Robinhood Testnet. Every decision of the walk names that file by the same hash. ${recheck ? `\`node token-check/recheck.mjs\` reads every row again over plain JSON-RPC, with no CRE and no code shared with the workflow. Its last line${recheckDay ? ` on ${recheckDay}` : ''}: \`${recheck}\`.${recheckNow ? ` The public RPC no longer serves the state at the checked block for ${plural(recheckNow, 'token', 'tokens')}, so the recheck read ${recheckNow === 1 ? 'it' : 'them'} as ${recheckNow === 1 ? 'it is' : 'they are'} now, and every row still agrees. Saved run: [\`docs/token-check/recheck-output.txt\`](docs/token-check/recheck-output.txt).` : ''}` : ''} The codes say what was read. None of them says who made a token or why.`
 }
 
 // The code guide, with every line number found in the file as it is now

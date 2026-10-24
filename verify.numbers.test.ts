@@ -171,8 +171,16 @@ describe('published verify numbers', () => {
 		const readme = read('README.md')
 		const ledger = read('agent/ledger.ts')
 		expect(ledger).toContain('Ticker copy opens the full size on every purchase of a token with a stock ticker')
-		expect(readme).toContain('It opens a position on every purchase of a token with a stock ticker, at an official venue or not.')
+		const baseline = JSON.parse(read('docs/ledger.json')).baseline as string
+		expect(readme).toContain(`"${baseline.split('. ')[0]}."`)
 		expect(readme + ledger).not.toMatch(/every move in which a token with a stock ticker\s+arrives/)
+	})
+
+	test('bounty quotes in the README are word for word', () => {
+		// read from dorahacks.io/hackathon/bounty/1380 on 2026-10-24
+		const readme = read('README.md')
+		expect(readme).toContain('"entry, sizing and exit as one decision"')
+		expect(readme).not.toContain('entry, sizing, and exit')
 	})
 
 	test('does not promise to keep the walk running after the event', () => {
