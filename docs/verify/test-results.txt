@@ -1,43 +1,26 @@
-# Test results, 2026-10-14T09:05Z
-
-$ cd agent && bun test
- 155 pass
- 0 fail
- 5612 expect() calls
-Ran 155 tests across 10 files. [77.29s]
-
-$ cd trail-anchor && bun test
- 8 pass
- 0 fail
- 26 expect() calls
-Ran 8 tests across 1 file. [244.00ms]
-
-$ cd rwa-verify && bun test
+$ README "Run it" steps: install rwa-verify, trail-anchor, token-check, agent, then bun test in each, then the repo-root tests and forge test
+v26.3.0
+2026-10-24T03:48:03Z
+bun 1.2.23, commit dee9a37
+== rwa-verify
  23 pass
  0 fail
- 69 expect() calls
-Ran 23 tests across 2 files. [183.00ms]
-
-$ cd token-check && bun test
+Ran 23 tests across 2 files. [284.00ms]
+== trail-anchor
+ 8 pass
+ 0 fail
+Ran 8 tests across 1 file. [280.00ms]
+== token-check
  130 pass
  0 fail
- 1510 expect() calls
-Ran 130 tests across 5 files. [317.00ms]
-
-$ cd contracts && forge test
-Ran 1 test for test/RwaVerdictReceiver.t.sol:RwaVerdictReceiverForkTest
-Suite result: ok. 0 passed; 0 failed; 1 skipped; finished in 6.11ms (1.52ms CPU time)
-Ran 7 tests for test/LedgerRootReceiver.t.sol:LedgerRootReceiverTest
-Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 15.38ms (11.03ms CPU time)
-Ran 12 tests for test/RwaVerdictReceiver.t.sol:RwaVerdictReceiverTest
-Suite result: ok. 12 passed; 0 failed; 0 skipped; finished in 15.40ms (9.74ms CPU time)
-Ran 10 tests for test/TokenCheckReceiver.t.sol:TokenCheckReceiverTest
-Suite result: ok. 10 passed; 0 failed; 0 skipped; finished in 15.51ms (16.52ms CPU time)
-Ran 7 tests for test/ReasoningTrailReceiver.t.sol:ReasoningTrailReceiverTest
-Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 15.54ms (9.71ms CPU time)
-Ran 5 test suites in 20.22ms (67.94ms CPU time): 36 tests passed, 0 failed, 1 skipped (37 total tests)
-
-$ bunx tsc --noEmit (agent, trail-anchor, token-check)
-agent: exit 0
-trail-anchor: exit 0
-token-check: exit 0
+Ran 130 tests across 5 files. [356.00ms]
+== agent
+ 163 pass
+ 0 fail
+Ran 163 tests across 10 files. [112.96s]
+== repo root
+ 16 pass
+ 0 fail
+Ran 16 tests across 4 files. [155.00ms]
+== contracts
+Ran 5 test suites in 17.83ms (58.67ms CPU time): 36 tests passed, 0 failed, 1 skipped (37 total tests)
