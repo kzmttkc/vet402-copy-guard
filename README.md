@@ -9,11 +9,11 @@ Anyone can deploy a token called NVDA. copy-guard is an agent that checks which 
 <!-- JUMP:BEGIN -->
 | If you are judging | Start here |
 |---|---|
-| **Anyone** | [Verify it yourself in 15 seconds, 4 steps](#verify-it-yourself-in-15-seconds) |
+| **Anyone** | [Verify it yourself with one command, 4 steps](#verify-it-yourself-with-one-command) |
 | **Chainlink**, Best workflow with CRE | [Chainlink: Best workflow with CRE](#chainlink-best-workflow-with-cre). The one `cre workflow simulate` line, the bounty text line by line, the CRE code guide |
 | **RYO-CHAN**, Autonomous Agents | [RYO-CHAN: Autonomous Agents](#ryo-chan-autonomous-agents). The bounty text phrase by phrase, the practice trade ledger, one sentence turned into limits |
 | **BLI**, LegalTech and RegTech | [BLI: LegalTech and RegTech](#bli-legaltech-and-regtech). Who the agent acts for, two questions from BLI's own stage, the regulators' words |
-| Any of them | [Details](#details), [What it does not claim](#what-it-does-not-claim) |
+| Any of them | [Details](#details), [What it does not claim](#what-it-does-not-claim), [Architecture](docs/ARCHITECTURE.md) |
 <!-- JUMP:END -->
 
 > "$600 out the window in seconds"
@@ -35,7 +35,7 @@ Nobody has to take my word for this, or the agent's, or a server's. One command 
 <!-- FACTS:END -->
 
 <!-- VERIFY_HEAD:BEGIN -->
-## Verify it yourself in 15 seconds
+## Verify it yourself with one command
 <!-- VERIFY_HEAD:END -->
 
 Step 1 needs Node 20 or newer and a copy of this repo. On 2026-10-24 `npx -y -p node@20 node verify.mjs --quick` ran on Node v20.20.2 and printed `RESULT: MATCH`. The whole run is in [`docs/verify/node-v20.20.2-quick.txt`](docs/verify/node-v20.20.2-quick.txt). Node older than 20 stops, with the reason, before any check. Steps 2 to 4 need only a browser. Every date and time in this README is UTC.
