@@ -287,7 +287,7 @@ const jump = `| If you are judging | Start here |
 | **Chainlink**, Best workflow with CRE | [Chainlink: Best workflow with CRE](#chainlink-best-workflow-with-cre). The one \`cre workflow simulate\` line, the bounty text line by line, the CRE code guide |
 | **RYO-CHAN**, Autonomous Agents | [RYO-CHAN: Autonomous Agents](#ryo-chan-autonomous-agents). The bounty text phrase by phrase, the practice trade ledger, one sentence turned into limits |
 | **BLI**, LegalTech and RegTech | [BLI: LegalTech and RegTech](#bli-legaltech-and-regtech). Who the agent acts for, two questions from BLI's own stage, the regulators' words |
-| Any of them | [Details](#details), [What it does not claim](#what-it-does-not-claim) |`
+| Any of them | [Details](#details), [What it does not claim](#what-it-does-not-claim), [Architecture](docs/ARCHITECTURE.md) |`
 const clone = 'git clone https://github.com/kzmttkc/vet402-copy-guard && cd vet402-copy-guard'
 const quickTail = VT.quickOutput ? VT.quickOutput.trimEnd().split('\n').slice(-2).join('\n') : null
 const fullTimes = VT.full ? `, ${secondsWords(VT.full)} in ${plural(VT.full.runs, 'saved run', 'saved runs')}${VT.full.day ? ` of ${VT.full.day}` : ''}` : ''

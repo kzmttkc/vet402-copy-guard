@@ -248,7 +248,7 @@ export function verifyTimes(readIf, verifySource) {
 		hasQuick,
 		quickOutput: readIf('docs/verify/verify-quick-output.txt'),
 		offlineOutput: readIf('docs/verify/verify-offline.txt'),
-		heading: promise ? `Verify it yourself in ${promise} seconds` : 'Verify it yourself with one command',
+		heading: 'Verify it yourself with one command',
 		promise,
 	}
 }
