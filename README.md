@@ -1,7 +1,7 @@
 # vet402 copy-guard
 
 <!-- VET402_LEAD:BEGIN -->
-copy-guard is built on vet402's `/rwa` record. vet402 buys what x402 APIs sell with USDC, re-reads settlement on-chain and publishes every attempt: 9,713 settled paid calls on Base from 2026-08-14 to 2026-10-24 02:56 UTC, plus Solana, Tempo, XRPL, Arc, Celo, Stellar, BNB Chain and Arbitrum One ([export](https://vet402.com/api/v1/observatory/export.csv?days=365)).
+copy-guard is built on vet402's `/rwa` record. vet402 buys what x402 APIs sell with USDC, re-reads settlement on-chain and publishes every attempt: 10,238 settled paid calls on Base from 2026-08-14 to 2026-10-29 09:37 UTC, plus Solana, Tempo, XRPL, Arc, Celo, Stellar, BNB Chain and Arbitrum One ([export](https://vet402.com/api/v1/observatory/export.csv?days=365)).
 <!-- VET402_LEAD:END -->
 
 Anyone can deploy a token called NVDA. copy-guard is an agent that checks which token really moved before it would copy a wallet, and it leaves a record that anyone can recheck.
@@ -190,7 +190,7 @@ A public RPC that is busy is asked again up to five times, and the line then end
 
 **4. Open the anchor** (Robinhood Chain). [`0x15f9ed8a…585c7f`](https://robinhoodchain.blockscout.com/tx/0x15f9ed8ae5dd466c2f35021c9f1291e7a624abbb52c8ac26b54d47442f585c7f?tab=logs): one `Anchored` log from `RwaAnchor` with `factsHash` `0x9d0e83d9…f721ee`, the value step 1 recomputes from `rwa-verify/fixtures/anchored-record.json`.
 
-**What this shows and what it leaves open.** As of <!-- AS_OF:BEGIN -->2026-10-24<!-- AS_OF:END --> there are two payments, both self-paid tests: 0.01 USDG on 2026-10-08 ([`0x65c314bd…87af61`](https://robinhoodchain.blockscout.com/tx/0x65c314bd758a59dfc79c78d8da76e557450fa1144726ddc4bfc77e183287af61)) and the paid gate call on 2026-10-16 ([`0x7d8d9384…eb6c`](https://robinhoodchain.blockscout.com/tx/0x7d8d9384d5a529781ad65f1246fc5002c289396137c22950604bc50b13c1eb6c)). I own both the payer and the payee. Neither is revenue. Every trade in the ledger is a practice (paper) trade. The ledger is a replay of past public moves, and it says nothing about whether copying any wallet makes money.
+**What this shows and what it leaves open.** As of <!-- AS_OF:BEGIN -->2026-10-29<!-- AS_OF:END --> there are two payments, both self-paid tests: 0.01 USDG on 2026-10-08 ([`0x65c314bd…87af61`](https://robinhoodchain.blockscout.com/tx/0x65c314bd758a59dfc79c78d8da76e557450fa1144726ddc4bfc77e183287af61)) and the paid gate call on 2026-10-16 ([`0x7d8d9384…eb6c`](https://robinhoodchain.blockscout.com/tx/0x7d8d9384d5a529781ad65f1246fc5002c289396137c22950604bc50b13c1eb6c)). I own both the payer and the payee. Neither is revenue. Every trade in the ledger is a practice (paper) trade. The ledger is a replay of past public moves, and it says nothing about whether copying any wallet makes money.
 
 ## Chainlink: Best workflow with CRE
 
@@ -319,7 +319,7 @@ The last column holds only times read from saved runs on this machine: the simul
 
 The question behind any automation is who runs it and why anyone should trust it. If these checks ran only on my server, a reader would have to trust my server. Written as CRE workflows, they are code that a decentralized oracle network can run, with consensus declared on every HTTP read and the result delivered to a contract that has no owner. Trust in the operator is replaced by verification.
 
-That is the design, and as of <!-- AS_OF:BEGIN -->2026-10-24<!-- AS_OF:END --> only part of it is true. The workflows run under `cre workflow simulate`. No DON has run them, so no event here is a DON attestation. A simulated write goes through CRE's simulation forwarder, which accepts reports from anyone, so a testnet event fixes a hash and a time and nothing more. Until the workflows are deployed, `node verify.mjs` does the verifying: it reruns everything the workflows did with separate code.
+That is the design, and as of <!-- AS_OF:BEGIN -->2026-10-29<!-- AS_OF:END --> only part of it is true. The workflows run under `cre workflow simulate`. No DON has run them, so no event here is a DON attestation. A simulated write goes through CRE's simulation forwarder, which accepts reports from anyone, so a testnet event fixes a hash and a time and nothing more. Until the workflows are deployed, `node verify.mjs` does the verifying: it reruns everything the workflows did with separate code.
 
 What this gives the people Chainlink's own video for this hackathon speaks to: an automated compliance check that runs before an agent acts, and visibility into what it checked. A person can read the result on one page.
 
@@ -526,7 +526,7 @@ Each row reads the same way: a rule maker or regulator has asked in these words,
 - probe402's report [MCRI-002](https://probe402.com/publications/pub_mcri_002) cites vet402's numbers (11,278 paid attempts and 6,022 settled, read on 2 October 2026).
 - ETHOnline 2026: vet402 won the Bazantic prize with payOrRefuse ([showcase](https://ethglobal.com/showcase/payorrefuse-opboo)).
 - Circle's Arc Microgrants: vet402 is one of the 20 microgrants, for buyer-side receipts of x402 purchases settled through Circle Gateway on Arc ([winners](https://dorahacks.io/hackathon/arc-microgrants/winner), October 2026).
-- Outside reaction to copy-guard itself, as of <!-- AS_OF:BEGIN -->2026-10-24<!-- AS_OF:END --> UTC: none. The paid run of the gate is a test I paid to myself.
+- Outside reaction to copy-guard itself, as of <!-- AS_OF:BEGIN -->2026-10-29<!-- AS_OF:END --> UTC: none. The paid run of the gate is a test I paid to myself.
 
 ## Details
 
@@ -778,7 +778,7 @@ bun agent/main.ts --mandate mandate/sample --gate http://127.0.0.1:4021/v1/workf
 - The ticker copy is a baseline I defined, stated in the ledger. A real copier may be less naive.
 - "Sent to the wallet" and "bought outside the official venues" are different kinds of arrival and are never added together. The first is a token the wallet paid nothing for. In the second the wallet paid, somewhere other than the Uniswap v4 PoolManager or an official v3 pool. copy-guard follows neither. A ticker copy follows the second.
 - The groups of wallets were chosen in different ways, so their counts are shown apart and are not a sample of the chain. A group whose positions all follow one wallet says how the rules treat that wallet.
-- As of <!-- AS_OF:BEGIN -->2026-10-24<!-- AS_OF:END --> there are two payments, both self-paid tests: 0.01 USDG on 2026-10-08 ([`0x65c314bd…87af61`](https://robinhoodchain.blockscout.com/tx/0x65c314bd758a59dfc79c78d8da76e557450fa1144726ddc4bfc77e183287af61)) and the paid gate call on 2026-10-16 ([`0x7d8d9384…eb6c`](https://robinhoodchain.blockscout.com/tx/0x7d8d9384d5a529781ad65f1246fc5002c289396137c22950604bc50b13c1eb6c)). I own both the payer and the payee. Neither is revenue.
+- As of <!-- AS_OF:BEGIN -->2026-10-29<!-- AS_OF:END --> there are two payments, both self-paid tests: 0.01 USDG on 2026-10-08 ([`0x65c314bd…87af61`](https://robinhoodchain.blockscout.com/tx/0x65c314bd758a59dfc79c78d8da76e557450fa1144726ddc4bfc77e183287af61)) and the paid gate call on 2026-10-16 ([`0x7d8d9384…eb6c`](https://robinhoodchain.blockscout.com/tx/0x7d8d9384d5a529781ad65f1246fc5002c289396137c22950604bc50b13c1eb6c)). I own both the payer and the payee. Neither is revenue.
 - Nothing is deployed to a DON. All testnet receivers trust CRE's simulation forwarder, as described above.
 - The rules are a policy. Anyone can read, rerun or disagree with every row.
 - This is not legal advice and not investment advice. vet402 reports what public chain data shows and is not affiliated with Robinhood, Chainlink, RYO or any token issuer.
